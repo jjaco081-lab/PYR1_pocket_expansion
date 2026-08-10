@@ -1,0 +1,26 @@
+{
+  "variant": "E141L",
+  "mutations": [
+    [
+      141,
+      "L"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "E141L",
+      "rep": 7,
+      "score_closed": -503.99181844966535,
+      "gate_bb_rmsd_closed": 0.07741159638725027,
+      "latch_bb_rmsd_closed": 0.10593382422736143,
+      "gate_to_open_closed": 5.199848158514426,
+      "pdb_closed": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/E141L_closed_r7.pdb",
+      "score_open": -495.4913825051541,
+      "gate_bb_rmsd_open": 0.10528871095367034,
+      "latch_bb_rmsd_open": 0.08369196724850086,
+      "gate_to_closed_open": 5.2235632533541825,
+      "pdb_open": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/E141L_open_r7.pdb",
+      "dE_close": -8.500435944511253
+    }
+  ]
+}

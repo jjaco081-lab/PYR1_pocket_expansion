@@ -1,0 +1,29 @@
+{
+  "variant": "Y120S",
+  "mutations": [
+    [
+      120,
+      "S"
+    ]
+  ],
+  "chunk": 1,
+  "reps": [
+    {
+      "variant": "Y120S",
+      "rep": 1,
+      "total_score": -1420.9597393074291,
+      "dG_separated": -69.92957304099411,
+      "dSASA": 1836.0363015410492,
+      "sc_value": 0.7339042723178864,
+      "gate_rmsd": 0.38165867746962207,
+      "latch_rmsd": 0.766358168047219,
+      "gate_bb_rmsd": 0.37901286979623117,
+      "latch_bb_rmsd": 0.4621037546640086,
+      "gate_latch_min_dist": 3.7075674546527764,
+      "gate_latch_com_dist": 10.531752462103189,
+      "lig_gate_min_dist": 3.339861058708555,
+      "w385_aba_min_dist": 5.065092304859247,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v2/pdb/Y120S_r1.pdb"
+    }
+  ]
+}

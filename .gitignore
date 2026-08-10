@@ -1,0 +1,40 @@
+# ---------------------------------------------------------------------------
+# Regenerable bulk. Everything here is reproducible from the scripts; the
+# expensive-to-recompute RESULTS (per-replicate JSON, aggregated CSVs) are
+# tracked. See README section 20 for which script regenerates what.
+# ---------------------------------------------------------------------------
+
+# Rosetta structure ensembles (~1.7 GB) -- regenerate with 06/21/25/31
+results/*/pdb/
+
+# MD trajectories, restarts, topologies and per-stage outputs (~6 GB)
+# regenerate with 38_md_prep.py -> 38b_md_build.py -> 39_md_run.sh
+data/md/*/rep*/*.nc
+data/md/*/rep*/*.rst7
+data/md/*/rep*/*.out
+data/md/*/rep*/*.info
+data/md/*/rep*/*.in
+data/md/*/system.prmtop
+data/md/*/system.inpcrd
+data/md/*/system_solvated.pdb
+data/md/*/bench/
+
+# Downloaded homolog structures (~204 MB) -- refetch with 08_homolog_cavities.py --stage fetch
+results/homolog_cavities/raw/
+results/homolog_cavities/domains/
+results/homolog_cavities/ca_traces/
+results/homolog_cavities/subdb_exp*
+results/foldseek/
+
+# Verbose job logs; the curated analysis logs (logs/*.txt) ARE tracked
+logs/*.log
+logs/units*/
+
+# Third-party supplementary data is deliberately NOT vendored here.
+# Tian et al. xlsx files live outside the repo at
+#   /bigdata/cutlerlab/jjaco081/mutation_prediction_benchmark/
+# Redistributing publisher supplementary files may breach their terms.
+*.xlsx
+
+__pycache__/
+*.pyc

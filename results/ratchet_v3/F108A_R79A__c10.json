@@ -1,0 +1,35 @@
+{
+  "variant": "F108A_R79A",
+  "mutations": [
+    [
+      108,
+      "A"
+    ],
+    [
+      79,
+      "A"
+    ]
+  ],
+  "chunk": 10,
+  "reps": [
+    {
+      "variant": "F108A_R79A",
+      "rep": 10,
+      "total_score": -1417.324926718339,
+      "dG_separated": -70.1124732299811,
+      "dSASA": 1854.1909837097273,
+      "sc_value": 0.742870956659317,
+      "gate_rmsd": 0.37678338792341837,
+      "latch_rmsd": 0.9583498494469652,
+      "gate_bb_rmsd": 0.3745712266268018,
+      "latch_bb_rmsd": 0.807891533214599,
+      "gate_latch_min_dist": 3.8503978263739644,
+      "gate_latch_com_dist": 10.559230313689886,
+      "lig_gate_min_dist": 3.402625305691831,
+      "iloop_bb_rmsd": 0.35582105727731195,
+      "iloop_hab1_min_dist": 2.4938096282860607,
+      "w385_aba_min_dist": 5.15659994328426,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v3/pdb/F108A_R79A_r10.pdb"
+    }
+  ]
+}

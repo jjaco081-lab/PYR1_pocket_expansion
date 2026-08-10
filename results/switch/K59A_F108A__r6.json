@@ -1,0 +1,30 @@
+{
+  "variant": "K59A_F108A",
+  "mutations": [
+    [
+      59,
+      "A"
+    ],
+    [
+      108,
+      "A"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "K59A_F108A",
+      "rep": 6,
+      "score_closed": -505.44919320436253,
+      "gate_bb_rmsd_closed": 0.07753803522276058,
+      "latch_bb_rmsd_closed": 0.11497739685667448,
+      "gate_to_open_closed": 5.19912737320689,
+      "pdb_closed": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/K59A_F108A_closed_r6.pdb",
+      "score_open": -496.8818016185657,
+      "gate_bb_rmsd_open": 0.11723407969931421,
+      "latch_bb_rmsd_open": 0.088040454729992,
+      "gate_to_closed_open": 5.23525795157248,
+      "pdb_open": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/K59A_F108A_open_r6.pdb",
+      "dE_close": -8.567391585796827
+    }
+  ]
+}

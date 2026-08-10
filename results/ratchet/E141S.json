@@ -1,0 +1,47 @@
+{
+  "variant": "E141S",
+  "mutations": [
+    [
+      141,
+      "S"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "E141S",
+      "rep": 0,
+      "total_score": -1359.109952156877,
+      "dG_separated": -75.94626730688498,
+      "dSASA": 1795.474849724701,
+      "sc_value": 0.7545369267463684,
+      "gate_rmsd": 0.18391873394796288,
+      "latch_rmsd": 1.228580716088101,
+      "w385_aba_min_dist": 4.626835538105332,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/E141S_r0.pdb"
+    },
+    {
+      "variant": "E141S",
+      "rep": 1,
+      "total_score": -1355.00983218081,
+      "dG_separated": -68.57990088845713,
+      "dSASA": 1809.447249827448,
+      "sc_value": 0.7619544267654419,
+      "gate_rmsd": 0.174889771206471,
+      "latch_rmsd": 1.2303802034483022,
+      "w385_aba_min_dist": 4.58343486623956,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/E141S_r1.pdb"
+    },
+    {
+      "variant": "E141S",
+      "rep": 2,
+      "total_score": -1355.5108393177964,
+      "dG_separated": -72.58352683494428,
+      "dSASA": 1802.2393192693921,
+      "sc_value": 0.7462110817432404,
+      "gate_rmsd": 0.18635962804119963,
+      "latch_rmsd": 1.9373175811581982,
+      "w385_aba_min_dist": 4.627623794632168,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/E141S_r2.pdb"
+    }
+  ]
+}

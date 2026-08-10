@@ -1,0 +1,46 @@
+# Mosquna et al. 2011 PNAS (doi 10.1073/pnas.1112838108), Table of the 39
+# highly conserved PYR1 residues subjected to site-saturation mutagenesis.
+# Contact type: LIG = contacts ABA; PPI = contacts the PP2C (HAB1) interface.
+# "activating" lists substitutions that increased basal PYR1-PP2C interaction
+# in Y2H; strength +++ / ++ / + as reported.
+# NOTE: R79 does NOT appear in this table.
+residue	contact_type	activating_mutations	strength_+++	strength_++	strength_+
+P55	LIG
+K59	LIG
+H60	PPI+LIG	P,G,R,A,W,I,K,V,M	P,G	R,A	W,I,K,V,M
+F61	LIG+PPI
+I62	LIG+PPI
+K63	PPI
+V81	LIG
+V83	LIG	F,L,P	F	L	P
+I84	PPI	Q,E,P,H,K	Q	E,P,H	K
+S85	PPI
+G86	PPI
+L87	LIG+PPI	F		F
+P88	LIG+PPI
+A89	LIG+PPI	W	W
+S92	LIG
+E94	LIG
+F108	LIG
+I110	LIG
+H115	LIG+PPI
+R116	LIG+PPI
+L117	LIG+PPI
+Y120	LIG
+S122	LIG
+E141	LIG
+P148	PPI
+G150	PPI
+N151	PPI
+D154	PPI
+D155	PPI
+T156	PPI
+M158	PPI	T,C,V,I	T,C	V	I
+F159	LIG+PPI	V,A	V		A
+A160	LIG
+T162	PPI	F		F
+V163	LIG+PPI
+V164	LIG
+L166	PPI	Y,F			Y,F
+N167	LIG
+K170	PPI	W	W

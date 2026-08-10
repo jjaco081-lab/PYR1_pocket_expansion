@@ -1,0 +1,38 @@
+{
+  "variant": "E141A",
+  "mutations": [
+    [
+      141,
+      "A"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "E141A",
+      "rep": 0,
+      "score_ref2015": -506.898946575373,
+      "cavity_A3": 209.25,
+      "cavity_gridpts": 1674,
+      "ca_rmsd_to_input": 0.07675897519226028,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/E141A_r0.pdb"
+    },
+    {
+      "variant": "E141A",
+      "rep": 1,
+      "score_ref2015": -507.7486332207214,
+      "cavity_A3": 208.5,
+      "cavity_gridpts": 1668,
+      "ca_rmsd_to_input": 0.07590269848481924,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/E141A_r1.pdb"
+    },
+    {
+      "variant": "E141A",
+      "rep": 2,
+      "score_ref2015": -509.50113344919873,
+      "cavity_A3": 216.875,
+      "cavity_gridpts": 1735,
+      "ca_rmsd_to_input": 0.0739993650819433,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/E141A_r2.pdb"
+    }
+  ]
+}

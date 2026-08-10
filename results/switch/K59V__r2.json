@@ -1,0 +1,26 @@
+{
+  "variant": "K59V",
+  "mutations": [
+    [
+      59,
+      "V"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "K59V",
+      "rep": 2,
+      "score_closed": -508.84865885167653,
+      "gate_bb_rmsd_closed": 0.07819860105991072,
+      "latch_bb_rmsd_closed": 0.10585495885170386,
+      "gate_to_open_closed": 5.199996330838816,
+      "pdb_closed": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/K59V_closed_r2.pdb",
+      "score_open": -495.0759276740265,
+      "gate_bb_rmsd_open": 0.10680827717780358,
+      "latch_bb_rmsd_open": 0.08410586395516771,
+      "gate_to_closed_open": 5.22606229456901,
+      "pdb_open": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/K59V_open_r2.pdb",
+      "dE_close": -13.77273117765003
+    }
+  ]
+}

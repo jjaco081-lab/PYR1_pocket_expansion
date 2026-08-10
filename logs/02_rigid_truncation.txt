@@ -1,0 +1,34 @@
+WT closed-state cavity: 166.4 A^3
+
+residue      cavity    delta
+PHE108        239.9    +73.5
+LYS59         238.1    +71.8
+GLU141        235.8    +69.4
+TYR120        212.4    +46.0
+LEU117        198.4    +32.0
+GLU94         184.8    +18.4
+ILE110        183.0    +16.6
+VAL83         181.4    +15.0
+ASN167        179.9    +13.5
+VAL163        177.6    +11.2
+VAL164        167.1     +0.8
+THR91         166.4     +0.0
+SER122        166.4     +0.0
+SER92         166.0     -0.4
+HIS115        162.9     -3.5
+PHE159        151.9    -14.5
+LEU87         150.2    -16.1
+PHE61         149.9    -16.5
+
+=== combinations ===
+  LYS59A/PHE108A                             294.2   +127.9
+  LYS59A/PHE159A                             219.9    +53.5
+  PHE108A/PHE159A                            224.6    +58.2
+  LYS59A/PHE108A/PHE159A                     276.5   +110.1
+  LYS59A/PHE108A/PHE159A/PHE61A              249.2    +82.9
+  ARG79A/GLU94A                              251.1    +84.8
+  PHE108A/ARG79A                             265.1    +98.8
+  PHE108A/ARG79A/GLU94A                      308.5   +142.1
+  LYS59A/PHE108A/ARG79A/GLU94A               375.5   +209.1
+
+wrote /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/02_rigid_truncation.csv

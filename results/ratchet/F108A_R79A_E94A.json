@@ -1,0 +1,55 @@
+{
+  "variant": "F108A_R79A_E94A",
+  "mutations": [
+    [
+      108,
+      "A"
+    ],
+    [
+      79,
+      "A"
+    ],
+    [
+      94,
+      "A"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "F108A_R79A_E94A",
+      "rep": 0,
+      "total_score": -1352.7905355071546,
+      "dG_separated": -72.10618569141093,
+      "dSASA": 1834.854511954958,
+      "sc_value": 0.738974004983902,
+      "gate_rmsd": 0.18406767104673535,
+      "latch_rmsd": 0.6655272992508947,
+      "w385_aba_min_dist": 4.670180945615437,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/F108A_R79A_E94A_r0.pdb"
+    },
+    {
+      "variant": "F108A_R79A_E94A",
+      "rep": 1,
+      "total_score": -1347.6554802826292,
+      "dG_separated": -71.0151004167518,
+      "dSASA": 1811.3041094971538,
+      "sc_value": 0.7617935836315155,
+      "gate_rmsd": 0.1738617810529466,
+      "latch_rmsd": 1.2349914900927457,
+      "w385_aba_min_dist": 4.666462902434217,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/F108A_R79A_E94A_r1.pdb"
+    },
+    {
+      "variant": "F108A_R79A_E94A",
+      "rep": 2,
+      "total_score": -1344.1865684834013,
+      "dG_separated": -63.287773323443446,
+      "dSASA": 1801.9944844819217,
+      "sc_value": 0.7492896020412445,
+      "gate_rmsd": 0.1734602213794911,
+      "latch_rmsd": 1.2350102915686552,
+      "w385_aba_min_dist": 4.65543058199698,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/F108A_R79A_E94A_r2.pdb"
+    }
+  ]
+}

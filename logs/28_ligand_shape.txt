@@ -1,0 +1,54 @@
+====================================================================================
+REFERENCE LADDER
+====================================================================================
+ligand                 heavy   len A   NPR1   NPR2   class  len/heavy
+ABA                       19     9.7   0.23   0.96     ROD       0.51
+crocetin                  23    14.6   0.18   0.89     ROD       0.64
+b-apo-8'-carotenal        28    21.8   0.04   0.98     ROD       0.78
+b-carotene (C40)          40    28.3   0.03   0.99     ROD       0.71
+
+parsed 3359 compounds, 194 hits
+
+====================================================================================
+DOES SIZE ARRIVE AS LENGTH OR AS BULK?
+====================================================================================
+heavy atoms        n  med len  len/heavy   shape mix (ROD/DISC/SPHERE)
+0-20            1277      7.5       0.55    66% /  29% /   3%
+20-25            699     10.3       0.47    65% /  30% /   3%
+25-30            552     12.0       0.45    65% /  26% /   7%
+30-40            611     13.4       0.40    64% /  28% /   6%
+40-200           220     15.8       0.33    49% /  35% /  15%
+
+====================================================================================
+HIT RATE BY SIZE x SHAPE  -- the number that decides tunnel vs chamber
+====================================================================================
+heavy atoms                  ROD              DISC            SPHERE
+0-20               60/848 (7.1%)     36/379 (9.5%)       0/50 (0.0%)
+20-25              45/461 (9.8%)     19/213 (8.9%)       1/25 (4.0%)
+25-30              17/360 (4.7%)      3/149 (2.0%)       2/43 (4.7%)
+30-40               6/397 (1.5%)      4/177 (2.3%)       1/37 (2.7%)
+40-200              0/108 (0.0%)       0/77 (0.0%)       0/35 (0.0%)
+
+====================================================================================
+LENGTH, split by outcome
+====================================================================================
+  0-20 heavy: HITS median   7.9 A (max  13.1) | MISSES median   7.4 A (max  14.2)
+  20-25 heavy: HITS median  10.6 A (max  15.3) | MISSES median  10.3 A (max  19.0)
+  25-30 heavy: HITS median  11.8 A (max  15.2) | MISSES median  12.0 A (max  19.3)
+  30-40 heavy: HITS median  12.6 A (max  14.9) | MISSES median  13.4 A (max  21.0)
+
+LARGE COMPOUNDS (>=30 heavy atoms) that FAILED, longest first:
+   len  29.1 A   42 heavy  ROD     lutein
+   len  28.8 A   58 heavy  ROD     Trypan Blue
+   len  27.9 A   40 heavy  ROD     Beta Carotene
+   len  27.8 A   58 heavy  ROD     Evans Blue
+   len  27.2 A   65 heavy  ROD     Elbasvir
+   len  26.0 A   65 heavy  ROD     Velpatasvir
+   len  25.8 A   65 heavy  ROD     Ledipasvir (GS5885)
+   len  25.8 A   65 heavy  ROD     Ledipasvir acetone
+   len  24.3 A   61 heavy  ROD     Dioscin
+   len  24.1 A   44 heavy  ROD     Gamma-Oryzanol
+   len  23.3 A   63 heavy  ROD     Emamectin Benzoate
+   len  23.2 A   49 heavy  ROD     Itraconazole
+
+wrote /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/28_tian_ligand_shape.csv

@@ -1,0 +1,25 @@
+query length 179; seq-index: 59->59, 79->77, 94->92, 108->106, 120->118, 141->139
+
+2053 hits total; 266 at alnTM >= 0.5
+
+=== residue identity at each PYR1 wall position (alnTM >= 0.5) ===
+  PYR1 59  (WT K)  D:36(15%), K:23(10%), L:22(9%), S:18(8%), P:17(7%), A:16(7%), N:15(6%), V:15(6%)   [n=235, gaps=31]
+  PYR1 79  (WT R)  R:44(19%), F:23(10%), V:22(10%), I:20(9%), L:18(8%), A:18(8%), Y:17(7%), S:16(7%)   [n=230, gaps=36]
+  PYR1 94  (WT E)  E:56(23%), S:26(11%), G:18(7%), Q:16(7%), A:16(7%), L:14(6%), V:12(5%), R:12(5%)   [n=244, gaps=22]
+  PYR1 108 (WT F)  Y:58(24%), F:34(14%), I:22(9%), V:21(9%), W:16(7%), L:14(6%), S:13(5%), M:11(5%)   [n=244, gaps=22]
+  PYR1 120 (WT Y)  Y:44(19%), L:37(16%), V:30(13%), F:23(10%), S:19(8%), G:15(6%), A:13(6%), H:12(5%)   [n=234, gaps=32]
+  PYR1 141 (WT E)  V:37(15%), E:28(11%), L:27(11%), W:26(11%), Y:19(8%), S:16(7%), T:13(5%), H:13(5%)   [n=246, gaps=20]
+
+=== close PYR/PYL homologs (alnTM > 0.89) ===
+target                               fid  alnTM     59   79   94  108  120  141
+3oquB00                             0.46  0.970      K    R    E    I    Y    E
+af_Q7XBY6_2_207_3.30.530.20         0.58  0.967      K    R    E    F    Y    E
+4dsbB00                             0.51  0.965      K    R    E    F    Y    E
+af_I1MKK6_45_187_3.30.530.20        0.51  0.964      K    R    E    I    Y    E
+af_Q10MS2_34_228_3.30.530.20        0.52  0.948      K    R    E    F    Y    E
+af_I1LX70_3_186_3.30.530.20         0.43  0.941      K    R    E    I    Y    E
+3qrzB00                             0.50  0.932      K    R    E    F    Y    E
+4jdlC00                             0.42  0.904      -    -    E    F    Y    E
+3qrzA00                             0.48  0.899      K    R    E    F    Y    E
+
+wrote /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/foldseek/wall_position_identity.csv

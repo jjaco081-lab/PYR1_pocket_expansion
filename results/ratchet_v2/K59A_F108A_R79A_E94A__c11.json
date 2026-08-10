@@ -1,0 +1,41 @@
+{
+  "variant": "K59A_F108A_R79A_E94A",
+  "mutations": [
+    [
+      59,
+      "A"
+    ],
+    [
+      108,
+      "A"
+    ],
+    [
+      79,
+      "A"
+    ],
+    [
+      94,
+      "A"
+    ]
+  ],
+  "chunk": 11,
+  "reps": [
+    {
+      "variant": "K59A_F108A_R79A_E94A",
+      "rep": 11,
+      "total_score": -1412.8953343933401,
+      "dG_separated": -79.0140604527391,
+      "dSASA": 1818.399920104063,
+      "sc_value": 0.742671012878418,
+      "gate_rmsd": 0.396961983320114,
+      "latch_rmsd": 0.8980927173793494,
+      "gate_bb_rmsd": 0.38044933792590385,
+      "latch_bb_rmsd": 0.7379560720729709,
+      "gate_latch_min_dist": 3.7809942996073094,
+      "gate_latch_com_dist": 10.571534309246575,
+      "lig_gate_min_dist": 3.434774416584991,
+      "w385_aba_min_dist": 5.13737274745817,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v2/pdb/K59A_F108A_R79A_E94A_r11.pdb"
+    }
+  ]
+}

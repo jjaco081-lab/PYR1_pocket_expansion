@@ -1,0 +1,47 @@
+{
+  "variant": "Y120V",
+  "mutations": [
+    [
+      120,
+      "V"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "Y120V",
+      "rep": 0,
+      "total_score": -1351.3654148079374,
+      "dG_separated": -68.95946645764377,
+      "dSASA": 1791.588591013946,
+      "sc_value": 0.7440060973167419,
+      "gate_rmsd": 0.1856806837145663,
+      "latch_rmsd": 1.2461217031025775,
+      "w385_aba_min_dist": 4.5693226084268375,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/Y120V_r0.pdb"
+    },
+    {
+      "variant": "Y120V",
+      "rep": 1,
+      "total_score": -1359.3565572686803,
+      "dG_separated": -69.72613124057057,
+      "dSASA": 1805.1044672835037,
+      "sc_value": 0.7502024173736572,
+      "gate_rmsd": 0.1761426945955145,
+      "latch_rmsd": 1.2414474758261922,
+      "w385_aba_min_dist": 4.691409063289662,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/Y120V_r1.pdb"
+    },
+    {
+      "variant": "Y120V",
+      "rep": 2,
+      "total_score": -1351.9150790335132,
+      "dG_separated": -70.60025628748855,
+      "dSASA": 1809.6148247066965,
+      "sc_value": 0.7603585720062256,
+      "gate_rmsd": 0.18207554936224452,
+      "latch_rmsd": 1.7138756506085775,
+      "w385_aba_min_dist": 4.695323739625763,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/Y120V_r2.pdb"
+    }
+  ]
+}

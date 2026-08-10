@@ -1,0 +1,38 @@
+{
+  "variant": "K59A",
+  "mutations": [
+    [
+      59,
+      "A"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "K59A",
+      "rep": 0,
+      "score_ref2015": -512.8742876741816,
+      "cavity_A3": 241.25,
+      "cavity_gridpts": 1930,
+      "ca_rmsd_to_input": 0.07465299726554844,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/K59A_r0.pdb"
+    },
+    {
+      "variant": "K59A",
+      "rep": 1,
+      "score_ref2015": -510.2506596544141,
+      "cavity_A3": 242.25,
+      "cavity_gridpts": 1938,
+      "ca_rmsd_to_input": 0.07818636660182074,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/K59A_r1.pdb"
+    },
+    {
+      "variant": "K59A",
+      "rep": 2,
+      "score_ref2015": -515.8086583528576,
+      "cavity_A3": 243.625,
+      "cavity_gridpts": 1949,
+      "ca_rmsd_to_input": 0.07830065778474449,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/K59A_r2.pdb"
+    }
+  ]
+}

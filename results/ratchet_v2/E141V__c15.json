@@ -1,0 +1,29 @@
+{
+  "variant": "E141V",
+  "mutations": [
+    [
+      141,
+      "V"
+    ]
+  ],
+  "chunk": 15,
+  "reps": [
+    {
+      "variant": "E141V",
+      "rep": 15,
+      "total_score": -1426.2489172722733,
+      "dG_separated": -73.35105756597932,
+      "dSASA": 1809.1399477667953,
+      "sc_value": 0.7553767561912537,
+      "gate_rmsd": 0.3694118629378595,
+      "latch_rmsd": 1.4411574681036556,
+      "gate_bb_rmsd": 0.3602828591028286,
+      "latch_bb_rmsd": 0.6517615297953834,
+      "gate_latch_min_dist": 3.7541147712749,
+      "gate_latch_com_dist": 10.739783355372868,
+      "lig_gate_min_dist": 3.424262527197753,
+      "w385_aba_min_dist": 5.125961844557852,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v2/pdb/E141V_r15.pdb"
+    }
+  ]
+}

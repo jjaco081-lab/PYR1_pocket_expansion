@@ -1,0 +1,33 @@
+{
+  "variant": "R79A_E94A",
+  "mutations": [
+    [
+      79,
+      "A"
+    ],
+    [
+      94,
+      "A"
+    ]
+  ],
+  "chunk": 2,
+  "reps": [
+    {
+      "variant": "R79A_E94A",
+      "rep": 2,
+      "total_score": -1419.7378852921684,
+      "dG_separated": -74.76114377842532,
+      "dSASA": 1842.580844085951,
+      "sc_value": 0.7326421737670898,
+      "gate_rmsd": 0.3857468346428471,
+      "latch_rmsd": 0.8846712811731499,
+      "gate_bb_rmsd": 0.3624622921522588,
+      "latch_bb_rmsd": 0.7241141379103428,
+      "gate_latch_min_dist": 3.779606532081573,
+      "gate_latch_com_dist": 10.579485792734678,
+      "lig_gate_min_dist": 3.4586419696808224,
+      "w385_aba_min_dist": 5.105319790324298,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v2/pdb/R79A_E94A_r2.pdb"
+    }
+  ]
+}

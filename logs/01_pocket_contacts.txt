@@ -1,0 +1,55 @@
+=== (a) residues within 5.0 A of ABA (A8S) ===
+  PYR1 LYS59    2.85
+  PYR1 PHE159   3.20
+  PYR1 ALA89    3.35
+  PYR1 PHE108   3.48
+  PYR1 PHE61    3.51
+  PYR1 ILE110   3.51
+  PYR1 VAL163   3.52
+  PYR1 TYR120   3.60
+  PYR1 VAL83    3.67
+  PYR1 SER92    3.76
+  PYR1 LEU117   3.80
+  PYR1 ASN167   3.82
+  PYR1 PRO88    3.86
+  PYR1 HIS115   3.86
+  PYR1 LEU87    3.95
+  PYR1 GLU141   3.99
+  PYR1 GLU94    4.33
+  PYR1 VAL164   4.41
+  PYR1 THR91    4.41
+  PYR1 ALA160   4.57
+  HAB1 TRP385   4.67
+  PYR1 SER122   4.95
+
+  --> 21 PYR1 residues, 1 HAB1 residue(s).
+      HAB1 contributes essentially nothing to the pocket: it reads the
+      closed-state SURFACE. This is the ratchet, not a shared site.
+
+=== (b) K59 NZ polar contacts (<4.5 A) ===
+  K59 NZ -- ARG79 NH2  3.64
+  K59 NZ -- ABA C1   3.35
+  K59 NZ -- ABA O11  3.02
+  K59 NZ -- ABA O12  2.85
+
+=== (b') E94 / E141 carboxylate -> N contacts (<4.5 A) ===
+  E94 OE1 -- ARG79 NE   2.76
+  E94 OE1 -- ARG79 NH2  2.93
+
+=== (c) residues near the F108 ring centroid (<7.5 A) ===
+  ARG79    3.55
+  SER122   3.80
+  GLU94    4.26
+  LYS59    4.39
+  SER109   4.54
+  TYR120   4.83
+  ILE110   4.97
+  GLY107   5.21
+  ARG95    5.75
+  PHE52    5.84
+  LYS121   6.23
+  GLU141   6.70
+  ABA        4.78
+
+  --> R79 guanidinium stacks on the F108 ring (cation-pi) and is
+      locked by the E94 salt bridge. F108 is buttressed.

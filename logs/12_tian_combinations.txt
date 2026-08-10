@@ -1,0 +1,51 @@
+419 characterised clones loaded
+
+=== how many wall positions are mutated per clone ===
+  0 wall position(s) mutated: 38 clones
+  1 wall position(s) mutated: 130 clones
+  2 wall position(s) mutated: 116 clones
+  3 wall position(s) mutated: 74 clones
+  4 wall position(s) mutated: 61 clones
+
+=== net side-chain volume change at the wall (negative = opens space) ===
+  most volume RELEASED: -267 A^3
+  most volume ADDED   : +57 A^3
+  clones with net release: 334/419
+
+--- top 12 clones by wall volume released ---
+clone         compound                     dVol  wall substitutions
+G_31.3        2H,2H,3H,3H-Perfluoroocta    -267  K59M E94S Y120G E141G
+G_79.1        1H,1H,2H,3H,3H-Perfluoron    -265  K59N E94D Y120A E141G
+G_7.500.16    Perfluorooctanoic acid       -238  K59M E94A Y120A E141G
+G_69.5        1H,1H,8H-Perfluorooctan-1    -216  K59M E94D Y120A E141G
+G_79.4*       1H,1H,2H,3H,3H-Perfluoron    -216  K59M E94D Y120A E141G
+G_79.7        1H,1H,2H,3H,3H-Perfluoron    -216  K59N E94D Y120G
+G_99.4        Perfluoroheptanal hydrate    -216  K59N E94D Y120G
+G_110.3*      2H-Perfluoro-2-octenoic a    -209  K59N E94S Y120L E141G
+G_42.10.4     Perfluorohexanesulfonamid    -205  K59N E94G Y120T E141Q
+G_7.500.15    Perfluorooctanoic acid       -189  K59M E94G Y120L E141G
+G_8.1*        Perfluorononanoic acid       -189  K59M E94G Y120L E141G
+G_9.8         Perfluorodecanoic acid       -189  K59M E94G Y120L E141G
+
+=== was the E94-R79 salt bridge ever broken? ===
+  R79 mutated in any clone: 0 clones
+  E94 mutated: 189 clones; of those, to a residue that CANNOT salt-bridge R79 (not D/E/Q/N): 132
+  E94 substitutions recovered: G:66, D:55, A:39, S:22, T:4, L:1, N:1, E:1
+
+=== K59 and F108 (the two top restrictors) simultaneously reduced? ===
+  clones with BOTH mutated: 29
+  ...with BOTH reduced in volume: 0
+     3I-6             Imperatorin             K59Q  F108W
+     4J-8             Isopsoralen             K59A  F108W
+     4J-10            Isopsoralen             K59Q  F108W
+     5k-3             Scopoletin              K59A  F108W
+     5k-4             Scopoletin              K59Q  F108W
+     5k-5             Scopoletin              K59Q  F108W
+     5k-6             Scopoletin              K59Q  F108W
+     5k-7             Scopoletin              K59Q  F108W
+     5k-8             Scopoletin              K59Q  F108W
+     5k-9             Scopoletin              K59Q  F108W
+
+=== F108: which way did selection go? ===
+  42 clones mutate F108; 39 (93%) go LARGER than Phe (190 A^3)
+  distribution: W(228):39, Q(144):1, L(167):1, H(153):1

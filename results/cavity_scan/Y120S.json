@@ -1,0 +1,38 @@
+{
+  "variant": "Y120S",
+  "mutations": [
+    [
+      120,
+      "S"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "Y120S",
+      "rep": 0,
+      "score_ref2015": -505.275235110976,
+      "cavity_A3": 210.75,
+      "cavity_gridpts": 1686,
+      "ca_rmsd_to_input": 0.0745901615907311,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/Y120S_r0.pdb"
+    },
+    {
+      "variant": "Y120S",
+      "rep": 1,
+      "score_ref2015": -504.845947016948,
+      "cavity_A3": 209.25,
+      "cavity_gridpts": 1674,
+      "ca_rmsd_to_input": 0.07406281327828705,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/Y120S_r1.pdb"
+    },
+    {
+      "variant": "Y120S",
+      "rep": 2,
+      "score_ref2015": -502.7156473256396,
+      "cavity_A3": 200.375,
+      "cavity_gridpts": 1603,
+      "ca_rmsd_to_input": 0.07620187680873072,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/Y120S_r2.pdb"
+    }
+  ]
+}

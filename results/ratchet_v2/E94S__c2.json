@@ -1,0 +1,29 @@
+{
+  "variant": "E94S",
+  "mutations": [
+    [
+      94,
+      "S"
+    ]
+  ],
+  "chunk": 2,
+  "reps": [
+    {
+      "variant": "E94S",
+      "rep": 2,
+      "total_score": -1421.9058841329834,
+      "dG_separated": -76.95172775145181,
+      "dSASA": 1831.6357757484302,
+      "sc_value": 0.7322255074977875,
+      "gate_rmsd": 0.40327975813381733,
+      "latch_rmsd": 0.876773118890049,
+      "gate_bb_rmsd": 0.3834737139911576,
+      "latch_bb_rmsd": 0.7234989024917391,
+      "gate_latch_min_dist": 3.771660559005297,
+      "gate_latch_com_dist": 10.560867894645012,
+      "lig_gate_min_dist": 3.460195430722049,
+      "w385_aba_min_dist": 5.144593354620109,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v2/pdb/E94S_r2.pdb"
+    }
+  ]
+}

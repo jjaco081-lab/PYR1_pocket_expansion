@@ -1,0 +1,29 @@
+{
+  "variant": "F108Y",
+  "mutations": [
+    [
+      108,
+      "Y"
+    ]
+  ],
+  "chunk": 10,
+  "reps": [
+    {
+      "variant": "F108Y",
+      "rep": 10,
+      "total_score": -1422.049786429254,
+      "dG_separated": -70.14639232497734,
+      "dSASA": 1824.225728305974,
+      "sc_value": 0.732238233089447,
+      "gate_rmsd": 0.3895526340704449,
+      "latch_rmsd": 0.7905769463303429,
+      "gate_bb_rmsd": 0.3697459821953134,
+      "latch_bb_rmsd": 0.5064733497332695,
+      "gate_latch_min_dist": 3.72052852775862,
+      "gate_latch_com_dist": 10.570553007895064,
+      "lig_gate_min_dist": 3.4388557126980306,
+      "w385_aba_min_dist": 5.057731024889431,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v2/pdb/F108Y_r10.pdb"
+    }
+  ]
+}

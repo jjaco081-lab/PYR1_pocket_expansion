@@ -1,0 +1,29 @@
+{
+  "variant": "R79V",
+  "mutations": [
+    [
+      79,
+      "V"
+    ]
+  ],
+  "chunk": 3,
+  "reps": [
+    {
+      "variant": "R79V",
+      "rep": 3,
+      "total_score": -1414.5513346751075,
+      "dG_separated": -75.27642108592659,
+      "dSASA": 1798.6615416861625,
+      "sc_value": 0.7487291097640991,
+      "gate_rmsd": 0.34931225249049114,
+      "latch_rmsd": 0.7629826712783417,
+      "gate_bb_rmsd": 0.33937469154107425,
+      "latch_bb_rmsd": 0.45934063594615304,
+      "gate_latch_min_dist": 3.699231131929456,
+      "gate_latch_com_dist": 10.580819759525669,
+      "lig_gate_min_dist": 3.3576860017775765,
+      "w385_aba_min_dist": 4.97582085487391,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v2/pdb/R79V_r3.pdb"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "variant": "F108S",
+  "mutations": [
+    [
+      108,
+      "S"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "F108S",
+      "rep": 2,
+      "score_closed": -506.07454346804786,
+      "gate_bb_rmsd_closed": 0.07764480825604861,
+      "latch_bb_rmsd_closed": 0.11487341911992154,
+      "gate_to_open_closed": 5.19970845433967,
+      "pdb_closed": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/F108S_closed_r2.pdb",
+      "score_open": -496.82433011385956,
+      "gate_bb_rmsd_open": 0.10089674691063924,
+      "latch_bb_rmsd_open": 0.08757454508844664,
+      "gate_to_closed_open": 5.221190514027518,
+      "pdb_open": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/F108S_open_r2.pdb",
+      "dE_close": -9.250213354188304
+    }
+  ]
+}

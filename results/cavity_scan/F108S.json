@@ -1,0 +1,38 @@
+{
+  "variant": "F108S",
+  "mutations": [
+    [
+      108,
+      "S"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "F108S",
+      "rep": 0,
+      "score_ref2015": -508.21832318291945,
+      "cavity_A3": 218.5,
+      "cavity_gridpts": 1748,
+      "ca_rmsd_to_input": 0.0772256057741099,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/F108S_r0.pdb"
+    },
+    {
+      "variant": "F108S",
+      "rep": 1,
+      "score_ref2015": -507.6949838010012,
+      "cavity_A3": 234.5,
+      "cavity_gridpts": 1876,
+      "ca_rmsd_to_input": 0.0752649504960885,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/F108S_r1.pdb"
+    },
+    {
+      "variant": "F108S",
+      "rep": 2,
+      "score_ref2015": -507.10706916912795,
+      "cavity_A3": 227.625,
+      "cavity_gridpts": 1821,
+      "ca_rmsd_to_input": 0.07662644572634808,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/F108S_r2.pdb"
+    }
+  ]
+}

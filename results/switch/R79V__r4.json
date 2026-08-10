@@ -1,0 +1,26 @@
+{
+  "variant": "R79V",
+  "mutations": [
+    [
+      79,
+      "V"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "R79V",
+      "rep": 4,
+      "score_closed": -498.02200285398817,
+      "gate_bb_rmsd_closed": 0.0785714117637206,
+      "latch_bb_rmsd_closed": 0.10526501071253214,
+      "gate_to_open_closed": 5.201039502168483,
+      "pdb_closed": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/R79V_closed_r4.pdb",
+      "score_open": -492.5958125102543,
+      "gate_bb_rmsd_open": 0.10355859710756486,
+      "latch_bb_rmsd_open": 0.08610700067659047,
+      "gate_to_closed_open": 5.223102567952514,
+      "pdb_open": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/R79V_open_r4.pdb",
+      "dE_close": -5.426190343733879
+    }
+  ]
+}

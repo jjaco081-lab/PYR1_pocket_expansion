@@ -1,0 +1,38 @@
+{
+  "variant": "E94V",
+  "mutations": [
+    [
+      94,
+      "V"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "E94V",
+      "rep": 0,
+      "score_ref2015": -510.61590184359693,
+      "cavity_A3": 177.875,
+      "cavity_gridpts": 1423,
+      "ca_rmsd_to_input": 0.07619680878111929,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/E94V_r0.pdb"
+    },
+    {
+      "variant": "E94V",
+      "rep": 1,
+      "score_ref2015": -508.0870255477184,
+      "cavity_A3": 172.125,
+      "cavity_gridpts": 1377,
+      "ca_rmsd_to_input": 0.07511139743526338,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/E94V_r1.pdb"
+    },
+    {
+      "variant": "E94V",
+      "rep": 2,
+      "score_ref2015": -506.6236009108772,
+      "cavity_A3": 164.25,
+      "cavity_gridpts": 1314,
+      "ca_rmsd_to_input": 0.07729719977079862,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/E94V_r2.pdb"
+    }
+  ]
+}

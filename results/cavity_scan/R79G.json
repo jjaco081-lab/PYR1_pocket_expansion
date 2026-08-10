@@ -1,0 +1,38 @@
+{
+  "variant": "R79G",
+  "mutations": [
+    [
+      79,
+      "G"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "R79G",
+      "rep": 0,
+      "score_ref2015": -500.72889663609817,
+      "cavity_A3": 169.5,
+      "cavity_gridpts": 1356,
+      "ca_rmsd_to_input": 0.07430949688937763,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/R79G_r0.pdb"
+    },
+    {
+      "variant": "R79G",
+      "rep": 1,
+      "score_ref2015": -497.9575050312535,
+      "cavity_A3": 170.0,
+      "cavity_gridpts": 1360,
+      "ca_rmsd_to_input": 0.07373676228394155,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/R79G_r1.pdb"
+    },
+    {
+      "variant": "R79G",
+      "rep": 2,
+      "score_ref2015": -501.1496994796576,
+      "cavity_A3": 175.25,
+      "cavity_gridpts": 1402,
+      "ca_rmsd_to_input": 0.07607032019307522,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/R79G_r2.pdb"
+    }
+  ]
+}

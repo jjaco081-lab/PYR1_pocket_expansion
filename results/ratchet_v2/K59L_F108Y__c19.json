@@ -1,0 +1,33 @@
+{
+  "variant": "K59L_F108Y",
+  "mutations": [
+    [
+      59,
+      "L"
+    ],
+    [
+      108,
+      "Y"
+    ]
+  ],
+  "chunk": 19,
+  "reps": [
+    {
+      "variant": "K59L_F108Y",
+      "rep": 19,
+      "total_score": -1418.115557443041,
+      "dG_separated": -69.6439604169384,
+      "dSASA": 1859.438017460621,
+      "sc_value": 0.7289103269577026,
+      "gate_rmsd": 0.34026910252002923,
+      "latch_rmsd": 0.7870126886012225,
+      "gate_bb_rmsd": 0.34040576441028064,
+      "latch_bb_rmsd": 0.48414296625634234,
+      "gate_latch_min_dist": 3.735613522561786,
+      "gate_latch_com_dist": 10.577187293251809,
+      "lig_gate_min_dist": 3.36343014570155,
+      "w385_aba_min_dist": 5.103263888231196,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v2/pdb/K59L_F108Y_r19.pdb"
+    }
+  ]
+}

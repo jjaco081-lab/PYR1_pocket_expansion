@@ -1,0 +1,6 @@
+source leaprc.gaff2
+loadamberparams A8S.frcmod
+A8S = loadmol2 A8S.mol2
+check A8S
+saveoff A8S A8S.lib
+quit

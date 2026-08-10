@@ -1,0 +1,31 @@
+{
+  "variant": "K59D",
+  "mutations": [
+    [
+      59,
+      "D"
+    ]
+  ],
+  "chunk": 5,
+  "reps": [
+    {
+      "variant": "K59D",
+      "rep": 5,
+      "total_score": -1428.3323583488816,
+      "dG_separated": -70.3128316253177,
+      "dSASA": 1800.6483702075009,
+      "sc_value": 0.7514394223690033,
+      "gate_rmsd": 0.39044418697283256,
+      "latch_rmsd": 0.9948105026357003,
+      "gate_bb_rmsd": 0.3815495222016861,
+      "latch_bb_rmsd": 0.8285609458438608,
+      "gate_latch_min_dist": 3.873179414468002,
+      "gate_latch_com_dist": 10.583337475498842,
+      "lig_gate_min_dist": 3.448831076212274,
+      "iloop_bb_rmsd": 0.45956145403229065,
+      "iloop_hab1_min_dist": 2.453962074972366,
+      "w385_aba_min_dist": 5.136648636430224,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet_v3/pdb/K59D_r5.pdb"
+    }
+  ]
+}

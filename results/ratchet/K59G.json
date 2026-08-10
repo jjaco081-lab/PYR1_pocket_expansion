@@ -1,0 +1,47 @@
+{
+  "variant": "K59G",
+  "mutations": [
+    [
+      59,
+      "G"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "K59G",
+      "rep": 0,
+      "total_score": -1350.1842452352603,
+      "dG_separated": -75.99465769058486,
+      "dSASA": 1817.5745034801712,
+      "sc_value": 0.737969160079956,
+      "gate_rmsd": 0.18296992759143013,
+      "latch_rmsd": 0.6638016013398497,
+      "w385_aba_min_dist": 4.625365893131666,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/K59G_r0.pdb"
+    },
+    {
+      "variant": "K59G",
+      "rep": 1,
+      "total_score": -1348.5489398520072,
+      "dG_separated": -72.44021611932891,
+      "dSASA": 1791.5160163451387,
+      "sc_value": 0.7488700151443481,
+      "gate_rmsd": 0.1806674564314459,
+      "latch_rmsd": 1.2276453279317556,
+      "w385_aba_min_dist": 4.621221705179979,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/K59G_r1.pdb"
+    },
+    {
+      "variant": "K59G",
+      "rep": 2,
+      "total_score": -1354.440653152411,
+      "dG_separated": -69.40488980733949,
+      "dSASA": 1801.3372245136966,
+      "sc_value": 0.7492703497409821,
+      "gate_rmsd": 0.18223073475381785,
+      "latch_rmsd": 1.243457713775556,
+      "w385_aba_min_dist": 4.658697072735822,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ratchet/pdb/K59G_r2.pdb"
+    }
+  ]
+}

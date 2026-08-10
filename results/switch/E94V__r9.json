@@ -1,0 +1,26 @@
+{
+  "variant": "E94V",
+  "mutations": [
+    [
+      94,
+      "V"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "E94V",
+      "rep": 9,
+      "score_closed": -501.8470260375294,
+      "gate_bb_rmsd_closed": 0.07834753207435714,
+      "latch_bb_rmsd_closed": 0.10722445823414092,
+      "gate_to_open_closed": 5.199908142810406,
+      "pdb_closed": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/E94V_closed_r9.pdb",
+      "score_open": -502.28887053716113,
+      "gate_bb_rmsd_open": 0.1027106016237745,
+      "latch_bb_rmsd_open": 0.086415647207005,
+      "gate_to_closed_open": 5.220904005107458,
+      "pdb_open": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/E94V_open_r9.pdb",
+      "dE_close": 0.44184449963171346
+    }
+  ]
+}

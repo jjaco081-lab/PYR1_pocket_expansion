@@ -1,0 +1,81 @@
+======================================================================================
+FULL CROSS-SECTIONAL PROFILE of the merged (quad) cavity along its span
+======================================================================================
+volume 391.8 A^3,  span 18.6 A
+
+   t (A)   radius  n pts   profile
+    -0.2     1.22     10   ########
+     0.4     4.25     14   #############################
+     0.9     4.03     42   ############################
+     1.5     4.52     82   ###############################
+     2.1     4.50     94   ###############################
+     2.7     5.52     96   ######################################
+     3.2     5.83    101   ########################################
+     3.8     4.59    101   ################################
+     4.4     4.91    118   ##################################
+     5.0     4.60    127   ################################
+     5.6     6.17    145   ###########################################
+     6.1     6.25    160   ###########################################
+     6.7     6.14    155   ##########################################
+     7.3     5.13    159   ###################################
+     7.9     4.58    162   ################################
+     8.5     5.26    143   ####################################
+     9.0     5.02    129   ###################################
+     9.6     5.15    135   ####################################
+    10.2     5.46    132   ######################################
+    10.8     6.03    133   ##########################################
+    11.3     5.05    114   ###################################
+    11.9     5.43    114   ######################################
+    12.5     6.09    107   ##########################################
+    13.1     5.75    101   ########################################
+    13.7     5.41    102   #####################################
+    14.2     5.07     91   ###################################
+    14.8     5.01     95   ###################################
+    15.4     5.29     73   #####################################
+    16.0     5.61     43   #######################################
+    16.5     2.65     16   ##################
+    17.1     2.54     14   #################
+    17.7     1.91      7   #############
+    18.3     1.44      4   ##########
+    18.9     1.82      8   ############
+    19.4     2.44      4   #################
+
+lobe centre A at t=+7.9 A (r=4.58, 162 pts)
+lobe centre B at t=+14.8 A (r=5.01, 95 pts)
+INTER-LOBE NECK at t=+9.0 A, radius 5.02 A
+
+residues lining the INTER-LOBE neck:
+   LYS59    weight 128  already truncated in quad
+   PHE108   weight 124  already truncated in quad
+   GLU94    weight 101  already truncated in quad
+   ARG79    weight 91   already truncated in quad
+   ILE110   weight 69   FREE -- widening target
+   ASN167   weight 61   FREE -- widening target
+   TYR120   weight 59   FREE -- widening target
+   ILE62    weight 55   FREE -- widening target
+   SER92    weight 53   FREE -- widening target
+   VAL163   weight 47   FREE -- widening target
+   VAL81    weight 45   FREE -- widening target
+   SER122   weight 33   FREE -- widening target
+
+======================================================================================
+CAN THE NECK BE WIDENED WITHOUT TOUCHING THE READOUT?
+======================================================================================
+variant                              vol A3   span A   neck r   gap to C40
+quad (reference)                      391.8     18.6     5.02     +9.2 A
+quad + neck(110,167,120,62)           513.9     16.9     4.48    +10.9 A
+quad + Y120A/E141A                    480.1     17.9     6.21     +9.9 A
+quad + Y120A/E141A + neck             550.1     17.0     5.69    +10.8 A
+
+Reference lengths (script 17, MMFF geometries):
+   ABA                     11.4 A
+   retinoic acid           14.5 A
+   crocetin                20.7 A
+   beta-apo-8'-carotenal   24.0 A
+   zeaxanthin (C40)        27.8 A, half-width 3.35 A
+   beta-carotene (C40)     27.3 A
+
+A C40 needs BOTH span >= ~28 A and neck radius >= ~3.4 A along its whole length.
+Note the span metric requires 1.6 A clearance the whole way, so it is a lower
+bound on what a snug ligand could thread; but the neck radius is the hard
+constraint -- a polyene cannot squeeze through a hole narrower than itself.

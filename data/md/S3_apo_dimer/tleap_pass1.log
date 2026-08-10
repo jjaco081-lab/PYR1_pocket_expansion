@@ -1,0 +1,168 @@
+$ tleap -f tleap.in
+
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/prep to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd to search path.
+-f: Source tleap.in.
+
+Welcome to LEaP!
+(no leaprc in search path)
+Sourcing: ./tleap.in
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/parm19.dat
+Reading title:
+PARM99 + frcmod.ff99SB + frcmod.parmbsc0 + OL3 for RNA + ff19SB
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ff19SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff19SB AA-specific backbone CMAPs for protein 07/25/2019
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/amino19.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminoct12.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminont12.lib
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc done
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/atomic_ions.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/solvents.lib
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.opc
+Reading force field modification type file (frcmod)
+Reading title:
+Parameters for OPC water (JPCL, 2014, 5 (21), pp 3863-3871)
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ionslm_126_opc
+Reading force field modification type file (frcmod)
+Reading title:
+Li/Merz ion parameters of atomic ions for the OPC water model (12-6 set)
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2 done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/gaff2.dat
+Reading title:
+AMBER General Force Field for organic molecules (Version 2.11, May 2016)
+Loading PDB file: ./protein.pdb
+  Added missing heavy atom: .R<CGLY 183>.A<OXT 8>
+  Added missing heavy atom: .R<CASP 366>.A<OXT 13>
+  total atoms in file: 2924
+  Leap added 2875 missing atoms according to residue templates:
+       2 Heavy
+       2873 H / lone pairs
+Scaling up box by a factor of 1.368410 to meet diagonal cut criterion
+  Solute vdw bounding box:              51.487 68.684 59.331
+  Total bounding box for atom centers:  101.526 101.526 101.526
+      (box expansion for 'iso' is  32.6%)
+  Solvent unit box:                     18.865 18.478 19.006
+  Volume: 538860.068 A^3 (oct)
+  Total mass 291470.130 amu,  Density 0.898 g/cc
+  Added 13866 residues.
+11 Na+ ions required to neutralize.
+Adding 11 counter ions to "sys" using 1A grid
+Grid extends from solute vdw + 3.36  to  9.34
+Resolution:      1.00 Angstrom.
+Solvent present: replacing closest with ion
+	 when steric overlaps occur
+Calculating grid charges
+(Replacing solvent molecule)
+Placed Na+ in sys at (-9.05, -21.99, -22.82).
+(Replacing solvent molecule)
+Placed Na+ in sys at (-18.97, -22.36, 11.86).
+(Replacing solvent molecule)
+Placed Na+ in sys at (27.63, 3.78, 5.78).
+(Replacing solvent molecule)
+Placed Na+ in sys at (-19.07, -15.31, 24.82).
+(Replacing solvent molecule)
+Placed Na+ in sys at (-16.30, -6.33, -21.29).
+(Replacing solvent molecule)
+Placed Na+ in sys at (-11.76, -24.64, 6.49).
+(Replacing solvent molecule)
+Placed Na+ in sys at (16.69, -31.69, -9.58).
+(Replacing solvent molecule)
+Placed Na+ in sys at (-15.48, -22.52, -18.18).
+(Replacing solvent molecule)
+Placed Na+ in sys at (18.07, 9.21, -22.50).
+(Replacing solvent molecule)
+Placed Na+ in sys at (-14.88, -27.85, 21.27).
+(Replacing solvent molecule)
+Placed Na+ in sys at (-5.02, 31.51, -5.56).
+
+Done adding ions.
+ 0.000000 0 1 0
+0 Cl- ion required to neutralize.
+Adding 0 counter ions to "sys" using 1A grid
+Total unperturbed charge:   0.000000
+Total perturbed charge:     0.000000
+Checking 'sys'....
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.342 angstroms between nonbonded atoms HB3 and HG3
+-------  .R<ASN 90>.A<HB3 7> and .R<GLU 114>.A<HG3 10>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.121 angstroms between nonbonded atoms HE2 and HZ3
+-------  .R<HIE 216>.A<HE2 13> and .R<LYS 347>.A<HZ3 20>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.395 angstroms between nonbonded atoms H and H
+-------  .R<ASN 252>.A<H 2> and .R<PHE 253>.A<H 2>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.295 angstroms between nonbonded atoms HB3 and HB3
+-------  .R<ALA 271>.A<HB3 8> and .R<HIE 297>.A<HB3 7>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.303 angstroms between nonbonded atoms HG22 and HE2
+-------  .R<ILE 292>.A<HG22 9> and .R<HIE 297>.A<HE2 13>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.249 angstroms between nonbonded atoms HD2 and H
+-------  .R<HIE 297>.A<HD2 15> and .R<LEU 299>.A<H 2>
+Checking parameters for unit 'sys'.
+Checking for bond parameters.
+Checking for angle parameters.
+check:  Warnings: 41571
+Unit is OK.
+Checking Unit.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Note.
+Ignoring the warnings from Unit Checking.
+
+Building topology.
+Building atom parameters.
+Building bond parameters.
+Building angle parameters.
+Building proper torsion parameters.
+Building improper torsion parameters.
+ total 1165 improper torsions applied
+Building H-Bond parameters.
+Incorporating Non-Bonded adjustments.
+Not Marking per-residue atom chain types.
+Marking per-residue atom chain types.
+  (Residues lacking connect0/connect1 - 
+   these don't have chain types marked:
+
+	res	total affected
+
+	CASP	1
+	CGLY	1
+	NMET	1
+	NPRO	1
+  )
+ (no restraints)
+Writing pdb file: system_solvated.pdb
+   printing CRYST1 record to PDB file with box info
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NMET -> MET
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CGLY -> GLY
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NPRO -> PRO
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CASP -> ASP
+	Quit
+
+Exiting LEaP: Errors = 0; Warnings = 10; Notes = 1.
+

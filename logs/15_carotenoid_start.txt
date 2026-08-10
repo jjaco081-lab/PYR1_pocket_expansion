@@ -1,0 +1,48 @@
+==========================================================================
+LIGAND GEOMETRY -- what has to fit
+==========================================================================
+  ABA (A8S)                   19 heavy atoms   end-to-end  10.45 A   Rg  3.29 A
+  zeaxanthin (ZEX, modelled)  20 heavy atoms   end-to-end  14.06 A   Rg  4.38 A
+
+  !! ZEAXANTHIN IS ONLY HALF-MODELLED IN 7ZVR.
+     Zeaxanthin is C40H56O2 = 42 heavy atoms, but only 20 are deposited
+     (atoms C1-C20 plus O3, i.e. one beta-ionone ring and the polyene as far
+     as C14/C20), at occupancies of 0.60-0.65. The distal half (C21-C40 and the
+     second ring) is disordered and unmodelled.
+
+     Consequences, which must not be glossed over:
+       * the 14.06 A "end-to-end" above is for the ordered HALF; intact
+         zeaxanthin is roughly 30 A long.
+       * any cavity volume seeded on the modelled fragment UNDER-reports the
+         true binding channel, because the disordered half's channel is not
+         defined by the coordinates and, being disordered, is likely solvent
+         exposed -- which this project's buriedness criterion (0.88) excludes
+         by construction.
+     Treat the BmCBP numbers below as a LOWER BOUND and as qualitative
+     evidence about pocket SHAPE, not as a calibrated volume.
+
+==========================================================================
+CAVITY VOLUMES on this project's grid criterion
+==========================================================================
+  PYR1 (3QN1 chain A), seeded at ABA           166.4 A^3
+  BmCBP holo (7ZVR), seeded at zeaxanthin      238.5 A^3
+  BmCBP apo  (7ZTQ), largest cavity            367.4 A^3
+
+  ratio BmCBP holo : PYR1 = 1.4x
+  PYR1 expanded quad target (README section 3) was 375.5 A^3 = 2.3x WT
+
+==========================================================================
+INTERPRETATION
+==========================================================================
+  ABA is an APOcarotenoid (NCED cleavage product of violaxanthin/neoxanthin),
+  so PYR1 already binds a carotenoid FRAGMENT. BmCBP shows the same START fold
+  binding an INTACT C40 xanthophyll. An ancestral carotenoid-binding member of
+  this fold is therefore not speculative -- the fold demonstrably supports it.
+
+  Caveat for ligand selection: the carotenoid pocket is not merely bigger, it is
+  a long hydrophobic TUNNEL matched to an extended polyene. PYR1's cavity is
+  globular. Expanding PYR1 toward full C40 carotenoids would require elongation,
+  not just volume, and would almost certainly break the gate/latch closure that
+  the HAB1 readout depends on. The realistic targets are mid-size apocarotenoids
+  and comparably sized rigid hydrophobes -- see the ligand panel note in the
+  README.

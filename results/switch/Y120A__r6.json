@@ -1,0 +1,26 @@
+{
+  "variant": "Y120A",
+  "mutations": [
+    [
+      120,
+      "A"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "Y120A",
+      "rep": 6,
+      "score_closed": -499.33927842944365,
+      "gate_bb_rmsd_closed": 0.07710438008024165,
+      "latch_bb_rmsd_closed": 0.10582116214630315,
+      "gate_to_open_closed": 5.19939685136846,
+      "pdb_closed": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/Y120A_closed_r6.pdb",
+      "score_open": -494.9969428314069,
+      "gate_bb_rmsd_open": 0.10050349145332682,
+      "latch_bb_rmsd_open": 0.08864550487115914,
+      "gate_to_closed_open": 5.221524898572358,
+      "pdb_open": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/switch/pdb/Y120A_open_r6.pdb",
+      "dE_close": -4.342335598036755
+    }
+  ]
+}

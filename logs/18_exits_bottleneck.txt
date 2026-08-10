@@ -1,0 +1,30 @@
+====================================================================================
+Q1. MOUTHS OF THE EXPANDED CAVITY -- where would a protruding tail exit?
+====================================================================================
+expanded cavity (K59A/F108A/R79A/E94A): 3129 pts = 391.1 A^3
+mouth points (free, buriedness<0.75, within 1.5 A of cavity): 3
+
+mouth     pts   vol A3   ->HAB1   ->W385   ->gate  ->latch   verdict
+
+====================================================================================
+Q2. THE BOTTLENECK -- which residues pinch the merged channel?
+====================================================================================
+span = 17.9 A
+
+narrowest three slices along the span axis:
+  radius 1.97 A at t=+16.8 A -- lined by: PRO88, ALA89, HIS115, LEU117, PHE159, ARG116, LEU87
+  radius 2.09 A at t=+18.1 A -- lined by: PRO88, HIS115, ARG116, LEU117, PHE159, ALA89
+  radius 2.64 A at t=+15.5 A -- lined by: ALA89, PHE159, HIS115, LEU117, PRO88, VAL83, LEU87, ARG116
+
+BOTTLENECK RESIDUES (union, ranked):
+   PHE159   weight 64
+   HIS115   weight 62
+   ALA89    weight 61
+   LEU117   weight 55
+   PRO88    weight 51
+   ARG116   weight 33
+   LEU87    weight 21
+   VAL83    weight 20
+
+These are the positions to target for WIDENING, as distinct from the
+volume-opening positions already in the panel.

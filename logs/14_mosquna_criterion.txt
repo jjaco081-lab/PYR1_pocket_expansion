@@ -1,0 +1,53 @@
+==========================================================================
+Mosquna/Beltran coordinate set  (3K90.cif, PYR1 = chain A)
+==========================================================================
+
+ordered waters within 3.5 A of ABA: 5
+  (Mosquna refer to FOUR such waters)
+    HOH 228   2.58 A from ABA
+    HOH 230   2.60 A from ABA
+    HOH 199   2.63 A from ABA
+    HOH 202   2.75 A from ABA
+    HOH 259   3.26 A from ABA
+
+R79 -> ABA minimum heavy-atom distance: 5.89 A
+  condition (a), within 5.0 A of ABA : FAIL
+  condition (b), within 5.0 A of an ABA-contacting water: FAIL
+
+residues satisfying (b) but NOT (a): [58, 116, 122, 124]
+  of those, present in the Mosquna 39: [116, 122]
+  R79 among them: False
+
+==========================================================================
+ternary complex used elsewhere in this project  (3QN1.cif, PYR1 = chain A)
+==========================================================================
+
+ordered waters within 3.5 A of ABA: 5
+  (Mosquna refer to FOUR such waters)
+    HOH 205   2.65 A from ABA
+    HOH 266   2.67 A from ABA
+    HOH 197   2.72 A from ABA
+    HOH 234   2.77 A from ABA
+    HOH 293   2.92 A from ABA
+
+R79 -> ABA minimum heavy-atom distance: 5.81 A
+  condition (a), within 5.0 A of ABA : FAIL
+  condition (b), within 5.0 A of an ABA-contacting water: FAIL
+
+residues satisfying (b) but NOT (a): [58, 62, 81, 116]
+  of those, present in the Mosquna 39: [62, 81, 116]
+  R79 among them: False
+
+==========================================================================
+VERDICT
+==========================================================================
+  R79-ABA distance: 5.89 A (3K90), 5.81 A (3QN1) -- both > 5.0 A,
+  so condition (a) excludes it in either crystal form.
+  R79 also contacts NO ABA-contacting water, so condition (b) does
+  not rescue it either.
+
+  => R79 was legitimately excluded by Mosquna's stated criterion.
+     The exclusion traces entirely to the hard 5 A ligand-distance
+     cutoff -- the same ligand-centric metric that Beltran's more
+     permissive 6 A + CA-CB rule DID select (script 13), only for
+     R79 to be removed by hand as 'second-shell'.

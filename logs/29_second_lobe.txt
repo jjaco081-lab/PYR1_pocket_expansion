@@ -1,0 +1,78 @@
+==============================================================================
+WT CAVITY COMPONENTS (grid seeded at the ABA centroid)
+==============================================================================
+  component 10:   167.0 A^3   min dist to K59/R79/E94/F108 =  2.93 A   ABA-seeded (lobe 1)
+  component 24:    39.5 A^3   min dist to K59/R79/E94/F108 =  2.95 A   
+
+SATELLITE LOBE = component 24: 39.5 A^3, centre [ 9.1 24.6 41.5], 2.95 A from the wall cluster
+
+==============================================================================
+Q1. SECOND-LOBE ACCESS, per relaxed variant (rep 0)
+==============================================================================
+variant                      cavity    lobe2   frac  merged
+K59A_F108A_R79A_E94A          410.2     59.9   0.15     YES
+F108A_R79A_E94A               325.5     56.4   0.17     YES
+F108A                         251.8     55.0   0.22     YES
+F108A_R79A                    273.8     54.9   0.20     YES
+K59A_F108A                    320.8     52.4   0.16     YES
+F108V                         226.8     51.0   0.22     YES
+F108S                         237.0     50.0   0.21     YES
+F108G                         263.1     49.5   0.19     YES
+F108L                         221.6     49.5   0.22     YES
+K59L                          224.4     42.5   0.19     YES
+K59L_F108Y                    209.9     42.4   0.20     YES
+R79A_E94A                     265.8     41.9   0.16     YES
+E141G                         236.4     41.2   0.17     YES
+K59G                          263.9     40.9   0.15     YES
+E141S                         226.5     40.8   0.18     YES
+E141L                         202.5     39.8   0.20     YES
+K59D                          228.5     38.1   0.17     YES
+WT                            178.0     38.1   0.21     YES
+E94S                          192.8     37.9   0.20     YES
+Y120G                         237.6     37.4   0.16     YES
+K59A                          249.9     37.0   0.15     YES
+Y120S                         222.6     37.0   0.17     YES
+K59V                          234.5     36.8   0.16     YES
+E141A                         224.6     36.5   0.16     YES
+E141V                         210.1     33.5   0.16     YES
+E94G                          192.8     31.9   0.17     YES
+F108Y                         165.2     31.8   0.19     YES
+E94A                          190.5     30.8   0.16     YES
+E94V                          184.2     30.6   0.17     YES
+K59S                          246.2     30.6   0.12     YES
+E141W                         151.5     30.4   0.20     YES
+Y120V                         222.8     30.2   0.14     YES
+Y120A                         234.6     30.1   0.13     YES
+Y120L                         211.9     26.1   0.12       -
+E94L                          173.1     25.1   0.15     YES
+K59L_F108Y_E141W              158.9      0.0   0.00       -
+R79A                          170.5      0.0   0.00       -
+R79G                          170.9      0.0   0.00       -
+R79L                          173.0      0.0   0.00       -
+R79S                          171.1      0.0   0.00       -
+R79V                          176.8      0.0   0.00       -
+
+wrote /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/29_second_lobe_access.csv
+WT reference: cavity 178.0, lobe2 38.1, merged=True
+
+==============================================================================
+Q2. MAXIMALLY OPEN POCKET (rigid truncation, gate/latch never touched)
+==============================================================================
+truncation set                           n   cavity    lobe2   frac  merged
+WT                                       0    167.0      0.0   0.00       -
+quad K59/F108/R79/E94                    4    391.1     61.0   0.16     YES
+quad + Y120 + E141                       6    478.8     61.4   0.13     YES
+Tian pocket set (no gate/latch)         15    510.1     54.5   0.11     YES
+Tian set, sealing kept                  14    545.6     54.5   0.10     YES
+Tian set + R79 (never sampled)          15    602.6     61.4   0.10     YES
+Tian set + R79/E94 + lobe2 lining       19    608.0     57.6   0.09     YES
+
+READING THIS
+  lobe2 / frac  = how much of the cavity lies in the WT satellite lobe. This is
+                  the quantity that decides whether NEW lining residues are
+                  recruited. A variant with a big cavity and frac ~ 0 has only
+                  hollowed the existing chamber and adds nothing to the library.
+  merged        = the satellite lobe centre is inside the ABA-connected cavity,
+                  i.e. one continuous pocket rather than two voids.
+  Q2 rows are RIGID truncations (upper bounds; no repacking), for choosing a
+  design starting point -- not predictions of what survives relax.

@@ -1,0 +1,69 @@
+==============================================================================
+crystal WT: satellite lobe = component 24, 39.5 A^3, 2.95 A from the wall side chains
+wall plane through [ 7.  26.3 37.2], normal [0.68 0.18 0.71] (ABA centroid -> satellite centroid)
+sanity: 100% of the satellite lobe is beyond the plane; 0% of the ABA chamber is
+
+==============================================================================
+DIAGNOSTIC -- does FastRelax alone breach the wall in WT?
+==============================================================================
+  WT crystal : 38 components, largest [167.   39.5   1.1   0.6] A^3; ABA component =   167.0 A^3; reaches satellite centroid: no
+  WT relaxed : 46 components, largest [178.    1.9   1.6   1. ] A^3; ABA component =   178.0 A^3; reaches satellite centroid: YES
+  -> if relaxed WT reaches the centroid while crystal WT does not, cause
+     (a) holds: side-chain relaxation alone opens the wall, and the
+     'sealed satellite lobe' is a property of the crystal, not the protein.
+
+==============================================================================
+PER-VARIANT, dilation-free (relaxed rep 0)
+==============================================================================
+WT baseline: cavity 178.0, beyond-wall 54.4, strict-overlap 31.1
+
+variant                      cavity    dCav   beyond  dBeyond  strict  reach
+K59A_F108A_R79A_E94A          410.2  +232.2    138.2    +83.9    30.4    YES
+F108A_R79A_E94A               325.5  +147.5    102.0    +47.6    32.5    YES
+E141G                         236.4   +58.4     93.2    +38.9    32.0    YES
+K59A_F108A                    320.8  +142.8     89.6    +35.2    31.8    YES
+F108A                         251.8   +73.8     89.5    +35.1    35.5    YES
+F108A_R79A                    273.8   +95.8     87.2    +32.9    32.2    YES
+E141A                         224.6   +46.6     85.2    +30.9    25.5    YES
+E141S                         226.5   +48.5     82.5    +28.1    31.4    YES
+F108S                         237.0   +59.0     81.8    +27.4    29.6    YES
+F108V                         226.8   +48.8     77.8    +23.4    33.4    YES
+E141V                         210.1   +32.1     76.1    +21.8    24.6    YES
+F108L                         221.6   +43.6     74.0    +19.6    33.4    YES
+F108G                         263.1   +85.1     73.2    +18.9    31.8    YES
+R79A_E94A                     265.8   +87.8     66.2    +11.9    30.0    YES
+E141L                         202.5   +24.5     62.8     +8.4    31.6    YES
+K59G                          263.9   +85.9     59.0     +4.6    32.6    YES
+E94S                          192.8   +14.8     55.1     +0.8    30.8    YES
+K59D                          228.5   +50.5     55.1     +0.8    28.8    YES
+Y120G                         237.6   +59.6     54.9     +0.5    29.8    YES
+Y120S                         222.6   +44.6     54.6     +0.2    29.5    YES
+WT                            178.0    +0.0     54.4     +0.0    31.1    YES
+K59L                          224.4   +46.4     53.6     -0.8    33.0    YES
+K59A                          249.9   +71.9     53.1     -1.2    30.2    YES
+K59L_F108Y                    209.9   +31.9     52.9     -1.5    32.5    YES
+E94G                          192.8   +14.8     52.1     -2.2    23.4    YES
+F108Y                         165.2   -12.8     52.0     -2.4    23.9    YES
+K59V                          234.5   +56.5     51.5     -2.9    27.9    YES
+K59S                          246.2   +68.2     51.2     -3.1    23.1    YES
+E94A                          190.5   +12.5     51.0     -3.4    24.9    YES
+Y120A                         234.6   +56.6     51.0     -3.4    21.9    YES
+Y120V                         222.8   +44.8     50.6     -3.8    22.1    YES
+E94V                          184.2    +6.2     46.0     -8.4    24.4    YES
+E94L                          173.1    -4.9     44.4    -10.0    18.1    YES
+Y120L                         211.9   +33.9     41.9    -12.5    20.9      -
+E141W                         151.5   -26.5     40.5    -13.9    24.9    YES
+K59L_F108Y_E141W              158.9   -19.1      0.0    -54.4     0.0      -
+R79A                          170.5    -7.5      0.0    -54.4     0.0      -
+R79G                          170.9    -7.1      0.0    -54.4     0.0      -
+R79L                          173.0    -5.0      0.0    -54.4     0.0      -
+R79S                          171.1    -6.9      0.0    -54.4     0.0      -
+R79V                          176.8    -1.2      0.0    -54.4     0.0      -
+
+wrote /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/34_second_lobe_fixed.csv
+
+d_beyond_wall is the metric to use. It is free of mask dilation and of grid
+connectivity, and it answers the design question directly: how much MORE pocket
+lies past the K59/R79/E94/F108 wall than in WT. Ranking on it also re-tests the
+open question from script 29 -- whether F108 or the R79/E94 pair is the real
+gatekeeper to the second lobe.

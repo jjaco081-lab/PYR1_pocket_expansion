@@ -1,0 +1,99 @@
+==============================================================================
+LIBRARY DESIGN -- Tian et al. Dataset S3 (sd04): allowed substitutions
+==============================================================================
+
+libraries: Coumarin, DSM-Hao, PFAS, TNTv1, TNTv2, TSM
+positions randomised across all libraries (18): [59, 81, 83, 87, 89, 92, 94, 108, 110, 117, 120, 122, 141, 159, 160, 163, 164, 167]
+
+--- OUR SIX WALL POSITIONS ---
+
+  PYR1 K59:
+     Coumarin WT=K  allowed(2): AQ
+            volume-opening subs present: AQ (WT K=169 A^3)
+     DSM-Hao WT=K  allowed(17): ADEFGHILMNQRSTVWY
+            volume-opening subs present: ADEGNQSTV (WT K=169 A^3)
+     PFAS   WT=K  allowed(3): LMN
+            volume-opening subs present: N (WT K=169 A^3)
+     TNTv1  WT=K  allowed(4): DMNR
+            volume-opening subs present: DN (WT K=169 A^3)
+     TNTv2  WT=K  allowed(5): DNMRT
+            volume-opening subs present: DNT (WT K=169 A^3)
+     TSM    WT=K  allowed(11): LAVDNSRMQTE
+            volume-opening subs present: AVDNSQTE (WT K=169 A^3)
+
+  PYR1 R79:
+     NOT randomised in any Tian library  <-- unexplored
+
+  PYR1 E94:
+     DSM-Hao WT=E  allowed(17): ADFGHIKLMNQRSTVWY
+            volume-opening subs present: ADGNST (WT E=138 A^3)
+     PFAS   WT=E  allowed(5): ADGST
+            volume-opening subs present: ADGST (WT E=138 A^3)
+     TNTv1  WT=E  allowed(1): Q
+            NO volume-opening substitution (nothing < 118 A^3)
+     TSM    WT=E  allowed(4): GQMD
+            volume-opening subs present: GD (WT E=138 A^3)
+
+  PYR1 F108:
+     Coumarin WT=F  allowed(1): W
+            NO volume-opening substitution (nothing < 170 A^3)
+     DSM-Hao WT=F  allowed(17): ADEGHIKLMNQRSTVWY
+            volume-opening subs present: ADEGHIKLMNQSTV (WT F=190 A^3)
+     TSM    WT=F  allowed(9): WQKYSAMNL
+            volume-opening subs present: QKSAMNL (WT F=190 A^3)
+
+  PYR1 Y120:
+     Coumarin WT=Y  allowed(2): AM
+            volume-opening subs present: AM (WT Y=194 A^3)
+     DSM-Hao WT=Y  allowed(17): ADEFGHIKLMNQRSTVW
+            volume-opening subs present: ADEGHIKLMNQSTV (WT Y=194 A^3)
+     PFAS   WT=Y  allowed(8): AGILMNST
+            volume-opening subs present: AGILMNST (WT Y=194 A^3)
+     TNTv1  WT=Y  allowed(2): FW
+            NO volume-opening substitution (nothing < 174 A^3)
+     TNTv2  WT=Y  allowed(1): F
+            NO volume-opening substitution (nothing < 174 A^3)
+     TSM    WT=Y  allowed(10): WHAVTMSGFL
+            volume-opening subs present: HAVTMSGL (WT Y=194 A^3)
+
+  PYR1 E141:
+     DSM-Hao WT=E  allowed(17): ADFGHIKLMNQRSTVWY
+            volume-opening subs present: ADGNST (WT E=138 A^3)
+     PFAS   WT=E  allowed(3): GKQ
+            volume-opening subs present: G (WT E=138 A^3)
+     TNTv1  WT=E  allowed(2): IT
+            volume-opening subs present: T (WT E=138 A^3)
+     TNTv2  WT=E  allowed(2): IT
+            volume-opening subs present: T (WT E=138 A^3)
+     TSM    WT=E  allowed(4): IVTF
+            volume-opening subs present: T (WT E=138 A^3)
+
+--- positions Tian randomised that we did NOT pick ---
+    [81, 83, 87, 89, 92, 110, 117, 122, 159, 160, 163, 164, 167]
+--- our positions Tian never randomised ---
+    [79]
+
+==============================================================================
+OBSERVED SUBSTITUTIONS in characterised hits (sd07 / sd08 / sd09)
+==============================================================================
+  pnas.2519924122.sd07(1).xlsx: 19 position columns
+  pnas.2519924122.sd08.xlsx: 14 position columns
+  pnas.2519924122.sd09.xlsx: 20 position columns
+
+419 characterised clones total
+
+--- what was actually RECOVERED at our six positions ---
+  K59: 262 clones -- N:87, M:79, Q:31, D:19, A:18, L:14, R:9, T:4, K:1
+        volume-opening recovered: ADNQT
+  R79: never mutated in any characterised hit
+  E94: 189 clones -- G:66, D:55, A:39, S:22, T:4, L:1, N:1, E:1
+        volume-opening recovered: ADGNST
+  F108: 42 clones -- W:39, Q:1, L:1, H:1
+        volume-opening recovered: HLQ
+  Y120: 205 clones -- L:60, M:57, A:27, S:20, T:17, F:7, G:4, N:4, I:3, V:2, E:1, Q:1, D:1, K:1
+        volume-opening recovered: ADEGIKLMNQSTV
+  E141: 130 clones -- Q:44, G:31, F:15, K:15, W:12, T:4, I:3, Y:1, S:1, H:1, L:1, D:1, A:1
+        volume-opening recovered: ADGST
+
+--- all positions seen mutated in characterised hits ---
+    [59, 65, 71, 74, 81, 83, 87, 89, 92, 94, 108, 109, 110, 117, 120, 122, 124, 128, 134, 141, 159, 160, 163, 164, 167, 178, 184]

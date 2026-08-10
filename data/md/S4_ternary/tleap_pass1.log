@@ -1,0 +1,308 @@
+$ tleap -f tleap.in
+
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/prep to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd to search path.
+-f: Source tleap.in.
+
+Welcome to LEaP!
+(no leaprc in search path)
+Sourcing: ./tleap.in
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/parm19.dat
+Reading title:
+PARM99 + frcmod.ff99SB + frcmod.parmbsc0 + OL3 for RNA + ff19SB
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ff19SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff19SB AA-specific backbone CMAPs for protein 07/25/2019
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/amino19.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminoct12.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminont12.lib
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc done
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/atomic_ions.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/solvents.lib
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.opc
+Reading force field modification type file (frcmod)
+Reading title:
+Parameters for OPC water (JPCL, 2014, 5 (21), pp 3863-3871)
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ionslm_126_opc
+Reading force field modification type file (frcmod)
+Reading title:
+Li/Merz ion parameters of atomic ions for the OPC water model (12-6 set)
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2 done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/gaff2.dat
+Reading title:
+AMBER General Force Field for organic molecules (Version 2.11, May 2016)
+Loading parameters: ../A8S.frcmod
+Reading force field modification type file (frcmod)
+Reading title:
+Remark line goes here
+Loading library: ../A8S.lib
+Loading Mol2 file: ../A8S.mol2
+Reading MOLECULE named A8S
+Loading PDB file: ./protein.pdb
+  Added missing heavy atom: .R<GLU 70>.A<CG 8>
+  Added missing heavy atom: .R<GLU 70>.A<CD 11>
+  Added missing heavy atom: .R<GLU 70>.A<OE1 12>
+  Added missing heavy atom: .R<GLU 70>.A<OE2 13>
+  Added missing heavy atom: .R<ARG 72>.A<CG 8>
+  Added missing heavy atom: .R<ARG 72>.A<CD 11>
+  Added missing heavy atom: .R<ARG 72>.A<NE 14>
+  Added missing heavy atom: .R<ARG 72>.A<CZ 16>
+  Added missing heavy atom: .R<ARG 72>.A<NH1 17>
+  Added missing heavy atom: .R<ARG 72>.A<NH2 20>
+  Added missing heavy atom: .R<ASN 131>.A<CG 8>
+  Added missing heavy atom: .R<ASN 131>.A<OD1 9>
+  Added missing heavy atom: .R<ASN 131>.A<ND2 10>
+  Added missing heavy atom: .R<ARG 178>.A<CG 8>
+  Added missing heavy atom: .R<ARG 178>.A<CD 11>
+  Added missing heavy atom: .R<ARG 178>.A<NE 14>
+  Added missing heavy atom: .R<ARG 178>.A<CZ 16>
+  Added missing heavy atom: .R<ARG 178>.A<NH1 17>
+  Added missing heavy atom: .R<ARG 178>.A<NH2 20>
+  Added missing heavy atom: .R<CASN 179>.A<OXT 15>
+  Added missing heavy atom: .R<LYS 209>.A<CG 8>
+  Added missing heavy atom: .R<LYS 209>.A<CD 11>
+  Added missing heavy atom: .R<LYS 209>.A<CE 14>
+  Added missing heavy atom: .R<LYS 209>.A<NZ 17>
+  Added missing heavy atom: .R<LYS 213>.A<CG 8>
+  Added missing heavy atom: .R<LYS 213>.A<CD 11>
+  Added missing heavy atom: .R<LYS 213>.A<CE 14>
+  Added missing heavy atom: .R<LYS 213>.A<NZ 17>
+  Added missing heavy atom: .R<HIE 218>.A<CG 8>
+  Added missing heavy atom: .R<HIE 218>.A<ND1 9>
+  Added missing heavy atom: .R<HIE 218>.A<CD2 14>
+  Added missing heavy atom: .R<HIE 218>.A<CE1 10>
+  Added missing heavy atom: .R<HIE 218>.A<NE2 12>
+  Added missing heavy atom: .R<LYS 379>.A<CG 8>
+  Added missing heavy atom: .R<LYS 379>.A<CD 11>
+  Added missing heavy atom: .R<LYS 379>.A<CE 14>
+  Added missing heavy atom: .R<LYS 379>.A<NZ 17>
+  Added missing heavy atom: .R<ARG 395>.A<CG 8>
+  Added missing heavy atom: .R<ARG 395>.A<CD 11>
+  Added missing heavy atom: .R<ARG 395>.A<NE 14>
+  Added missing heavy atom: .R<ARG 395>.A<CZ 16>
+  Added missing heavy atom: .R<ARG 395>.A<NH1 17>
+  Added missing heavy atom: .R<ARG 395>.A<NH2 20>
+  Added missing heavy atom: .R<LYS 437>.A<CG 8>
+  Added missing heavy atom: .R<LYS 437>.A<CD 11>
+  Added missing heavy atom: .R<LYS 437>.A<CE 14>
+  Added missing heavy atom: .R<LYS 437>.A<NZ 17>
+  Added missing heavy atom: .R<GLN 473>.A<CG 8>
+  Added missing heavy atom: .R<GLN 473>.A<CD 11>
+  Added missing heavy atom: .R<GLN 473>.A<OE1 12>
+  Added missing heavy atom: .R<GLN 473>.A<NE2 13>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+One sided connection. Residue (MN) missing connect0 atom.
+  total atoms in file: 3677
+  Leap added 3757 missing atoms according to residue templates:
+       51 Heavy
+       3706 H / lone pairs
+Scaling up box by a factor of 1.323094 to meet diagonal cut criterion
+  Solute vdw bounding box:              51.013 55.643 90.961
+  Total bounding box for atom centers:  122.715 122.715 122.715
+      (box expansion for 'iso' is 108.2%)
+  Solvent unit box:                     18.865 18.478 19.006
+  Volume: 946755.145 A^3 (oct)
+  Total mass 524803.804 amu,  Density 0.920 g/cc
+  Added 26159 residues.
+2 Na+ ions required to neutralize.
+Adding 2 counter ions to "sys" using 1A grid
+Grid extends from solute vdw + 1.47  to  7.45
+Resolution:      1.00 Angstrom.
+Solvent present: replacing closest with ion
+	 when steric overlaps occur
+Calculating grid charges
+(No solvent overlap)
+Placed Na+ in sys at (-32.47, -8.32, -1.71).
+(Replacing solvent molecule)
+Placed Na+ in sys at (3.83, -34.99, 0.80).
+
+Done adding ions.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+addIons: 1st Ion & target unit have charges of the same sign:
+     unit charge = -0.000998; ion1 charge = -1;
+     can't neutralize.
+Total unperturbed charge:  -0.000998
+Total perturbed charge:    -0.000998
+Checking 'sys'....
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 6.363 angstroms between C and N atoms:
+-------  .R<PRO 434>.A<C 13> and .R<ARG 435>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 15.931 angstroms between C and N atoms:
+-------  .R<LYS 255>.A<C 21> and .R<GLN 256>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 11.618 angstroms between C and N atoms:
+-------  .R<MET 216>.A<C 16> and .R<THR 217>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 4.645 angstroms between C and N atoms:
+-------  .R<GLU 68>.A<C 14> and .R<PHE 69>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.414 angstroms between nonbonded atoms HD21 and H
+-------  .R<ASN 462>.A<HD21 11> and .R<GLU 198>.A<H 2>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.470 angstroms between nonbonded atoms OD1 and HE
+-------  .R<ASP 397>.A<OD1 9> and .R<ARG 326>.A<HE 15>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.473 angstroms between nonbonded atoms OD2 and HE1
+-------  .R<ASP 375>.A<OD2 10> and .R<HIE 230>.A<HE1 11>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 0.746 angstroms between nonbonded atoms HD12 and HE3
+-------  .R<ILE 356>.A<HD12 16> and .R<MET 156>.A<HE3 15>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 0.961 angstroms between nonbonded atoms HD2 and H
+-------  .R<HIE 337>.A<HD2 15> and .R<GLY 318>.A<H 2>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.271 angstroms between nonbonded atoms H and HD2
+-------  .R<LEU 219>.A<H 2> and .R<HIE 218>.A<HD2 15>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.413 angstroms between nonbonded atoms ND1 and CG
+-------  .R<HIE 218>.A<ND1 9> and .R<LYS 209>.A<CG 8>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.143 angstroms between nonbonded atoms ND1 and HG2
+-------  .R<HIE 218>.A<ND1 9> and .R<LYS 209>.A<HG2 9>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 0.987 angstroms between nonbonded atoms CE1 and CA
+-------  .R<HIE 218>.A<CE1 10> and .R<LYS 209>.A<CA 3>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.211 angstroms between nonbonded atoms CE1 and HA
+-------  .R<HIE 218>.A<CE1 10> and .R<LYS 209>.A<HA 4>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.035 angstroms between nonbonded atoms CE1 and C
+-------  .R<HIE 218>.A<CE1 10> and .R<LYS 209>.A<C 21>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.380 angstroms between nonbonded atoms HE1 and N
+-------  .R<HIE 218>.A<HE1 11> and .R<LYS 209>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 0.419 angstroms between nonbonded atoms HE1 and CA
+-------  .R<HIE 218>.A<HE1 11> and .R<LYS 209>.A<CA 3>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.490 angstroms between nonbonded atoms HE1 and HA
+-------  .R<HIE 218>.A<HE1 11> and .R<LYS 209>.A<HA 4>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.325 angstroms between nonbonded atoms HE1 and C
+-------  .R<HIE 218>.A<HE1 11> and .R<LYS 209>.A<C 21>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.135 angstroms between nonbonded atoms NE2 and N
+-------  .R<HIE 218>.A<NE2 12> and .R<LEU 210>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 0.931 angstroms between nonbonded atoms NE2 and H
+-------  .R<HIE 218>.A<NE2 12> and .R<LEU 210>.A<H 2>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.239 angstroms between nonbonded atoms HE2 and N
+-------  .R<HIE 218>.A<HE2 13> and .R<LEU 210>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 0.274 angstroms between nonbonded atoms HE2 and H
+-------  .R<HIE 218>.A<HE2 13> and .R<LEU 210>.A<H 2>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.283 angstroms between nonbonded atoms H and HB2
+-------  .R<CYS 181>.A<H 2> and .R<NASP 180>.A<HB2 8>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.194 angstroms between nonbonded atoms H3 and OD2
+-------  .R<NASP 180>.A<H3 4> and .R<NASP 180>.A<OD2 12>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.405 angstroms between nonbonded atoms HD3 and O
+-------  .R<LYS 168>.A<HD3 13> and .R<TYR 58>.A<O 21>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.181 angstroms between nonbonded atoms HE2 and HA
+-------  .R<LYS 168>.A<HE2 15> and .R<TYR 58>.A<HA 4>
+Checking parameters for unit 'sys'.
+Checking for bond parameters.
+Checking for angle parameters.
+check:  Warnings: 78501
+Unit is OK.
+Checking Unit.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 6.363 angstroms between C and N atoms:
+-------  .R<PRO 434>.A<C 13> and .R<ARG 435>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 15.931 angstroms between C and N atoms:
+-------  .R<LYS 255>.A<C 21> and .R<GLN 256>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 11.618 angstroms between C and N atoms:
+-------  .R<MET 216>.A<C 16> and .R<THR 217>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 4.645 angstroms between C and N atoms:
+-------  .R<GLU 68>.A<C 14> and .R<PHE 69>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Note.
+Ignoring the warnings from Unit Checking.
+
+Building topology.
+Building atom parameters.
+Building bond parameters.
+Building angle parameters.
+Building proper torsion parameters.
+Building improper torsion parameters.
+ total 1490 improper torsions applied
+Building H-Bond parameters.
+Incorporating Non-Bonded adjustments.
+Not Marking per-residue atom chain types.
+Marking per-residue atom chain types.
+  (Residues lacking connect0/connect1 - 
+   these don't have chain types marked:
+
+	res	total affected
+
+	A8S	1
+	CASN	1
+	NASP	1
+	NMET	1
+  )
+ (no restraints)
+Writing pdb file: system_solvated.pdb
+   printing CRYST1 record to PDB file with box info
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NMET -> MET
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CASN -> ASN
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NASP -> ASP
+	Quit
+
+Exiting LEaP: Errors = 0; Warnings = 36; Notes = 1.
+

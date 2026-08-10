@@ -1,0 +1,57 @@
+3K90 chain A: 176 residues; ABA (A8S) with 19 heavy atoms
+
+=== reproducing the Beltran geometric filter on 3K90 chain A ===
+  rule 1 (any atom <= 5.0 A of ABA):            22 residues
+    [59, 60, 61, 81, 83, 87, 88, 89, 91, 92, 94, 108, 110, 115, 117, 120, 141, 159, 160, 163, 164, 167]
+  rule 2 (<= 6.0 A AND CA-CB not away from ABA): 3 residues
+    [79, 116, 122]
+
+  TOTAL selected by the automated filter: 25
+    [59, 60, 61, 79, 81, 83, 87, 88, 89, 91, 92, 94, 108, 110, 115, 116, 117, 120, 122, 141, 159, 160, 163, 164, 167]
+
+  Beltran report 25 'close contact' residues; this reproduction gives 25.
+  They randomised 19 after removing 6: [59, 62, 81, 83, 87, 89, 92, 94, 108, 110, 117, 120, 122, 141, 159, 160, 163, 164, 167]
+  filter minus the 6 removed = [59, 81, 83, 87, 89, 92, 94, 108, 110, 116, 117, 120, 122, 141, 159, 160, 163, 164, 167]
+  in their 19 but not reproduced here: [62]
+  reproduced here but not in their 19: [116]
+
+==========================================================================
+R79: was it excluded BY THE RULE, or by manual curation?
+==========================================================================
+  min heavy-atom distance to ABA : 5.89 A
+  <= 5.0 A (rule 1)              : False
+  <= 6.0 A (rule 2 distance)     : True
+  CA->CB . CA->ABA cosine        : +0.294 (TOWARD ABA)
+  rule 2 satisfied               : True
+
+  --> R79 PASSES the automated geometric filter.
+      It was therefore removed at the MANUAL CURATION step, on the
+      stated grounds: 'Appears to have only second-shell effects on
+      ligand binding.' That is a judgement, not a measurement --
+      and it is the assumption this project tests directly.
+
+==========================================================================
+the six manually removed residues, independently measured
+==========================================================================
+res       minABA  CA-CB cos   orientation   stated reason
+HIS60       4.76     +0.019    TOWARD ABA   Faces away from ABA and involved in PYR1 dim
+PHE61       3.83     +0.903    TOWARD ABA   Outward facing and involved in PYR1 dimeriza
+ARG79       5.89     +0.294    TOWARD ABA   Appears to have only second-shell effects on
+PRO88       3.15     +0.317    TOWARD ABA   Conserved in the gate loop
+THR91       4.34     -0.968 away from ABA   Outward facing
+HIS115      4.19     +0.848    TOWARD ABA   Conserved in the latch loop
+
+Notes on agreement with this project's independent measurements
+--------------------------------------------------------------------------
+  T91  : rigid truncation gave dV = +0.0 A^3 -- fully consistent with
+         'outward facing'.
+  F61  : rigid truncation gave dV = -16.5 A^3, i.e. a SEALING residue
+         whose removal breaches the cavity to solvent. Consistent with
+         'outward facing', reached by a different route.
+  P88  : gate loop; excluded by this project as well.
+  H115 : latch loop; excluded by this project as well.
+  H60  : dimerisation; not a cavity residue here either.
+  R79  : the ONLY one of the six whose stated reason this project's
+         data contradicts -- see scripts/04_cavity_lining.py:
+         R79 NH2 and NE have CLEAR line of sight to ABA, R79 borders
+         the WT cavity, and R79A/E94A unlocks +84.8 A^3.

@@ -1,0 +1,42 @@
+{
+  "variant": "K59L_F108Y",
+  "mutations": [
+    [
+      59,
+      "L"
+    ],
+    [
+      108,
+      "Y"
+    ]
+  ],
+  "reps": [
+    {
+      "variant": "K59L_F108Y",
+      "rep": 0,
+      "score_ref2015": -512.7938569308775,
+      "cavity_A3": 200.125,
+      "cavity_gridpts": 1601,
+      "ca_rmsd_to_input": 0.07538575178310145,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/K59L_F108Y_r0.pdb"
+    },
+    {
+      "variant": "K59L_F108Y",
+      "rep": 1,
+      "score_ref2015": -514.2770397159397,
+      "cavity_A3": 207.25,
+      "cavity_gridpts": 1658,
+      "ca_rmsd_to_input": 0.07787266586019961,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/K59L_F108Y_r1.pdb"
+    },
+    {
+      "variant": "K59L_F108Y",
+      "rep": 2,
+      "score_ref2015": -514.0844391325668,
+      "cavity_A3": 201.25,
+      "cavity_gridpts": 1610,
+      "ca_rmsd_to_input": 0.07498658266583969,
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_scan/pdb/K59L_F108Y_r2.pdb"
+    }
+  ]
+}
