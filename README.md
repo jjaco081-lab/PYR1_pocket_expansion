@@ -2749,3 +2749,22 @@ hypothesis and weak evidence for the pose being the problem, consistent with the
 model preferring the wrong bulky residue rather than being uniformly timid. Before
 this becomes a claim, the original run configuration has to be recovered from
 `mutation_prediction_benchmark/scripts/` so bias 0 reproduces 28.7%.
+
+**Scheduling arrangement as of 2026-08-11 16:0x.** `preempt_gpu` turned out to be
+capped at **one GPU** for this account (`preempt` + `gpu` QOS =
+`cpu=48,gres/gpu=1`), so it reaches newer hardware but not more of it — three S4
+replicates there would run strictly serially at ~29 h each. ada6000 does run S4
+faster than the A100 benchmark (~250 vs 167 ns/day, no preemption in the first
+90 min), so the split adopted is **hybrid**:
+
+| replicate | where | state |
+|---|---|---|
+| S4 rep0 | `preempt_gpu` (gpu10, ada6000), job 27386629_0 | running |
+| S4 rep1, rep2 | `gpu`, tasks 27333712_10/11 | released, queued for A100s |
+| S4 rep0 duplicate | `gpu`, task 27333712_9 | **held** — preempt owns rep0 |
+| S2 rep1/2, S3 ×3 | `gpu`, tasks 4–8 | queued |
+
+Task 9 must stay held for as long as the preempt job owns `S4_ternary/rep0`; two
+`pmemd` processes on one `prod.rst7` corrupt it. Note `squeue` collapses an array
+into a single row and shows the union of reasons, so a partially-held array reads
+as fully held — use `scontrol show job <id>_<task>` to see per-task state.
