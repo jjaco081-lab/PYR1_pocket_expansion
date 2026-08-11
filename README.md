@@ -10,6 +10,87 @@ Project started 2026-08-06. Working directory
 
 ---
 
+## 0. AI-assisted work: declaration of contributions
+
+**Status of this work.** Everything in this repository is a **preliminary
+computational viability assessment** — a pilot whose purpose is to decide whether
+enlarging the PYR1 pocket is worth pursuing experimentally, and to identify which
+designs would be worth building. **No wet-lab validation has been performed.**
+Every quantity reported here is computational, and the substantive claims are
+hypotheses supported by modelling, not experimental results.
+
+**Model and dates.** All AI-assisted work to date was performed with
+**Claude Opus 5**, **2026-08-06 through 2026-08-11**. If a different model
+contributes later, it is recorded as a separate dated block here rather than
+folded into this one.
+
+### Division of contributions
+
+**Jannis Jacobs (project lead) — direction, judgement, and domain expertise**
+
+- Conceived the project and set its objective, and **re-specified the success
+  criterion repeatedly** as the work exposed ambiguity in it: the deliverable is
+  new *library positions* for a Tian-style oligo-pool screen rather than a larger
+  cavity as such; a change at an already-sampled position still counts if the
+  substitution or the combination was untested; and the goal is a **portfolio** of
+  scaffolds rather than a single ranked winner. These are the definitions the
+  entire analysis is built around.
+- Supplied the biological and experimental expertise the modelling cannot supply:
+  PYR1–HAB1 biology, Y2H screening with FOA counter-selection, Tian library design
+  and protocol, which supplementary datasets carry focused second-round libraries,
+  and the colony-picking practice that makes non-recovery of a sequence
+  uninformative — a caveat that invalidates an entire class of benchmark design.
+- Selected and supplied the literature (Tian 2025; Leonard 2026; Dorosh 2013;
+  Melcher 2010; Peterson 2010; the BoltzMol-1 preprint) and read it independently.
+- **Corrected AI errors on points that changed conclusions**, including: that HAB1
+  contacts ABA through a bridging water (overturning a stated claim that it never
+  touches the ligand); that the mandipropamid complexes 4WVO/8EY0 likely do *not*
+  use that water (verified — ABA sensing through it is real but **not conserved**,
+  which overturned a proposed design filter — §23a);
+  that the earlier LigandMPNN benchmark is confounded by pose and should not be
+  treated as evidence (§23b); and that a maximally open pocket remains a valid
+  shrink-to-fit starting point, reversing an AI over-correction.
+- Proposed analyses that became part of the work: the floppy-ligand burial survey
+  (§23d), using Tian actives that modestly enlarge lobe 1 as a small-amplitude
+  calibration, and PYR1\*/HAB1\* as a validated negative control pair.
+- Made all operational decisions: partition and scheduling policy, which arms to
+  run, when to wait for results rather than act on partial data, and the
+  preemption strategy for the MD campaign.
+
+**Claude Opus 5 — implementation, computation, and drafting**
+
+- Wrote every script in `scripts/` (45 files) and the analysis they implement:
+  the cavity/volume methods, the three Rosetta arms, the MD preparation and run
+  system, the novelty and variance-decomposition analyses, the Foldseek and
+  homolog surveys, and the benchmark tooling.
+- Executed and managed all computation, including SLURM job construction,
+  scheduling, monitoring, and recovery.
+- Performed the structural measurements reported here, including the W385 water
+  analysis across 3QN1 / 4WVO / 8EY0 (§23a).
+- Read the supplied literature and extracted the specific transferable methods and
+  the points where they do not transfer.
+- Wrote and maintains this README, the §22 change log, and the memory of
+  superseded reasoning.
+- Performed the statistical analysis, including identifying several of its own
+  errors — the incorrect discrimination statistic (§14a), the sequence
+  position-mapping bug (§23e), and two latent MD restart bugs (§23c).
+
+### Why this is stated in this much detail
+
+The scientific direction, the success criteria, the domain constraints, and the
+corrections that changed conclusions are the project lead's. The implementation,
+computation, and drafting are AI-generated and should be read as such: fast and
+broad, but with a documented error rate.
+
+That error rate is the reason for §22 and for version control. Several AI-produced
+errors were caught during this work — some by the project lead, some by subsequent
+analysis — and each is recorded in place rather than silently corrected. **There is
+no guarantee that all have been found.** Anyone building on this should treat
+§22 as a live list, re-derive load-bearing numbers before relying on them, and
+weight the experimental claims of §12–§16 accordingly.
+
+---
+
 ## 1. Motivation and the design constraint
 
 The PYR1–HAB1 system is unusually tolerant of ligand reprogramming — a handful
@@ -2406,6 +2487,12 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-10 09:54 | **discrimination statistic found to be wrong** (§14a) | mtime `35_` |
 | 2026-08-10 10:50 | satellite lobe checked across 7 chains (§16) | mtime `37_` |
 | 2026-08-10 12:56 | WT MD campaign submitted (27333712) | SLURM submit |
+| 2026-08-11 11:35 | MD tasks 0–3 complete (S1 ×3, S2 rep0), 300 ns each | SLURM end |
+| 2026-08-11 12:17 | 4WVO / 8EY0 downloaded; W385 water re-measured (§23a) | file mtime |
+| 2026-08-11 12:40 | ligand-blind oracle exposes the recovery metric (§23b) | analysis |
+| 2026-08-11 13:05 | A100 nodes DRAINING; S4 moved to `preempt_gpu` (27386629) | SLURM submit |
+| 2026-08-11 13:10 | LigandMPNN bias test submitted (27386657) | SLURM submit |
+| 2026-08-11 13:5x | floppy-ligand PDB burial survey launched (§23d) | mtime `44_` |
 
 ### Reversals and corrections
 
@@ -2427,6 +2514,9 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 14 | 08-10 | discrimination = between-sd ÷ **replicate sd** | that denominator ignores √n | ANOVA `F = s²_between/(s²_within/n)`; flipped Arm 2b from "blind" to F=9.0 (§14a) |
 | 15 | 08-10 | the sealed satellite lobe is a **crystal artefact** | **7 of 7** deposited chains are sealed | the **FastRelax merge** is the more likely artefact (§16) |
 | 16 | 08-10 | **R79/E94 opens the second lobe** | dilation-free metric: R79A/E94A adds only **+11.9 Å³** beyond the wall | **F108 is the gatekeeper**; R79's case rests on total volume and epistasis (§14d) |
+| 17 | 08-11 | because the W385 water senses ABA, requiring ligand contact with it is a sound design filter | measured in 3QN1 / 4WVO / 8EY0: the water is present in **all three**, with W385, Pro88 and Arg116 contacts conserved to 0.3 Å, but **mandipropamid never touches it** (5.1–5.2 Å vs ABA's 2.72 Å) | the water still senses ABA, but it has **two separable roles** and only the **gate–latch–HAB1 staple** is conserved; sensing is not. Leonard et al.'s H-bond constraint would have **excluded mandipropamid** — use it to rank, never to exclude (§23a) |
+| 18 | 08-11 | LigandMPNN's 28.7% top-1 recovery on the coumarin set measures method quality | a **ligand-blind oracle** on the same labels reaches **79.1%**, and **all 33** MPNN hits fall at positions where the experiment is ligand-invariant | sequence recovery is the wrong metric — most of it is winnable without the ligand. The number is separately confounded by pose (§23b) |
+| 19 | 08-11 | `39_md_run.sh` was safe to repoint at any partition | its resume path overwrites `prod_cont.nc`, and `prod.in` reruns a **full** 300 ns because `irest=1` continues the clock | harmless on non-preemptible `gpu`, destructive under preemption; `42_md_run_preempt.sh` numbers segments and computes the remainder from the restart clock (§23c) |
 
 ### Bugs caught before they cost anything
 
@@ -2447,3 +2537,215 @@ reversed. Never delete the old claim — strike it through in place and add a ro
    the variance decomposition before concluding "no effect".
 4. **Static modelling could not settle the satellite lobe.** Seven crystals
    versus one relax protocol is why the MD baseline exists (§19a).
+
+---
+
+## 23. Session of 2026-08-11 — water staple, benchmark hygiene, preemption
+
+### 23a. The W385 water does sense ABA — but that sensing is not conserved
+
+Leonard et al. (Nat Commun 17, 1234, 2026) anchored their opioid-biosensor poses
+by requiring the ligand to hydrogen bond the conserved transduction water. Before
+adopting that constraint, it was tested against the deposited mandipropamid
+complexes. Superposing on the phosphatase chain B:
+
+| structure | res. | water | W385 NE1 | nearest ligand | Pro88 O | Arg116 N |
+|---|---|---|---|---|---|---|
+| 3QN1 (ABA) | 1.80 Å | A197 | 3.04 | **2.72** (O10) | 2.71 | 2.92 |
+| 4WVO (mandipropamid) | 2.25 Å | A328 | 2.96 | 5.07 (CAY) | 2.52 | 3.21 |
+| 8EY0 (mandipropamid) | 2.40 Å | A314 | 3.04 | 5.19 (OAX) | 2.85 | 3.05 |
+
+The water is present in **all three**. Its contacts to HAB1 **W385**, the PYR1
+**gate** (Pro88 carbonyl) and the PYR1 **latch** (Arg116 amide) are conserved to
+within 0.3 Å. Only the ligand contact varies: ABA engages at 2.72 Å,
+mandipropamid sits 5.1–5.2 Å away.
+
+The literature's account of ABA is correct and stands: in the WT structure ABA is
+sensed by HAB1 through this water-mediated hydrogen bond. What the mandipropamid
+structures add is that the water has **two separable roles**, and only one of them
+is conserved.
+
+Its **structural** role — a three-way staple locking gate + latch + HAB1 in the
+closed state — is present in all three complexes. Its **ligand-sensing** role is
+not: mandipropamid retains the staple intact while never engaging the water.
+
+So ligand sensing through this water is one viable strategy, not a requirement of
+the mechanism. **Requiring the contact as a hard filter would exclude
+mandipropamid** — the most successful engineered PYR1 agonist there is,
+orthogonalised as PYR1\*/HAB1\* in 8EY0 and validated in planta. Use it to rank,
+never to exclude.
+
+Two consequences. The staple is load-bearing in a way Arm 2 cannot see, since
+Rosetta relax as configured carries no explicit waters — S4_ternary MD is the only
+system that contains it. And 8EY0 supplies a rare validated true-negative protein
+pair: PYR1\* does not bind wild-type HAB1.
+
+*Wording that must not drift:* the water **does** sense ABA in the WT structure.
+The finding is that this function is secondary and demonstrably not conserved —
+not that it is "not a sensing water". A Boltz-2 supplementary figure
+in Tian et al. suggests TETRA, liothyronine, WIN and mezlocillin may occupy the
+water site; worth an orthogonal AF3 check, but co-folding models agreeing tells us
+they share inductive biases, not that they are right. Neither resolves ordered
+water. PDB ID trap: the orthogonal structure is **8EY0** (digit zero); `8EYO` is
+human mitochondrial malic enzyme 3. Mandipropamid is ligand **3UZ**.
+
+### 23b. Sequence recovery is the wrong benchmark metric
+
+Prior work in `mutation_prediction_benchmark/` docked 11 coumarins into WT PYR1
+and redesigned 19 library positions with LigandMPNN, scoring top-1 agreement
+against the Tian wetlab sequences. Two baselines were missing:
+
+| method | top-1 recovery |
+|---|---|
+| LigandMPNN (ligand-aware, structure-based) | 33/115 = **28.7%** |
+| predict the wild-type residue | 0/115 = 0.0% |
+| **ligand-blind oracle** (per position, pooled consensus of the experimental answers) | 91/115 = **79.1%** |
+
+The oracle is built from the test labels and is therefore not deployable — it is a
+**ceiling**, showing what any ligand-blind method could reach. It beats the
+ligand-aware model by 50 points. Worse, **all 33** LigandMPNN hits fall at
+positions where the experiment is ligand-invariant (108: 11/11, 81: 9/11,
+167: 7/7, 160: 5/11); at the four positions where reality varies with ligand it
+scores 5/43.
+
+Ligand identity therefore moves the answer at only ~21% of position-ligand cells
+in this panel, and the model captures none of it. Ranking methods by sequence
+recovery would rank them by fidelity to a ligand-independent consensus.
+
+**Proposed replacement — ligand-conditional discrimination.** Score every hit
+sequence against every ligand in the panel and ask whether the cognate ligand
+ranks first. A ligand-blind method scores 0.5 AUROC by construction, and negatives
+come free: a sequence selected for Imperatorin, scored against Psoralen, is
+verifiably expressed, folded, and present in the library. This matters because
+non-recovery carries no information — 13 of 17 *allowed* F108 substitutions never
+came back from Tian's screens (§15), and not every colony was sequenced.
+
+**Two confounds recorded, both real.** (1) Poses were docked into the *wild-type*
+pocket and then redesigned, so a wrong pose packs the wrong wall; the 28.7% is
+ambiguous between model quality and pose quality. (2) The coumarin sequences come
+from a **second-round focused library** built on first-round hits, so they share
+ancestry and are not independent draws — some of the 79.1% consensus is phylogeny,
+not chemistry. Focused sets must be split as units. The oracle result itself is
+untouched by (1), since it never uses the docking.
+
+`scripts/43_ligandmpnn_bias_test.py` tests whether the errors are a conservative
+prior (model proposes V163I where experiment demands V163W) by biasing W/F/Y at
+0/1/2/3. Primary metric is **overall** recovery, not position 163 — biasing toward
+W would make 163 succeed regardless of truth. Secondary split: 13 ligand-invariant
+vs 6 ligand-variable positions. Only a pose fix can lift the variable ones.
+
+### 23c. MD moved to `preempt_gpu`, and two latent bugs in `39_md_run.sh`
+
+Tasks 0–3 finished cleanly (S1 ×3, S2 rep0; 300 ns each, ~23–24 h, rc=0). Backbone
+RMSD plateaus by ~40 ns at 1.7–2.4 Å; rep1 starts strained at 3.1 Å and relaxes.
+Then all three A100 nodes went `DRAINING`, pushing tasks 4–11 to an estimated start
+of 2026-08-18.
+
+S4_ternary was moved to `preempt_gpu` (ada6000; `-A preempt`) as job 27386629.
+Array tasks 9/10/11 of 27333712 write the same directories and were **held, not
+cancelled**, so they keep queue position — `scontrol release` restores them,
+`scancel` retires them. Two `pmemd` processes on one `prod.rst7` would corrupt it.
+
+`39_md_run.sh` could not simply be repointed. Both bugs are invisible on a
+non-preemptible partition:
+
+1. **Lost segments** — the resume path always wrote `prod_cont.nc` with `-O`, so a
+   second preemption overwrites the first resumption's trajectory.
+2. **Runaway length** — `prod.in` has a fixed 300 ns `nstlim` and restarts use
+   `irest=1`, which *continues* the clock, so resuming ran a further 300 ns.
+
+`42_md_run_preempt.sh` numbers segments `prod_cont_NNN.nc` and computes the
+remainder from the restart file's own clock (`ncdump -v time`; a finished replicate
+reads **301700 ps**, since the clock includes 1.7 ns of equilibration). It keeps
+`prod_backup.rst7` and validates `prod.rst7` before use, bounding loss to ~1 ns.
+
+`scripts/41_md_view.sh` builds stripped, imaged, CA-aligned trajectories in
+`data/md/view/` (~102 MB per replicate at 100 ps spacing) for visual QC.
+
+### 23d. Do receptors actually engulf floppy ligands? (`scripts/44_floppy_ligand_survey.py`)
+
+The entropy cost of ordering a 15–22 Å rod inside a channel is not computable by
+anything in this pipeline, but the question has an empirical proxy: across the PDB,
+do receptors bury large flexible ligands whole, or grip a head and expose a tail?
+
+Per ligand, in one representative complex: buried fraction
+(1 − SASA_complex/SASA_free) and an **axial burial profile** — atoms projected onto
+their first principal axis, split into three equal-length bins.
+
+Bins are oriented so `head` is the more buried end, which makes the head−tail gap
+positive **by construction**. A permutation null (40 shuffles of atoms between bins,
+preserving bin sizes and the orientation step) measures that bias directly; only
+the **excess** gap over null is evidence of real asymmetry.
+
+Limits recorded: only protein chains are kept, so burial is by protein and not by
+cofactors; no resolution filter; crystal-packing neighbours unmodelled; and
+selection is biased toward ligands that crystallised at all, which under-samples
+exactly the floppy chemistry at issue. That bias runs **toward** finding engulfment,
+so a tails-exposed result is the conservative one.
+
+If tails are systematically exposed, the design objective changes from "enclose the
+ligand" to "grip a head group and tolerate an exit vector" — a materially different
+target than the one §13 currently proposes.
+
+**Result (360 ligands, `results/44_floppy_survey.csv`):**
+
+| heavy atoms | n | buried | head | tail | gap | null | **excess** |
+|---|---|---|---|---|---|---|---|
+| <20 | 33 | 0.89 | 0.97 | 0.74 | 0.17 | 0.12 | **0.08** |
+| 20–30 | 104 | 0.83 | 0.93 | 0.74 | 0.16 | 0.10 | **0.05** |
+| 30–40 | 91 | 0.82 | 0.92 | 0.72 | 0.17 | 0.11 | **0.07** |
+| 40–55 | 78 | 0.79 | 0.89 | 0.63 | 0.14 | 0.12 | **0.05** |
+| >55 | 54 | 0.72 | 0.84 | 0.59 | 0.15 | 0.11 | **0.06** |
+
+`corr(n_heavy, buried) = -0.26`; `corr(n_heavy, excess gap) = **+0.07**`.
+
+**Receptors do engulf large ligands.** Burial declines only modestly across a
+threefold size range, and even the largest bin is still 72% buried. Crucially the
+head-tail asymmetry *in excess of the null* is small (0.05-0.08) and **flat** — it
+does not grow with size, which is the signature head-gripping would have produced.
+
+So the §13 objective stands: enclose the ligand, rather than redesign around an
+exit vector. The conformational-entropy objection is **weakened but not
+eliminated** — nature evidently does bury large flexible ligands routinely, but
+that says nothing about the *cost*, only that it is payable. The sample is biased
+toward chemistry that crystallised, and that bias runs toward engulfment, so this
+is the conservative reading rather than an optimistic one.
+
+Not yet done: subsetting by elongation to isolate rods specifically (the probe set
+is 217/229 rods), which is the population this project actually cares about.
+
+### 23e. LigandMPNN bias test — position-mapping bug, and an inconclusive result
+
+Job 27386657 ran 44 designs (11 ligands x bias 0/1/2/3 on W/F/Y). The first
+scoring pass returned a flat **0.9% at every bias level**, which was a bug, not a
+finding: LigandMPNN emits the **full 181-residue sequence**, and `consensus()` was
+reading characters 0-18 instead of the designed positions. Those characters are
+outside the design set, so they never changed. Fixed by mapping residue number to
+sequence index from the pose PDB's CA order (position 59 -> index 57).
+
+Corrected, and still flat:
+
+| bias | overall | invariant | variable |
+|---|---|---|---|
+| 0 | 7/115 = 6.1% | 6/51 = 11.8% | 1/64 = 1.6% |
+| 1 | 7/115 = 6.1% | 6/51 = 11.8% | 1/64 = 1.6% |
+| 2 | 7/115 = 6.1% | 6/51 = 11.8% | 1/64 = 1.6% |
+| 3 | 7/115 = 6.1% | 6/51 = 11.8% | 1/64 = 1.6% |
+
+The bias flag *does* work — predictions move (pos 120 L/F -> F; pos 163 picks up
+F) — but they move to the **wrong** bulky residue. Experiment wants W at both 108
+and 163; the model gives Y and F and will not give W at any bias level tested.
+
+**This test is inconclusive as designed, and the reason must be recorded.** The
+bias-0 arm was supposed to reproduce the repo's 28.7% baseline and instead scores
+6.1%, so this configuration (temperature 0.1, `--ligand_mpnn_use_side_chain_context 1`,
+`sorted()[0]` pose) is **not** the configuration that produced the earlier numbers.
+The comparison *across bias levels* is internally valid — same seed, same pose,
+bias the only variable — but it cannot be attributed back to the earlier study.
+
+What can be said: within this configuration, biasing toward bulk does not improve
+agreement in any stratum. That is weak evidence against the conservative-prior
+hypothesis and weak evidence for the pose being the problem, consistent with the
+model preferring the wrong bulky residue rather than being uniformly timid. Before
+this becomes a claim, the original run configuration has to be recovered from
+`mutation_prediction_benchmark/scripts/` so bias 0 reproduces 28.7%.

@@ -38,3 +38,9 @@ logs/units*/
 
 __pycache__/
 *.pyc
+
+# downloaded PDB structures for the floppy-ligand survey (regenerable)
+data/survey_cache/
+
+# regenerable viewing trajectories (rebuild with scripts/41_md_view.sh)
+data/md/view/
