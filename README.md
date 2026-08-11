@@ -2335,7 +2335,7 @@ arm by `35_variance_decomposition.py`**, not by those columns.
 
 | job | what | state |
 |---|---|---|
-| **27333712** | WT MD, 12 tasks `%4`, 4 systems × 3 replicates × 300 ns | queued/running, ~4 days |
+| **27333712** | WT MD, 12 tasks `%4`, 4 systems × 3 replicates × 300 ns | running since 2026-08-10 12:56; at ~4 h, tasks 0–3 (S1×3, S2 rep0) were 45–47/300 ns at 299–313 ns/day, matching the benchmark; 8 queued on `JobArrayTaskLimit`. ETA ~4 days total. **S4_ternary finishes last** (task order) |
 
 When it finishes: run `scripts/40_md_provenance.py` (fills the §19e provenance
 block with seeds and throughput), then compute the §19d observables.
