@@ -2768,3 +2768,71 @@ Task 9 must stay held for as long as the preempt job owns `S4_ternary/rep0`; two
 `pmemd` processes on one `prod.rst7` corrupt it. Note `squeue` collapses an array
 into a single row and shows the union of reasons, so a partially-held array reads
 as fully held — use `scontrol show job <id>_<task>` to see per-task state.
+
+### 23f. Stage 1 — retrospective recovery of PYR1^MANDI (`scripts/47_stage1_inputs.py`)
+
+Can a sequence designer recover a known engineered receptor from WT plus a
+perfectly placed ligand? Ground truth from 4WVO vs 3QN1 over the 174 residues
+resolved in both: **K59R, V81I, F108A, F159L** — four substitutions, all inside
+Tian's randomised positions.
+
+**Library choice is not free.** All four are reachable only in **DSM-Hao** and
+**TSM**; under the Coumarin alphabet F108A is not offered at all (position 108
+allows W only), so that arm would be unwinnable by construction.
+
+| library | reachable |
+|---|---|
+| Coumarin | 1/4 | 
+| PFAS | 1/4 |
+| TNTv1 / TNTv2 | 2/4 |
+| **DSM-Hao / TSM** | **4/4** |
+
+This also reframes §23b: F108W appears in 11/11 coumarin sequences partly because
+**W was the only option the library provided**, not purely because it was preferred.
+
+**Inputs** in `data/stage1/` — `wt_mandi.pdb` (true 4WVO pose superposed into the
+WT frame, 0.48 Å CA RMSD over 174 CA), `polygly_mandi.pdb` (15 designable
+positions truncated to Gly), `wt_aba.pdb`. Designable set is Tian's 18 randomised
+positions minus 87/89 (gate) and 117 (latch); none of the four true mutations sits
+there, so the exclusion is free. `INCLUDE_GATE_LATCH` runs the alternative arm as a
+diagnostic — a method proposing gate mutations is proposing to break transduction.
+
+**Two baselines, both of which constrain the design.**
+
+*Trivial clash baseline.* Ranking WT side chains by steric overlap with the ligand
+gives 108 (0.62 Å), 159 (1.98), 59 (2.86), 83 (3.14) — **3 of 4 true positions**,
+missing only V81I, which barely clashes (3.28 Å, one atom within 4 Å) and is
+evidently a packing optimisation rather than clash relief. So **position
+identification is nearly free; identity selection is the real task**, and any
+method must beat 3/4 on positions to have demonstrated anything.
+
+*Chance level.* Uniform draws from the DSM-Hao alphabets across 15 positions:
+
+| N sequences | E[true subs recovered] | P(all 4) |
+|---|---|---|
+| 1 | 0.31 | 0.000 |
+| 10 | **2.11** | 0.068 |
+| 50 | 3.84 | **0.845** |
+
+Recall-at-N is therefore nearly uninformative at generous N — 50 sequences recover
+all four 85% of the time at random.
+
+**But that uniform null is the wrong reference, and this is the load-bearing
+methodological point.** Sampled sequences are **not independent** — designers
+mode-collapse, so 10 samples may carry 2–3 effective draws, making a null built on
+10 independent draws too harsh. Rather than guess a correction factor, the primary
+null is the **ligand-swap control**: run the identical protocol on `wt_aba.pdb`,
+changing only the ligand. It inherits whatever convergence the method has, so no
+independence assumption is needed. Scoring is three numbers per position —
+probability mass on the true residue, the same from the ABA run, and their
+difference. **Only the difference is evidence.** The uniform column is retained,
+relabelled as an upper bound on chance under independence.
+
+Effective sample size (distinct sequences, mean pairwise Hamming distance,
+per-position entropy) is reported per run: if 50 sequences carry 3 effective draws,
+that is itself a finding about the method.
+
+**Noted for later — dual-library design.** Mirror Tian's two-stage approach: round 1
+wide positions with few substitutions per sequence, round 2 narrow positions with
+more substitutions each. Fits the probability-based scoring, since round 1 needs
+per-position marginals and round 2 needs joint combinations.
