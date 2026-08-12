@@ -46,7 +46,11 @@ def scan(out):
         txt = open(out, errors="ignore").read()
     except OSError:
         return d
-    m = re.search(r"\big\s*=\s*(-?\d+)", txt)
+    # ig=-1 means pmemd DRAWS a seed at runtime and announces it; the echoed
+    # namelist still reads "ig = -1", so match the announcement first.
+    m = re.search(r"Setting random seed to\s+(\d+)", txt)
+    if not m:
+        m = re.search(r"^\s*ig\s*=\s*(\d+)\s*$", txt, re.M)
     if m and m.group(1) != "-1":
         d["seed"] = int(m.group(1))
     m = re.findall(r"ns/day\s*=\s*([0-9.]+)", txt)
