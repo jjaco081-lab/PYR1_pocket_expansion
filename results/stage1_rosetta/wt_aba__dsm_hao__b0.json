@@ -1,0 +1,163 @@
+{
+  "arm": "wt_aba__dsm_hao",
+  "struct": "wt_aba",
+  "alphabet": "dsm_hao",
+  "block": 0,
+  "ligand": "A8S",
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/stage1/params/A8S_anion.params",
+  "n_lig_heavy": 19,
+  "pack_shell": 8.0,
+  "rounds": 1,
+  "n_shell": 42,
+  "design_positions": [
+    59,
+    81,
+    83,
+    92,
+    94,
+    108,
+    110,
+    120,
+    122,
+    141,
+    159,
+    160,
+    163,
+    164,
+    167
+  ],
+  "trajectories": [
+    {
+      "arm": "wt_aba__dsm_hao",
+      "struct": "wt_aba",
+      "alphabet": "dsm_hao",
+      "traj": 0,
+      "seed": 1000,
+      "total": -143.268,
+      "interface_dG": -28.363,
+      "seconds": 335.8,
+      "seq": "NILAMFIFAKFNIVA",
+      "mutations": {
+        "59": "N",
+        "81": "I",
+        "83": "L",
+        "92": "A",
+        "94": "M",
+        "120": "F",
+        "122": "A",
+        "141": "K",
+        "160": "N",
+        "163": "I",
+        "167": "A"
+      },
+      "recovered": [
+        "V81I"
+      ]
+    },
+    {
+      "arm": "wt_aba__dsm_hao",
+      "struct": "wt_aba",
+      "alphabet": "dsm_hao",
+      "traj": 1,
+      "seed": 1017,
+      "total": -144.452,
+      "interface_dG": -28.97,
+      "seconds": 356.1,
+      "seq": "NILAMFIYAKFNIVI",
+      "mutations": {
+        "59": "N",
+        "81": "I",
+        "83": "L",
+        "92": "A",
+        "94": "M",
+        "122": "A",
+        "141": "K",
+        "160": "N",
+        "163": "I",
+        "167": "I"
+      },
+      "recovered": [
+        "V81I"
+      ]
+    },
+    {
+      "arm": "wt_aba__dsm_hao",
+      "struct": "wt_aba",
+      "alphabet": "dsm_hao",
+      "traj": 2,
+      "seed": 1034,
+      "total": -143.426,
+      "interface_dG": -26.363,
+      "seconds": 334.4,
+      "seq": "NILAMFIFAQFNIVI",
+      "mutations": {
+        "59": "N",
+        "81": "I",
+        "83": "L",
+        "92": "A",
+        "94": "M",
+        "120": "F",
+        "122": "A",
+        "141": "Q",
+        "160": "N",
+        "163": "I",
+        "167": "I"
+      },
+      "recovered": [
+        "V81I"
+      ]
+    },
+    {
+      "arm": "wt_aba__dsm_hao",
+      "struct": "wt_aba",
+      "alphabet": "dsm_hao",
+      "traj": 3,
+      "seed": 1051,
+      "total": -142.722,
+      "interface_dG": -25.302,
+      "seconds": 366.8,
+      "seq": "IILAMFIFAQFNIVN",
+      "mutations": {
+        "59": "I",
+        "81": "I",
+        "83": "L",
+        "92": "A",
+        "94": "M",
+        "120": "F",
+        "122": "A",
+        "141": "Q",
+        "160": "N",
+        "163": "I"
+      },
+      "recovered": [
+        "V81I"
+      ]
+    },
+    {
+      "arm": "wt_aba__dsm_hao",
+      "struct": "wt_aba",
+      "alphabet": "dsm_hao",
+      "traj": 4,
+      "seed": 1068,
+      "total": -143.121,
+      "interface_dG": -28.373,
+      "seconds": 325.8,
+      "seq": "IILAMFIFAKFNIVN",
+      "mutations": {
+        "59": "I",
+        "81": "I",
+        "83": "L",
+        "92": "A",
+        "94": "M",
+        "120": "F",
+        "122": "A",
+        "141": "K",
+        "160": "N",
+        "163": "I"
+      },
+      "recovered": [
+        "V81I"
+      ]
+    }
+  ]
+}

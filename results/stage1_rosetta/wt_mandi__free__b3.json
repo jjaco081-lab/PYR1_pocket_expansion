@@ -1,0 +1,133 @@
+{
+  "arm": "wt_mandi__free",
+  "struct": "wt_mandi",
+  "alphabet": "free",
+  "block": 3,
+  "ligand": "3UZ",
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/stage1/params/3UZ.params",
+  "n_lig_heavy": 29,
+  "pack_shell": 8.0,
+  "rounds": 1,
+  "n_shell": 58,
+  "design_positions": [
+    59,
+    81,
+    83,
+    92,
+    94,
+    108,
+    110,
+    120,
+    122,
+    141,
+    159,
+    160,
+    163,
+    164,
+    167
+  ],
+  "trajectories": [
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 30,
+      "seed": 1510,
+      "total": -144.97,
+      "interface_dG": -19.061,
+      "seconds": 436.5,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 31,
+      "seed": 1527,
+      "total": -144.65,
+      "interface_dG": -16.758,
+      "seconds": 436.8,
+      "seq": "VCVAEAIYEQECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "108": "A",
+        "122": "E",
+        "141": "Q",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 32,
+      "seed": 1544,
+      "total": -145.762,
+      "interface_dG": -19.116,
+      "seconds": 441.9,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 33,
+      "seed": 1561,
+      "total": -146.108,
+      "interface_dG": -19.107,
+      "seconds": 433.6,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    }
+  ]
+}

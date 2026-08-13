@@ -50,7 +50,21 @@ residues by clash recovers F108A, then a learned model recovering it demonstrate
 nothing -- the same trap the ligand-blind oracle exposed in section 23b. Any
 method must be scored against this, not against zero.
 
-Usage:  python 47_stage1_inputs.py
+CORRECTION 2026-08-12 -- the first run of this script was silently broken
+------------------------------------------------------------------------
+`write()` emitted HETATM records one column left of spec from altLoc onward.
+Coordinates still parsed, so the files opened correctly in PyMOL and nothing
+raised. But ProDy -- LigandMPNN's parser -- read altLoc as '3' (from '3UZ') and
+dropped all 29 mandipropamid atoms under its default altloc='A' filter. Both
+mandipropamid arms therefore ran APO, while ABA survived only because 'A8S'
+put a literal 'A' in that column. The section 23g result is retracted; see 23h.
+
+`het_line()` now writes strict columns, and `write()` re-parses each file with
+ProDy at its DEFAULT setting and refuses to proceed unless every ligand atom is
+visible. Run this in an environment that has ProDy (conda_envs/mutpred) so that
+check is live rather than skipped.
+
+Usage:  /bigdata/cutlerlab/jjaco081/conda_envs/mutpred/bin/python 47_stage1_inputs.py
 """
 import os
 import numpy as np
@@ -122,22 +136,92 @@ class Keep(Select):
 io = PDBIO()
 
 
+def prody_ligand_atoms(path, resname):
+    """Ligand atoms visible to ProDy under its DEFAULT altloc filter.
+
+    LigandMPNN parses with ProDy, so this is the ground truth for whether an
+    input arm actually contains its ligand. Returns -1 if ProDy is absent, in
+    which case the caller's assert is skipped and the check must be run
+    separately -- 48_stage1_run.py repeats it before spending any compute.
+    """
+    try:
+        import prody
+    except ImportError:
+        return -1
+    prody.confProDy(verbosity="none")
+    st = prody.parsePDB(path)                     # default altloc, deliberately
+    sel = st.select(f"resname {resname}")
+    return 0 if sel is None else sel.numAtoms()
+
+
+def het_line(n, at, resname, chain="A", resseq=900):
+    """One HETATM record in strict PDB column format.
+
+    The columns are NOT cosmetic. An earlier version of this function emitted
+    every field from altLoc onward shifted one column left. Coordinates still
+    parsed -- the values are short enough that the displaced 8-char windows
+    happened to contain them -- so the file looked fine and PyMOL drew it
+    correctly. But resName read as 'UZ', chainID read as ' ', and altLoc read as
+    '3' (the leading character of '3UZ'). ProDy, which is what LigandMPNN parses
+    with, defaults to altloc='A' and therefore KEEPS only altLoc ' ' or 'A' --
+    so it silently discarded all 29 mandipropamid atoms and returned a
+    protein-only structure with no error.
+
+    ABA escaped by coincidence: its CCD code 'A8S' put a literal 'A' in the
+    altLoc column, the one character ProDy accepts. So the ligand-swap null was
+    the only arm that ever contained a ligand, which is the worst possible way
+    for this bug to land. See README section 23h.
+
+    Columns (PDB v3.3): 1-6 record, 7-11 serial, 13-16 name, 17 altLoc,
+    18-20 resName, 22 chainID, 23-26 resSeq, 31-38/39-46/47-54 xyz,
+    55-60 occupancy, 61-66 B, 77-78 element.
+    """
+    name, el = at.get_id(), at.element.strip()
+    # 1-char elements are indented one column; 2-char elements start at 13
+    nm = f"{name:<4s}" if len(el) == 2 or len(name) >= 4 else f" {name:<3s}"
+    x, y, z = at.coord
+    return (f"HETATM{n:5d} {nm} {resname:>3s} {chain}{resseq:4d}    "
+            f"{x:8.3f}{y:8.3f}{z:8.3f}{1.0:6.2f}{0.0:6.2f}          {el:>2s}\n")
+
+
 def write(path, polygly, extra):
     io.set_structure(wt)
     io.save(path, Keep(polygly))
     with open(path) as fh:
         body = [l for l in fh if l.startswith("ATOM")]
     n = int(body[-1][6:11])
+    resname = extra.get_resname()
     with open(path, "w") as fh:
         fh.writelines(body)
         for at in extra:
             n += 1
-            x, y, z = at.coord
-            fh.write(f"HETATM{n:5d} {at.get_id():<4s}{extra.get_resname():>3s} A 900    "
-                     f"{x:8.3f}{y:8.3f}{z:8.3f}  1.00  0.00          "
-                     f"{at.element:>2s}\n")
+            fh.write(het_line(n, at, resname))
         fh.write("END\n")
-    print(f"  wrote {os.path.basename(path)}")
+
+    # verify the columns actually landed where they should, per record
+    het = [l for l in open(path) if l.startswith("HETATM")]
+    assert len(het) == len(list(extra)), f"{path}: wrote {len(het)} HETATM"
+    for l in het:
+        assert l[16] == " ", f"{path}: altLoc is {l[16]!r}, ProDy will drop this"
+        assert l[17:20].strip() == resname, f"{path}: resName {l[17:20]!r}"
+        assert l[21] == "A", f"{path}: chainID {l[21]!r}"
+        for lo, hi in ((30, 38), (38, 46), (46, 54)):
+            float(l[lo:hi])
+
+    # the check that actually matters: parse it the way LigandMPNN will.
+    # Column asserts alone would not have caught the original bug's real
+    # consequence, because the file was still readable -- just readable as
+    # something else. Run this with the DEFAULT altloc setting, never 'all'.
+    n_lig = prody_ligand_atoms(path, resname)
+    if n_lig < 0:
+        print(f"  wrote {os.path.basename(path)}  ({len(het)} ligand atoms, "
+              f"ProDy ABSENT -- run 48_stage1_run.py's preflight to verify)")
+        return
+    assert n_lig == len(het), (
+        f"{path}: ProDy sees {n_lig} of {len(het)} ligand atoms under its "
+        f"default altloc filter -- LigandMPNN would run this arm APO")
+    print(f"  wrote {os.path.basename(path)}  "
+          f"({len(het)} ligand atoms, ProDy confirms {n_lig})")
 
 
 write(os.path.join(OUT, "wt_mandi.pdb"), False, lig)

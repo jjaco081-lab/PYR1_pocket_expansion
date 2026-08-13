@@ -76,6 +76,40 @@ DSM_HAO = {
     167: "ADEFGHIKLMQRSTVWY",
 }
 STRUCTS = ["wt_mandi", "polygly_mandi", "wt_aba"]
+LIGAND = {"wt_mandi": ("3UZ", 29), "polygly_mandi": ("3UZ", 29),
+          "wt_aba": ("A8S", 19)}
+
+
+def preflight():
+    """Refuse to run unless ProDy -- LigandMPNN's own parser -- sees the ligand.
+
+    The 2026-08-11 run of this script produced a complete, plausible-looking
+    negative result in which both mandipropamid arms were APO: malformed HETATM
+    columns put a '3' in the altLoc field, and ProDy's default altloc='A' filter
+    discarded all 29 ligand atoms without warning. Nothing downstream could
+    tell, because an apo run succeeds and returns sequences perfectly happily.
+
+    The only defence is to check atom COUNTS against what each input is supposed
+    to contain, using the same library and the same default settings the model
+    will use. Never relax this to altloc='all' -- that would restore the atoms
+    while leaving the malformed file in place, and hide the next instance.
+    """
+    import prody
+    prody.confProDy(verbosity="none")
+    bad = []
+    for s in STRUCTS:
+        resname, want = LIGAND[s]
+        st = prody.parsePDB(os.path.join(IN, f"{s}.pdb"))       # DEFAULT altloc
+        sel = None if st is None else st.select(f"resname {resname}")
+        got = 0 if sel is None else sel.numAtoms()
+        print(f"  preflight {s:>14}: {resname} {got}/{want} atoms visible")
+        if got != want:
+            bad.append(f"{s} ({got}/{want})")
+    if bad:
+        sys.exit("PREFLIGHT FAILED -- ligand invisible to ProDy in: "
+                 + ", ".join(bad) + "\n  re-run 47_stage1_inputs.py")
+    print("  preflight OK -- every arm contains its ligand\n", flush=True)
+
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--n", type=int, default=50)
@@ -84,6 +118,7 @@ ap.add_argument("--seed", type=int, default=37)
 ap.add_argument("--dry-run", action="store_true")
 args = ap.parse_args()
 os.makedirs(OUT, exist_ok=True)
+preflight()
 
 
 def wt_seq(pdb):

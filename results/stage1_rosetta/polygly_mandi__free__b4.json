@@ -1,0 +1,135 @@
+{
+  "arm": "polygly_mandi__free",
+  "struct": "polygly_mandi",
+  "alphabet": "free",
+  "block": 4,
+  "ligand": "3UZ",
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/stage1/params/3UZ.params",
+  "n_lig_heavy": 29,
+  "pack_shell": 8.0,
+  "rounds": 1,
+  "n_shell": 58,
+  "design_positions": [
+    59,
+    81,
+    83,
+    92,
+    94,
+    108,
+    110,
+    120,
+    122,
+    141,
+    159,
+    160,
+    163,
+    164,
+    167
+  ],
+  "trajectories": [
+    {
+      "arm": "polygly_mandi__free",
+      "struct": "polygly_mandi",
+      "alphabet": "free",
+      "traj": 40,
+      "seed": 1680,
+      "total": -145.02,
+      "interface_dG": -18.867,
+      "seconds": 442.4,
+      "seq": "VCVAIAMYEQECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "Q",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "polygly_mandi__free",
+      "struct": "polygly_mandi",
+      "alphabet": "free",
+      "traj": 41,
+      "seed": 1697,
+      "total": -146.588,
+      "interface_dG": -19.059,
+      "seconds": 416.3,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "polygly_mandi__free",
+      "struct": "polygly_mandi",
+      "alphabet": "free",
+      "traj": 42,
+      "seed": 1714,
+      "total": -147.028,
+      "interface_dG": -19.081,
+      "seconds": 425.6,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "polygly_mandi__free",
+      "struct": "polygly_mandi",
+      "alphabet": "free",
+      "traj": 43,
+      "seed": 1731,
+      "total": -144.863,
+      "interface_dG": -19.08,
+      "seconds": 436.7,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    }
+  ]
+}

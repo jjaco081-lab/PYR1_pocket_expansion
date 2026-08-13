@@ -1,0 +1,265 @@
+{
+  "arm": "wt_mandi__free",
+  "struct": "wt_mandi",
+  "alphabet": "free",
+  "block": 0,
+  "ligand": "3UZ",
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/stage1/params/3UZ.params",
+  "n_lig_heavy": 29,
+  "pack_shell": 8.0,
+  "rounds": 1,
+  "n_shell": 58,
+  "design_positions": [
+    59,
+    81,
+    83,
+    92,
+    94,
+    108,
+    110,
+    120,
+    122,
+    141,
+    159,
+    160,
+    163,
+    164,
+    167
+  ],
+  "trajectories": [
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 0,
+      "seed": 1000,
+      "total": -144.636,
+      "interface_dG": -18.774,
+      "seconds": 373.6,
+      "seq": "VCVAIAMYEQMCVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "Q",
+        "159": "M",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 1,
+      "seed": 1017,
+      "total": -145.32,
+      "interface_dG": -19.069,
+      "seconds": 367.0,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 2,
+      "seed": 1034,
+      "total": -145.128,
+      "interface_dG": -18.896,
+      "seconds": 378.7,
+      "seq": "VCVAIAMYEQECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "Q",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 3,
+      "seed": 1051,
+      "total": -145.319,
+      "interface_dG": -19.074,
+      "seconds": 369.7,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 4,
+      "seed": 1068,
+      "total": -145.126,
+      "interface_dG": -18.888,
+      "seconds": 384.0,
+      "seq": "VCVAIAMYEQECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "Q",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 5,
+      "seed": 1085,
+      "total": -145.764,
+      "interface_dG": -19.13,
+      "seconds": 427.3,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 6,
+      "seed": 1102,
+      "total": -145.765,
+      "interface_dG": -19.145,
+      "seconds": 434.1,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 7,
+      "seed": 1119,
+      "total": -145.32,
+      "interface_dG": -19.065,
+      "seconds": 448.0,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    },
+    {
+      "arm": "wt_mandi__free",
+      "struct": "wt_mandi",
+      "alphabet": "free",
+      "traj": 8,
+      "seed": 1136,
+      "total": -146.102,
+      "interface_dG": -19.082,
+      "seconds": 437.4,
+      "seq": "VCVAIAMYETECVVN",
+      "mutations": {
+        "59": "V",
+        "81": "C",
+        "92": "A",
+        "94": "I",
+        "108": "A",
+        "110": "M",
+        "122": "E",
+        "141": "T",
+        "159": "E",
+        "160": "C"
+      },
+      "recovered": [
+        "F108A"
+      ]
+    }
+  ]
+}

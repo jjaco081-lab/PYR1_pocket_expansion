@@ -2535,6 +2535,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 17 | 08-11 | because the W385 water senses ABA, requiring ligand contact with it is a sound design filter | measured in 3QN1 / 4WVO / 8EY0: the water is present in **all three**, with W385, Pro88 and Arg116 contacts conserved to 0.3 Å, but **mandipropamid never touches it** (5.1–5.2 Å vs ABA's 2.72 Å) | the water still senses ABA, but it has **two separable roles** and only the **gate–latch–HAB1 staple** is conserved; sensing is not. Leonard et al.'s H-bond constraint would have **excluded mandipropamid** — use it to rank, never to exclude (§23a) |
 | 18 | 08-11 | LigandMPNN's 28.7% top-1 recovery on the coumarin set measures method quality | a **ligand-blind oracle** on the same labels reaches **79.1%**, and **all 33** MPNN hits fall at positions where the experiment is ligand-invariant | sequence recovery is the wrong metric — most of it is winnable without the ligand. The number is separately confounded by pose (§23b) |
 | 19 | 08-11 | `39_md_run.sh` was safe to repoint at any partition | its resume path overwrites `prod_cont.nc`, and `prod.in` reruns a **full** 300 ns because `irest=1` continues the clock | harmless on non-preemptible `gpu`, destructive under preemption; `42_md_run_preempt.sh` numbers segments and computes the remainder from the restart clock (§23c) |
+| 20 | 08-12 | **stage 1 showed LigandMPNN cannot recover PYR1^MANDI** (§23g) | both mandipropamid arms held **no ligand** — shifted HETATM columns put `3` in the altLoc field and ProDy's default `altloc='A'` dropped all 29 atoms; ABA survived only because `A8S` starts with `A` | §23g **retracted**. Corrected run: LigandMPNN *does* find **F108A (+0.111)** and **F159L (+0.071)**, misses K59R, and V81I inverts to **−0.841**. Validate inputs by parsing them with the consuming library and asserting on counts (§23h) |
+| 21 | 08-12 | a protocol that gives consistent numbers across trajectories is working | `NeighborhoodResidueSelector` measures neighbour-atom distances, and a 29-atom ligand has one NBR atom, so an 8 Å shell caught **3 residues**; the frozen pocket made every trajectory identical and dG a tidy −12.29 | all-heavy-atom shell → 43 residues, dG −19.11, trajectories that differ. **Suspiciously low variance is a bug signature, not a quality signal** (§23i) |
 
 ### Bugs caught before they cost anything
 
@@ -2855,7 +2857,20 @@ wide positions with few substitutions per sequence, round 2 narrow positions wit
 more substitutions each. Fits the probability-based scoring, since round 1 needs
 per-position marginals and round 2 needs joint combinations.
 
-### 23g. Stage 1 result — LigandMPNN does not recover PYR1^MANDI (job 27392339)
+### 23g. ~~Stage 1 result — LigandMPNN does not recover PYR1^MANDI~~ (job 27392339) — **RETRACTED 2026-08-12**
+
+> **⚠ RETRACTED. Do not cite any number in this section.** The two mandipropamid
+> arms contained **no ligand**. `47_stage1_inputs.py` wrote the ligand's PDB
+> records one column left of specification, which put the `3` of `3UZ` into the
+> altLoc field; ProDy — LigandMPNN's parser — keeps only altLoc `' '` or `'A'` by
+> default and silently discarded all 29 atoms. ABA survived solely because its
+> code `A8S` happens to begin with `A`, so **the ligand-swap null was the only
+> arm that ever held a ligand**, and `delta = P_mandi − P_aba` measured *apo minus
+> ABA-holo*. The corrected run is **§23h**, and it reverses the conclusion.
+>
+> The section is kept in full rather than deleted. The failure mode — an input
+> defect that every downstream step tolerated, yielding a complete and internally
+> consistent result — is the most transferable thing stage 1 has produced.
 
 Six arms, 50 sequences each at T=0.2, scored as §23f specifies.
 
@@ -2923,3 +2938,240 @@ and is the Leonard baseline, before concluding anything about the architecture.
 Consistent with §23b: LigandMPNN reproduces natural-looking pockets, and the
 mutations engineering actually needs — F108A, F159L, both removing bulk to make
 room — are ones it will not propose.
+
+### 23h. The apo bug, and the corrected stage-1 LigandMPNN result (job 27412775) — 2026-08-12
+
+#### What broke
+
+`47_stage1_inputs.py` assembled its outputs by writing protein records with
+Biopython's `PDBIO` and then appending the ligand with a hand-rolled f-string.
+That f-string placed `resName` in columns 17–19 instead of 18–20, shifting every
+field from `altLoc` onward one column left:
+
+| field | columns | should be | was read as |
+|---|---|---|---|
+| altLoc | 17 | `' '` | **`'3'`** (first char of `3UZ`) |
+| resName | 18–20 | `3UZ` | `UZ` |
+| chainID | 22 | `A` | `' '` |
+| x, y, z | 31–54 | correct | **still correct** |
+
+The coordinates survived because the values are short enough that the displaced
+8-character windows still contained them — `'  1.579 '` parses to `1.579`. That
+is precisely why nothing caught it. The files opened correctly in PyMOL, the
+ligand sat in the pocket, and every script that touched them succeeded.
+
+ProDy — which is what LigandMPNN parses with — defaults to `altloc='A'`, keeping
+only records whose altLoc is `' '` or `'A'`. Mandipropamid's `'3'` matched
+neither, so ProDy returned a protein-only structure:
+
+```
+wt_mandi       total=1414  protein=1414  hetero=0     ← 29 atoms discarded
+polygly_mandi  total=1352  protein=1352  hetero=0     ← 29 atoms discarded
+wt_aba         total=1433  protein=1414  hetero=19    ← kept
+```
+
+Re-parsing with `altloc='all'` recovers all 29, confirming the mechanism.
+
+**ABA survived by coincidence, which is the worst possible outcome.** Its CCD
+code `A8S` put a literal `A` into the altLoc column — the one character ProDy
+accepts. Had both ligands been dropped, all six arms would have been apo, the
+deltas would have been ~0, and the result would have looked broken. Instead the
+*null* was the only arm with a ligand, so `delta = P_mandi − P_aba` was
+`apo − ABA-holo`: a sign-inverted quantity that still produced a plausible table.
+
+#### Fixes
+
+- `het_line()` writes strict PDB columns and asserts each record's altLoc,
+  resName, chainID and coordinate fields after writing.
+- `write()` re-parses every file **with ProDy at its default settings** and
+  refuses to proceed unless all ligand atoms are visible. Column asserts alone
+  would not have sufficed — the file was readable, just readable as something
+  else. Only a parse with the consuming library catches that.
+- `48_stage1_run.py` runs `preflight()` before any compute, checking ligand atom
+  **counts** per arm (29/29, 29/29, 19/19) and exiting otherwise.
+- Neither fix uses `altloc='all'`. That would restore the atoms while leaving
+  the malformed file in place, and hide the next occurrence.
+
+**Rule for the project:** *validate inputs by parsing them with the library that
+will consume them, and assert on counts.* Visual inspection and shape checks both
+pass here. Deleted results are in `results/stage1_RETRACTED_apo_bug/`.
+
+#### The corrected result — a partial recovery, not a failure
+
+Same six arms, N=50, T=0.2, seed 37; only the inputs changed.
+
+| mutation | P(wt_mandi) | P(polygly) | P(wt_aba) | **delta** | retracted delta |
+|---|---|---|---|---|---|
+| K59R | 0.000 | 0.000 | 0.060 | **−0.060** | +0.105 |
+| V81I | 0.155 | 0.155 | 0.996 | **−0.841** | −0.026 |
+| F108A | 0.111 | 0.111 | 0.000 | **+0.111** | +0.001 |
+| F159L | 0.071 | 0.071 | 0.000 | **+0.071** | +0.000 |
+
+Identical to three decimals under both alphabets — the DSM-Hao restriction never
+binds, because everything the model wants at these positions is already in the
+library.
+
+**The conclusion inverts on the two positions that matter most.** With the ligand
+actually present, LigandMPNN finds **F108A (+0.111)** and **F159L (+0.071)**,
+both with *zero* mass in the ABA arm — unambiguously ligand-conditional. The
+retracted section claimed these were the model's blind spot and read that as
+confirmation of §23b. That reading was an artefact: an apo pocket has no reason
+to open itself up, so of course truncation carried no weight. **F108A is this
+project's own lead prediction (§14d, §15), and the method does propose it.**
+
+**V81I is now strongly negative (−0.841), and this is the null doing its job.**
+With ABA the model puts I at position 81 with probability 0.996 — a mutation away
+from wild type, in the arm whose correct answer is *zero* mutations. Mandipropamid
+*suppresses* it to 0.155. So V81I is not merely ligand-independent; it is
+anti-correlated with the ligand that actually requires it. Any protocol scoring
+raw recovery would bank V81I as a hit in both arms.
+
+**K59R is missed (−0.060).** The model gives R at 59 zero mass with
+mandipropamid and 0.060 with ABA.
+
+**What the two recovered mutations have in common.** From the trivial baseline in
+§23f, ranked by steric overlap with the ligand: F108 (min dist **0.62 Å**, 23
+atoms within 4 Å) and F159 (**1.98 Å**, 12 atoms). K59 (2.86 Å) and V81 (3.28 Å)
+barely touch it. **LigandMPNN recovers exactly the two positions where the clash
+is severe, and misses both where it is not.** The clash baseline already
+identifies 3 of 4 *positions* for free. So the honest statement is: the model
+supplies ligand-conditional *identities* at positions that steric overlap alone
+would have flagged, and adds nothing where the required change is not driven by
+overt clash. That is a real capability and a real limit, and it is a much
+narrower claim than either §23g or a naive reading of "2/4 recovered".
+
+**Recall-at-N is unchanged as a metric and still uninformative.** Mandipropamid
+arms 3/4 (V81I, F108A, F159L), ABA null 2/4 (K59R, V81I), uniform chance 3.84/4.
+Note the mandi arms "recall" V81I whose delta is −0.841 — recall-at-N counts the
+single most anti-ligand proposal in the study as a success. §23b's retirement of
+sequence recovery stands, and is now doubly supported.
+
+**Effective sample size.** 38/50 distinct, mean Hamming 3.25, entropy 0.54 bits —
+*more* collapsed than the apo run (49/50, 5.51, 0.87), as expected once a ligand
+constrains the pocket. The ABA arm stays looser (41/50, 3.96, 0.61).
+
+**The poly-Gly finding from §23g survives.** `wt_mandi` and `polygly_mandi` remain
+identical to three decimals, confirming this is a property of how LigandMPNN masks
+designable side chains and not a consequence of the bug.
+
+#### Effect on the gate
+
+§23f's gate said a LigandMPNN failure requires a physics-based second method
+before any claim about the architecture. That still holds, but the reason has
+changed: this is now a **partial success**, and the open question is whether
+Rosetta finds K59R and V81I — the two positions where clash is weak and an
+explicit energy function, with a charged ABA carboxylate at K59, might see what a
+learned model does not. Built as §23i.
+
+### 23i. Stage 1, Rosetta FastDesign arm — built and running (job 27421344) — 2026-08-12
+
+**Status at time of writing: 300 trajectories in flight, results not yet merged.**
+Everything below the "how to finish" heading is protocol, not outcome.
+
+#### Why this arm exists
+
+§23f's gate: one method's result is not a statement about the architecture. With
+§23h showing LigandMPNN recovers F108A and F159L but misses K59R and V81I, the
+sharp question is whether a physics-based method finds the two it missed. Those
+are the two positions where steric clash is *weak* (K59 2.86 Å, V81 3.28 Å from
+the ligand, versus F108 0.62 Å and F159 1.98 Å) — exactly where a learned model
+has least to go on and an explicit energy function has most. K59 in particular
+salt-bridges the ABA carboxylate, which is an electrostatic fact Rosetta scores
+directly. Rosetta is also Leonard et al.'s baseline.
+
+#### Pipeline
+
+| script | does |
+|---|---|
+| `49_stage1_ligand_params.py` | crystal coordinates + CCD bond orders + explicit H + aromatic perception → `molfile_to_params.py` → `.params` |
+| `50_stage1_rosetta.py` | one arm-block: FastRelax with a design-enabled task factory |
+| `50b_submit_stage1_rosetta.sh` | 30 array tasks × 10 trajectories = 6 arms × 50 |
+| `51_stage1_rosetta_merge.py` | ligand-swap delta, recall, effective sample size, proposed substitutions, interface energies |
+
+Ligand topology cannot come from a PDB — Rosetta needs bond orders — and it must
+not come from the CCD's *ideal* conformer, because the **bound** conformer is the
+object of interest (§23d, scripts 45/46). The two are married: coordinates from
+the stage-1 file, chemistry from the CCD SMILES, verified one-to-one at
+**0.0000 Å** for both ligands.
+
+**ABA is modelled as the carboxylATE, not the CCD's neutral acid.** At assay pH
+it is charged, and in 3QN1 that charge salt-bridges K59 — the very position under
+test. `--aba-neutral` builds the acid for the sensitivity check, which is worth
+running before any claim about K59.
+
+#### Protocol choices, and what they cost
+
+- **Design** at the 15 non-gate/latch Tian positions; WT identity always allowed,
+  so a position whose WT residue is outside the library alphabet is not forced to
+  mutate.
+- **Repack** an 8 Å all-heavy-atom shell around the ligand (43 residues);
+  **freeze** the remaining 121. This is cheaper *and* better: side chains 30 Å
+  away flipping between trajectories inject variance into sequence frequencies
+  that has nothing to do with the ligand. Both arms use the identical rule, so
+  the ligand-swap null is unaffected.
+- **Backbone and ligand jump fixed.** Stage 1's premise is a perfect pose. If the
+  ligand could translate, a failure could be blamed on drift and a success could
+  come from relocating the ligand somewhere WT already accommodates.
+- **Chi minimisation only where the packer acts**, so minimisation cannot quietly
+  relax the 121 frozen residues.
+- **Poly-Gly is a genuine arm here**, unlike for LigandMPNN (§23g): Rosetta packs
+  explicit rotamers, so truncation really does remove the clash signal.
+
+**Limit, stated plainly:** Rosetta optimises a fixed backbone against a fixed
+pose, so it can only relieve the clash it is handed — the same perfect-pose
+assumption LigandMPNN got. That is what keeps the comparison fair; neither method
+is being asked stage 2's harder question.
+
+#### Three sizing errors, recorded because each was silent
+
+1. **Whole-protein repacking** did not finish one trajectory in 28 min under
+   `-ex1 -ex2`. Fixed by the pack shell.
+2. **`NeighborhoodResidueSelector` at 8 Å selected 3 residues.** It measures
+   between *neighbour atoms*, and `molfile_to_params` gives a 29-atom ligand a
+   single NBR atom, so the sphere was drawn from one point on a 12 Å molecule.
+   The pocket froze solid, every trajectory returned an identical sequence, and
+   the interface energy came out a tidy **−12.29**. With an all-heavy-atom shell:
+   43 residues, **−19.11**, and trajectories that actually differ. A protocol bug
+   that produces *more* consistent numbers is the dangerous kind.
+   I first misdiagnosed this as a seeding failure; both PyRosetta reseed calls
+   were verified reproducible, and the real cause was the frozen environment.
+3. **All 30 tasks wrote one shared input path**, leaving a 16 MB file. Every task
+   still loaded a valid pose — the heavy-atom-count and one-to-one pose asserts
+   passed in all 30 logs — but that was timing luck. Input paths are now
+   per-unit.
+
+#### How to finish this after the session ends
+
+```bash
+cd /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion
+squeue -j 27421344 -h -r -o "%T" | sort | uniq -c        # expect 30 COMPLETED
+python scripts/51_stage1_rosetta_merge.py                # writes the tables
+```
+Results land in `results/stage1_rosetta/<arm>__b<block>.json`, written
+incrementally after every trajectory, so a killed task still contributes.
+Six arms must be present: `{wt_mandi, polygly_mandi, wt_aba} × {dsm_hao, free}`.
+
+**Read the output in this order, and do not skip to recall:**
+
+1. `delta = freq_mandi(true) − freq_aba(true)`. Only delta is evidence.
+2. **K59R and V81I specifically** — the LigandMPNN misses. These decide whether
+   the two methods fail the same way (a claim about the problem) or differently
+   (a claim about the methods).
+3. Effective sample size. If distinct-sequence count is low, the frequencies are
+   worth less than N suggests.
+4. Proposed substitutions at *all* 15 positions, including the 11 with no ground
+   truth. This is the project's actual deliverable — candidate library positions.
+   Discount anything appearing at the same rate in the ABA arm.
+5. Recall-at-N last, and only as an upper bound. It counted V81I — delta −0.841,
+   the most anti-ligand proposal in the study — as a success in §23h.
+
+**Pre-registered reading of the result**, so it is not chosen after the fact:
+
+| Rosetta finds | means |
+|---|---|
+| K59R and/or V81I | methods are complementary; stage 1 half-works; **proceed to stage 2** with both |
+| only F108A/F159L | both methods recover only what the clash baseline gives free; stage 1 does not clear |
+| nothing above null | physics and learning agree the pose alone is insufficient; stop and reconsider the architecture |
+
+Then run `--aba-neutral` as the protonation sensitivity check before writing any
+K59 conclusion.

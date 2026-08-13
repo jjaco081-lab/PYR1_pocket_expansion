@@ -44,3 +44,16 @@ data/survey_cache/
 
 # regenerable viewing trajectories (rebuild with scripts/41_md_view.sh)
 data/md/view/
+
+# LigandMPNN per-sequence structure dumps (~156 MB) -- regenerate with
+# 48b_submit_stage1_lmpnn.sh. The scientifically load-bearing outputs, the
+# sampling_probs in stats/*.pt and the sequences in seqs/*.fa, ARE tracked.
+results/stage1*/*/backbones/
+
+# the apo-bug run, kept on disk as evidence but too bulky to version (166 MB);
+# README section 23h records what it was and why it is retracted
+results/stage1_RETRACTED_apo_bug/
+
+# Rosetta stage-1 scratch: timing probes and the per-task input copies
+results/stage1_rosetta_smoke/
+results/stage1_rosetta/_input_*.pdb
