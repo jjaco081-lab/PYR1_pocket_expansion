@@ -102,6 +102,10 @@ ap.add_argument("--pack-shell", type=float, default=8.0,
                      "everything further out is frozen (default 8)")
 ap.add_argument("--rounds", type=int, default=1,
                 help="FastRelax ramp rounds (default 1)")
+ap.add_argument("--favor-native", type=float, default=0.0,
+                help="per-residue res_type_constraint bonus for the starting "
+                     "identity (0 = off, the behaviour of job 27421344). See the "
+                     "WHY block below before changing this.")
 args = ap.parse_args()
 
 n_arms = len(ARMS) * len(ALPHABETS)
@@ -186,8 +190,13 @@ from pyrosetta.rosetta.core.pack.task import operation              # noqa: E402
 from pyrosetta.rosetta.core.select.residue_selector import (        # noqa: E402
     ResidueIndexSelector, NotResidueSelector, OrResidueSelector,
     NeighborhoodResidueSelector)
-from pyrosetta.rosetta.core.scoring import ScoreFunctionFactory     # noqa: E402
+from pyrosetta.rosetta.core.scoring import (                        # noqa: E402
+    ScoreFunctionFactory, ScoreType)
 from pyrosetta.rosetta.protocols.relax import FastRelax             # noqa: E402
+# NOT protocols.simple_moves -- in PyRosetta 2026.06 FavorNativeResidue lives in
+# protocols.protein_interface_design. Verified by import before submitting.
+from pyrosetta.rosetta.protocols.protein_interface_design import (  # noqa: E402
+    FavorNativeResidue)
 from pyrosetta.rosetta.numeric import xyzVector_double_t            # noqa: E402
 
 pyrosetta.init(
@@ -201,6 +210,29 @@ pyrosetta.init(
 sfxn_cst = ScoreFunctionFactory.create_score_function("ref2015_cst")
 sfxn = ScoreFunctionFactory.create_score_function("ref2015")
 
+# WHY --favor-native EXISTS (added 2026-08-13, after job 27421344)
+#
+# Job 27421344 ran with no favor-native term, i.e. bare ref2015 reference energies.
+# The ABA arm is WT protein with its native ligand, so its correct answer is ZERO
+# mutations -- it is the WT-recovery control. It kept WT at only 4 of 15 positions
+# and deleted the K59 carboxylate salt bridge in 100% of trajectories (to Asn 82%,
+# Ile 18%), despite ABA being modelled as the anion, the protonation state most
+# favourable to that salt bridge. ref2015's reference energies are fit for soluble
+# monomer design and do not hold a native complex.
+#
+# The consequence for the benchmark: at a position the null also mutates, "no
+# ligand-conditional signal" cannot be told apart from "the protocol cannot hold a
+# native contact". That is what made K59R and V81I uninterpretable rather than
+# negative. F108A survived only because the null happens to be quiet there.
+#
+# res_type_constraint scores the FavorNativeResidue bonus. It is set on sfxn_cst
+# (used for design) but deliberately NOT on sfxn (used for interface energy), so
+# reported energies stay on the same scale as job 27421344 and remain comparable.
+if args.favor_native > 0:
+    sfxn_cst.set_weight(ScoreType.res_type_constraint, 1.0)
+assert sfxn.get_weight(ScoreType.res_type_constraint) == 0.0, (
+    "interface energy must not include the favor-native bonus")
+
 start = pyrosetta.pose_from_pdb(inp)
 pi = start.pdb_info()
 
@@ -213,6 +245,15 @@ n_lig_heavy = sum(1 for a in range(1, start.residue(LIG).natoms() + 1)
                   if not start.residue(LIG).atom_is_hydrogen(a))
 assert n_lig_heavy == n_lig_atoms, (
     f"ligand loaded with {n_lig_heavy} heavy atoms, input had {n_lig_atoms}")
+
+# Applied to `start`, so every cloned trajectory inherits the same constraints.
+# NOTE for the poly-Gly arm: "native" here means the identity in the INPUT pose,
+# which for polygly_mandi is Gly at all 15 designable positions -- so a non-zero
+# bonus there rewards staying Gly, which is not what the arm is for. The sweep
+# therefore calibrates on wt_aba only, and the poly-Gly arm is re-run at whatever
+# weight the null selects purely so all six arms stay on one protocol.
+if args.favor_native > 0:
+    FavorNativeResidue(start, args.favor_native)
 
 pose_idx = {}
 for p in DESIGN:
@@ -349,7 +390,8 @@ mm = movemap()
 print(f"  packer: {len(DESIGN)} designable + {n_shell - len(DESIGN)} repackable "
       f"within {args.pack_shell:.0f} A of the ligand; "
       f"{start.size() - n_shell - 1} residues frozen; "
-      f"FastRelax rounds={args.rounds}", flush=True)
+      f"FastRelax rounds={args.rounds}; "
+      f"favor_native={args.favor_native:g}", flush=True)
 
 rows = []
 t_all = time.time()
@@ -372,6 +414,7 @@ for k in range(args.n_per_unit):
     muts = {p: seq[p] for p in DESIGN
             if seq[p] != start.residue(pose_idx[p]).name1()}
     rec = dict(arm=tag, struct=struct, alphabet=alphabet, traj=traj, seed=seed,
+               favor_native=args.favor_native,
                total=round(total, 3), interface_dG=round(dG, 3),
                seconds=round(dt, 1),
                seq="".join(seq[p] for p in DESIGN),
@@ -386,6 +429,7 @@ for k in range(args.n_per_unit):
           f"recovered={','.join(rec['recovered']) or '-'}", flush=True)
     # write incrementally: a walltime kill should not discard finished work
     json.dump(dict(arm=tag, struct=struct, alphabet=alphabet, block=block,
+                   favor_native=args.favor_native,
                    ligand=comp, params=params_file, n_lig_heavy=n_lig_heavy,
                    pack_shell=args.pack_shell, rounds=args.rounds,
                    n_shell=n_shell, design_positions=DESIGN, trajectories=rows),
