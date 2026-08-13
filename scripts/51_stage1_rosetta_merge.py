@@ -43,12 +43,26 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRUE = {59: ("K", "R"), 81: ("V", "I"), 108: ("F", "A"), 159: ("F", "L")}
 DESIGN = [59, 81, 83, 92, 94, 108, 110, 120, 122, 141, 159, 160, 163, 164, 167]
 
+# Wild-type identities, read from data/stage1/wt_mandi.pdb (the actual input) rather
+# than inferred from designed sequences. The earlier inference took WT to be whatever
+# the first unmutated trajectory carried, so a position mutated in ALL 50 trajectories
+# printed "?" -- which reads as missing data when it in fact means the opposite, a
+# position under 100% selection pressure. The four TRUE entries below agree with the
+# structure, which is the cross-check that this table is keyed correctly.
+WT = {59: "K", 81: "V", 83: "V", 92: "S", 94: "E", 108: "F", 110: "I", 120: "Y",
+      122: "S", 141: "E", 159: "F", 160: "A", 163: "V", 164: "V", 167: "N"}
+assert all(WT[p] == TRUE[p][0] for p in TRUE), "WT table disagrees with ground truth"
+
 ap = argparse.ArgumentParser()
 ap.add_argument("--indir", default=os.path.join(ROOT, "results", "stage1_rosetta"))
 ap.add_argument("--top", type=int, default=3, help="substitutions to list per position")
 args = ap.parse_args()
 
-files = sorted(f for f in os.listdir(args.indir) if f.endswith(".json"))
+# SUMMARY is written into indir, so it must be excluded from the glob or the second
+# run of this script ingests its own output and dies on the missing "arm" key.
+SUMMARY = "stage1_rosetta_summary.json"
+files = sorted(f for f in os.listdir(args.indir)
+               if f.endswith(".json") and f != SUMMARY)
 if not files:
     sys.exit(f"no result files in {args.indir}")
 
@@ -149,25 +163,45 @@ for alphabet in ("dsm_hao", "free"):
     if not (m and ab):
         continue
     print(f"\n--- alphabet: {alphabet}   (mandipropamid vs ABA, WT excluded) ---")
-    print(f"{'pos':>5} {'wt':>3} {'truth':>6}  {'top substitutions (mandi)':<34} "
-          f"{'same in ABA arm'}")
+    print(f"{'pos':>5} {'wt':>3} {'truth':>6} {'mut%':>5} {'aba%':>5}  "
+          f"{'top substitutions (mandi)':<34} {'same in ABA arm'}")
     for pos in DESIGN:
         cm, ca = col(m, pos), col(ab, pos)
         if not cm:
             continue
-        wt = None
-        for r in m:
-            wt = r["seq"][DESIGN.index(pos)] if not r["mutations"].get(str(pos)) else wt
-            if wt:
-                break
+        wt = WT[pos]
+        mut_m = 100 * sum(x != wt for x in cm) / len(cm)
+        mut_a = 100 * sum(x != wt for x in ca) / len(ca) if ca else float("nan")
         cnt = collections.Counter(x for x in cm if x != wt)
         cna = collections.Counter(x for x in ca if x != wt)
         top = ", ".join(f"{a}{100*n/len(cm):.0f}%" for a, n in cnt.most_common(args.top))
         same = ", ".join(f"{a}{100*cna[a]/len(ca):.0f}%" for a, _ in cnt.most_common(args.top)
                          if cna.get(a))
         t = f"->{TRUE[pos][1]}" if pos in TRUE else ""
-        print(f"{pos:>5} {wt or '?':>3} {t:>6}  {top or '(none)':<34} {same or '-'}")
+        print(f"{pos:>5} {wt:>3} {t:>6} {mut_m:>4.0f}% {mut_a:>4.0f}%  "
+              f"{top or '(none)':<34} {same or '-'}")
     print("  a substitution at the same rate in the ABA arm is ligand-independent")
+
+    # POSITION-level signal, scored separately from IDENTITY-level signal. These come
+    # apart here, and the distinction is the one that matters for the deliverable: an
+    # oligo-pool library picks POSITIONS and lets selection choose identities, so a
+    # method that puts the right positions under ligand-conditional pressure is useful
+    # even when the residue it proposes is wrong.
+    cond = [p for p in DESIGN
+            if col(m, p) and col(ab, p)
+            and 100 * sum(x != WT[p] for x in col(m, p)) / len(col(m, p)) >= 50
+            and 100 * sum(x != WT[p] for x in col(ab, p)) / len(col(ab, p)) < 50]
+    hit = sorted(set(cond) & set(TRUE))
+    k, n, K = len(cond), len(DESIGN), len(TRUE)
+    # P(a random k-subset of the n designable positions contains all |hit| true ones)
+    p_hyp = (math.comb(k, len(hit)) * math.comb(n - k, K - len(hit))
+             / math.comb(n, K)) if k >= len(hit) else float("nan")
+    print(f"\n  ligand-conditional positions (mandi >=50% mutated, ABA <50%): "
+          f"{k}/{n} -> {cond}")
+    print(f"  true positions inside that set: {len(hit)}/{K} {hit}")
+    print(f"  hypergeometric P(>= this many by chance) = {p_hyp:.3f}"
+          f"   [{k} picked from {n}; NOT significant at 0.05 unless stated]")
+    print("  compare: the trivial clash baseline already gives 3/4 positions for free")
 
 print("\n" + "=" * 84)
 print("INTERFACE ENERGY (ref2015 bound - separated; within-arm ranking only)")
@@ -180,6 +214,6 @@ for a, rows in sorted(arms.items()):
     med = v[len(v) // 2] if len(v) % 2 else 0.5 * (v[len(v)//2 - 1] + v[len(v)//2])
     print(f"{a:>24} {len(v):>4} {med:>9.2f} {v[0]:>9.2f} {v[-1]:>9.2f}")
 
-out = os.path.join(args.indir, "stage1_rosetta_summary.json")
+out = os.path.join(args.indir, SUMMARY)
 json.dump({a: r for a, r in arms.items()}, open(out, "w"), indent=1)
 print(f"\nwrote {out}")
