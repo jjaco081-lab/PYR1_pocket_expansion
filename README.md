@@ -2537,6 +2537,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 19 | 08-11 | `39_md_run.sh` was safe to repoint at any partition | its resume path overwrites `prod_cont.nc`, and `prod.in` reruns a **full** 300 ns because `irest=1` continues the clock | harmless on non-preemptible `gpu`, destructive under preemption; `42_md_run_preempt.sh` numbers segments and computes the remainder from the restart clock (§23c) |
 | 20 | 08-12 | **stage 1 showed LigandMPNN cannot recover PYR1^MANDI** (§23g) | both mandipropamid arms held **no ligand** — shifted HETATM columns put `3` in the altLoc field and ProDy's default `altloc='A'` dropped all 29 atoms; ABA survived only because `A8S` starts with `A` | §23g **retracted**. Corrected run: LigandMPNN *does* find **F108A (+0.111)** and **F159L (+0.071)**, misses K59R, and V81I inverts to **−0.841**. Validate inputs by parsing them with the consuming library and asserting on counts (§23h) |
 | 21 | 08-12 | a protocol that gives consistent numbers across trajectories is working | `NeighborhoodResidueSelector` measures neighbour-atom distances, and a 29-atom ligand has one NBR atom, so an 8 Å shell caught **3 residues**; the frozen pocket made every trajectory identical and dG a tidy −12.29 | all-heavy-atom shell → 43 residues, dG −19.11, trajectories that differ. **Suspiciously low variance is a bug signature, not a quality signal** (§23i) |
+| 22 | 08-13 | the ligand-swap null only had to supply a subtraction, so it did not need checking itself | the ABA null arm is WT + native ligand, so its own correct answer is **zero mutations** — it was at **4/15**, deleting a 2.85 Å K59 salt bridge in 100% of trajectories. Never scored, because a null is only ever read as a difference | **score the control's own correct answer, not only the contrast.** K59R and V81I are uninterpretable, not negative; stage 1 does not clear (§23j) |
+| 23 | 08-13 | a params file summing to 0.000 net charge meant the formal charge was dropped | field 4 of a params `ATOM` line is the MM type — the literal `X` — and the charge is field 5. Summing field 4 returns 0.000 for **any** ligand. The real sums were −0.970 and +0.100, both correct | caught by the validator written to act on it, before any commit or compute; params regenerated **byte-identical**. Validation now uses field 5 with a rounding-aware tolerance. **A number shaped like a finding still needs its reader checked** (§23j) |
 
 ### Bugs caught before they cost anything
 
@@ -3068,6 +3070,11 @@ learned model does not. Built as §23i.
 **Status at time of writing: 300 trajectories in flight, results not yet merged.**
 Everything below the "how to finish" heading is protocol, not outcome.
 
+> **Completed 2026-08-13.** Results are in **§23j**, together with the null-arm
+> failure that constrains how much they can be asked to carry. The pre-registered
+> table at the end of this section is applied there verbatim, including the part
+> that goes against the arm.
+
 #### Why this arm exists
 
 §23f's gate: one method's result is not a statement about the architecture. With
@@ -3175,3 +3182,204 @@ Six arms must be present: `{wt_mandi, polygly_mandi, wt_aba} × {dsm_hao, free}`
 
 Then run `--aba-neutral` as the protonation sensitivity check before writing any
 K59 conclusion.
+
+---
+
+### 23j. Stage 1 Rosetta result: F108A only, and a null arm that fails its own control (jobs 27421344, 27438220, 27438909) — 2026-08-13
+
+All 30 array tasks of job 27421344 completed: 6 arms × 50 trajectories.
+
+#### The primary table
+
+`delta = freq_mandi(true) − freq_aba(true)`. Identical under both alphabets, so
+only `dsm_hao` is shown; `free` differs by ≤0.02 on every row.
+
+| mut | f(wt_mandi) | f(wt_aba) | delta | reading |
+|---|---|---|---|---|
+| **F108A** | 1.000 | 0.000 | **+1.000** | recovered, ligand-conditional |
+| F159L | 0.000 | 0.000 | 0.000 | position found, identity wrong — proposes **Asp/Glu** |
+| K59R | 0.000 | 0.000 | 0.000 | uninterpretable — see the null-arm failure below |
+| V81I | 0.000 | 0.980 | **−0.980** | **inverted** |
+
+**V81I inverting replicates across methods.** LigandMPNN gave −0.841 (§23h),
+Rosetta −0.980. Two unrelated methods independently prefer Ile at 81 *in the arm
+whose correct answer is zero mutations*. This is no longer attributable to one
+scoring function, and it is a second, independent strike against recall-at-N,
+which scores V81I as a success in both arms.
+
+**F159 is a near-miss of a specific and informative kind.** Rosetta puts position
+159 under 100% ligand-conditional pressure — the ABA arm holds Phe at 100%, the
+mandipropamid arm mutates it in 100% of trajectories — and then proposes Asp
+(dsm_hao) or Glu (free), i.e. burying a carboxylate against a chlorophenyl ring.
+The position signal is right and the chemistry is not.
+
+#### The null arm fails its own WT-recovery control
+
+The ABA arm is WT protein with its native ligand. Its correct answer is **zero
+mutations at all 15 designable positions** — it is the WT-recovery control, and
+nobody had scored it as one. It keeps WT at **4 of 15 (29%)**:
+
+```
+ 59 wt=K  keeps-WT   0%   N82%, I18%   <- deletes the ABA carboxylate salt bridge
+ 81 wt=V  keeps-WT   0%   I100%
+ 83 wt=V  keeps-WT   0%   L100%
+ 92 wt=S  keeps-WT   0%   A100%
+141 wt=E  keeps-WT   0%   K74%, Q18%
+108 wt=F  keeps-WT  92%   <- quiet
+159 wt=F  keeps-WT 100%   <- quiet
+```
+
+The consequence is precise and it is not recoverable by argument: **at any
+position the null also mutates, "no ligand-conditional signal" cannot be
+distinguished from "the protocol cannot hold a native contact."** K59 and V81 are
+both such positions. F108 and F159 are readable only because the null happens to
+be quiet at exactly those two — which are, again, the two severe-clash positions.
+
+This is the third instance in this project of the same failure shape, and the
+general form is now recorded: **score the control's own correct answer, not only
+the contrast.** A null used solely as a subtraction can be broken indefinitely
+without showing it.
+
+#### Ruling out the cheap explanations
+
+Two candidate causes were checked and eliminated before blaming the scorefunction.
+
+**Pose.** K59 NZ sits **2.85 Å** from ABA carboxylate O4 and **3.02 Å** from O3,
+measured on the pose Rosetta actually scores. That is a textbook bidentate salt
+bridge. The geometry is not the problem.
+
+**Ionisation.** `A8S_anion.params` partial charges sum to **−0.970** over 38
+atoms — the intended −1, to within the 2-decimal rounding of the charge column.
+`3UZ` sums to +0.100 over 51 atoms, correct for a neutral molecule.
+
+> An intermediate reading of "exactly 0.000" for both, which briefly looked like a
+> dropped formal charge, was an off-by-one in the reader: field 4 of a params
+> `ATOM` line is the MM type — the literal `X` for every ligand atom — and the
+> charge is field 5. Summing field 4 returns 0.000 for *any* ligand, which is
+> precisely the shape of a real finding. `49_stage1_ligand_params.py` now
+> validates the generated params with the correct field, against a tolerance that
+> scales as `0.005·n_atoms + 0.02` because per-atom rounding accumulates. The
+> regenerated params are **byte-identical** to the ones job 27421344 used, so no
+> result depends on this.
+
+#### The favor-native calibration, and why it failed (job 27438220)
+
+`ref2015`'s reference energies are fit for soluble monomer design, not for holding
+a native complex, so `50_stage1_rosetta.py` gained `--favor-native`
+(`FavorNativeResidue` — which lives in `protocols.protein_interface_design`, *not*
+`protocols.simple_moves`, in PyRosetta 2026.06). The weight was swept **on the
+null arm only**, against a criterion fixed in the submit script before any output
+existed: smallest weight keeping WT ≥70% and K59 ≥50% in both alphabets,
+disqualified if it freezes the packer.
+
+| weight | WT frac | WT pos | K59 Lys | distinct seqs (of 10) |
+|---|---|---|---|---|
+| 0 | 29% | 4/15 | **0%** | 16 (of 50) |
+| 0.25 | 45% | 7/15 | **0%** | 7 |
+| 0.5 | 59% | 10/15 | **0%** | 10 |
+| 1.0 | 65% | 10/15 | **0%** | 7 |
+| 1.5 | 85% | 13/15 | **0%** | 3 |
+
+Global WT recovery responds smoothly to the bonus, so the term works. **K59 stays
+at 0% at every weight**, including 1.5, where 13 of 15 positions are otherwise
+held and the packer is approaching frozen (3 distinct sequences of 10). No weight
+passes. Per the pre-registration, the sweep was **not** widened.
+
+#### Why no weight could have worked (job 27438909)
+
+Forcing each candidate at position 59, repacking only the 8 Å shell, scoring with
+`ref2015` — per-residue decomposition, relative to WT Lys:
+
+| aa | Δ pose | fa_elec | fa_sol | fa_atr | hbond_sc |
+|---|---|---|---|---|---|
+| **K** | 0.000 | **−4.019** | **+10.118** | −9.162 | **−0.532** |
+| N | −2.939 | −1.660 | +6.742 | −7.406 | 0 |
+| **I** | **−4.211** | −0.505 | **+3.524** | −8.425 | 0 |
+| R | **+2.274** | −2.114 | +8.925 | −9.718 | 0 |
+| Q | +0.701 | −1.748 | +7.061 | −8.281 | 0 |
+| M | +0.515 | −0.734 | +4.741 | −8.657 | 0 |
+
+**Rosetta sees the salt bridge and rewards it correctly.** Lys has the best
+`fa_elec` of any candidate by 1.9 REU and is the only one earning `hbond_sc`. It
+then pays a **+10.1 REU Lazaridis-Karplus desolvation penalty**, 6.6 REU more than
+Ile, for burying the ammonium. The electrostatic reward is real and is
+outweighed by more than two to one. This is the documented ref2015 buried-salt-
+bridge pathology, here quantified on our own system.
+
+Two things follow.
+
+**The sweep's failure was predictable from this number.** Ile beats Lys by 4.211
+REU. A favor-native bonus must exceed that to hold K59, and 1.5 already left the
+packer at 3 distinct sequences of 10. The weight needed to rescue the salt bridge
+is deep inside the regime where the benchmark is frozen and therefore vacuous.
+The two independent jobs agree quantitatively.
+
+**K59R is doubly unreachable.** Arg scores **+2.274 worse than Lys**, i.e. 6.5 REU
+worse than the best option. Even a protocol that held Lys at 59 would never
+*propose* Arg. The Rosetta arm cannot recover K59R for reasons that have nothing
+to do with mandipropamid.
+
+#### Applying the pre-registered table
+
+Rosetta found F108A, and F159's position but not its identity. It did not find
+K59R or V81I. §23i's table, applied verbatim:
+
+> | only F108A/F159L | both methods recover only what the clash baseline gives free; **stage 1 does not clear** |
+
+**Stage 1 does not clear.** Both methods recover exactly the severe-clash
+positions (F108 0.62 Å, F159 1.98 Å) and neither recovers the weak-clash ones
+(K59 2.86 Å, V81 3.28 Å). Ranking WT side chains by steric overlap already
+supplies 3 of the 4 positions at no computational cost, and neither method beats
+that baseline on *positions*. What LigandMPNN adds is ligand-conditional
+*identities* where clash already flags the position; what Rosetta adds is one
+such identity, F108A, at 100%.
+
+The `--aba-neutral` sensitivity check §23i called for is **moot** and was not run:
+neutral ABA weakens the very salt bridge whose burial cost is the problem, so it
+can only deepen the effect. It is not a test that can change this reading.
+
+#### What this licenses, and what it does not
+
+The honest scope of the negative result:
+
+- It is a statement about **stage 1's gate**, not about Rosetta generally. The
+  arm's failures are concentrated at a *charged* contact and, per the
+  decomposition, are a property of `ref2015`'s solvation model.
+- It is therefore **directly actionable for the deliverable**: for library design
+  around charged ligands or charged pocket contacts, this protocol's proposals
+  should not be trusted. Positions 92, 122 and 141 — which the null mutates at
+  100% — are exactly the ones the delta correctly nulls out, which is the machinery
+  working as designed.
+- It does **not** license widening the sweep, upweighting `fa_elec`, or
+  constraining the salt bridge. Each would be tuning the control until it agrees;
+  the constraint version would additionally be telling the method the answer.
+
+#### Files
+
+| path | holds |
+|---|---|
+| `results/stage1_rosetta/<arm>__b<block>.json` | 30 files, 6 arms × 50 trajectories |
+| `results/stage1_rosetta/stage1_rosetta_summary.json` | merged |
+| `results/stage1_rosetta/k59_decomposition.json` | the per-residue table above |
+| `results/stage1_rosetta_fnsweep/w{0.25,0.5,1.0,1.5}/` | the calibration sweep |
+| `scripts/52…55b` | sweep, picker, six-arm re-runner (unused), decomposition |
+
+`54_submit_stage1_rosetta_fn.sh` is retained but **was never run**: no weight
+passed the criterion, so there was nothing to re-run at. It refuses to launch
+without an explicit `FN=`.
+
+#### Two defects fixed in `51_stage1_rosetta_merge.py`
+
+Both surfaced by re-running the script rather than by reading its output.
+
+1. **WT identities were inferred** from whichever trajectory happened to be
+   unmutated at a position, so a position mutated in *all 50* printed `?` —
+   rendering as missing data when it meant the opposite, a position under total
+   selection pressure. Now read from the input PDB and cross-checked against the
+   ground-truth table by `assert`.
+2. **The summary JSON was written into the directory the script globs**, so the
+   second run ingested its own output and died on a missing `arm` key.
+
+The merge now also prints `mut%`/`aba%` per position and a position-level
+hypergeometric test. That test is what exposed the null-arm problem: 3 of 15
+positions are ligand-conditional, 2 of the 4 true ones fall inside, p = 0.145.

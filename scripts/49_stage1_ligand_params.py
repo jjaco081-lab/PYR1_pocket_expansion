@@ -69,6 +69,12 @@ OUT = os.path.join(ROOT, "data", "stage1", "params")
 M2P = ("/opt/linux/rocky/8.x/x86_64/pkgs/rosetta/2023.45/scripts/python/public/"
        "molfile_to_params.py")
 POSE_TOL = 0.01          # A; molfile_to_params should be exact, so this is tight
+# e; per-atom charges are written to 2 dp, so the sum carries up to 0.005 of rounding
+# per atom. A fixed tolerance is wrong: 3UZ's 51 atoms sum to +0.100 while being a
+# perfectly correct neutral molecule. The bound below scales with atom count and is
+# still ~4x tighter than the 1.0 discrepancy a genuinely dropped formal charge gives.
+def charge_tol(n_atoms):
+    return 0.005 * n_atoms + 0.02
 
 # CCD isomeric SMILES. Verified against files.rcsb.org/ligands/download/<id>.cif
 SMILES = {
@@ -126,12 +132,59 @@ def build_molfile(comp, smiles, path):
                 n_arom=n_arom, charge=charge)
 
 
-def run_m2p(comp, molfile, prefix):
-    r = subprocess.run([sys.executable, M2P, "-n", "LIG", "-p", prefix,
-                        "--clobber", molfile],
-                       capture_output=True, text=True, cwd=OUT)
+def params_net_charge(path):
+    """
+    Sum the partial charges in a .params ATOM block -- what Rosetta actually scores.
+
+    Column order is:  ATOM <name> <rosetta_type> <mm_type> <charge>
+    so the charge is field 5 (index 4). Field 4 is the MM type, which is the literal
+    `X` for every ligand atom molfile_to_params writes. Summing field 4 by mistake
+    yields exactly 0.000 for any ligand -- a number that looks like a real finding
+    ("the formal charge was dropped") and is purely an off-by-one in the reader.
+    That is why this returns the count as well: 38 atoms summing to 0.000 should read
+    as suspicious, not as evidence.
+    """
+    tot, n = 0.0, 0
+    for l in open(path):
+        if l.startswith("ATOM "):
+            f = l.split()
+            assert len(f) >= 5, f"unexpected ATOM line in {path}: {l!r}"
+            tot += float(f[4])
+            n += 1
+    return tot, n
+
+
+def run_m2p(comp, molfile, prefix, formal_charge):
+    """
+    molfile_to_params DOES honour the molfile's `M  CHG` record here -- verified,
+    not assumed. A8S_anion.mol carries `M  CHG  1  14  -1` and the params it produces
+    sum to -0.970; 3UZ (a neutral molecule) sums to +0.100. Both are the intended
+    formal charge to within the 2-decimal rounding of the per-atom charge column,
+    which is why CHARGE_TOL is 0.05 and not 0.001.
+
+    --recharge is therefore NOT passed. It would "ignore existing partial charges"
+    (its own help text) and redistribute them uniformly, discarding the per-atom
+    values in favour of a cruder model, to fix a problem that does not exist.
+
+    The check below still earns its place: it confirms the ionisation state Rosetta
+    will score, rather than the ionisation state of the RDKit molecule we handed in.
+    Those are different objects, and only the first one affects the result.
+    """
+    cmd = [sys.executable, M2P, "-n", "LIG", "-p", prefix, "--clobber", molfile]
+    r = subprocess.run(cmd, capture_output=True, text=True, cwd=OUT)
     if r.returncode != 0:
         sys.exit(f"molfile_to_params failed for {comp}:\n{r.stdout}\n{r.stderr}")
+
+    out_params = os.path.join(OUT, prefix + ".params")
+    net, n_at = params_net_charge(out_params)
+    tol = charge_tol(n_at)
+    if abs(net - formal_charge) > tol:
+        sys.exit(f"{comp}: {os.path.basename(out_params)} partial charges sum to "
+                 f"{net:+.3f} over {n_at} atoms, expected {formal_charge:+d} "
+                 f"(tolerance {tol:.3f}). Rosetta would score the wrong ionisation "
+                 f"state. Do not proceed.")
+    print(f"    params net charge {net:+.3f} over {n_at} atoms "
+          f"(formal {formal_charge:+d}, tol {tol:.3f})  OK")
     return r.stdout
 
 
@@ -168,7 +221,7 @@ for comp in ("3UZ", "A8S"):
         smi, tag = SMILES_ANION[comp], "A8S_anion"
     molfile = os.path.join(OUT, f"{tag}.mol")
     info = build_molfile(comp, smi, molfile)
-    run_m2p(comp, molfile, tag)
+    run_m2p(comp, molfile, tag, info["charge"])
     params = os.path.join(OUT, f"{tag}.params")
     pdb = os.path.join(OUT, f"{tag}_0001.pdb")
     assert os.path.exists(params), f"no params written for {tag}"

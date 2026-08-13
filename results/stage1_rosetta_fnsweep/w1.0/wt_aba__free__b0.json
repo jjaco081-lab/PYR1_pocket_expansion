@@ -1,0 +1,242 @@
+{
+  "arm": "wt_aba__free",
+  "struct": "wt_aba",
+  "alphabet": "free",
+  "block": 0,
+  "favor_native": 1.0,
+  "ligand": "A8S",
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/stage1/params/A8S_anion.params",
+  "n_lig_heavy": 19,
+  "pack_shell": 8.0,
+  "rounds": 1,
+  "n_shell": 42,
+  "design_positions": [
+    59,
+    81,
+    83,
+    92,
+    94,
+    108,
+    110,
+    120,
+    122,
+    141,
+    159,
+    160,
+    163,
+    164,
+    167
+  ],
+  "trajectories": [
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 0,
+      "seed": 1000,
+      "favor_native": 1.0,
+      "total": -140.761,
+      "interface_dG": -27.175,
+      "seconds": 303.6,
+      "seq": "IVLAEFIYAKFCVVN",
+      "mutations": {
+        "59": "I",
+        "83": "L",
+        "92": "A",
+        "122": "A",
+        "141": "K",
+        "160": "C"
+      },
+      "recovered": []
+    },
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 1,
+      "seed": 1017,
+      "favor_native": 1.0,
+      "total": -140.31,
+      "interface_dG": -26.511,
+      "seconds": 314.2,
+      "seq": "IVLSQFIYAKFCVVN",
+      "mutations": {
+        "59": "I",
+        "83": "L",
+        "94": "Q",
+        "122": "A",
+        "141": "K",
+        "160": "C"
+      },
+      "recovered": []
+    },
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 2,
+      "seed": 1034,
+      "favor_native": 1.0,
+      "total": -139.291,
+      "interface_dG": -26.956,
+      "seconds": 302.0,
+      "seq": "IVLAEFIYAKFCVVN",
+      "mutations": {
+        "59": "I",
+        "83": "L",
+        "92": "A",
+        "122": "A",
+        "141": "K",
+        "160": "C"
+      },
+      "recovered": []
+    },
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 3,
+      "seed": 1051,
+      "favor_native": 1.0,
+      "total": -141.061,
+      "interface_dG": -27.176,
+      "seconds": 308.3,
+      "seq": "NVLAEFIYAKFAVVN",
+      "mutations": {
+        "59": "N",
+        "83": "L",
+        "92": "A",
+        "122": "A",
+        "141": "K"
+      },
+      "recovered": []
+    },
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 4,
+      "seed": 1068,
+      "favor_native": 1.0,
+      "total": -143.391,
+      "interface_dG": -28.24,
+      "seconds": 307.1,
+      "seq": "NVLAEFIYAKFCVVI",
+      "mutations": {
+        "59": "N",
+        "83": "L",
+        "92": "A",
+        "122": "A",
+        "141": "K",
+        "160": "C",
+        "167": "I"
+      },
+      "recovered": []
+    },
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 5,
+      "seed": 1085,
+      "favor_native": 1.0,
+      "total": -140.401,
+      "interface_dG": -24.353,
+      "seconds": 296.4,
+      "seq": "IVLAEFIYAQFCVVN",
+      "mutations": {
+        "59": "I",
+        "83": "L",
+        "92": "A",
+        "122": "A",
+        "141": "Q",
+        "160": "C"
+      },
+      "recovered": []
+    },
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 6,
+      "seed": 1102,
+      "favor_native": 1.0,
+      "total": -142.233,
+      "interface_dG": -25.148,
+      "seconds": 304.6,
+      "seq": "NVLAEFIYAQFCVVI",
+      "mutations": {
+        "59": "N",
+        "83": "L",
+        "92": "A",
+        "122": "A",
+        "141": "Q",
+        "160": "C",
+        "167": "I"
+      },
+      "recovered": []
+    },
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 7,
+      "seed": 1119,
+      "favor_native": 1.0,
+      "total": -138.907,
+      "interface_dG": -24.425,
+      "seconds": 288.9,
+      "seq": "IVLAEFIYSQFCVVN",
+      "mutations": {
+        "59": "I",
+        "83": "L",
+        "92": "A",
+        "141": "Q",
+        "160": "C"
+      },
+      "recovered": []
+    },
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 8,
+      "seed": 1136,
+      "favor_native": 1.0,
+      "total": -142.092,
+      "interface_dG": -27.397,
+      "seconds": 294.1,
+      "seq": "NVLAEFIYAKFCVVN",
+      "mutations": {
+        "59": "N",
+        "83": "L",
+        "92": "A",
+        "122": "A",
+        "141": "K",
+        "160": "C"
+      },
+      "recovered": []
+    },
+    {
+      "arm": "wt_aba__free",
+      "struct": "wt_aba",
+      "alphabet": "free",
+      "traj": 9,
+      "seed": 1153,
+      "favor_native": 1.0,
+      "total": -142.047,
+      "interface_dG": -27.16,
+      "seconds": 293.2,
+      "seq": "IVLAEFIYAKFCVVN",
+      "mutations": {
+        "59": "I",
+        "83": "L",
+        "92": "A",
+        "122": "A",
+        "141": "K",
+        "160": "C"
+      },
+      "recovered": []
+    }
+  ]
+}
