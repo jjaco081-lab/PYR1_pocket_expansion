@@ -16,8 +16,37 @@
 #   water     OPC          (the model ff19SB was fitted against)
 #   ligand    GAFF2 + AM1-BCC
 #   box       truncated octahedron, 12.0 A buffer
-#   salt      0.15 M NaCl, ions-per-water = conc / 55.5
+#   salt      0.15 M KCl, ions-per-water = conc / 55.5
 #   ORDER     solvate -> neutralise -> bulk salt      <- NOT interchangeable
+#
+# WHY KCl AND NOT NaCl
+#   0.15 M NaCl is the reflex, but it describes mammalian EXTRACELLULAR fluid. Every
+#   host relevant here has a K+-dominated cytosol: E. coli ~150-250 mM K+ (Na+
+#   5-15 mM), S. cerevisiae ~200-300 mM K+, Arabidopsis cytosol ~100 mM K+ with Na+
+#   actively excluded. PYR1 is a cytosolic plant protein assayed in yeast.
+#   There is also a project-specific reason: Na+ binds carboxylates more strongly
+#   than K+, and the central interaction in this work is the K59-ABA carboxylate
+#   salt bridge. Excess Na+ affinity for that carboxylate is a plausible artefact
+#   in precisely the place being measured.
+#
+# ION MODEL
+#   Li-Merz 12-6 (loaded by leaprc.water.opc) is well validated for MONOVALENT ions
+#   at this concentration, so it is the default. It is NOT adequate for divalent
+#   metals -- a 12-6 model cannot match hydration free energy and ion-oxygen
+#   distance simultaneously. Any system carrying Mn2+ (S4/S5, HAB1's catalytic
+#   centre) should set ION_FRCMOD=frcmod.ionslm_1264_opc, and pmemd then also needs
+#   lj1264=1 in &cntrl. Not enabled by default because the current systems have no
+#   metal and it would change monovalent behaviour for no benefit.
+#
+# HISTIDINE PROTONATION
+#   tleap silently makes every HIS an HIE. In this protein that is a live problem:
+#   H115 is a LATCH residue AND sits 3.86 A from ABA, so its tautomer sets the
+#   H-bonding at the exact interface these simulations measure; H60 (7.1 A) is a
+#   dimerisation residue. `reduce` assigns tautomers by optimising the local
+#   H-bond network, which is far better than a blanket default.
+#   LIMITATION, stated plainly: reduce is geometry-based, NOT a pKa calculation. It
+#   will not propose HIP (doubly protonated). propka/pdb2pqr are not installed here;
+#   if a His turns out to matter quantitatively, compute its pKa properly.
 #
 #   leaprc.water.opc already loads frcmod.ionslm_126_opc, which covers Mn2+.
 #   Adding frcmod.ions234lm_126_opc makes tleap exit "Could not open file": that is
@@ -40,6 +69,11 @@ BOX_CMD=${BOX_CMD:-solvateoct}
 BOX_TYPE=${BOX_TYPE:-OPCBOX}
 BUFFER=${BUFFER:-12.0}
 CONC=${CONC:-0.15}
+CATION=${CATION:-K+}          # see header: cytosolic, not extracellular
+ANION=${ANION:-Cl-}
+ION_FRCMOD=${ION_FRCMOD:-}    # set to frcmod.ionslm_1264_opc for divalent metals
+HMR=${HMR:-1}                 # also write a hydrogen-mass-repartitioned prmtop
+PROTONATE=${PROTONATE:-1}     # assign His tautomers with reduce instead of tleap default
 
 _canon_check () {
     local n=0
@@ -50,6 +84,8 @@ _canon_check () {
     [[ "$BOX_TYPE"   == "OPCBOX"                ]] || { echo "  !! BOX_TYPE overridden: $BOX_TYPE"; n=1; }
     [[ "$BUFFER"     == "12.0"                  ]] || { echo "  !! BUFFER overridden: $BUFFER"; n=1; }
     [[ "$CONC"       == "0.15"                  ]] || { echo "  !! CONC overridden: $CONC"; n=1; }
+    [[ "$CATION"     == "K+"                    ]] || { echo "  !! CATION overridden: $CATION"; n=1; }
+    [[ "$ANION"      == "Cl-"                   ]] || { echo "  !! ANION overridden: $ANION"; n=1; }
     [[ $n -eq 1 ]] && echo "  !! NON-CANONICAL BUILD -- this system is not directly comparable"
     return 0
 }
@@ -60,6 +96,17 @@ build_system () {
     _canon_check
     mkdir -p "$D" || return 1
     cp "$PROT" "$D/protein.pdb" || return 1
+    if [[ "$PROTONATE" == "1" ]]; then
+        # reduce -build adds H, flips Asn/Gln/His and picks His tautomers from the
+        # H-bond network; -Quiet keeps the log readable. tleap then reads the HID/
+        # HIE/HIP names reduce assigned rather than defaulting everything to HIE.
+        ( cd "$D" && reduce -build -Quiet protein.pdb > protein_h.pdb 2> reduce.log
+          if [[ -s protein_h.pdb ]]; then
+              pdb4amber -i protein_h.pdb -o protein_prot.pdb --nohyd > pdb4amber.log 2>&1
+              [[ -s protein_prot.pdb ]] && mv protein_prot.pdb protein.pdb
+          fi
+          grep -oE "HI[DEP]" protein.pdb | sort | uniq -c > his_states.txt || true )
+    fi
     ( cd "$D" || exit 1
 
     {
@@ -68,6 +115,7 @@ build_system () {
       # gaff2 is sourced even with no ligand so the loaded force-field stack is
       # identical in every system (S1/S3 have no ligand and source it too)
       echo "source $FF_LIGAND"
+      [[ -n "$ION_FRCMOD" ]] && echo "loadamberparams $ION_FRCMOD"
       if [[ -n "$LIGMOL2" ]]; then
           echo "loadamberparams $FRC"
           echo "lig = loadmol2 $LIGMOL2"
@@ -79,9 +127,9 @@ build_system () {
       fi
       # ORDER IS LOAD-BEARING -- see the header
       echo "$BOX_CMD sys $BOX_TYPE $BUFFER"
-      echo "addions sys Na+ 0"
-      echo "addions sys Cl- 0"
-      echo "addionsrand sys Na+ {nna} Cl- {ncl}"
+      echo "addions sys $CATION 0"
+      echo "addions sys $ANION 0"
+      echo "addionsrand sys $CATION {nna} $ANION {ncl}"
       echo "charge sys"
       echo "check sys"
       echo "saveamberparm sys system.prmtop system.inpcrd"
@@ -111,7 +159,7 @@ build_system () {
     local CHG NATOM
     CHG=$(grep -oP 'Total unperturbed charge:\s*\K-?[0-9.]+' tleap_pass2.log | tail -1)
     NATOM=$(grep -c -E '^(ATOM|HETATM)' system_solvated.pdb)
-    echo "  $(basename "$D"): $NATOM atoms, $NWAT waters, ${NION}x NaCl (${CONC} M), net charge $CHG"
+    echo "  $(basename "$D"): $NATOM atoms, $NWAT waters, ${NION}x ${CATION}${ANION} (${CONC} M), net charge $CHG"
     python3 -c "
 import sys
 q=float('$CHG')
@@ -121,6 +169,20 @@ sys.exit('  ERROR: net charge %s is not neutral; PME would be wrong' % q) if abs
         grep -iE "Could not find|no parameters|Unknown residue" tleap_pass2.log | head
         exit 1
     fi
+    # hydrogen-mass repartitioning: move mass from heavy atoms into the hydrogens
+    # they carry so the fastest bond vibrations slow down and 4 fs becomes stable.
+    # WATER IS DELIBERATELY EXCLUDED (no `dowater`) -- it is already rigid under
+    # SHAKE, so repartitioning it buys nothing and perturbs solvent dynamics.
+    if [[ "$HMR" == "1" ]]; then
+        printf 'HMassRepartition\noutparm system_hmr.prmtop\nquit\n' > hmr.parmed
+        parmed -p system.prmtop -i hmr.parmed > hmr.log 2>&1 || true
+        if [[ -s system_hmr.prmtop ]]; then
+            echo "    + system_hmr.prmtop (4 fs timestep)"
+        else
+            echo "    !! HMR failed; see $D/hmr.log"; exit 1
+        fi
+    fi
+
     # record what was actually used, next to the system it produced
     {
       echo "protein_ff=$FF_PROTEIN"; echo "water_ff=$FF_WATER"; echo "ligand_ff=$FF_LIGAND"

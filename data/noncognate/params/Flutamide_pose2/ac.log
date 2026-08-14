@@ -16,6 +16,10 @@ Info: The atom type is set to gaff2; the options available to the -at flag are
       for those not bonded   
    Status: pass
 -- Check Weird Bonds --
-/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/wrapped_progs/antechamber: Fatal Error!
-Weird atomic valence (3) for atom (ID: 2, Name: C2).
-       Possible open valence.
+   Status: pass
+-- Check Number of Units --
+   Status: pass
+acdoctor mode has completed checking the input file.
+
+Info: Total number of electrons: 142; net charge: 0
+

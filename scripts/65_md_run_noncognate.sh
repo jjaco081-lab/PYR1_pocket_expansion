@@ -100,12 +100,12 @@ overall=0
 for entry in "${RUNS[@]}"; do
     TOPDIR=${entry%%|*}
     D=${entry##*|}
-    TOP=$TOPDIR/system.prmtop
+    TOP=$(topology_for_run "$TOPDIR") || { overall=1; continue; }
     CRD=$TOPDIR/system.inpcrd
     echo
     echo "--- $(date)  $D ---"
     if [[ ! -s "$TOP" ]]; then
-        echo "  missing $TOP -- run 64_build_noncognate.sh first; SKIPPING"
+        echo "  missing topology for $TOPDIR -- run 64_build_noncognate.sh first; SKIPPING"
         overall=1; continue
     fi
     mkdir -p "$D"; cd "$D" || { overall=1; continue; }
@@ -133,7 +133,7 @@ for entry in "${RUNS[@]}"; do
         echo "NC_RUN_DONE dir=$D rc=0 time=$NOW/$TARGET_PS"
         continue
     fi
-    NSTEPS=$(( REMAIN_PS * 500 ))
+    NSTEPS=$(( REMAIN_PS * STEPS_PER_PS ))
     echo "  production: at $NOW ps -> $REMAIN_PS ps remaining ($NSTEPS steps)"
 
     write_prod_input "$NSTEPS"
