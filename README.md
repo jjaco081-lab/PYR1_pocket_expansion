@@ -3529,3 +3529,99 @@ before any frame is read; the map is saved to `data/loop_dynamics/residue_map.js
 command-substitutes backticks**, so a comment reading `` `nofit` `` inside the
 generated cpptraj input made bash execute `nofit` and silently delete the word.
 Harmless this time; it would not always be.
+
+## 25. Could Tian's round-1 screen have been skipped? Ground truth and headroom
+
+`scripts/62_coumarin_ground_truth.py` → `data/coumarin_benchmark/tian_library_truth.json`.
+
+The question (user, 2026-08-14): Tian mined their primary screen for the coumarin
+cluster, derived a profile from the hits, and built a focused 77,327-member library
+that yielded sensors for three ligands the original screen missed. Could the sites
+have been predicted instead, so round 1 need not be run? It does not have to be
+perfect — it has to narrow the window.
+
+### 25a. The ground truth was already on disk
+
+`pnas.2519924122.sd04.xlsx` holds the DESIGN of **every** library — per library, per
+position, the exact residues offered — including the focused Coumarin, PFAS, TNTv1
+and TNTv2 libraries. ⚠️ Earlier in the session I claimed this file was the DSM/TSM
+design only and that the coumarin design was missing. **That was wrong**; the whole
+truth set is present. (The column is `Amino Acids allowed for mutation`; an earlier
+read printed it as `Amino Acids allowed ` only because the display was clipped at
+20 characters — a reminder not to key on a truncated header.)
+
+**The paper's "11 of the 19 binding-pocket sites" is exactly:**
+
+```
+[59, 81, 83, 108, 120, 122, 159, 160, 163, 164, 167]      24 substitutions
+K59 AQ · V81 IY · V83 L · F108 W · Y120 AM · S122 EGN
+F159 HIV · A160 GIMV · V163 W · V164 EFS · N167 D
+```
+
+Independently, substructure-matching the coumarin core against the 692 characterised
+clones of the primary screen returns **exactly 8 ligands** (Imperatorin, Osthole,
+Isopsoralen, Methoxsalen, citropten, Bergapten, Psoralen, Scopoletin), all in
+`chem_cluster` 26, over 36 clones — matching the paper's "sensors for eight". Those
+36 clones touch **15** positions, and Tian's chosen 11 are a strict subset; the four
+dropped (A89, I110, L117, E141) are among the lowest-frequency, and A89/L117 sit in
+the gate and latch.
+
+### 25b. Positions are the wrong prediction target — measured, not assumed
+
+The three focused libraries barely differ in *which* positions they randomise:
+
+| | shared | Jaccard |
+|---|---|---|
+| Coumarin vs PFAS | 9/15 | 0.60 |
+| Coumarin vs TNTv2 | 10/15 | 0.67 |
+| PFAS vs TNTv2 | 12/15 | 0.80 |
+
+Nine positions are shared by all three — **59, 83, 120, 122, 159, 160, 163, 164,
+167** — and exactly one is unique to each library (F108 coumarin, E94 PFAS,
+L117 TNTv2).
+
+**So naming the shared nine scores 9/11 = 82 % recall on coumarin using no ligand
+information whatsoever.** A position-prediction benchmark is saturated before it
+starts. That is the same defect that sank stage 1 (§23j), where a trivial clash
+ranking supplied 3 of 4 positions free, and it is why headroom is now measured
+before a task is fixed rather than after.
+
+### 25c. The substitutions are almost perfectly ligand-specific
+
+At the nine shared positions:
+
+| pos | WT | Coumarin | PFAS | TNTv2 | 3-way J |
+|---|---|---|---|---|---|
+| 59 | K | AQ | LMN | DMNRT | 0.00 |
+| 83 | V | L | I | I | 0.00 |
+| 120 | Y | AM | AGILMNST | F | 0.00 |
+| 122 | S | EGN | LRW | E | 0.00 |
+| 159 | F | HIV | HIL | M | 0.00 |
+| 160 | A | GIMV | ILMNVW | V | 0.14 |
+| 163 | V | W | S | GMW | 0.00 |
+| 164 | V | EFS | GKLMNSW | DKLN | 0.00 |
+| 167 | N | D | G | QV | 0.00 |
+
+**Mean 3-way Jaccard = 0.02.** At 8 of the 9 shared positions the three libraries
+share *no allowed residue at all*.
+
+The pocket positions are a fixed lining set Tian re-randomises every time; **all of
+the ligand information is in which residue goes there.** The benchmark must predict
+substitution menus, not positions.
+
+### 25d. What the window is worth
+
+Combinatorial design-space size (WT plus the allowed residues at each position):
+
+| library | positions | members |
+|---|---|---|
+| DSM-Hao | 18 | 3.8 × 10²¹ |
+| TSM | 18 | 7.7 × 10¹⁵ |
+| **Coumarin** | 11 | **1.4 × 10⁵** |
+| TNTv2 | 14 | 1.2 × 10⁶ |
+| PFAS | 13 | 5.0 × 10⁷ |
+
+Tian's coumarin library as built was 77,327 members. The focusing step is worth
+roughly **sixteen orders of magnitude** — it converts an unscreenable space into one
+yeast transformation. That ratio, not position recall, is the thing a method has to
+earn.
