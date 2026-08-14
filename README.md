@@ -3625,3 +3625,188 @@ Tian's coumarin library as built was 77,327 members. The focusing step is worth
 roughly **sixteen orders of magnitude** — it converts an unscreenable space into one
 yeast transformation. That ratio, not position recall, is the thing a method has to
 earn.
+
+## 26. PRE-REGISTRATION: can a method propose Tian's focused library without round 1?
+
+Written **before** any method is run, so the reading cannot be chosen afterwards.
+Ground truth and headroom are in §25; this section fixes the task, the metric, the
+baselines and the verdict table.
+
+### 26a. Task
+
+For a ligand class **L ∈ {Coumarin, PFAS, TNTv2}**, output for each pocket position
+a **ranked list of amino acids to offer**. Positions are GIVEN, not predicted — §25b
+showed they are near-ligand-independent and that naming the shared nine already
+scores 82 % recall with no ligand information. Predicting them would measure nothing.
+
+Scored on the **9 positions shared by all three focused libraries**
+(59, 83, 120, 122, 159, 160, 163, 164, 167). The class-unique positions (F108
+coumarin, E94 PFAS, L117 TNTv2) are reported separately as a bonus, never folded
+into the primary score — one position cannot carry a claim.
+
+**Allowed inputs:** WT PYR1 structure, the ligand structures for L, any
+general-purpose model, and **Tian screen data for classes other than L**. That last
+one is deliberate: a real prospective user would have prior screens on other
+chemotypes.
+
+**Forbidden inputs:** any round-1 screen hit for class L, and L's focused library
+design. Leakage here voids the result, so the input manifest is written to disk
+before the run.
+
+### 26b. Ground truth, and its limitation stated up front
+
+Truth = Tian's focused-library menu for L (`data/coumarin_benchmark/tian_library_truth.json`).
+
+⚠️ **This is what Tian chose to build, not the set of substitutions that work.** It
+carries their judgment as well as their data — e.g. A89 was dropped from the coumarin
+library despite the same 4/36 clone frequency as Y120 and N167, which were kept.
+A method proposing a *better* library would score badly. So a second, function-facing
+score is computed alongside: recall against the substitutions actually observed in
+the round-2 characterised sensors (sd07/sd08/sd09). Neither is decisive alone;
+disagreement between them is itself reportable.
+
+### 26c. Primary metric — library size at fixed recall
+
+Take the top-k residues per position, build the combinatorial library
+size = Π(kᵢ + 1), and report the size needed to reach 50 %, 75 % and 100 % recall of
+the true menu. This is the metric because it is the thing the user asked for — a
+narrowed window — measured in the unit that decides whether a screen is possible.
+
+Reference points, already computed:
+
+| design | members | recall of coumarin truth |
+|---|---|---|
+| DSM-Hao (do nothing) | 3.8 × 10²¹ | 100 % by construction |
+| Tian's Coumarin library | 1.4 × 10⁵ | 100 % |
+
+The gap between those two rows is the entire prize.
+
+### 26d. Baselines that must be beaten
+
+1. **Generic hotspot.** Rank residues at each position by frequency across the 692
+   characterised clones **excluding class L**. This is the analogue of stage 1's
+   ligand-swap null — and unlike that one it cannot collapse, because it is built
+   from real data at every position.
+2. **Chemistry-only.** Rank by similarity to WT (BLOSUM) with no ligand term.
+3. **DSM-Hao**, as the do-nothing upper bound on size.
+
+### 26e. The discrimination check — a method that ignores the ligand must fail
+
+Compute the **3-way Jaccard of the method's own predicted menus** across the three
+classes. Truth is **0.02** (§25c). A method emitting near-identical menus is not
+using ligand information, however good its recall looks, because the shared menu
+alone can score.
+
+This check is computed from the method's outputs, so it cannot fail silently the way
+the ABA null did in §23j.
+
+### 26f. Pre-registered verdict table
+
+| result | means |
+|---|---|
+| ≥50 % recall at ≤10⁶ members **and** predicted Jaccard ≤0.2 | the method could have replaced round 1 — **apply it prospectively to a new scaffold** |
+| ≥50 % recall but predicted Jaccard >0.5 | recall is coming from the generic menu, not the ligand; **not usable**, report and stop |
+| <25 % recall at 10⁶ members | does not narrow the window enough; **stop** |
+| anything else | report the numbers, make no claim |
+
+10⁶ is set as the ceiling because Tian's own libraries were 7.7 × 10⁴ – 5 × 10⁵
+members and a yeast transformation comfortably covers 10⁶.
+
+### 26g. Order of reading
+
+1. the discrimination check — if it fails, nothing else is worth reading
+2. library size at 50 % recall, against the generic-hotspot baseline
+3. the function-facing score (round-2 sensors), and whether it agrees with the
+   design-facing one
+4. the class-unique positions, last and as a bonus only
+
+## 27. PLANNED MD: is the loop-dynamics signal actually ligand-dependent?
+
+§24 established that closed PYR1 holds its state and open holds its, with a 5.6 Å
+replicate-mean gap. It did **not** establish that this has anything to do with the
+ligand — §24e flagged the confound explicitly, because S1 is apo *and* open while S2
+is holo *and* closed, and the §19b set contains no apo-closed system.
+
+If the closed state holds equally well with a ligand PYR1 was never built for, then
+the §24b stability filter reports on **conformation only** and is blind to ligand
+identity — which would disqualify it as a design filter, since every candidate will
+be judged holo with a non-native ligand. That is the point of these runs.
+
+### 27a. Design — what to run, and what not to
+
+The proposal on the table was 3 structures × 3 replicates × open and closed = 18
+runs. Most of that spends GPU-days on cells that cannot discriminate. The cheaper
+design below closes the confound and answers the ligand question:
+
+| arm | system | replicates | status |
+|---|---|---|---|
+| 1 | closed + ABA | 3 | **have** (S2) |
+| 2 | open, apo | 3 | **have** (S1) |
+| 3 | **closed, apo** | 3 | NEW — breaks the §24e confound |
+| 4 | **closed + non-cognate ligand** | 3 | NEW — the ligand test |
+| 5 | open + non-cognate, sanity | 1 | NEW — user's own suggestion |
+
+**7 new replicates ≈ 7 GPU-days, ≈2 days wall at 4 concurrent GPUs** — against ~18
+for the full factorial, for the same inferential content.
+
+Arm 3 is the highest value per GPU-day and is worth running even if nothing else is:
+it is the missing cell that makes the *existing* 6 replicates interpretable. Without
+it, "closed is rigid" and "ABA rigidifies" cannot be separated at all.
+
+Arm 5 tests the user's point that a docked-complex PYR1 should relax into the S1 apo
+ensemble. One replicate suffices: it is a check, and §24's own two-reference
+projection is the readout. If it does not converge onto S1, that is a finding about
+the docked backbone and arm 4 must be re-read in that light.
+
+### 27b. Ligand choice
+
+A **coumarin** (from the eight in §25a), docked into the closed 3QN1 pocket. Reasons:
+WT PYR1 demonstrably does not respond to coumarins — that is precisely why Tian
+needed 11 mutated positions — they are small enough to place without the steric
+clash that disqualifies mandipropamid, and it ties this control to the §25/§26
+thread rather than opening a third one.
+
+### 27c. Pre-registered reading — and the asymmetry that must not be over-read
+
+Observables are §19d's, unchanged, so this is directly comparable to §24.
+
+| result | means |
+|---|---|
+| closed+coumarin behaves like closed+ABA | the filter is **conformation-only** and cannot rank ligands; use it to reject collapse, never to claim binding |
+| closed+coumarin drifts toward apo-closed | the filter **is** ligand-sensitive; a real design filter |
+| ligand leaves the pocket | strong evidence of poor binding — the most informative outcome |
+
+⚠️ **Absence of release is not evidence of binding.** Residence times are typically
+microseconds to milliseconds; 300 ns cannot sample unbinding. Release *if observed*
+is informative; not observing it says nothing. This asymmetry is registered here so a
+null cannot later be read as a positive.
+
+⚠️ A docked pose is a hypothesis. If arm 4 differs from arm 1, the cause could be the
+pose rather than the ligand. Mitigated by running the three replicates from
+**different docked poses** rather than three seeds of one pose, so pose sensitivity
+is measured rather than assumed.
+
+### 27d. Second run: a pocket-expansion variant
+
+`F108A_R79A_E94A` — already defined in `scripts/variants.py` and already measured in
+the pilot:
+
+| variant | cavity Å³ | Δ vs WT |
+|---|---|---|
+| WT | 174.4 | — |
+| F108A | 240.3 | +65.9 |
+| R79A_E94A | 255.4 | +81.0 |
+| **F108A_R79A_E94A** | **313.7** | **+139.3** (1.8× WT) |
+| K59A_F108A_R79A_E94A | 382.4 | +208.0 (2.2× WT) |
+
+This is the variant that removes the gatekeeper **and** both halves of the salt
+bridge buttressing it. 3 replicates × 300 ns in the closed state, apo, read on the
+§24 observables.
+
+The question is **not** whether the pocket is bigger — that is measured. It is
+whether a pocket enlarged by 80 % still holds the closed state, i.e. whether the
+ratchet survives losing its buttress. §24b's threshold (gate RMSD-to-closed
+3.5–4.0 Å) is the pre-registered filter, and this is its first real test.
+
+⚠️ Recall from the pilot that **expansion does not predict switch cost (r = 0.03)**,
+so cavity volume cannot stand in for this measurement — it has to be run.
