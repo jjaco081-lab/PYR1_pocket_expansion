@@ -1,4 +1,4 @@
-log started: Fri Aug 14 16:07:44 2026
+log started: Fri Aug 14 16:16:58 2026
 
 Log file: ./leap.log
 >> #
@@ -414,7 +414,7 @@ Li/Merz ion parameters of atomic ions for the OPC water model (12-6 set)
 ----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2
 ----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2 done
 >> logFile leap.log
-log started: Fri Aug 14 16:07:45 2026
+log started: Fri Aug 14 16:16:58 2026
 
 Log file: ./leap.log
 >> #
@@ -573,14 +573,14 @@ Mapped residue ASN, term: Terminal/last, seq. number: 177 to: CASN.
   Sequence: default_name
   Sequence: FLU
 > solvateoct sys OPCBOX 12.0
-Scaling up box by a factor of 1.324701 to meet diagonal cut criterion
-  Solute vdw bounding box:              44.865 41.075 58.660
-  Total bounding box for atom centers:  90.453 90.453 90.453
+Scaling up box by a factor of 1.324889 to meet diagonal cut criterion
+  Solute vdw bounding box:              44.863 41.081 58.659
+  Total bounding box for atom centers:  90.456 90.456 90.456
       (box expansion for 'iso' is  46.5%)
   Solvent unit box:                     18.865 18.478 19.006
 The number of boxes:  x= 5  y= 5  z= 5
-  Volume: 382437.662 A^3 (oct)
-  Total mass 206484.474 amu,  Density 0.897 g/cc
+  Volume: 382479.240 A^3 (oct)
+  Total mass 206484.474 amu,  Density 0.896 g/cc
   Added 10316 residues.
 > addions sys K+ 0
 5 K+ ions required to neutralize.
@@ -588,12 +588,12 @@ Adding 5 counter ions to "sys" using 1A grid
 Total solute charge:  -5.00  Max atom radius:   1.98
 Grid extends from solute vdw + 1.70  to  7.68
 Box:
-   enclosing:  -28.23 -34.79 -28.05   33.29 33.35 31.73
+   enclosing:  -28.23 -34.79 -28.05   33.29 33.35 31.74
    sized:			      99.77 93.21 99.95
    edge:        128.00
 Resolution:      1.00 Angstrom.
 Tree depth: 7
-Volume =  2.29% of box, grid points 48047
+Volume =  2.29% of box, grid points 48004
 Solvent present: replacing closest with ion
 	 when steric overlaps occur
 Calculating grid charges
@@ -644,7 +644,7 @@ solvent.
 
 
 Exiting LEaP: Errors = 1; Warnings = 0; Notes = 0.
-log started: Fri Aug 14 16:07:45 2026
+log started: Fri Aug 14 16:16:59 2026
 
 Log file: ./leap.log
 >> #
@@ -1060,7 +1060,7 @@ Li/Merz ion parameters of atomic ions for the OPC water model (12-6 set)
 ----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2
 ----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2 done
 >> logFile leap.log
-log started: Fri Aug 14 16:07:46 2026
+log started: Fri Aug 14 16:16:59 2026
 
 Log file: ./leap.log
 >> #
@@ -1219,14 +1219,14 @@ Mapped residue ASN, term: Terminal/last, seq. number: 177 to: CASN.
   Sequence: default_name
   Sequence: FLU
 > solvateoct sys OPCBOX 12.0
-Scaling up box by a factor of 1.324701 to meet diagonal cut criterion
-  Solute vdw bounding box:              44.865 41.075 58.660
-  Total bounding box for atom centers:  90.453 90.453 90.453
+Scaling up box by a factor of 1.324889 to meet diagonal cut criterion
+  Solute vdw bounding box:              44.863 41.081 58.659
+  Total bounding box for atom centers:  90.456 90.456 90.456
       (box expansion for 'iso' is  46.5%)
   Solvent unit box:                     18.865 18.478 19.006
 The number of boxes:  x= 5  y= 5  z= 5
-  Volume: 382437.662 A^3 (oct)
-  Total mass 206484.474 amu,  Density 0.897 g/cc
+  Volume: 382479.240 A^3 (oct)
+  Total mass 206484.474 amu,  Density 0.896 g/cc
   Added 10316 residues.
 > addions sys K+ 0
 5 K+ ions required to neutralize.
@@ -1234,12 +1234,12 @@ Adding 5 counter ions to "sys" using 1A grid
 Total solute charge:  -5.00  Max atom radius:   1.98
 Grid extends from solute vdw + 1.70  to  7.68
 Box:
-   enclosing:  -28.23 -34.79 -28.05   33.29 33.35 31.73
+   enclosing:  -28.23 -34.79 -28.05   33.29 33.35 31.74
    sized:			      99.77 93.21 99.95
    edge:        128.00
 Resolution:      1.00 Angstrom.
 Tree depth: 7
-Volume =  2.29% of box, grid points 48047
+Volume =  2.29% of box, grid points 48004
 Solvent present: replacing closest with ion
 	 when steric overlaps occur
 Calculating grid charges
@@ -1261,62 +1261,62 @@ Done adding ions.
 Adding 0 counter ions to "sys" using 1A grid
 > addionsrand sys K+ 28 Cl- 28
 Adding 56 counter ions to "sys". 10256 solvent molecules will remain.
-0: Placed K+ in sys at (-36.01, -0.36, -12.40).
-Placed Cl- in sys at (-20.16, -15.97, 0.60).
-0: Placed K+ in sys at (25.60, 34.52, -0.01).
-Placed Cl- in sys at (14.60, -25.50, -3.10).
-0: Placed K+ in sys at (-25.92, -20.43, -15.74).
-Placed Cl- in sys at (-8.21, 14.69, -18.82).
-0: Placed K+ in sys at (28.54, 5.98, -10.93).
-Placed Cl- in sys at (-31.02, -2.19, -0.15).
-0: Placed K+ in sys at (-33.69, 4.57, -10.99).
-Placed Cl- in sys at (-4.62, 19.84, 36.90).
-0: Placed K+ in sys at (33.23, -6.39, -14.82).
-Placed Cl- in sys at (-18.66, 16.24, -14.28).
-0: Placed K+ in sys at (18.33, -16.65, 25.98).
-Placed Cl- in sys at (-7.58, 27.39, 16.90).
-0: Placed K+ in sys at (11.68, -29.15, -33.77).
-Placed Cl- in sys at (6.08, -28.92, 12.71).
-0: Placed K+ in sys at (8.08, -17.00, 24.00).
-Placed Cl- in sys at (-4.12, -25.99, 7.30).
-0: Placed K+ in sys at (-29.68, 22.41, 1.10).
-Placed Cl- in sys at (23.86, 10.74, -6.30).
-0: Placed K+ in sys at (-14.46, -3.73, -21.45).
-Placed Cl- in sys at (10.70, -3.43, -44.47).
-0: Placed K+ in sys at (-22.26, 22.47, -20.07).
-Placed Cl- in sys at (-36.22, -1.11, -4.23).
-0: Placed K+ in sys at (-8.27, -41.96, 4.10).
-Placed Cl- in sys at (37.30, 24.68, 11.55).
-0: Placed K+ in sys at (31.00, 10.64, -26.99).
-Placed Cl- in sys at (33.54, 16.67, -1.76).
-0: Placed K+ in sys at (30.31, -13.50, -4.29).
-Placed Cl- in sys at (9.09, -7.10, 46.49).
-0: Placed K+ in sys at (-9.04, 15.07, -29.46).
-Placed Cl- in sys at (-17.95, -32.83, -16.87).
-0: Placed K+ in sys at (-8.35, 9.31, 16.87).
-Placed Cl- in sys at (-3.10, 2.66, 18.66).
-0: Placed K+ in sys at (-9.07, 35.95, -10.11).
-Placed Cl- in sys at (3.69, 34.97, -4.89).
-0: Placed K+ in sys at (-23.58, -14.52, 1.19).
-Placed Cl- in sys at (2.52, -35.46, 16.01).
-0: Placed K+ in sys at (7.11, -9.76, 31.03).
-Placed Cl- in sys at (-4.42, 9.74, 42.26).
-0: Placed K+ in sys at (-19.31, 26.68, 21.58).
-Placed Cl- in sys at (1.56, 22.17, -28.78).
-0: Placed K+ in sys at (-9.73, 14.74, -26.24).
-Placed Cl- in sys at (12.29, -31.97, 11.24).
-0: Placed K+ in sys at (-16.16, 21.24, 33.71).
-Placed Cl- in sys at (7.19, 6.67, -31.83).
-0: Placed K+ in sys at (2.25, 11.43, 21.85).
-Placed Cl- in sys at (25.61, -19.59, -24.71).
-0: Placed K+ in sys at (-7.69, 12.06, 27.18).
+0: Placed K+ in sys at (-24.63, -18.48, -0.44).
+Placed Cl- in sys at (33.21, 15.16, -13.57).
+0: Placed K+ in sys at (-9.90, -31.70, 0.44).
+Placed Cl- in sys at (-31.10, -25.41, 13.19).
+0: Placed K+ in sys at (-0.71, 4.53, 42.10).
+Placed Cl- in sys at (22.49, -8.05, -39.03).
+0: Placed K+ in sys at (-35.36, -29.68, -8.13).
+Placed Cl- in sys at (9.06, -20.40, -26.99).
+0: Placed K+ in sys at (-34.74, -6.40, 17.40).
+Placed Cl- in sys at (-9.77, -40.49, -12.94).
+0: Placed K+ in sys at (18.48, -18.28, 13.63).
+Placed Cl- in sys at (-23.22, 23.46, 20.03).
+0: Placed K+ in sys at (-9.50, -16.57, -15.44).
+Placed Cl- in sys at (36.69, -2.16, 3.59).
+0: Placed K+ in sys at (15.14, 29.60, -14.56).
+Placed Cl- in sys at (-29.59, -17.48, -7.46).
+0: Placed K+ in sys at (-8.30, 14.72, -37.34).
+Placed Cl- in sys at (-37.98, -3.65, -16.27).
+0: Placed K+ in sys at (3.24, 12.80, 32.13).
+Placed Cl- in sys at (-27.83, 31.05, -13.49).
+0: Placed K+ in sys at (-18.71, -2.91, -20.79).
+Placed Cl- in sys at (-29.51, 12.69, 5.46).
+0: Placed K+ in sys at (28.10, -13.57, 5.93).
+Placed Cl- in sys at (17.03, -3.13, 40.87).
+0: Placed K+ in sys at (-20.66, -30.15, -4.81).
+Placed Cl- in sys at (11.02, 25.51, 1.69).
+0: Placed K+ in sys at (38.06, -10.34, -15.37).
+Placed Cl- in sys at (19.42, 38.67, -1.84).
+0: Placed K+ in sys at (11.04, -19.06, -33.66).
+Placed Cl- in sys at (-16.96, 19.76, -16.95).
+0: Placed K+ in sys at (-30.13, 24.72, -9.81).
+Placed Cl- in sys at (-24.19, -30.12, -19.66).
+0: Placed K+ in sys at (20.80, 21.94, 1.69).
+Placed Cl- in sys at (11.85, 43.79, -8.56).
+0: Placed K+ in sys at (-24.41, -18.64, 25.96).
 Placed Cl- in sys at (-7.96, -18.89, 17.17).
-0: Placed K+ in sys at (-10.94, -9.97, -24.55).
-Placed Cl- in sys at (-26.21, 2.83, -11.80).
-0: Placed K+ in sys at (-17.83, 11.02, 22.32).
-Placed Cl- in sys at (11.23, 20.91, 1.86).
-0: Placed K+ in sys at (26.41, -21.38, 18.76).
-Placed Cl- in sys at (32.30, 29.61, 5.81).
+0: Placed K+ in sys at (20.13, -13.39, 35.91).
+Placed Cl- in sys at (-0.65, 11.33, 32.75).
+0: Placed K+ in sys at (-32.05, -9.87, -5.96).
+Placed Cl- in sys at (-18.20, 7.07, -10.41).
+0: Placed K+ in sys at (-19.62, -9.95, 10.40).
+Placed Cl- in sys at (2.93, 5.07, -33.85).
+0: Placed K+ in sys at (-26.68, -5.54, 12.30).
+Placed Cl- in sys at (6.21, 24.80, -19.70).
+0: Placed K+ in sys at (13.42, -2.87, -25.36).
+Placed Cl- in sys at (17.75, -18.17, 20.64).
+0: Placed K+ in sys at (34.68, -13.83, 17.55).
+Placed Cl- in sys at (-12.37, 24.04, 37.68).
+0: Placed K+ in sys at (-10.60, -23.69, -26.91).
+Placed Cl- in sys at (38.99, -4.96, 23.12).
+0: Placed K+ in sys at (-13.64, 15.50, -41.59).
+Placed Cl- in sys at (22.70, -16.18, -8.99).
+0: Placed K+ in sys at (25.90, -1.26, 15.02).
+Placed Cl- in sys at (-26.16, 7.70, 8.79).
+0: Placed K+ in sys at (30.58, -20.78, -3.56).
+Placed Cl- in sys at (-34.40, 22.94, 4.62).
 > charge sys
 Total unperturbed charge:   0.000001
 Total perturbed charge:     0.000001

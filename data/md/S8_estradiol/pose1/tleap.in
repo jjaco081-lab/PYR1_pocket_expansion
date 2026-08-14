@@ -1,0 +1,16 @@
+source leaprc.protein.ff19SB
+source leaprc.water.opc
+source leaprc.gaff2
+loadamberparams /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/noncognate/params/Alpha-Estradiol_pose1/EST.frcmod
+lig = loadmol2 /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/noncognate/params/Alpha-Estradiol_pose1/EST.mol2
+prot = loadpdb protein.pdb
+sys = combine { prot lig }
+solvateoct sys OPCBOX 12.0
+addions sys K+ 0
+addions sys Cl- 0
+addionsrand sys K+ 28 Cl- 28
+charge sys
+check sys
+saveamberparm sys system.prmtop system.inpcrd
+savepdb sys system_solvated.pdb
+quit

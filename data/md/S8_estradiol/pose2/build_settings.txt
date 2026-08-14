@@ -1,0 +1,13 @@
+protein_ff=leaprc.protein.ff19SB
+water_ff=leaprc.water.opc
+ligand_ff=leaprc.gaff2
+box=solvateoct/OPCBOX buffer=12.0
+conc_M=0.15
+waters=10326
+na=28
+cl=28
+atoms=44008
+net_charge=0.000001
+order=solvate,neutralise,bulk_salt
+built=2026-08-14T16:17:41-07:00
+builder=lib_solvate.sh

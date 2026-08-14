@@ -100,12 +100,31 @@ build_system () {
         # reduce -build adds H, flips Asn/Gln/His and picks His tautomers from the
         # H-bond network; -Quiet keeps the log readable. tleap then reads the HID/
         # HIE/HIP names reduce assigned rather than defaulting everything to HIE.
-        ( cd "$D" && reduce -build -Quiet protein.pdb > protein_h.pdb 2> reduce.log
-          if [[ -s protein_h.pdb ]]; then
-              pdb4amber -i protein_h.pdb -o protein_prot.pdb --nohyd > pdb4amber.log 2>&1
-              [[ -s protein_prot.pdb ]] && mv protein_prot.pdb protein.pdb
+        # `pdb4amber --reduce` runs reduce AND renames HIS to HID/HIE/HIP from the
+        # hydrogens it added. Do NOT add --nohyd: stripping the hydrogens destroys
+        # exactly the information reduce just produced, pdb4amber writes plain HIS,
+        # and tleap silently defaults everything back to HIE. Verified: with
+        # --reduce --nohyd all six histidines come back HIS; with --reduce alone
+        # they come back 5x HIE + 1x HID. `reduce` on its own does not rename at
+        # all -- the renaming is pdb4amber's job.
+        ( cd "$D" || exit 0
+          pdb4amber -i protein.pdb -o protein_prot.pdb --reduce > pdb4amber.log 2>&1
+          if [[ -s protein_prot.pdb ]]; then
+              # Strip the hydrogens OURSELVES, after the renaming. Keeping them makes
+              # tleap fail with "Atom .R<PHE 68>.A<H3 23> does not have a type": this
+              # protein has chain breaks, pdb4amber marks each as a new terminus and
+              # reduce puts H1/H2/H3 there, which tleap's internal-residue templates
+              # reject. Using pdb4amber's own --nohyd is NOT the fix -- it collapses
+              # HID/HIE back to HIS and loses the assignment entirely. Doing it here
+              # keeps the residue NAMES and lets tleap rebuild hydrogens from them.
+              awk '!(/^(ATOM|HETATM)/ && (substr($0,77,2) ~ /H/ || substr($0,14,1)=="H"))' \
+                  protein_prot.pdb > protein_noh.pdb
+              mv protein_noh.pdb protein.pdb; rm -f protein_prot.pdb
+          else
+              echo "  !! pdb4amber --reduce failed; falling back to tleap defaults"
           fi
-          grep -oE "HI[DEP]" protein.pdb | sort | uniq -c > his_states.txt || true )
+          awk '/^ATOM/ && $3=="CA" && substr($0,18,3) ~ /HI[DEP]/ \
+               {print substr($0,18,3), substr($0,23,4)}' protein.pdb > his_states.txt || true )
     fi
     ( cd "$D" || exit 1
 

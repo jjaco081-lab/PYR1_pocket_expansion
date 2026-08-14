@@ -69,14 +69,14 @@ Loading PDB file: ./protein.pdb
   Leap added 1430 missing atoms according to residue templates:
        20 Heavy
        1410 H / lone pairs
-Scaling up box by a factor of 1.326423 to meet diagonal cut criterion
-  Solute vdw bounding box:              44.863 41.104 58.630
-  Total bounding box for atom centers:  90.464 90.464 90.464
+Scaling up box by a factor of 1.326613 to meet diagonal cut criterion
+  Solute vdw bounding box:              44.861 41.110 58.629
+  Total bounding box for atom centers:  90.468 90.468 90.468
       (box expansion for 'iso' is  46.3%)
   Solvent unit box:                     18.865 18.478 19.006
-  Volume: 382583.222 A^3 (oct)
-  Total mass 206604.640 amu,  Density 0.897 g/cc
-  Added 10323 residues.
+  Volume: 382624.245 A^3 (oct)
+  Total mass 206640.672 amu,  Density 0.897 g/cc
+  Added 10325 residues.
 5 K+ ions required to neutralize.
 Adding 5 counter ions to "sys" using 1A grid
 Grid extends from solute vdw + 1.70  to  7.68
@@ -91,71 +91,71 @@ Placed K+ in sys at (4.58, -24.21, 6.64).
 (Replacing solvent molecule)
 Placed K+ in sys at (-7.07, 19.13, -12.81).
 (No solvent overlap)
-Placed K+ in sys at (13.69, 9.26, 12.81).
+Placed K+ in sys at (13.69, 9.25, 12.81).
 (Replacing solvent molecule)
-Placed K+ in sys at (-11.83, -10.60, 12.64).
+Placed K+ in sys at (23.65, 20.01, 0.08).
 
 Done adding ions.
  0.001002 0 1 0
 0 Cl- ion required to neutralize.
 Adding 0 counter ions to "sys" using 1A grid
-Adding 56 counter ions to "sys". 10263 solvent molecules will remain.
-0: Placed K+ in sys at (15.35, -15.77, 7.08).
-Placed Cl- in sys at (-9.14, 12.10, -30.66).
-0: Placed K+ in sys at (-37.42, -11.66, -5.33).
-Placed Cl- in sys at (2.33, -18.30, -25.51).
-0: Placed K+ in sys at (-11.91, 31.80, -11.26).
-Placed Cl- in sys at (18.93, -1.26, 17.51).
-0: Placed K+ in sys at (23.70, 35.44, -17.32).
-Placed Cl- in sys at (22.15, -33.32, 18.24).
-0: Placed K+ in sys at (6.42, 40.67, -1.06).
-Placed Cl- in sys at (14.49, 3.89, -12.54).
-0: Placed K+ in sys at (-2.38, -22.98, 5.01).
-Placed Cl- in sys at (0.99, -3.64, -41.84).
-0: Placed K+ in sys at (-13.04, -15.44, 18.08).
-Placed Cl- in sys at (-37.80, -3.25, -3.00).
-0: Placed K+ in sys at (4.40, -25.74, 19.37).
-Placed Cl- in sys at (-16.52, 25.43, 11.93).
-0: Placed K+ in sys at (38.24, 12.81, -2.45).
-Placed Cl- in sys at (34.41, 9.64, -22.35).
-0: Placed K+ in sys at (4.97, -16.98, 20.76).
-Placed Cl- in sys at (3.02, 8.51, -37.73).
-0: Placed K+ in sys at (17.61, -27.93, 24.12).
-Placed Cl- in sys at (24.55, 14.77, 15.60).
-0: Placed K+ in sys at (23.80, 17.27, 13.08).
-Placed Cl- in sys at (-2.90, 20.12, 26.27).
-0: Placed K+ in sys at (13.13, -0.44, -37.22).
-Placed Cl- in sys at (11.47, -17.37, 33.90).
-0: Placed K+ in sys at (4.37, -4.57, 27.68).
-Placed Cl- in sys at (-0.28, 3.22, 44.90).
-0: Placed K+ in sys at (-0.69, -13.39, -28.70).
-Placed Cl- in sys at (-21.82, -27.00, -5.15).
-0: Placed K+ in sys at (30.93, -26.25, 4.32).
-Placed Cl- in sys at (25.33, -0.85, -37.95).
-0: Placed K+ in sys at (-12.77, 33.24, 28.18).
-Placed Cl- in sys at (9.20, 34.67, -11.23).
-0: Placed K+ in sys at (34.24, -10.75, 0.35).
-Placed Cl- in sys at (34.88, -23.23, 1.77).
-0: Placed K+ in sys at (15.17, 43.93, 9.54).
-Placed Cl- in sys at (-21.27, -25.89, 4.63).
-0: Placed K+ in sys at (24.05, -9.09, -0.76).
-Placed Cl- in sys at (-11.81, 30.57, 20.44).
-0: Placed K+ in sys at (-5.49, 19.93, -29.49).
-Placed Cl- in sys at (-25.24, -18.24, 11.88).
-0: Placed K+ in sys at (-37.38, 23.14, 13.91).
-Placed Cl- in sys at (24.04, -27.40, 2.79).
-0: Placed K+ in sys at (9.32, 25.97, -27.42).
-Placed Cl- in sys at (33.57, 7.40, -12.78).
-0: Placed K+ in sys at (-2.07, 0.08, 18.08).
-Placed Cl- in sys at (-39.09, 8.86, -15.55).
-0: Placed K+ in sys at (-10.34, 22.68, -27.34).
-Placed Cl- in sys at (1.92, 28.18, 29.48).
-0: Placed K+ in sys at (-28.66, -1.98, -17.29).
-Placed Cl- in sys at (23.38, -26.79, 8.91).
-0: Placed K+ in sys at (-0.99, 19.61, 30.17).
-Placed Cl- in sys at (-2.56, 31.20, 27.75).
-0: Placed K+ in sys at (-2.47, 17.34, -22.23).
-Placed Cl- in sys at (-18.35, -19.45, -25.88).
+Adding 56 counter ions to "sys". 10265 solvent molecules will remain.
+0: Placed K+ in sys at (-3.15, 13.99, 33.90).
+Placed Cl- in sys at (-3.87, -28.50, -15.73).
+0: Placed K+ in sys at (-13.52, 35.78, -2.94).
+Placed Cl- in sys at (-5.16, -20.97, -27.19).
+0: Placed K+ in sys at (-6.72, -18.02, 29.57).
+Placed Cl- in sys at (-35.25, 4.59, 23.47).
+0: Placed K+ in sys at (0.05, 33.49, -23.15).
+Placed Cl- in sys at (14.48, -9.73, -36.31).
+0: Placed K+ in sys at (-2.35, -14.64, -22.40).
+Placed Cl- in sys at (16.83, 16.96, 12.40).
+0: Placed K+ in sys at (13.09, -5.84, 16.99).
+Placed Cl- in sys at (-36.41, 15.48, -12.63).
+0: Placed K+ in sys at (9.40, -16.56, -11.53).
+Placed Cl- in sys at (-4.74, -14.01, 19.90).
+0: Placed K+ in sys at (-21.44, -34.98, -7.39).
+Placed Cl- in sys at (25.11, 4.40, -19.80).
+0: Placed K+ in sys at (-19.95, 23.27, -19.21).
+Placed Cl- in sys at (18.06, -9.60, -21.06).
+0: Placed K+ in sys at (-14.35, -29.54, -9.61).
+Placed Cl- in sys at (38.55, 17.51, -9.96).
+0: Placed K+ in sys at (21.59, -15.20, 4.65).
+Placed Cl- in sys at (-23.99, -14.30, -1.95).
+0: Placed K+ in sys at (14.26, 4.05, -38.94).
+Placed Cl- in sys at (-9.10, -24.28, -16.58).
+0: Placed K+ in sys at (-14.99, 18.39, -29.23).
+Placed Cl- in sys at (12.58, 13.54, 26.38).
+0: Placed K+ in sys at (16.76, -3.42, -18.13).
+Placed Cl- in sys at (29.03, -25.73, 0.42).
+0: Placed K+ in sys at (-30.51, -14.28, 16.85).
+Placed Cl- in sys at (4.11, -38.09, 0.24).
+0: Placed K+ in sys at (-21.95, 2.26, -11.80).
+Placed Cl- in sys at (20.61, -11.55, -34.04).
+0: Placed K+ in sys at (34.11, -0.85, 11.08).
+Placed Cl- in sys at (23.37, 15.43, -29.33).
+0: Placed K+ in sys at (5.55, -28.18, 29.21).
+Placed Cl- in sys at (-13.30, -14.39, 25.07).
+0: Placed K+ in sys at (-17.65, 6.26, 1.25).
+Placed Cl- in sys at (4.08, 42.55, 19.40).
+0: Placed K+ in sys at (1.81, -25.11, 10.52).
+Placed Cl- in sys at (30.22, -11.39, 29.36).
+0: Placed K+ in sys at (31.26, 5.21, -10.59).
+Placed Cl- in sys at (10.69, 13.33, -31.54).
+0: Placed K+ in sys at (-15.16, 3.74, 41.71).
+Placed Cl- in sys at (1.06, -9.86, -29.52).
+0: Placed K+ in sys at (15.77, -33.13, 12.18).
+Placed Cl- in sys at (-2.30, -20.81, -30.39).
+0: Placed K+ in sys at (-16.54, -18.80, -16.15).
+Placed Cl- in sys at (24.94, -19.23, -3.69).
+0: Placed K+ in sys at (-38.31, -3.50, -10.64).
+Placed Cl- in sys at (-35.24, -20.70, -11.29).
+0: Placed K+ in sys at (2.40, -17.07, 12.30).
+Placed Cl- in sys at (-15.63, 9.26, 2.84).
+0: Placed K+ in sys at (38.77, 17.35, 16.45).
+Placed Cl- in sys at (-7.90, -42.56, -17.03).
+0: Placed K+ in sys at (-13.13, -42.65, -10.96).
+Placed Cl- in sys at (13.28, -23.81, 2.53).
 Total unperturbed charge:   0.001002
 Total perturbed charge:     0.001002
 Checking 'sys'....
@@ -182,7 +182,7 @@ Close contact of 1.417 angstroms between nonbonded atoms HZ and H11
 Checking parameters for unit 'sys'.
 Checking for bond parameters.
 Checking for angle parameters.
-check:  Warnings: 30794
+check:  Warnings: 30800
 Unit is OK.
 Checking Unit.
 

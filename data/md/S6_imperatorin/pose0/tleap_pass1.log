@@ -69,14 +69,14 @@ Loading PDB file: ./protein.pdb
   Leap added 1430 missing atoms according to residue templates:
        20 Heavy
        1410 H / lone pairs
-Scaling up box by a factor of 1.326423 to meet diagonal cut criterion
-  Solute vdw bounding box:              44.863 41.104 58.630
-  Total bounding box for atom centers:  90.464 90.464 90.464
+Scaling up box by a factor of 1.326613 to meet diagonal cut criterion
+  Solute vdw bounding box:              44.861 41.110 58.629
+  Total bounding box for atom centers:  90.468 90.468 90.468
       (box expansion for 'iso' is  46.3%)
   Solvent unit box:                     18.865 18.478 19.006
-  Volume: 382583.222 A^3 (oct)
-  Total mass 206604.640 amu,  Density 0.897 g/cc
-  Added 10323 residues.
+  Volume: 382624.245 A^3 (oct)
+  Total mass 206640.672 amu,  Density 0.897 g/cc
+  Added 10325 residues.
 5 K+ ions required to neutralize.
 Adding 5 counter ions to "sys" using 1A grid
 Grid extends from solute vdw + 1.70  to  7.68
@@ -91,9 +91,9 @@ Placed K+ in sys at (4.58, -24.21, 6.64).
 (Replacing solvent molecule)
 Placed K+ in sys at (-7.07, 19.13, -12.81).
 (No solvent overlap)
-Placed K+ in sys at (13.69, 9.26, 12.81).
+Placed K+ in sys at (13.69, 9.25, 12.81).
 (Replacing solvent molecule)
-Placed K+ in sys at (-11.83, -10.60, 12.64).
+Placed K+ in sys at (23.65, 20.01, 0.08).
 
 Done adding ions.
  0.001002 0 1 0

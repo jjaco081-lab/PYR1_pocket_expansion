@@ -3,11 +3,11 @@ water_ff=leaprc.water.opc
 ligand_ff=leaprc.gaff2
 box=solvateoct/OPCBOX buffer=12.0
 conc_M=0.15
-waters=10353
+waters=10352
 na=28
 cl=28
-atoms=44106
+atoms=44102
 net_charge=0.001998
 order=solvate,neutralise,bulk_salt
-built=2026-08-14T16:07:26-07:00
+built=2026-08-14T16:16:40-07:00
 builder=lib_solvate.sh

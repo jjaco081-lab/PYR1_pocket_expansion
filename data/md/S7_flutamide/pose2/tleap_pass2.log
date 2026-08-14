@@ -69,14 +69,14 @@ Loading PDB file: ./protein.pdb
   Leap added 1430 missing atoms according to residue templates:
        20 Heavy
        1410 H / lone pairs
-Scaling up box by a factor of 1.325911 to meet diagonal cut criterion
-  Solute vdw bounding box:              44.861 41.109 58.640
-  Total bounding box for atom centers:  90.461 90.461 90.461
+Scaling up box by a factor of 1.326101 to meet diagonal cut criterion
+  Solute vdw bounding box:              44.858 41.116 58.638
+  Total bounding box for atom centers:  90.465 90.465 90.465
       (box expansion for 'iso' is  46.3%)
   Solvent unit box:                     18.865 18.478 19.006
-  Volume: 382546.218 A^3 (oct)
-  Total mass 206538.522 amu,  Density 0.897 g/cc
-  Added 10319 residues.
+  Volume: 382587.421 A^3 (oct)
+  Total mass 206628.602 amu,  Density 0.897 g/cc
+  Added 10324 residues.
 5 K+ ions required to neutralize.
 Adding 5 counter ions to "sys" using 1A grid
 Grid extends from solute vdw + 1.70  to  7.68
@@ -85,15 +85,15 @@ Solvent present: replacing closest with ion
 	 when steric overlaps occur
 Calculating grid charges
 (Replacing solvent molecule)
-Placed K+ in sys at (-0.53, 22.01, -4.14).
+Placed K+ in sys at (-0.66, 22.10, -4.29).
 (Replacing solvent molecule)
-Placed K+ in sys at (4.71, -24.30, 6.79).
+Placed K+ in sys at (4.58, -24.21, 6.64).
 (Replacing solvent molecule)
-Placed K+ in sys at (-6.95, 19.05, -12.66).
+Placed K+ in sys at (-7.07, 19.13, -12.81).
 (No solvent overlap)
-Placed K+ in sys at (13.80, 9.17, 12.96).
+Placed K+ in sys at (13.68, 9.25, 12.81).
 (Replacing solvent molecule)
-Placed K+ in sys at (-11.71, -10.69, 12.79).
+Placed K+ in sys at (-11.83, -10.60, 12.64).
 
 Done adding ions.
 
@@ -101,63 +101,63 @@ Done adding ions.
 addIons: 1st Ion & target unit have charges of the same sign:
      unit charge = -1e-06; ion1 charge = -1;
      can't neutralize.
-Adding 56 counter ions to "sys". 10259 solvent molecules will remain.
-0: Placed K+ in sys at (-26.78, -29.41, -10.08).
-Placed Cl- in sys at (-28.79, -0.53, -30.56).
-0: Placed K+ in sys at (23.78, -24.25, 10.25).
-Placed Cl- in sys at (-12.88, 13.27, -18.41).
-0: Placed K+ in sys at (8.60, -37.67, -27.04).
-Placed Cl- in sys at (-7.11, -27.39, 14.02).
-0: Placed K+ in sys at (-37.75, -18.21, -0.72).
-Placed Cl- in sys at (-1.38, 5.01, -37.12).
-0: Placed K+ in sys at (27.28, 0.69, -24.86).
-Placed Cl- in sys at (19.10, -2.85, 26.24).
-0: Placed K+ in sys at (3.63, 8.86, -29.72).
-Placed Cl- in sys at (-25.65, 14.69, -18.34).
-0: Placed K+ in sys at (14.70, -6.35, -32.10).
-Placed Cl- in sys at (21.09, -24.41, 6.34).
-0: Placed K+ in sys at (23.55, -31.26, 23.90).
-Placed Cl- in sys at (-15.63, -12.90, -16.90).
-0: Placed K+ in sys at (-24.95, 28.12, -14.65).
-Placed Cl- in sys at (-15.58, 12.66, 25.68).
-0: Placed K+ in sys at (-6.21, 8.89, 11.28).
-Placed Cl- in sys at (-8.93, 5.47, 39.60).
-0: Placed K+ in sys at (-30.13, 26.94, 22.03).
-Placed Cl- in sys at (19.91, -13.24, 9.51).
-0: Placed K+ in sys at (27.85, 12.02, -17.97).
-Placed Cl- in sys at (-34.46, 16.38, -2.07).
-0: Placed K+ in sys at (-11.04, -30.94, -17.34).
-Placed Cl- in sys at (-1.49, -30.38, 6.88).
-0: Placed K+ in sys at (-18.44, 5.58, -14.24).
-Placed Cl- in sys at (27.72, 2.55, 25.91).
-0: Placed K+ in sys at (-36.19, -11.49, -19.90).
-Placed Cl- in sys at (-15.68, 21.42, 18.35).
-0: Placed K+ in sys at (1.09, 37.88, -23.16).
-Placed Cl- in sys at (-9.95, -10.62, 31.19).
-0: Placed K+ in sys at (-4.44, 16.88, 16.42).
-Placed Cl- in sys at (-19.04, 29.30, 22.77).
-0: Placed K+ in sys at (21.52, -5.81, 11.20).
-Placed Cl- in sys at (-7.03, -1.28, -40.97).
-0: Placed K+ in sys at (11.83, -0.50, -25.97).
-Placed Cl- in sys at (10.06, 36.77, 13.58).
-0: Placed K+ in sys at (11.54, 43.97, 14.92).
-Placed Cl- in sys at (-21.30, 20.64, 1.58).
-0: Placed K+ in sys at (-32.54, -2.89, -22.51).
-Placed Cl- in sys at (34.35, 21.42, 13.47).
-0: Placed K+ in sys at (19.37, -16.44, 30.11).
-Placed Cl- in sys at (-0.23, 24.08, 13.95).
-0: Placed K+ in sys at (-1.18, -7.32, 19.94).
-Placed Cl- in sys at (-7.55, -42.81, 9.53).
-0: Placed K+ in sys at (-14.23, 29.90, 34.47).
-Placed Cl- in sys at (-5.47, 21.25, -35.14).
-0: Placed K+ in sys at (-32.06, 3.52, 21.13).
-Placed Cl- in sys at (-17.75, -11.08, 27.60).
-0: Placed K+ in sys at (-0.24, 29.34, 5.54).
-Placed Cl- in sys at (8.44, -13.96, -27.93).
-0: Placed K+ in sys at (-21.47, -27.24, 21.41).
-Placed Cl- in sys at (-37.85, -9.46, -8.05).
-0: Placed K+ in sys at (-17.48, -10.27, -33.57).
-Placed Cl- in sys at (1.88, 4.31, -17.17).
+Adding 56 counter ions to "sys". 10264 solvent molecules will remain.
+0: Placed K+ in sys at (-27.05, 20.42, 24.70).
+Placed Cl- in sys at (32.45, 5.91, -24.43).
+0: Placed K+ in sys at (4.58, -15.97, -35.41).
+Placed Cl- in sys at (26.45, -16.39, 19.98).
+0: Placed K+ in sys at (17.01, -5.42, 42.38).
+Placed Cl- in sys at (12.42, -3.14, -30.38).
+0: Placed K+ in sys at (11.75, -29.79, -4.69).
+Placed Cl- in sys at (-0.42, 26.60, 5.16).
+0: Placed K+ in sys at (31.29, -10.33, 16.81).
+Placed Cl- in sys at (-7.33, -29.95, 9.87).
+0: Placed K+ in sys at (3.02, -7.93, -36.70).
+Placed Cl- in sys at (-15.17, -32.94, 1.99).
+0: Placed K+ in sys at (-25.24, -18.24, 11.88).
+Placed Cl- in sys at (5.10, -27.86, -23.60).
+0: Placed K+ in sys at (-9.42, 31.74, -5.24).
+Placed Cl- in sys at (3.60, -21.78, -32.25).
+0: Placed K+ in sys at (16.22, -29.17, -13.73).
+Placed Cl- in sys at (-13.34, 19.42, -23.99).
+0: Placed K+ in sys at (8.37, -7.31, -21.39).
+Placed Cl- in sys at (23.75, 17.18, -9.28).
+0: Placed K+ in sys at (-14.48, 6.79, 8.96).
+Placed Cl- in sys at (-18.46, -21.33, 6.36).
+0: Placed K+ in sys at (-6.98, -1.29, -11.81).
+Placed Cl- in sys at (5.79, -25.28, 9.64).
+0: Placed K+ in sys at (27.23, -12.65, -23.50).
+Placed Cl- in sys at (-23.38, 31.83, 24.18).
+0: Placed K+ in sys at (29.73, -26.67, -2.66).
+Placed Cl- in sys at (-15.10, 7.24, -31.56).
+0: Placed K+ in sys at (22.86, 4.18, -28.50).
+Placed Cl- in sys at (30.25, -4.14, -4.80).
+0: Placed K+ in sys at (35.99, -25.81, 1.59).
+Placed Cl- in sys at (-26.78, 5.99, 18.20).
+0: Placed K+ in sys at (-27.85, -8.50, 19.88).
+Placed Cl- in sys at (-24.42, -6.53, -14.67).
+0: Placed K+ in sys at (-31.07, -27.96, 13.27).
+Placed Cl- in sys at (-7.06, 34.33, -0.44).
+0: Placed K+ in sys at (24.80, 35.64, 13.96).
+Placed Cl- in sys at (18.20, -32.98, 18.69).
+0: Placed K+ in sys at (13.67, -0.79, 34.11).
+Placed Cl- in sys at (-21.31, -0.40, 35.04).
+0: Placed K+ in sys at (-5.87, 38.80, 26.10).
+Placed Cl- in sys at (-18.30, 25.11, -20.32).
+0: Placed K+ in sys at (-23.56, 17.50, -17.60).
+Placed Cl- in sys at (-23.25, 4.96, -36.55).
+0: Placed K+ in sys at (38.35, -20.51, 16.24).
+Placed Cl- in sys at (-17.33, 34.05, -12.34).
+0: Placed K+ in sys at (-32.67, -25.84, 7.93).
+Placed Cl- in sys at (0.99, -3.64, -41.84).
+0: Placed K+ in sys at (14.90, -7.31, -10.45).
+Placed Cl- in sys at (21.71, 24.84, 1.60).
+0: Placed K+ in sys at (27.60, -4.22, 5.94).
+Placed Cl- in sys at (29.72, 12.91, -0.32).
+0: Placed K+ in sys at (16.07, -9.72, -40.07).
+Placed Cl- in sys at (8.79, 18.00, 28.46).
+0: Placed K+ in sys at (-25.20, -13.42, 10.40).
+Placed Cl- in sys at (-23.83, 11.21, 36.26).
 Total unperturbed charge:  -0.000001
 Total perturbed charge:    -0.000001
 Checking 'sys'....
@@ -185,3 +185,53 @@ Close contact of 0.966 angstroms between nonbonded atoms HZ and H8
 /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
 Close contact of 1.463 angstroms between nonbonded atoms HB3 and H6
 -------  .R<ALA 86>.A<HB3 8> and .R<FLU 179>.A<H6 25>
+Checking parameters for unit 'sys'.
+Checking for bond parameters.
+Checking for angle parameters.
+check:  Warnings: 30798
+Unit is OK.
+Checking Unit.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 4.645 angstroms between C and N atoms:
+-------  .R<GLU 67>.A<C 14> and .R<PHE 68>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 3.017 angstroms between C and N atoms:
+-------  .R<NMET 1>.A<C 18> and .R<SER 2>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Note.
+Ignoring the warnings from Unit Checking.
+
+Building topology.
+Building atom parameters.
+Building bond parameters.
+Building angle parameters.
+Building proper torsion parameters.
+Building improper torsion parameters.
+ total 577 improper torsions applied
+Building H-Bond parameters.
+Incorporating Non-Bonded adjustments.
+Not Marking per-residue atom chain types.
+Marking per-residue atom chain types.
+  (Residues lacking connect0/connect1 - 
+   these don't have chain types marked:
+
+	res	total affected
+
+	CASN	1
+	FLU	1
+	NMET	1
+  )
+ (no restraints)
+Writing pdb file: system_solvated.pdb
+   printing CRYST1 record to PDB file with box info
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NMET -> MET
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CASN -> ASN
+	Quit
+
+Exiting LEaP: Errors = 0; Warnings = 11; Notes = 1.
