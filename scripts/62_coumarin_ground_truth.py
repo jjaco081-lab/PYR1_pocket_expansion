@@ -191,3 +191,34 @@ truth = {
 path = os.path.join(OUT, "tian_library_truth.json")
 json.dump(truth, open(path, "w"), indent=1)
 print(f"\nwrote {path}")
+
+# ---------------------------------------------------------------- ligand export
+# The screen table is the only place the ligand SMILES live, and it needs openpyxl,
+# which no RDKit env here has. So export a small CSV once; downstream scripts
+# (docking, MD setup) then need RDKit only. Tracked, because it is a ground-truth
+# extract rather than bulk.
+hdr_s, recs_s = sheet(SCREEN)
+seen, out_rows = set(), []
+for r in recs_s:
+    n = str(r.get("library_name") or "").strip()
+    if not n or n in seen:
+        continue
+    seen.add(n)
+    out_rows.append(dict(
+        library_name=n,
+        parent_name=str(r.get("parent_name") or ""),
+        chem_cluster=str(r.get("chem_cluster") or ""),
+        cat=str(r.get("cat") or ""),
+        canonical_smiles=str(r.get("canonical_smiles") or ""),
+    ))
+counts = collections.Counter(str(r.get("library_name") or "").strip() for r in recs_s)
+for row in out_rows:
+    row["n_clones"] = counts[row["library_name"]]
+
+import csv as _csv
+lp = os.path.join(OUT, "tian_screen_ligands.csv")
+with open(lp, "w", newline="") as fh:
+    w = _csv.DictWriter(fh, fieldnames=list(out_rows[0]))
+    w.writeheader()
+    w.writerows(sorted(out_rows, key=lambda d: -d["n_clones"]))
+print(f"wrote {lp}  ({len(out_rows)} distinct ligands with characterised clones)")
