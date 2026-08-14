@@ -51,11 +51,13 @@
 # runs a further full 300 ns.
 set -uo pipefail
 module load amber/22_mpi_cuda >/dev/null 2>&1
+source "$(dirname "$0")/lib_mdinputs.sh"
+md_settings_check
 
 P=/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion
 MD=$P/data/md
 PROD_NS=300
-EQUIL_PS=1700                       # heat 200 + eq1 500 + eq2 1000
+# EQUIL_PS comes from lib_mdinputs.sh (1700 = heat 200 + eq1 500 + eq2 1000)
 TARGET_PS=$(( EQUIL_PS + PROD_NS * 1000 ))
 
 # "<dir holding system.prmtop>|<dir to run in>"
@@ -78,78 +80,8 @@ esac
 echo "=== $(date)  task $SLURM_ARRAY_TASK_ID  job $SLURM_JOB_ID  restarts=${SLURM_RESTART_COUNT:-0} ==="
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 
-write_inputs () {
-cat > min1.in <<EOF
-minimisation 1, solute restrained
- &cntrl
-  imin=1, maxcyc=5000, ncyc=2500,
-  ntb=1, cut=10.0,
-  ntr=1, restraintmask='!:WAT,Na+,Cl- & !@H=', restraint_wt=10.0,
- /
-EOF
-cat > min2.in <<EOF
-minimisation 2, unrestrained
- &cntrl
-  imin=1, maxcyc=5000, ncyc=2500,
-  ntb=1, cut=10.0, ntr=0,
- /
-EOF
-cat > heat.in <<EOF
-NVT heating 0 -> 300 K over 200 ps
- &cntrl
-  imin=0, irest=0, ntx=1,
-  nstlim=100000, dt=0.002,
-  ntc=2, ntf=2, cut=10.0,
-  ntb=1, ntp=0,
-  ntt=3, gamma_ln=2.0, ig=-1,
-  tempi=0.0, temp0=300.0,
-  nmropt=1,
-  ntr=1, restraintmask='!:WAT,Na+,Cl- & !@H=', restraint_wt=5.0,
-  ntpr=5000, ntwx=5000, ntwr=50000,
- /
- &wt type='TEMP0', istep1=0, istep2=80000, value1=0.0, value2=300.0 /
- &wt type='TEMP0', istep1=80001, istep2=100000, value1=300.0, value2=300.0 /
- &wt type='END' /
-EOF
-cat > eq1.in <<EOF
-NPT equilibration 1, 500 ps, light restraints
- &cntrl
-  imin=0, irest=1, ntx=5,
-  nstlim=250000, dt=0.002,
-  ntc=2, ntf=2, cut=10.0,
-  ntb=2, ntp=1, barostat=2, pres0=1.0, taup=2.0,
-  ntt=3, gamma_ln=2.0, ig=-1, temp0=300.0,
-  ntr=1, restraintmask='!:WAT,Na+,Cl- & !@H=', restraint_wt=1.0,
-  ntpr=5000, ntwx=5000, ntwr=50000,
- /
-EOF
-cat > eq2.in <<EOF
-NPT equilibration 2, 1 ns, unrestrained
- &cntrl
-  imin=0, irest=1, ntx=5,
-  nstlim=500000, dt=0.002,
-  ntc=2, ntf=2, cut=10.0,
-  ntb=2, ntp=1, barostat=2, pres0=1.0, taup=2.0,
-  ntt=3, gamma_ln=2.0, ig=-1, temp0=300.0,
-  ntr=0,
-  ntpr=5000, ntwx=5000, ntwr=50000,
- /
-EOF
-}
-
 rst_time () {    # echo simulated ps in $1, or nothing if unreadable
     ncdump -v time "$1" 2>/dev/null | awk '/^ time =/{gsub(/[^0-9.]/,"",$3); print $3; exit}'
-}
-
-# Every stage uses ig=-1, so pmemd draws a fresh random seed and ANNOUNCES it as
-# "Setting random seed to N". README 19e records that the input echo says ig = -1
-# and only the announcement carries the real value -- so match the announcement.
-# Seeds are appended to seeds.txt as they are produced, not harvested afterwards,
-# because a requeued job overwrites .out files and the seed would be lost.
-record_seed () {   # $1 = stage name
-    local s
-    s=$(grep -m1 "Setting random seed to" ${1}.out 2>/dev/null | awk '{print $NF}')
-    [[ -n "$s" ]] && echo "$(date -Is) $1 ig=$s" >> seeds.txt
 }
 
 run_stage () {   # name  prev_rst  [ref]
@@ -177,7 +109,7 @@ for entry in "${RUNS[@]}"; do
         overall=1; continue
     fi
     mkdir -p "$D"; cd "$D" || { overall=1; continue; }
-    write_inputs
+    write_md_inputs
 
     run_stage min1 "$CRD" ref || { overall=1; continue; }
     run_stage min2 min1.rst7  || { overall=1; continue; }
@@ -204,22 +136,7 @@ for entry in "${RUNS[@]}"; do
     NSTEPS=$(( REMAIN_PS * 500 ))
     echo "  production: at $NOW ps -> $REMAIN_PS ps remaining ($NSTEPS steps)"
 
-    cat > prod.in <<EOF
-NPT production, remaining ${REMAIN_PS} ps, frames every 10 ps
- &cntrl
-  imin=0, irest=1, ntx=5,
-  nstlim=${NSTEPS}, dt=0.002,
-  ntc=2, ntf=2, cut=10.0,
-  ntb=2, ntp=1, barostat=2, pres0=1.0, taup=2.0,
-  ntt=3, gamma_ln=2.0, ig=-1, temp0=300.0,
-  ntr=0,
-  ntpr=25000, ntwx=5000, ntwr=5000,
-  iwrap=1,
- /
-EOF
-    # ntwr=5000 == ntwx: restart and frame writes coincide, so an interrupted run
-    # leaves no duplicated frames. S4 accumulated 11.6 ns of overlap because
-    # ntwr was 1 ns while frames were every 10 ps (README 24e).
+    write_prod_input "$NSTEPS"
 
     if [[ "$START" == "eq2.rst7" ]]; then
         OUT_NC=prod.nc; OUT_O=prod.out

@@ -35,7 +35,6 @@ P=/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion
 MD=$P/data/md
 NC=$P/data/noncognate
 PROT=$MD/S2_holo_closed/protein.pdb
-CONC=0.15
 
 [[ -s "$PROT" ]] || { echo "missing receptor $PROT"; exit 1; }
 
@@ -43,89 +42,10 @@ declare -A SYS=( [Imperatorin]=S6_imperatorin [Flutamide]=S7_flutamide
                  [Alpha-Estradiol]=S8_estradiol )
 declare -A RES=( [Imperatorin]=IMP [Flutamide]=FLU [Alpha-Estradiol]=EST )
 
+source "$(dirname "$0")/lib_solvate.sh"
+
 build_one () {   # $1 = system dir, $2 = ligand mol2 (or "" for apo), $3 = frcmod
-    local D=$1 LIGMOL2=$2 FRC=$3
-    mkdir -p "$D"; cd "$D" || return 1
-    cp "$PROT" protein.pdb
-
-    if [[ -n "$LIGMOL2" ]]; then
-        cat > tleap.in.template <<EOF
-source leaprc.protein.ff19SB
-source leaprc.water.opc
-source leaprc.gaff2
-# NO frcmod.ions234lm_126_opc -- that is TIP3P-era naming and does not exist for
-# OPC; leaprc.water.opc has already loaded frcmod.ionslm_126_opc (README 19b).
-loadamberparams $FRC
-lig = loadmol2 $LIGMOL2
-prot = loadpdb protein.pdb
-sys = combine { prot lig }
-# ORDER IS COPIED FROM S2's tleap.in AND MUST NOT BE REARRANGED: solvate, then
-# neutralise, then add bulk salt. Neutralising BEFORE solvation places counter-ions
-# in vacuum against the solute instead of substituting them into water, which is a
-# different starting state -- and these systems exist only to be compared with S2.
-solvateoct sys OPCBOX 12.0
-addions sys Na+ 0
-addions sys Cl- 0
-addionsrand sys Na+ {nna} Cl- {ncl}
-charge sys
-check sys
-saveamberparm sys system.prmtop system.inpcrd
-savepdb sys system_solvated.pdb
-quit
-EOF
-    else
-        cat > tleap.in.template <<EOF
-source leaprc.protein.ff19SB
-source leaprc.water.opc
-source leaprc.gaff2
-# gaff2 is sourced even with no ligand present, so the force-field stack loaded is
-# identical across every system in the comparison (S1 and S2 both source it too).
-prot = loadpdb protein.pdb
-sys = combine { prot }
-# same order as S2/S1 -- see the note in the ligand branch
-solvateoct sys OPCBOX 12.0
-addions sys Na+ 0
-addions sys Cl- 0
-addionsrand sys Na+ {nna} Cl- {ncl}
-charge sys
-check sys
-saveamberparm sys system.prmtop system.inpcrd
-savepdb sys system_solvated.pdb
-quit
-EOF
-    fi
-
-    # two-pass: count waters with no salt, then rebuild at 0.15 M
-    sed -e "s/{nna}/0/" -e "s/{ncl}/0/" tleap.in.template > tleap.in
-    tleap -f tleap.in > tleap_pass1.log 2>&1 || true
-    local NWAT
-    NWAT=$(grep -oP 'Added \K[0-9]+(?= residues)' tleap_pass1.log | tail -1 || true)
-    if [[ -z "${NWAT:-}" ]]; then
-        echo "  ERROR: no water count in $D/tleap_pass1.log"; tail -20 tleap_pass1.log; return 1
-    fi
-    local NION
-    NION=$(python3 -c "print(int(round($NWAT * $CONC / 55.5)))")
-    sed -e "s/{nna}/$NION/" -e "s/{ncl}/$NION/" tleap.in.template > tleap.in
-    tleap -f tleap.in > tleap_pass2.log 2>&1 || true
-
-    if [[ ! -f system.prmtop ]]; then
-        echo "  ERROR: tleap wrote no prmtop in $D"
-        grep -iE "error|fatal" tleap_pass2.log | head; return 1
-    fi
-    local CHG NATOM
-    CHG=$(grep -oP 'Total unperturbed charge:\s*\K-?[0-9.]+' tleap_pass2.log | tail -1)
-    NATOM=$(grep -c -E '^(ATOM|HETATM)' system_solvated.pdb)
-    echo "  $(basename "$D"): $NATOM atoms, $NWAT waters, ${NION} NaCl, net charge $CHG"
-    python3 -c "
-import sys
-q=float('$CHG')
-sys.exit('  ERROR: net charge %.3f is not neutral' % q) if abs(q)>0.01 else None"
-    if grep -qiE "Could not find|no parameters|Unknown residue|ATOM NOT FOUND" tleap_pass2.log; then
-        echo "  ERROR: unparameterised atoms in $D"
-        grep -iE "Could not find|no parameters|Unknown residue" tleap_pass2.log | head
-        return 1
-    fi
-    return 0
+    build_system "$1" "$PROT" "${2:-}" "${3:-}"
 }
 
 fail=0
