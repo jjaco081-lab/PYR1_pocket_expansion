@@ -13,7 +13,7 @@
 #   heat  NVT 0->300 K over 200 ps, restraints 5.0
 #   eq1   NPT 300 K, 500 ps, restraints 1.0
 #   eq2   NPT 300 K, 1 ns, unrestrained
-#   prod  NPT 300 K, 4 fs (HMR), SHAKE on H, PME, 10 A cutoff, Langevin gamma_ln=2.0,
+#   prod  NPT 300 K, 2 fs, SHAKE on H, PME, 10 A cutoff, Langevin gamma_ln=2.0,
 #         Monte Carlo barostat, frames every 10 ps
 #
 #   The clock includes equilibration: 200 + 500 + 1000 = 1700 ps, so a finished
@@ -36,26 +36,24 @@
 #   write_md_inputs                 # min1/min2/heat/eq1/eq2 into $PWD
 #   write_prod_input <n_steps>      # prod.in for a given remaining step count
 
-# HYDROGEN-MASS REPARTITIONING -- 4 fs production
-#   lib_solvate.sh writes system_hmr.prmtop alongside system.prmtop. With mass moved
-#   into the hydrogens, the fastest bond vibrations slow enough that 4 fs is stable,
-#   roughly DOUBLING throughput. Water is excluded from the repartitioning (already
-#   rigid under SHAKE).
+# TIMESTEP: 2 fs with SHAKE on hydrogens. NOT hydrogen-mass repartitioned.
 #
-#   WHAT IT COSTS, stated honestly: HMR is well validated for EQUILIBRIUM and
-#   conformational properties -- RMSD, RMSF, populations, free energies are
-#   unaffected. It is NOT kinetically faithful: the masses are deliberately wrong,
-#   so diffusion and relaxation times are altered. Every observable pre-registered
-#   in README 19d is structural/equilibrium, so this is a fair trade. The one number
-#   it touches is the integrated autocorrelation time tau, which is used only to
-#   compute effective sample size; applied consistently to every system, tau stays
-#   comparable BETWEEN systems even though it is not a physical relaxation rate.
-#   That was already true under Langevin gamma=2.0 (README 24e).
+#   HMR at 4 fs was added and then deliberately REMOVED (user, 2026-08-14). It
+#   roughly doubles throughput and is well validated for equilibrium and
+#   conformational properties, but it is NOT kinetically faithful: mass is moved
+#   into the hydrogens on purpose, so diffusion and relaxation times are altered.
 #
-#   HEATING AND EQ1 STAY AT 2 fs. Heating from 0 K under positional restraints is
-#   the least stable phase of the protocol and it costs only 700 ps to be careful.
-DT_EQUIL=${DT_EQUIL:-0.002}
-DT=${DT:-0.004}
+#   That trade is unacceptable for where this project is going. The planned
+#   experiments include placing ligands NEAR the pocket and asking whether they are
+#   taken up -- an association/diffusion question, which is exactly the class of
+#   observable HMR distorts. Having a reference set that cannot answer a kinetic
+#   question later is not worth a 2x speedup now.
+#
+#   lib_solvate.sh can still write system_hmr.prmtop (HMR=1) if a future campaign
+#   is purely structural and wants the throughput, but it is OFF by default and
+#   nothing in the canonical path uses it.
+DT=${DT:-0.002}
+DT_EQUIL=${DT_EQUIL:-$DT}
 STEPS_PER_PS=$(python3 -c "print(int(round(1.0/${DT})))")
 CUT=${CUT:-10.0}
 GAMMA_LN=${GAMMA_LN:-2.0}
@@ -85,8 +83,7 @@ EQUIL_PS=${EQUIL_PS:-1700}
 
 md_settings_check () {
     local n=0
-    [[ "$DT" == "0.004"   ]] || { echo "  !! DT overridden: $DT"; n=1; }
-    [[ "$DT_EQUIL" == "0.002" ]] || { echo "  !! DT_EQUIL overridden: $DT_EQUIL"; n=1; }
+    [[ "$DT" == "0.002"   ]] || { echo "  !! DT overridden: $DT"; n=1; }
     [[ "$CUT" == "10.0"   ]] || { echo "  !! CUT overridden: $CUT"; n=1; }
     [[ "$GAMMA_LN" == "2.0" ]] || { echo "  !! GAMMA_LN overridden: $GAMMA_LN"; n=1; }
     [[ "$TEMP0" == "300.0" ]] || { echo "  !! TEMP0 overridden: $TEMP0"; n=1; }
@@ -184,6 +181,8 @@ record_seed () {   # $1 = stage basename (expects $1.out)
 
 # topology_for_run <system dir> -- the HMR prmtop when one exists, else the plain one
 topology_for_run () {
+    # Only a 4 fs timestep requires the repartitioned topology. At the canonical
+    # 2 fs this always returns the plain prmtop.
     if [[ "$DT" == "0.004" ]]; then
         if [[ -s "$1/system_hmr.prmtop" ]]; then echo "$1/system_hmr.prmtop"; return 0; fi
         echo "  !! dt=4 fs requested but $1/system_hmr.prmtop is missing -- refusing" >&2

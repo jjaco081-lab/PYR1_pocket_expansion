@@ -1,0 +1,231 @@
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/prep to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd to search path.
+-f: Source tleap.in.
+
+Welcome to LEaP!
+(no leaprc in search path)
+Sourcing: ./tleap.in
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/parm19.dat
+Reading title:
+PARM99 + frcmod.ff99SB + frcmod.parmbsc0 + OL3 for RNA + ff19SB
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ff19SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff19SB AA-specific backbone CMAPs for protein 07/25/2019
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/amino19.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminoct12.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminont12.lib
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc done
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/atomic_ions.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/solvents.lib
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.opc
+Reading force field modification type file (frcmod)
+Reading title:
+Parameters for OPC water (JPCL, 2014, 5 (21), pp 3863-3871)
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ionslm_126_opc
+Reading force field modification type file (frcmod)
+Reading title:
+Li/Merz ion parameters of atomic ions for the OPC water model (12-6 set)
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2 done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/gaff2.dat
+Reading title:
+AMBER General Force Field for organic molecules (Version 2.11, May 2016)
+Loading parameters: /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/noncognate/params/Imperatorin_pose0/IMP.frcmod
+Reading force field modification type file (frcmod)
+Reading title:
+Remark line goes here
+Loading Mol2 file: /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/noncognate/params/Imperatorin_pose0/IMP.mol2
+Reading MOLECULE named IMP
+Loading PDB file: ./protein.pdb
+  Added missing heavy atom: .R<GLU 69>.A<CG 8>
+  Added missing heavy atom: .R<GLU 69>.A<CD 11>
+  Added missing heavy atom: .R<GLU 69>.A<OE1 12>
+  Added missing heavy atom: .R<GLU 69>.A<OE2 13>
+  Added missing heavy atom: .R<ARG 71>.A<CG 8>
+  Added missing heavy atom: .R<ARG 71>.A<CD 11>
+  Added missing heavy atom: .R<ARG 71>.A<NE 14>
+  Added missing heavy atom: .R<ARG 71>.A<CZ 16>
+  Added missing heavy atom: .R<ARG 71>.A<NH1 17>
+  Added missing heavy atom: .R<ARG 71>.A<NH2 20>
+  Added missing heavy atom: .R<ASN 130>.A<CG 8>
+  Added missing heavy atom: .R<ASN 130>.A<OD1 9>
+  Added missing heavy atom: .R<ASN 130>.A<ND2 10>
+  Added missing heavy atom: .R<ARG 177>.A<CG 8>
+  Added missing heavy atom: .R<ARG 177>.A<CD 11>
+  Added missing heavy atom: .R<ARG 177>.A<NE 14>
+  Added missing heavy atom: .R<ARG 177>.A<CZ 16>
+  Added missing heavy atom: .R<ARG 177>.A<NH1 17>
+  Added missing heavy atom: .R<ARG 177>.A<NH2 20>
+  Added missing heavy atom: .R<CASN 178>.A<OXT 15>
+  total atoms in file: 1409
+  Leap added 1430 missing atoms according to residue templates:
+       20 Heavy
+       1410 H / lone pairs
+Scaling up box by a factor of 1.326423 to meet diagonal cut criterion
+  Solute vdw bounding box:              44.863 41.104 58.630
+  Total bounding box for atom centers:  90.464 90.464 90.464
+      (box expansion for 'iso' is  46.3%)
+  Solvent unit box:                     18.865 18.478 19.006
+  Volume: 382583.222 A^3 (oct)
+  Total mass 206604.640 amu,  Density 0.897 g/cc
+  Added 10323 residues.
+5 K+ ions required to neutralize.
+Adding 5 counter ions to "sys" using 1A grid
+Grid extends from solute vdw + 1.70  to  7.68
+Resolution:      1.00 Angstrom.
+Solvent present: replacing closest with ion
+	 when steric overlaps occur
+Calculating grid charges
+(Replacing solvent molecule)
+Placed K+ in sys at (-0.66, 22.10, -4.29).
+(Replacing solvent molecule)
+Placed K+ in sys at (4.58, -24.21, 6.64).
+(Replacing solvent molecule)
+Placed K+ in sys at (-7.07, 19.13, -12.81).
+(No solvent overlap)
+Placed K+ in sys at (13.69, 9.26, 12.81).
+(Replacing solvent molecule)
+Placed K+ in sys at (-11.83, -10.60, 12.64).
+
+Done adding ions.
+ 0.001002 0 1 0
+0 Cl- ion required to neutralize.
+Adding 0 counter ions to "sys" using 1A grid
+Adding 56 counter ions to "sys". 10263 solvent molecules will remain.
+0: Placed K+ in sys at (15.35, -15.77, 7.08).
+Placed Cl- in sys at (-9.14, 12.10, -30.66).
+0: Placed K+ in sys at (-37.42, -11.66, -5.33).
+Placed Cl- in sys at (2.33, -18.30, -25.51).
+0: Placed K+ in sys at (-11.91, 31.80, -11.26).
+Placed Cl- in sys at (18.93, -1.26, 17.51).
+0: Placed K+ in sys at (23.70, 35.44, -17.32).
+Placed Cl- in sys at (22.15, -33.32, 18.24).
+0: Placed K+ in sys at (6.42, 40.67, -1.06).
+Placed Cl- in sys at (14.49, 3.89, -12.54).
+0: Placed K+ in sys at (-2.38, -22.98, 5.01).
+Placed Cl- in sys at (0.99, -3.64, -41.84).
+0: Placed K+ in sys at (-13.04, -15.44, 18.08).
+Placed Cl- in sys at (-37.80, -3.25, -3.00).
+0: Placed K+ in sys at (4.40, -25.74, 19.37).
+Placed Cl- in sys at (-16.52, 25.43, 11.93).
+0: Placed K+ in sys at (38.24, 12.81, -2.45).
+Placed Cl- in sys at (34.41, 9.64, -22.35).
+0: Placed K+ in sys at (4.97, -16.98, 20.76).
+Placed Cl- in sys at (3.02, 8.51, -37.73).
+0: Placed K+ in sys at (17.61, -27.93, 24.12).
+Placed Cl- in sys at (24.55, 14.77, 15.60).
+0: Placed K+ in sys at (23.80, 17.27, 13.08).
+Placed Cl- in sys at (-2.90, 20.12, 26.27).
+0: Placed K+ in sys at (13.13, -0.44, -37.22).
+Placed Cl- in sys at (11.47, -17.37, 33.90).
+0: Placed K+ in sys at (4.37, -4.57, 27.68).
+Placed Cl- in sys at (-0.28, 3.22, 44.90).
+0: Placed K+ in sys at (-0.69, -13.39, -28.70).
+Placed Cl- in sys at (-21.82, -27.00, -5.15).
+0: Placed K+ in sys at (30.93, -26.25, 4.32).
+Placed Cl- in sys at (25.33, -0.85, -37.95).
+0: Placed K+ in sys at (-12.77, 33.24, 28.18).
+Placed Cl- in sys at (9.20, 34.67, -11.23).
+0: Placed K+ in sys at (34.24, -10.75, 0.35).
+Placed Cl- in sys at (34.88, -23.23, 1.77).
+0: Placed K+ in sys at (15.17, 43.93, 9.54).
+Placed Cl- in sys at (-21.27, -25.89, 4.63).
+0: Placed K+ in sys at (24.05, -9.09, -0.76).
+Placed Cl- in sys at (-11.81, 30.57, 20.44).
+0: Placed K+ in sys at (-5.49, 19.93, -29.49).
+Placed Cl- in sys at (-25.24, -18.24, 11.88).
+0: Placed K+ in sys at (-37.38, 23.14, 13.91).
+Placed Cl- in sys at (24.04, -27.40, 2.79).
+0: Placed K+ in sys at (9.32, 25.97, -27.42).
+Placed Cl- in sys at (33.57, 7.40, -12.78).
+0: Placed K+ in sys at (-2.07, 0.08, 18.08).
+Placed Cl- in sys at (-39.09, 8.86, -15.55).
+0: Placed K+ in sys at (-10.34, 22.68, -27.34).
+Placed Cl- in sys at (1.92, 28.18, 29.48).
+0: Placed K+ in sys at (-28.66, -1.98, -17.29).
+Placed Cl- in sys at (23.38, -26.79, 8.91).
+0: Placed K+ in sys at (-0.99, 19.61, 30.17).
+Placed Cl- in sys at (-2.56, 31.20, 27.75).
+0: Placed K+ in sys at (-2.47, 17.34, -22.23).
+Placed Cl- in sys at (-18.35, -19.45, -25.88).
+Total unperturbed charge:   0.001002
+Total perturbed charge:     0.001002
+Checking 'sys'....
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 4.645 angstroms between C and N atoms:
+-------  .R<GLU 67>.A<C 14> and .R<PHE 68>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 3.017 angstroms between C and N atoms:
+-------  .R<NMET 1>.A<C 18> and .R<SER 2>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.405 angstroms between nonbonded atoms HD3 and O
+-------  .R<LYS 167>.A<HD3 13> and .R<TYR 57>.A<O 21>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.181 angstroms between nonbonded atoms HE2 and HA
+-------  .R<LYS 167>.A<HE2 15> and .R<TYR 57>.A<HA 4>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.417 angstroms between nonbonded atoms HZ and H11
+-------  .R<PHE 156>.A<HZ 14> and .R<IMP 179>.A<H11 31>
+Checking parameters for unit 'sys'.
+Checking for bond parameters.
+Checking for angle parameters.
+check:  Warnings: 30794
+Unit is OK.
+Checking Unit.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 4.645 angstroms between C and N atoms:
+-------  .R<GLU 67>.A<C 14> and .R<PHE 68>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+There is a bond of 3.017 angstroms between C and N atoms:
+-------  .R<NMET 1>.A<C 18> and .R<SER 2>.A<N 1>
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Note.
+Ignoring the warnings from Unit Checking.
+
+Building topology.
+Building atom parameters.
+Building bond parameters.
+Building angle parameters.
+Building proper torsion parameters.
+Building improper torsion parameters.
+ total 581 improper torsions applied
+Building H-Bond parameters.
+Incorporating Non-Bonded adjustments.
+Not Marking per-residue atom chain types.
+Marking per-residue atom chain types.
+  (Residues lacking connect0/connect1 - 
+   these don't have chain types marked:
+
+	res	total affected
+
+	CASN	1
+	IMP	1
+	NMET	1
+  )
+ (no restraints)
+Writing pdb file: system_solvated.pdb
+   printing CRYST1 record to PDB file with box info
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NMET -> MET
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CASN -> ASN
+	Quit
+
+Exiting LEaP: Errors = 0; Warnings = 9; Notes = 1.

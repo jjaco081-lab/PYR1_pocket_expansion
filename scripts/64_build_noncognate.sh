@@ -42,7 +42,11 @@ declare -A SYS=( [Imperatorin]=S6_imperatorin [Flutamide]=S7_flutamide
                  [Alpha-Estradiol]=S8_estradiol )
 declare -A RES=( [Imperatorin]=IMP [Flutamide]=FLU [Alpha-Estradiol]=EST )
 
-source "$(dirname "$0")/lib_solvate.sh"
+# NOTE: sourced by ABSOLUTE path, not "$(dirname $0)". SLURM copies the batch
+# script to /var/spool/slurmd/job<N>/slurm_script before running it, so $0 points
+# at the spool copy and dirname finds no lib_*.sh -- the source fails silently and
+# every call becomes "command not found".
+source "$P/scripts/lib_solvate.sh"
 
 build_one () {   # $1 = system dir, $2 = ligand mol2 (or "" for apo), $3 = frcmod
     build_system "$1" "$PROT" "${2:-}" "${3:-}"

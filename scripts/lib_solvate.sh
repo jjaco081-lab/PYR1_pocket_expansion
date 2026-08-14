@@ -72,7 +72,7 @@ CONC=${CONC:-0.15}
 CATION=${CATION:-K+}          # see header: cytosolic, not extracellular
 ANION=${ANION:-Cl-}
 ION_FRCMOD=${ION_FRCMOD:-}    # set to frcmod.ionslm_1264_opc for divalent metals
-HMR=${HMR:-1}                 # also write a hydrogen-mass-repartitioned prmtop
+HMR=${HMR:-0}                 # OFF: 2 fs canonical, see lib_mdinputs.sh header
 PROTONATE=${PROTONATE:-1}     # assign His tautomers with reduce instead of tleap default
 
 _canon_check () {

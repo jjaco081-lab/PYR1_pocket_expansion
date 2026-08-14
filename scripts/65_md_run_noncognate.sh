@@ -51,13 +51,18 @@
 # runs a further full 300 ns.
 set -uo pipefail
 module load amber/22_mpi_cuda >/dev/null 2>&1
-source "$(dirname "$0")/lib_mdinputs.sh"
-md_settings_check
 
 P=/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion
 MD=$P/data/md
 PROD_NS=300
 # EQUIL_PS comes from lib_mdinputs.sh (1700 = heat 200 + eq1 500 + eq2 1000)
+# NOTE: sourced by ABSOLUTE path, not "$(dirname $0)". SLURM copies the batch
+# script to /var/spool/slurmd/job<N>/slurm_script, so $0 points at the spool copy
+# and dirname finds no lib_*.sh -- the source fails silently and every call becomes
+# "command not found". This must also come AFTER P is set.
+source "$P/scripts/lib_mdinputs.sh"
+md_settings_check
+
 TARGET_PS=$(( EQUIL_PS + PROD_NS * 1000 ))
 
 # "<dir holding system.prmtop>|<dir to run in>"
