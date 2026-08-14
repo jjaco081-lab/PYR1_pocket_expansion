@@ -2539,6 +2539,9 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 21 | 08-12 | a protocol that gives consistent numbers across trajectories is working | `NeighborhoodResidueSelector` measures neighbour-atom distances, and a 29-atom ligand has one NBR atom, so an 8 Å shell caught **3 residues**; the frozen pocket made every trajectory identical and dG a tidy −12.29 | all-heavy-atom shell → 43 residues, dG −19.11, trajectories that differ. **Suspiciously low variance is a bug signature, not a quality signal** (§23i) |
 | 22 | 08-13 | the ligand-swap null only had to supply a subtraction, so it did not need checking itself | the ABA null arm is WT + native ligand, so its own correct answer is **zero mutations** — it was at **4/15**, deleting a 2.85 Å K59 salt bridge in 100% of trajectories. Never scored, because a null is only ever read as a difference | **score the control's own correct answer, not only the contrast.** K59R and V81I are uninterpretable, not negative; stage 1 does not clear (§23j) |
 | 23 | 08-13 | a params file summing to 0.000 net charge meant the formal charge was dropped | field 4 of a params `ATOM` line is the MM type — the literal `X` — and the charge is field 5. Summing field 4 returns 0.000 for **any** ligand. The real sums were −0.970 and +0.100, both correct | caught by the validator written to act on it, before any commit or compute; params regenerated **byte-identical**. Validation now uses field 5 with a rounding-aware tolerance. **A number shaped like a finding still needs its reader checked** (§23j) |
+| 24 | 08-14 | one residue-numbering map would serve every MD system, since they are all PYR1 | S1/S2 come from script 30's 3K3K∩3QN1 intersection (178 res, gate = seq 82-86); S4 was built from 3QN1 alone and keeps residue 2 as ALA (179 res, gate = seq **83-87**). Reusing S1's core mask on S4 gave a 162-residue fit set against the references' 161 — cpptraj **set it up anyway** and returned gate RMSD ≈ **84 Å** | maps are rebuilt **per system** and verified by residue identity before any frame is read; the core set is asserted identical across systems. Also: address ligands by NAME (`:A8S`), since `n_res+1` is ABA in S2 but HAB1's first residue in S4 (§24f) |
+| 25 | 08-14 | the gate–latch contact is the staple that holds the closed state | in the closed MONOMER the contact is intermittent — broken in **52 %** of frames in S2 rep0 — and it is the weakest pre-registered observable (replicate gap 1.09 Å). Adding HAB1 gives the tightest distribution of any system (3.72 Å) | the staple is clamped by the PARTNER, not held by PYR1 alone — consistent with the ratchet framing. Do not filter designs on gate–latch distance (§24d) |
+| 26 | 08-14 | a stable closed trajectory would show a design's switch works | neither state converts even once in 1.8 μs of aggregate WT sampling; both are kinetically trapped at 300 ns | MD licenses a **stability** filter (gate RMSD to closed, threshold 3.5–4.0 Å, ~1 % error each way) and is **blind to switchability** — the more likely failure mode for an enlarged pocket (§24b) |
 
 ### Bugs caught before they cost anything
 
@@ -3383,3 +3386,146 @@ Both surfaced by re-running the script rather than by reading its output.
 The merge now also prints `mut%`/`aba%` per position and a position-level
 hypergeometric test. That test is what exposed the null-arm problem: 3 of 15
 positions are ligand-conditional, 2 of the 4 true ones fall inside, p = 0.145.
+
+## 24. Gate/latch loop dynamics: both states are kinetically trapped at 300 ns
+
+`scripts/58_loop_dynamics_prep.py` → `58b_loop_dynamics_run.sh` (job 27444932/27444988,
+cpptraj) → `59_loop_dynamics_aggregate.py` → `60_loop_dynamics_figure.py`.
+Figure: `figures/loop_dynamics.png`. Summary: `data/loop_dynamics/summary.json`.
+
+Computed **only** the §19d pre-registered observables, which were fixed before these
+runs finished, so nothing here was chosen after seeing the data.
+
+### 24a. The headline
+
+**Open stays open, closed stays closed, and neither ever converts.** Across
+6 × 300 ns of WT monomer (3 apo-open + 3 holo-closed) plus one 300 ns ternary
+replicate, the gate never crosses the open/closed watershed in a sustained way:
+
+| system | gate S = d(open) − d(closed) | % of frames open-like | gate RMSD to closed |
+|---|---|---|---|
+| S1 apo open, 3 reps | −3.24, −2.97, −3.61 | 99, 98, 100 % | 6.46, 5.63, 7.74 Å |
+| S2 holo closed, 3 reps | +2.54, +3.71, +4.34 | 0, 0, 0 % | 2.34, 1.67, 1.29 Å |
+| S4 ternary (+HAB1), 1 rep | **+4.66** | 0 % | **1.13 Å** |
+
+The **replicate-mean gap is 5.51 Å on the gate and 6.18 Å on the latch**, against a
+within-replicate spread (sd of S) of only 0.3–1.2 Å. That is a separation of roughly
+5σ between states, and it is **insensitive to the equilibration discard** — the gap
+is 5.52–5.66 Å at every window from 0 to 150 ns (§59 section 5).
+
+### 24b. What this does and does not license
+
+**It licenses a stability filter.** A single threshold on *gate backbone RMSD to the
+closed reference* separates the states with a wide margin:
+
+| threshold | open frames called closed | closed frames called open |
+|---|---|---|
+| 3.0 Å | 0.003 % | 5.39 % |
+| **3.5 Å** | **0.066 %** | **1.20 %** |
+| 4.0 Å | 1.09 % | 0.19 % |
+
+Replicate means never come close to overlapping (open 5.63–7.74 Å, closed 1.13–2.34 Å).
+
+**It does not license a switchability filter, and this is the important caveat.**
+Because neither state ever converts, MD on this timescale can only tell you whether a
+design *holds* the state you built it in. It cannot tell you whether a design *can
+close* — that transition is not sampled even once in 1.8 μs of aggregate WT sampling.
+So this filter detects the failure mode "the closed state falls apart" and is blind
+to "cannot reach the closed state", which is the more likely failure for an enlarged
+pocket. Do not read a stable closed trajectory as evidence of a working switch.
+
+### 24c. Flexibility: a monotonic ladder, and one loop that does not follow it
+
+Backbone RMSF, fit to the average structure:
+
+| loop | open | closed | ternary | open/closed |
+|---|---|---|---|---|
+| gate 85–89 | 3.05 Å (2.98–3.14) | 1.36 Å (1.18–1.51) | **0.76 Å** | 2.25× |
+| Lβ7α5 148–156 | 3.38 Å (2.99–3.68) | 1.57 Å (1.29–1.75) | 1.28 Å | 2.15× |
+| latch 115–117 | 1.09 Å (1.01–1.20) | 1.40 Å (1.05–1.91) | 0.86 Å | **0.78×** |
+| core (161 res) | 0.80–1.05 Å | 0.71–0.94 Å | 0.75 Å | — |
+
+Three things follow.
+
+1. **Ligand then partner each roughly halve the gate's motion** — 3.05 → 1.36 → 0.76 Å.
+   The ordering is clean and monotonic, which is what makes RMSF usable as a graded
+   readout rather than a binary one.
+2. **Dorosh 2013 (§17a) is confirmed, and then some.** Lβ7α5 is not merely
+   ABA-sensitive, it is *more mobile than the gate itself* in the open state
+   (3.38 vs 3.05 Å). It was included only because Dorosh reported it; it turns out to
+   be the single most dynamic element of the open receptor.
+3. **The latch does not discriminate on RMSF and must not be used as a filter.**
+   Its ratio inverts (0.78×) and the ranges overlap outright (open 1.01–1.20,
+   closed 1.05–1.91). The latch discriminates well on *position* (S gap 6.18 Å) and
+   not at all on *flexibility*. Two observables on the same three residues, opposite
+   verdicts.
+
+### 24d. The gate–latch "staple" is intermittent without HAB1
+
+Minimum gate–latch heavy-atom distance, and the fraction of frames with no contact
+at the 4.5 Å cutoff:
+
+| system | mean min-dist | frames > 4.5 Å |
+|---|---|---|
+| open rep0/1/2 | 6.02 / 6.78 / 7.28 Å | 67 / 97 / 89 % |
+| closed rep0 | 4.93 Å | **52 %** |
+| closed rep1 | 4.03 Å | 14 % |
+| closed rep2 | 3.80 Å | 4 % |
+| **ternary (+HAB1)** | **3.72 Å** | — |
+
+In the closed monomer the staple is **not a persistent contact** — one replicate has it
+broken half the time — and it is the weakest of the pre-registered observables
+(replicate gap 1.09 Å, and the only one whose frame distributions visibly overlap,
+panel C). Adding HAB1 gives the tightest and narrowest distribution of any system.
+This is consistent with the ratchet framing in §23: the staple is not something PYR1
+holds shut by itself, it is something the partner protein clamps.
+
+⚠️ The ternary arm is **n = 1** and confounds partner binding with everything else
+HAB1 brings (Mn²⁺, a large interface). It is reported beside the open/closed
+contrast, never pooled into it. S4 rep1/rep2 are queued.
+
+### 24e. Two confounds and one artefact, stated plainly
+
+- **Conformation is confounded with ligand occupancy.** S1 is apo *and* open; S2 is
+  holo *and* closed. There is no apo-closed system in the §19b set, so "the closed
+  state is rigid" and "ABA rigidifies" cannot be separated here. This does not damage
+  the filtering application — candidates will be judged holo against these same
+  references — but it forbids the mechanistic claim.
+- **Effective sample sizes are small.** Integrated autocorrelation times are
+  3.4–44.9 ns, so each 300 ns replicate carries only **3–35 independent samples**.
+  Frame counts are not evidence. Everything inferential here is at replicate level
+  (n = 3 vs 3); the frame-pooled AUCs are labelled descriptive and are not the basis
+  of any claim.
+- **S4's trajectory contains 11.6 ns of duplicated frames.** Its 24 preemption
+  segments sum to 31,162 frames where 300 ns at 10 ps/frame gives 30,000, because
+  `ntwr` writes the restart every 1 ns while `ntwx` writes a frame every 10 ps, so
+  frames after the last restart get re-simulated. ~3.7 % of S4 frames are duplicated
+  or superseded, slightly over-weighting the moments before each preemption. Harmless
+  at distribution level, wrong for anything time-resolved — deduplicate on the NetCDF
+  `time` variable first. Fix for future preempt runs: set `ntwr` = `ntwx`.
+
+### 24f. Numbering: the map is per system, and that mattered
+
+The gate is native 85–89 but **sequential 82–86 in S1/S2 and 83–87 in S4**. S1/S2 come
+from script 30, which intersected 3K3K and 3QN1 and dropped residue 2; S4 was built
+from 3QN1 alone and keeps it (as ALA, the P2A of §23). A mask of `:85-89` selects the
+wrong residues in every system, and S1's mask is wrong for S4.
+
+Two failures caught by asserting rather than assuming:
+
+1. Reusing S1's core mask on S4 gave a **162-residue** fit set against the references'
+   **161**. cpptraj set the superposition up anyway and returned **gate RMSD ≈ 84 Å**
+   instead of refusing. Now the core is restricted to residues common to all systems
+   and asserted identical across them.
+2. Addressing ABA as `n_residues + 1` gives 179 in S2 (correct) and 180 in S4 —
+   which is **HAB1's first residue**, not the ligand, since A8S is residue 478 there.
+   Ligands are now addressed by residue name, `:A8S`.
+
+`58_loop_dynamics_prep.py` rebuilds the map from each system's own `protein.pdb` and
+verifies every loop by identity (gate = SER GLY LEU PRO ALA, latch = HIS ARG LEU)
+before any frame is read; the map is saved to `data/loop_dynamics/residue_map.json`.
+
+⚠️ Also note an unrelated hazard found here: **an unquoted bash heredoc
+command-substitutes backticks**, so a comment reading `` `nofit` `` inside the
+generated cpptraj input made bash execute `nofit` and silently delete the word.
+Harmless this time; it would not always be.

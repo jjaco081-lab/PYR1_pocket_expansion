@@ -60,3 +60,11 @@ results/stage1_rosetta/_input_*.pdb
 results/stage1_rosetta/_k59_input.pdb
 results/stage1_rosetta_fnsweep/*/_input_*.pdb
 results/stage1_rosetta_fnsweep/*/pdb/
+
+# Loop-dynamics per-frame time series (~95 MB of cpptraj .dat, one row per frame)
+# regenerate with 58_loop_dynamics_prep.py -> 58b_loop_dynamics_run.sh (minutes).
+# The VERIFIED RESIDUE MAP and the aggregated summary are tracked -- the map is a
+# correctness artefact, not bulk data.
+data/loop_dynamics/*/rep*/*.dat
+data/loop_dynamics/*/rep*/*.in
+data/loop_dynamics/*/rep*/*.log
