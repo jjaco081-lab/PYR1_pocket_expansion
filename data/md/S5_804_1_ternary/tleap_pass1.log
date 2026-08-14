@@ -1,0 +1,122 @@
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/prep to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd to search path.
+-f: Source tleap.in.
+
+Welcome to LEaP!
+(no leaprc in search path)
+Sourcing: ./tleap.in
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/parm19.dat
+Reading title:
+PARM99 + frcmod.ff99SB + frcmod.parmbsc0 + OL3 for RNA + ff19SB
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ff19SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff19SB AA-specific backbone CMAPs for protein 07/25/2019
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/amino19.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminoct12.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminont12.lib
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc done
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/atomic_ions.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/solvents.lib
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.opc
+Reading force field modification type file (frcmod)
+Reading title:
+Parameters for OPC water (JPCL, 2014, 5 (21), pp 3863-3871)
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ionslm_126_opc
+Reading force field modification type file (frcmod)
+Reading title:
+Li/Merz ion parameters of atomic ions for the OPC water model (12-6 set)
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2 done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/gaff2.dat
+Reading title:
+AMBER General Force Field for organic molecules (Version 2.11, May 2016)
+Loading parameters: ../A8S.frcmod
+Reading force field modification type file (frcmod)
+Reading title:
+Remark line goes here
+Loading library: ../A8S.lib
+Loading PDB file: ./aba.pdb
+  total atoms in file: 19
+  Leap added 19 missing atoms according to residue templates:
+       19 H / lone pairs
+Loading PDB file: ./protein.pdb
+  Added missing heavy atom: .R<CTHR 193>.A<OXT 15>
+  Added missing heavy atom: .R<CALA 336>.A<OXT 11>
+  total atoms in file: 2609
+  Leap added 2644 missing atoms according to residue templates:
+       2 Heavy
+       2642 H / lone pairs
+15 Na+ ions required to neutralize.
+Adding 15 counter ions to "sys" using 1A grid
+Grid extends from solute vdw + 3.70  to  9.68
+Resolution:      1.00 Angstrom.
+ (no solvent present)
+Calculating grid charges
+Placed Na+ in sys at (19.32, -18.67, 10.97).
+Placed Na+ in sys at (6.32, -2.67, 26.97).
+Placed Na+ in sys at (-27.68, -0.67, -7.03).
+Placed Na+ in sys at (20.32, 16.33, 12.97).
+Placed Na+ in sys at (-11.68, -24.67, 5.97).
+Placed Na+ in sys at (2.32, -26.67, -10.03).
+Placed Na+ in sys at (-15.68, 26.33, -7.03).
+Placed Na+ in sys at (28.32, -7.67, 8.97).
+Placed Na+ in sys at (0.32, 2.33, -14.03).
+Placed Na+ in sys at (17.32, -18.67, -7.03).
+Placed Na+ in sys at (-14.68, 44.33, -11.03).
+Placed Na+ in sys at (17.32, 20.33, -9.03).
+Placed Na+ in sys at (-2.68, -18.67, -19.03).
+Placed Na+ in sys at (10.32, -28.67, 14.97).
+Placed Na+ in sys at (-22.68, -12.67, -14.03).
+
+Done adding ions.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+addIons: 1st Ion & target unit have charges of the same sign:
+     unit charge = -0.000998; ion1 charge = -1;
+     can't neutralize.
+Scaling up box by a factor of 1.420423 to meet diagonal cut criterion
+  Solute vdw bounding box:              75.542 61.607 56.334
+  Total bounding box for atom centers:  109.632 109.632 109.632
+      (box expansion for 'iso' is  38.9%)
+  Solvent unit box:                     18.865 18.478 19.006
+  Volume: 677037.565 A^3 (oct)
+  Total mass 372347.934 amu,  Density 0.913 g/cc
+  Added 18571 residues.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Fatal Error!
+addIonsRand: '0' is not allowed as the value for the second ion.
+
+
+    addIonsRand unit ion1 #ion1 [ion2 #ion2] [separation]
+
+        UNIT      _unit_
+        UNIT      _ion1_
+        NUMBER    _#ion1_
+        UNIT      _ion2_
+        NUMBER    _#ion2_
+        NUMBER    _separation_
+
+Adds counterions in a shell around _unit_ by replacing random solvent
+molecules. If _#ion1_ is 0, the _unit_ is neutralized (_ion1_ must be
+opposite in charge to _unit_, and _ion2_ cannot be specified). Otherwise,
+the specified numbers of _ion1_ [_ion2_] are added [in alternating order].
+If _separation_ is specified, ions will be guaranteed to be more than that
+distance apart in Angstroms.
+
+Ions must be monoatomic. This procedure is much faster than addIons, as
+it does not calculate charges. Solvent must be present. It must be possible
+to position the requested number of ions with the given separation in the
+solvent.
+
+
+
+
+Exiting LEaP: Errors = 1; Warnings = 1; Notes = 0.

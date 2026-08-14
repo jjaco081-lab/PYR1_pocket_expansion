@@ -1,0 +1,22 @@
+# S5: PYR1 + ABA + 804_1 designed binder (AF3 model, no Mn2+)
+source leaprc.protein.ff19SB
+source leaprc.water.opc
+source leaprc.gaff2
+# NO `loadamberparams frcmod.ions234lm_126_opc` here. That is TIP3P-era naming, no
+# such file ships for OPC, and tleap exits "Could not open file". leaprc.water.opc
+# has already loaded frcmod.ionslm_126_opc. The template inside 38_md_prep.py still
+# carries the bad line; S4's working tleap.in does not, because 38b rewrote it.
+loadamberparams ../A8S.frcmod
+loadoff ../A8S.lib
+lig = loadpdb aba.pdb
+prot = loadpdb protein.pdb
+sys = combine { prot lig }
+addions sys Na+ 0
+addions sys Cl- 0
+solvateoct sys OPCBOX 12.0
+addionsrand sys Na+ 50 Cl- 50
+charge sys
+check sys
+saveamberparm sys system.prmtop system.inpcrd
+savepdb sys system_solvated.pdb
+quit
