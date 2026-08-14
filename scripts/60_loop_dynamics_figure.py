@@ -75,8 +75,6 @@ axA.axhline(0, color="k", lw=1.2, ls="--")
 axA.text(0.99, 0.5, "open / closed watershed", transform=axA.transAxes,
          fontsize=7.5, color="k", ha="right", va="bottom")
 axA.axvline(DISCARD, color="grey", lw=1, ls=":")
-axA.text(DISCARD, axA.get_ylim()[1], f" {DISCARD} ns discard",
-         va="top", fontsize=8, color="grey")
 axA.set_xlabel("time (ns)")
 axA.set_ylabel("S = gate RMSD to open  -  to closed  ($\\AA$)")
 axA.set_title("A. Does each state hold?  S<0 open-like, S>0 closed-like")
@@ -105,12 +103,6 @@ axB.text(0.30 * lim, 0.86 * lim, "closer to OPEN", fontsize=9, style="italic",
 # lower-right legend cannot clip it
 axB.text(0.75 * lim, 0.42 * lim, "closer to CLOSED", fontsize=9, style="italic",
          color="#d62728", ha="center")
-axB.text(0.60 * lim, 0.60 * lim, "equidistant", fontsize=7.5, color="grey",
-         rotation=45, ha="center", va="bottom")
-axB.annotate("far from BOTH references\n= neither state (disordered)",
-             xy=(0.70 * lim, 0.86 * lim), xytext=(0.30 * lim, 0.66 * lim),
-             fontsize=7.5, color="grey", ha="center",
-             arrowprops=dict(arrowstyle="->", color="grey", lw=0.8))
 axB.set_xlabel("gate backbone RMSD to OPEN reference ($\\AA$)")
 axB.set_ylabel("gate backbone RMSD to CLOSED reference ($\\AA$)")
 axB.set_title("B. Two-reference projection (post-equilibration)")
@@ -151,7 +143,6 @@ if pos:
     axC.set_xticks(range(1, len(labels) + 1))
     axC.set_xticklabels(labels, fontsize=8)
 axC.axhline(4.5, color="grey", ls=":", lw=1)
-axC.text(0.55, 4.55, "4.5 $\\AA$ contact cutoff", fontsize=8, color="grey")
 axC.set_ylabel("gate-latch minimum heavy-atom distance ($\\AA$)")
 axC.set_title("C. Gate-latch closure, per replicate")
 
@@ -171,11 +162,6 @@ for lname, (nats, lcol) in LOOPS.items():
     axD.axvspan(min(nats) - 0.5, max(nats) + 0.5, color=lcol, alpha=0.16)
     axD.text(np.mean(nats), axD.get_ylim()[1] * 0.94, lname, ha="center",
              fontsize=9, color=lcol, fontweight="bold")
-axD.text(0.24, 0.72,
-         "gate 3.4 $\\AA$ and latch 3.8 $\\AA$ from ABA;\n"
-         "L$\\beta$7$\\alpha$5 never closer than 7.8 $\\AA$",
-         transform=axD.transAxes, fontsize=7.5, color="dimgrey",
-         ha="left", va="top")   # empty region ~res 40-75, clear of the loop labels
 axD.set_xlabel("PYR1 residue (native numbering)")
 axD.set_ylabel("backbone RMSF ($\\AA$)")
 axD.set_title("D. Per-residue flexibility")
