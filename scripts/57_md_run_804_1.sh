@@ -38,11 +38,22 @@
 # left untouched as the exact record of what produced S4.
 #
 # WHY A SEPARATE SCRIPT
-#   All three A100 nodes in the `gpu` partition went to DRAINING, pushing the
-#   remaining replicates to an estimated start of 2026-08-18. preempt_gpu has
-#   idle ada6000 cards that `gpu` cannot see. The cost is preemption:
-#   PreemptMode=REQUEUE, so a preempted job is automatically put back in the
-#   queue and this script re-runs from the top.
+#   preempt_gpu has ada6000/blackwell cards that `gpu` cannot see. The cost is
+#   preemption: PreemptMode=REQUEUE, so a preempted job is automatically put back
+#   in the queue and this script re-runs from the top.
+#
+#   CORRECTION 2026-08-14: this header used to say all three A100 nodes in `gpu`
+#   had gone to DRAINING. They had not. `sinfo` prints `mixed-`, which is
+#   MIXED+PLANNED -- fully allocated with a backfill reservation -- and the
+#   trailing `-` was misread as a drain flag. Read node state with
+#   `scontrol show node <n>`, which spells it out, not the sinfo suffix. `gpu` is
+#   healthy and returns real start estimates, so it stays a viable home for this
+#   job; preempt_gpu was chosen for latency, not because `gpu` was broken.
+#
+#   The real constraint runs the other way: the `preempt` account is capped at
+#   gres/gpu=1 on preempt_gpu, so this job queues behind ANY other preempt_gpu job
+#   of the same user -- pending reason AssocGrpGRES, not Priority. At submission it
+#   sat behind two esmf2_pyr1fix jobs and had still not started a day later.
 #
 #   That auto-requeue is exactly why 39_md_run.sh could NOT simply be pointed at
 #   preempt_gpu. It has two bugs that are harmless on a non-preemptible
@@ -69,8 +80,10 @@
 #
 # NO COORDINATION NEEDED
 #   Unlike S4, nothing else writes data/md/S5_804_1_ternary/rep0. Job 27333712's
-#   held task _9 targets S4_ternary/rep0 and is unrelated to this system -- it must
-#   still stay held, but for its own reasons, not this script's.
+#   task _9 targeted S4_ternary/rep0 and was unrelated to this system; it was held
+#   for its own reasons and then CANCELLED on 2026-08-14, once S4 rep0 had finished
+#   via 42_md_run_preempt.sh, so that nobody could release it into a redundant
+#   300 ns on top of a complete trajectory.
 #   The general rule stands: never let two pmemd processes write one prod.rst7.
 set -uo pipefail
 module load amber/22_mpi_cuda >/dev/null 2>&1
