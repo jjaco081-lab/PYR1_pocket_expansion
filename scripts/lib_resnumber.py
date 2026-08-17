@@ -245,6 +245,99 @@ def verify_build(path, chain_id, expect_seq=PYR1_SEQ, first_resnum=1,
 
 
 # --------------------------------------------------------------------------------
+# provenance: facts about source structures, checked rather than remembered
+# --------------------------------------------------------------------------------
+PROVENANCE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                          "data", "structure_provenance.json")
+
+
+def assert_provenance(cif_path, chain_id, path=PROVENANCE, ligand_cutoff=4.5):
+    """Check a source structure against `data/structure_provenance.json` before using it.
+
+    This exists because a system was once built as "S3_apo_dimer" from 3K3K, whose
+    chain B is closed and ABA-bound. The information was on record in several places;
+    the SYSTEM NAME said otherwise, and the name won. Names summarise, and a summary
+    that is wrong outranks the records it was derived from.
+
+    So the facts are asserted here, at build time, from the structure itself. What is
+    checked: modelled residue range, internal gaps, broken peptide bonds, and -- the
+    one that was missed -- WHICH LIGANDS THE CHAIN ACTUALLY CARRIES.
+
+    If this raises, do not loosen it. Either the structure is not the one expected, or
+    the JSON is wrong and should be corrected with a measurement.
+    """
+    with open(path) as fh:
+        prov = json.load(fh)
+    key = os.path.splitext(os.path.basename(cif_path))[0].upper()
+    if key not in prov:
+        raise AssertionError(
+            f"{key} has no entry in {os.path.basename(path)}. Every structure this "
+            "project builds from must be characterised there first -- measure it, "
+            "record it, then build.")
+    want = prov[key]["chains"].get(chain_id)
+    if want is None:
+        raise AssertionError(f"{key} chain {chain_id} has no provenance entry")
+
+    model = load_model(cif_path)
+    chain = model[chain_id]
+    select_altloc(chain)
+    resmap = chain_residues(chain)
+    nums = sorted(resmap)
+    problems = []
+
+    lo, hi = want["modelled"]
+    if [nums[0], nums[-1]] != [lo, hi]:
+        problems.append(f"modelled range is {nums[0]}-{nums[-1]}, expected {lo}-{hi}")
+
+    gaps = [i for i in range(nums[0], nums[-1] + 1) if i not in resmap]
+    flat = []
+    for g in want["internal_gaps"]:
+        flat.extend(range(g[0], g[1] + 1) if isinstance(g, list) else [g])
+    if gaps != sorted(flat):
+        problems.append(f"internal gaps are {gaps}, expected {sorted(flat)}")
+
+    n_break = len(peptide_breaks(resmap))
+    if n_break != want["peptide_breaks"]:
+        problems.append(f"{n_break} broken peptide bonds, expected {want['peptide_breaks']}")
+
+    # the check that would have caught the S3 mistake: ligands belong to a CHAIN,
+    # not to a file, and a dimer's two protomers need not be occupied alike
+    lc = []
+    for r in chain:
+        if r.id[0].strip() and r.get_resname() not in ("HOH", "WAT"):
+            lc.append(r.get_resname().upper())
+    for other in model:
+        if other.id == chain_id:
+            continue
+        for r in other:
+            if not r.id[0].strip() or r.get_resname() in ("HOH", "WAT"):
+                continue
+            hcs = np.array([a.coord for a in r if a.element != "H"])
+            for num in nums:
+                pc = np.array([a.coord for a in resmap[num] if a.element != "H"])
+                if np.min(np.linalg.norm(pc[:, None, :] - hcs[None, :, :], axis=-1)) \
+                        <= ligand_cutoff:
+                    lc.append(r.get_resname().upper())
+                    break
+    if sorted(lc) != sorted(x.upper() for x in want["ligands"]):
+        problems.append(
+            f"ligands in contact with this chain are {sorted(lc)}, expected "
+            f"{sorted(want['ligands'])} -- an unexpected ligand means the chain is not "
+            "in the occupancy state the pipeline assumes")
+
+    for num, name in want.get("sequence_variants", {}).items():
+        got = resmap[int(num)].get_resname().upper() if int(num) in resmap else "MISSING"
+        if got != name.upper():
+            problems.append(f"residue {num} is {got}, expected the known variant {name}")
+
+    if problems:
+        raise AssertionError(
+            f"{key} chain {chain_id} does not match its provenance record:\n" +
+            "\n".join(f"    {p}" for p in problems))
+    return want
+
+
+# --------------------------------------------------------------------------------
 # the map downstream analysis reads
 # --------------------------------------------------------------------------------
 def write_residue_map(path, out_json, chains, landmarks=PYR1_LANDMARKS):

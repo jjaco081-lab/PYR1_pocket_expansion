@@ -68,3 +68,22 @@ results/stage1_rosetta_fnsweep/*/pdb/
 data/loop_dynamics/*/rep*/*.dat
 data/loop_dynamics/*/rep*/*.in
 data/loop_dynamics/*/rep*/*.log
+
+# Second-generation MD systems (191-aa rebuild, README 28). Same rule as data/md/:
+# topologies and trajectories are regenerable from scripts 67/67c/68, the small
+# provenance files beside them (build_settings.txt, his_states.txt, residue_map.json)
+# are tracked because they record what was actually built.
+data/md191/*/rep*/*.nc
+data/md191/*/rep*/*.rst7
+data/md191/*/rep*/*.out
+data/md191/*/rep*/*.info
+data/md191/*/rep*/*.in
+data/md191/*/system.prmtop
+data/md191/*/system.inpcrd
+data/md191/*/system_solvated.pdb
+data/md191/*/input_protein.pdb
+data/md191/*/protein.pdb
+data/md191/*/tleap*.log
+data/md191/*/tleap.in*
+data/md191/*/pdb4amber.log
+data/md191/*/leap.log

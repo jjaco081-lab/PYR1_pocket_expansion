@@ -29,9 +29,31 @@
 set -euo pipefail
 
 P=/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion
+
+# tleap/pdb4amber are AmberTools: amber/22, NOT amber/22_mpi_cuda (which ships pmemd
+# but no tleap). Loaded here rather than assumed on PATH -- nothing else in this
+# script's environment provides it.
+module load amber/22
+command -v tleap >/dev/null || { echo "tleap not found after 'module load amber/22'"; exit 1; }
+command -v pdb4amber >/dev/null || { echo "pdb4amber not found"; exit 1; }
+
 # absolute, not $(dirname "$0"): SLURM copies the submitted script to
 # /var/spool/slurmd/job<N>/slurm_script, so $0 does not point into the repo
 source "$P/scripts/lib_solvate.sh"
+
+# Rosetta's dump_pdb appends a pose-energies table as lines beginning '#', and the
+# structures here come straight from script 67. Strip everything that is not a
+# coordinate or chain-terminator record before handing the file to pdb4amber, rather
+# than trusting it to ignore what it does not recognise.
+sanitize () {
+    local src=$1 dst=$2
+    awk '/^(ATOM|HETATM|TER|END)/' "$src" > "$dst"
+    local n_in n_out
+    n_in=$(grep -c '^\(ATOM\|HETATM\)' "$src")
+    n_out=$(grep -c '^\(ATOM\|HETATM\)' "$dst")
+    [[ "$n_in" == "$n_out" ]] || { echo "  ERROR: sanitize dropped coordinates ($n_in -> $n_out)"; return 1; }
+    return 0
+}
 
 STRUCT=$P/data/structures_191
 OUT=$P/data/md191
@@ -40,10 +62,23 @@ LIGDIR=$P/data/md            # A8S.lib/.mol2/.frcmod and the non-cognate ligands
 mkdir -p "$OUT"
 
 # name | protein pdb | ligand mol2 (or -) | ligand frcmod (or -)
+#
+# S1  3K3K chain A -- genuinely apo AND open, so no ligand is correct here.
+# S2  3QN1 chain A + the crystal ABA. A8S.mol2 carries the 3QN1 pose and 67c asserts
+#     the rebuilt receptor still presents an identical pocket (19/19 contacts, within
+#     0.05 A), which is what licenses reusing it rather than re-docking.
+# S9  apo-closed BY DESIGN -- the missing cell of the 19b factorial (§27). The empty
+#     pocket is the experiment, not an oversight.
+#
+# ⚠ S3 IS DELIBERATELY ABSENT. 3K3K is a MIXED dimer: chain A is apo-open but chain B
+#   is CLOSED WITH ABA BOUND (§28g). Building it protein-only would simulate a
+#   ligand-shaped protomer around an empty cavity -- exactly the artefact §28d's
+#   ligand_shell() exists to prevent, and exactly what the first-generation
+#   S3_apo_dimer did for 3 x 300 ns. It needs an ABA in 3K3K's frame first:
+#   data/md/A8S.mol2 holds the 3QN1 pose and is in the WRONG FRAME for this dimer.
 SYSTEMS=(
   "S1_apo_open|$STRUCT/pyr1_open_191.pdb|-|-"
   "S2_holo_closed|$STRUCT/pyr1_closed_191.pdb|$LIGDIR/A8S.mol2|$LIGDIR/A8S.frcmod"
-  "S3_apo_dimer|$STRUCT/pyr1_open_dimer_191.pdb|-|-"
   "S9_apo_closed|$STRUCT/pyr1_closed_191.pdb|-|-"
 )
 
@@ -60,11 +95,14 @@ for row in "${SYSTEMS[@]}"; do
     selected "$name" || continue
     echo "=== $name ==="
     [[ -f "$prot" ]] || { echo "  MISSING $prot -- run 67_build_pyr1.py and 67c first"; exit 1; }
+    mkdir -p "$OUT/$name"
+    clean=$OUT/$name/input_protein.pdb
+    sanitize "$prot" "$clean" || exit 1
     if [[ "$lig" == "-" ]]; then
-        build_system "$OUT/$name" "$prot"
+        build_system "$OUT/$name" "$clean"
     else
         [[ -f "$lig" && -f "$frc" ]] || { echo "  MISSING ligand files for $name"; exit 1; }
-        build_system "$OUT/$name" "$prot" "$lig" "$frc"
+        build_system "$OUT/$name" "$clean" "$lig" "$frc"
     fi
     # carry the residue map next to the topology so analysis never re-derives offsets
     src=$(basename "$prot" .pdb)_residue_map.json

@@ -3996,3 +3996,49 @@ Two consequences for the rebuild:
 
 There is also a benefit: 3K3K chain B is an experimentally determined closed protomer
 that is *not* 3QN1, so the closed state no longer rests on a single crystal.
+
+### 28h. Facts are asserted from the structure now, not recalled
+
+`S3_apo_dimer` was named for a property that is false. That name then acted as a
+summary and outranked four separate records saying otherwise — including one that
+contained its own refutation, `"S3_apo_dimer (3K3K A+B, ABA removed)"`. The
+information was never missing; the label was simply trusted instead of it.
+
+The fix is not to write the fact down again. It is `data/structure_provenance.json`,
+which records every source structure **per chain** — modelled range, internal gaps,
+peptide breaks, conformational state, and *which ligands the chain actually carries* —
+and `lib_resnumber.assert_provenance()`, which script 67 runs before it touches
+anything. If a structure disagrees with its record, the build stops.
+
+Verified with a negative control: editing the record to claim 3K3K chain B is apo
+raises `ligands in contact with this chain are ['A8S'], expected []`. The mistake that
+cost 900 ns can no longer be made silently.
+
+**Two rules that follow.** Never name a thing after a property that could be wrong —
+prefer `S3_dimer_3K3K` to `S3_apo_dimer`. And check ligand occupancy and conformational
+state **per chain, never per file**: a dimer's protomers need not be occupied alike, and
+this one is not.
+
+### 28i. First three systems built on `data/md191/`
+
+| system | source | ligand | atoms | waters | KCl |
+|---|---|---|---|---|---|
+| `S1_apo_open` | 3K3K chain A | none (genuinely apo) | 51,585 | 12,201 | 33 |
+| `S2_holo_closed` | 3QN1 chain A | A8S, crystal pose | 46,570 | 10,934 | 30 |
+| `S9_apo_closed` | 3QN1 chain A | none — **by design**, the missing cell of §19b | 46,483 | 10,921 | 30 |
+
+All neutral to <0.001 e. Verified with cpptraj rather than the build log: 191
+non-solvent residues each (192 for S2, with A8S).
+
+⚠️ **S3 is deliberately not built yet.** 3K3K chain B is closed and ABA-bound (§28g), so
+a protein-only dimer would repeat the first generation's mistake. It needs an ABA in
+**3K3K's** frame first — `data/md/A8S.mol2` holds the 3QN1 pose.
+
+**Histidine tautomers differ between open and closed at exactly one position, H60.**
+`reduce` assigns HIE in the open protomer and HID in both closed systems; the latch
+H115 is HIE everywhere and H127 is HID everywhere. H60 is the dimerisation residue, and
+the difference is `reduce` responding to genuinely different local H-bond networks
+(3K3K chain A sits in a dimer, 3QN1 chain A does not). It is recorded rather than
+forced: overriding a geometry-based assignment to manufacture consistency would be
+worse than the confound. Flagged so it is not rediscovered as a surprise in an
+open-vs-closed comparison.

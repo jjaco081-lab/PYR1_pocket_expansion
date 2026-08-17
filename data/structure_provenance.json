@@ -1,0 +1,78 @@
+{
+  "_README": [
+    "Ground truth about every crystal structure this project builds from, stated PER CHAIN.",
+    "",
+    "WHY THIS FILE EXISTS. The facts below were known and written down in several places,",
+    "and a system still got built on the opposite assumption for 3 x 300 ns. What went",
+    "wrong was not that the information was missing: it was that the system was NAMED",
+    "'S3_apo_dimer', and the name acted as a summary that outranked the records saying",
+    "3K3K chain B is closed and holo. A name that encodes a claim will eventually be",
+    "trusted instead of the claim.",
+    "",
+    "So the facts live here, in a file the BUILD SCRIPTS READ AND ASSERT AGAINST",
+    "(lib_resnumber.assert_provenance). Prose can be misremembered; an assertion that",
+    "runs before tleap cannot. If a value here disagrees with the structure, the build",
+    "stops -- and if reality turns out to differ from this file, fix the file with a",
+    "measurement, never by loosening the check.",
+    "",
+    "Every number below was measured, not quoted: ligand contacts at 4.5 A heavy-atom,",
+    "conformational state by superposing each chain's core (152 residues, gate and latch",
+    "excluded) onto 3QN1 chain A and taking backbone RMSD over gate 85-89."
+  ],
+
+  "3K3K": {
+    "description": "PYR1 homodimer -- MIXED, not apo. Do not describe this structure as apo.",
+    "chains": {
+      "A": {
+        "molecule": "PYR1",
+        "modelled": [1, 183],
+        "internal_gaps": [],
+        "peptide_breaks": 0,
+        "ligands": [],
+        "state": "open",
+        "gate_rmsd_to_closed_A": 5.24,
+        "latch_rmsd_to_closed_A": 5.08,
+        "altloc_positions": 67,
+        "note": "Genuinely apo AND open. This is the correct source for S1_apo_open."
+      },
+      "B": {
+        "molecule": "PYR1",
+        "modelled": [2, 184],
+        "internal_gaps": [],
+        "peptide_breaks": 0,
+        "ligands": ["A8S"],
+        "state": "closed",
+        "gate_rmsd_to_closed_A": 0.90,
+        "latch_rmsd_to_closed_A": 0.68,
+        "altloc_positions": 48,
+        "note": "CLOSED and ABA-BOUND. Any system built from this chain must keep its ABA, and that ABA's coordinates must come from 3K3K -- data/md/A8S.mol2 carries the 3QN1 pose and is in the wrong frame."
+      }
+    }
+  },
+
+  "3QN1": {
+    "description": "PYR1 + ABA + HAB1 ternary complex.",
+    "chains": {
+      "A": {
+        "molecule": "PYR1",
+        "modelled": [1, 181],
+        "internal_gaps": [69, 70],
+        "peptide_breaks": 1,
+        "ligands": ["A8S"],
+        "state": "closed",
+        "altloc_positions": 0,
+        "sequence_variants": {"2": "ALA"},
+        "note": "Residue 2 is ALA, not the wild-type PRO. This is a MUTATION, not a gap, and it propagated into AF3, BindCraft and Boltz. Restored to PRO by script 67."
+      },
+      "B": {
+        "molecule": "HAB1",
+        "modelled": [185, 505],
+        "construct": [175, 511],
+        "internal_gaps": [[222, 231], [271, 282], [462, 465]],
+        "peptide_breaks": 3,
+        "ligands": ["MN", "MN", "MN"],
+        "note": "A 175-511 construct of a 511-residue protein, so no build yields 'the whole protein' -- cap the construct boundary rather than extending it. All three gaps sit 32-50 A from PYR1, the gate, ABA and the Mn site."
+      }
+    }
+  }
+}

@@ -77,6 +77,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import lib_structqc  # noqa: E402
 from lib_rosetta import assert_frozen  # noqa: E402
 from lib_resnumber import (  # noqa: E402
+    assert_provenance,
     PYR1_SEQ, PYR1_LANDMARKS, THREE2ONE, load_model, select_altloc,
     chain_residues, chain_sequence, peptide_breaks, assert_identity,
     verify_build, write_residue_map,
@@ -209,6 +210,14 @@ def ligand_shell(model, protein_chain, cutoff=4.5):
 def stage_a(spec, outdir):
     """Crystal -> gap-free, altloc-resolved, 1..181 PDB. Returns a provenance dict."""
     log(f"\n== stage A: {spec['name']} from {spec['cif']} chain {spec['chain']} ==")
+    # Facts about the source structure are ASSERTED from the structure, not recalled.
+    # data/structure_provenance.json records what each chain is; this stops the build
+    # if reality disagrees. It exists because "S3_apo_dimer" was built from 3K3K, whose
+    # chain B is closed and ABA-bound, and the NAME outranked the records saying so.
+    prov = assert_provenance(os.path.join(ROOT, spec["cif"]), spec["chain"])
+    log(f"  provenance OK: {prov['molecule']} {prov.get('state', '')}, "
+        f"ligands {prov['ligands'] or 'none'}")
+
     model = load_model(os.path.join(ROOT, spec["cif"]))
     protected = ligand_shell(model, spec["chain"])
     if protected:
