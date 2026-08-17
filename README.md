@@ -2542,6 +2542,9 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 24 | 08-14 | one residue-numbering map would serve every MD system, since they are all PYR1 | S1/S2 come from script 30's 3K3K∩3QN1 intersection (178 res, gate = seq 82-86); S4 was built from 3QN1 alone and keeps residue 2 as ALA (179 res, gate = seq **83-87**). Reusing S1's core mask on S4 gave a 162-residue fit set against the references' 161 — cpptraj **set it up anyway** and returned gate RMSD ≈ **84 Å** | maps are rebuilt **per system** and verified by residue identity before any frame is read; the core set is asserted identical across systems. Also: address ligands by NAME (`:A8S`), since `n_res+1` is ABA in S2 but HAB1's first residue in S4 (§24f) |
 | 25 | 08-14 | the gate–latch contact is the staple that holds the closed state | in the closed MONOMER the contact is intermittent — broken in **60 %** of frames in S2 rep0 — and it is the weakest pre-registered observable (replicate gap 0.90 Å). Adding HAB1 gives the tightest distribution of any system (3.72 Å) | the staple is clamped by the PARTNER, not held by PYR1 alone — consistent with the ratchet framing. Do not filter designs on gate–latch distance (§24d) |
 | 26 | 08-14 | a stable closed trajectory would show a design's switch works | neither state converts even once in 1.8 μs of aggregate WT sampling; both are kinetically trapped at 300 ns | MD licenses a **stability** filter (gate RMSD to closed, threshold 3.5–4.0 Å, ~1 % error each way) and is **blind to switchability** — the more likely failure mode for an enlarged pocket (§24b) |
+| 27 | 08-17 | 3QN1 breaks at C(1)–N(3) as well as 68→71, and 3K3K shares those gaps | audited both CIFs per chain: **3K3K is entirely gap-free** (A 1–183, B 2–184, zero broken bonds) and **3QN1 chain A misses only 69–70**. The 3.02 Å break is in OUR `data/md/S1_apo_open/protein.pdb`, which script 30 made by intersecting the two crystals; 3QN1 does model residue 2, as the P2A **mutation** | a defect in an intermediate of ours was attributed to the PDB. PYR1 needs **one** 2-residue loop, not two, and the open form needs none (§28a) |
+| 28 | 08-17 | 3K3K is the apo dimer | **chain B has ABA bound** (canonical 20-residue pocket) and is **CLOSED** — gate 0.90 Å / latch 0.68 Å from the 3QN1 closed reference, against chain A's 5.24 / 5.08 Å | 3K3K is a **mixed** open-apo + closed-holo dimer. `S3_apo_dimer` (3 × 300 ns, already run) simulated its closed protomer with the ABA **stripped**. §24 is unaffected — script 58 covers S1/S2/S4 only (§28g) |
+| 29 | 08-17 | a frozen backbone means the crystal structure was preserved, and a MoveMap freezes what it names | core preservation reported **0.000 Å** while two defects went through: A87–B116 at **0.36 Å** (crystal 3.09 Å) and **K59 collapsing 2.85 → 1.68 Å** into the empty ABA cavity — K59 was in an explicit "frozen" set and moved anyway | **`FastRelax.set_movemap()` restricts minimisation only**; repacking needs a TaskFactory or the whole pose is repacked. Backbone RMSD also watches N/CA/C only, so both were invisible. Fixed in `lib_rosetta.py`; 178/191 residues now keep their input rotamers, and the dimer assembles with **zero** clashes before any refinement (§28d) |
 
 ### Bugs caught before they cost anything
 
@@ -2552,6 +2555,9 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 08-06 | `VRT` residue has no CA → FastRelax RMSD crash | filtered with `is_protein()` |
 | 08-07 | chained `sed` renamed the path before the filename rule matched, so `26_submit_ratchet_v3.sh` called a **nonexistent** `21_rosetta_ratchet_v3.py` | caught while writing `32_`; queued job cancelled and resubmitted **before it ran** |
 | 08-10 | `loadamberparams frcmod.ions234lm_126_opc` — TIP3P-era naming, no such file for OPC | tleap exited on all four MD systems |
+| 08-17 | protomer B relaxed in isolation drove R116/M158 side chains into protomer A — heavy atoms at **0.36 Å** | inter-chain clash check in `67c`, before any MD was built |
+| 08-17 | the closed form was relaxed with an **empty pocket**, collapsing K59 into ABA's site (2.85 → 1.68 Å) | pocket-contact assertion against the crystal in `67c`; backbone checks had passed at 0.000 Å |
+| 08-17 | FastRelax seeded only through numpy — identical runs gave −195.4 and −202.4 REU | noticed re-running the build twice; fixed with `-run:constant_seed -run:jran`, now byte-identical |
 
 ### Standing methodological lessons
 
@@ -3810,3 +3816,183 @@ ratchet survives losing its buttress. §24b's threshold (gate RMSD-to-closed
 
 ⚠️ Recall from the pilot that **expansion does not predict switch cost (r = 0.03)**,
 so cavity volume cannot stand in for this measurement — it has to be run.
+
+---
+
+## 28. Rebuilding on the complete 191-residue protein (2026-08-17)
+
+Every MD system up to now inherited whatever the crystal happened to model. That is
+the defect this section closes, and closing it also closed a smaller one: an earlier
+claim in this project about *what* the crystals are missing was itself wrong.
+
+### 28a. What the crystals actually contain
+
+Audited directly from the CIFs, per chain, with residue identity asserted (12/12
+landmark checks pass on each) — `scripts/lib_resnumber.py`:
+
+| file / chain | modelled | internal gaps | broken C–N bonds |
+|---|---|---|---|
+| 3K3K A (open) | 1–183 | **none** | **none** |
+| 3K3K B | 2–184 | **none** | **none** |
+| 3QN1 A (closed) | 1–181 | **69–70 only** | E68→F71, **4.64 Å** |
+| 3QN1 B (HAB1) | 185–505 | 222–231, 271–282, 462–465 | 11.62, **15.93**, 6.36 Å |
+
+⚠️ **This corrects §27's note**, which recorded a `C(1)–N(3) = 3.02 Å` break in 3QN1
+and said 3K3K "had the same gaps". Neither is true. That 3.02 Å break belongs to our
+own derived `data/md/S1_apo_open/protein.pdb`, which script 30 produced by
+*intersecting* the two crystals — a defect in an intermediate of ours, attributed to
+the PDB. And 3QN1 does model residue 2; it is **ALA**, the P2A substitution, which is
+a mutation rather than a gap.
+
+Practical consequence: **PYR1 needs one 2-residue loop, not two**, and the open form
+needs no internal loop building at all.
+
+The deposition's own `_pdbx_poly_seq_scheme` was used to fix numbering rather than
+inferring offsets: 3QN1 chain A entity positions 3–193 → author residues 1–191;
+3K3K entity 21–211 → 1–191. Both deposited sequences agree with UniProt O49686 at all
+191 positions except residue 2, and re-deriving the sequence this way reproduces
+`pyr1_sequence.py`'s canonical string exactly (md5 `5ff74f5d34`) — two independent
+routes to the same 191-mer.
+
+### 28b. Four build decisions, each settled by measurement rather than judgement
+
+**1. Alternate conformations are chosen explicitly.** 3K3K carries 0.5-occupancy
+alternates at ≥8 positions **including R116, a latch residue** (also S3, S31, S32,
+Y58, N70, R95, S109); 3QN1 carries none. Letting each parser's default win would make
+the open and closed systems differ by an unrecorded coin-flip at exactly the positions
+this project measures. Altloc A is selected explicitly and the count is logged
+(67 atom positions in chain A, 48 in chain B).
+
+**2. The 69–70 loop is grafted from 3K3K, not invented.** Superposing the flanking
+backbone gives **0.85 Å** — and it is still 0.85 Å using only residues 68 and 71, so
+the graft is determined by the flanks rather than by the modeller. The loop also sits
+**19.1 Å from the gate and 20.3 Å from ABA**, outside the switching machinery. Real
+coordinates from the same protein beat a de novo loop.
+
+**3. Both tails are rebuilt from 181.** 3K3K models two extra C-terminal residues, but
+their B-factors are **142 and 151 against a core mean of 49** — 2.9× and 3.1×, present
+but barely ordered. Keeping them would give the open form a 2-residue head start built
+from real-but-meaningless density while the closed form got 10 modelled residues,
+reintroducing the open/closed protocol asymmetry this rebuild exists to remove. Both
+forms are truncated at 181 and get an identically generated 182–191.
+
+**4. P2 is restored.** φ(A2) in 3QN1 is **−67.4°**, inside proline's −63 ± 15° window,
+so this is a ring closure and not a backbone rebuild.
+
+### 28c. The tail is a sample, not a prediction
+
+182–191 reads **SGDGSGSQVT** — three glycines and three serines, a natural GS-linker,
+disordered in every structure ever solved of this protein. No starting conformation
+for it is meaningful, so the builder samples 12 seeded conformers and keeps the
+best-scoring, rather than dictating an extended chain.
+
+That choice is also what keeps it affordable. A fully extended 10-mer projects ~35 Å
+into solvent; the sampled coil conformers cost **+4 % (open) and +9 % (closed)** in
+periodic box volume, which is paid on every one of the 300 ns.
+
+**Why model it at all** — the decision was the user's, and the geometry supports it.
+The C-terminal Cα is **31.7 Å from the gate and 26.1 Å from ABA**, so a 10-residue
+tail cannot realistically reach the §24 observables. But it is **16.3 Å from HAB1** and
+**18.2 Å from the partner protomer**, which it reaches easily. If those residues touch
+the partner in reality, capping at 181 would delete a real interaction rather than
+avoid a nuisance one. The protein in the Y2H assay is full-length; capping simulates a
+molecule that does not exist.
+
+⚠️ **Pre-registered**: all core-fit and RMSF masks must EXCLUDE 182–191. The tail is
+present so the system is physically honest, not so its motion can be interpreted.
+
+### 28d. The pipeline
+
+| script | role |
+|---|---|
+| `lib_resnumber.py` | canonical sequence + md5 guard, explicit altloc selection, identity assertions, peptide-bond audit, `verify_build`, `residue_map.json` |
+| `lib_structqc.py` | core-preservation, clash, bond-geometry and solvent-cost checks |
+| `67_build_pyr1.py` | stage A (crystal → gap-free 1–181, Biopython) → stage B (PyRosetta: restore P2, prepend missing N-terminus, sample the tail, relax only what was rebuilt) → stage C (verify) |
+| `67c_assemble_complexes.py` | assemble the open dimer, assert the rebuilt pocket still matches the crystal ABA |
+| `68_build_md_systems.sh` | drive `lib_solvate.sh` over the rebuilt structures into `data/md191/` |
+
+**⚠ The trap that cost the most: `FastRelax.set_movemap()` does not restrict
+repacking.** It governs minimisation degrees of freedom only. FastRelax repacks through
+a **TaskFactory**, and given none it repacks *every residue in the pose* no matter what
+the MoveMap says. Both structural defects below came from this, and both walked past a
+backbone check reporting 0.000 A. `lib_rosetta.restrict_packing()` now builds a
+TaskFactory (`RestrictToRepacking` + `OperateOnResidueSubset(PreventRepackingRLT(), …,
+flip=True)`), asserts the resulting task packs exactly the intended set and designs
+nothing, and is passed with `relax.set_task_factory()`. Result: **178 of 191 residues
+keep their input rotamers** in the open build, 168 of 191 in the closed one.
+
+**Reproducibility.** FastRelax is Monte Carlo. The first version seeded only numpy and
+gave **−195.4 and −202.4 REU on two identical runs**; Rosetta's own RNG is now pinned
+with `-run:constant_seed -run:jran <seed>`, and two runs then produce **byte-identical
+ATOM records**. Seed and conformer choice are written to `build_report.json`.
+
+**Verification, in-pipeline rather than by hand** — every build must pass:
+
+- residue numbering exactly 1–191, sequence identical to canonical (md5 `5ff74f5d34`)
+- 13 landmark residues asserted by identity, including the P2 tripwire
+- **zero** peptide-bond breaks (measured as C–N > 1.5 Å, not as a numbering gap)
+- **zero** held-fixed residues displaced by >0.01 Å — this is what proves the MoveMap
+  actually froze the crystal core rather than merely being told to. Observed: max
+  **0.000 Å** across all three chains.
+- zero steric clashes below 2.2 Å between non-adjacent residues
+
+Built: `pyr1_open_191`, `pyr1_closed_191`, `pyr1_open_191_protomerB`. C–N bonds fall
+in 1.308–1.368 Å (ideal ≈1.33).
+
+### 28e. `data/md191/`, not `data/md/`
+
+The old tree holds **13 completed 300 ns replicates** (S1–S3 ×3, S4 ×3, S5 ×1) and is
+the evidence behind §24. The two generations are **not comparable** — different protein
+(191 aa vs a gapped 178–179), different salt (KCl vs NaCl), different histidine
+assignment, and for S5 a different ion ordering. Keep both, label both, never pool.
+
+### 28f. What is NOT done
+
+**HAB1, and therefore S4.** 3QN1 chain B needs three de novo internal loops, the worst
+**12 residues spanning 15.93 Å**. There is no local template: the only other HAB1
+coordinates in this project (`PYRI_HABI_ABA.pdb`) are a copy of 3QN1 with the same
+gaps. All three loops sit **32–50 Å from PYR1, the gate, ABA and the Mn site**, so
+their conformation cannot affect any observable — they are being built to remove six
+artificial charged termini, not because the loops matter. That makes a de novo build
+acceptable here in a way it would not be at an interface.
+
+⚠️ Note also that 3QN1 chain B is a **175–511 construct**, not full-length HAB1 (511 aa
+with a 174-residue N-terminal extension). Unlike PYR1, no choice here yields "the whole
+protein", so the construct boundary should be **capped** (ACE/NME) rather than
+extended — a different decision from PYR1's tail, for a different reason.
+
+### 28g. 3K3K is a mixed dimer, and `S3_apo_dimer` is misnamed
+
+Found while writing the ligand-shell guard: **3K3K is not an apo structure.**
+
+| 3K3K protomer | ligand | gate RMSD to closed (3QN1/A) | latch | state |
+|---|---|---|---|---|
+| chain A | none | 5.24 Å | 5.08 Å | **open, apo** |
+| chain B | **A8S 1001** | **0.90 Å** | **0.68 Å** | **closed, ABA-bound** |
+
+ABA in chain B is lined by the canonical 20-residue pocket — 59, 61, 83, 87, 88, 89,
+91, 92, 94, 108, 110, 115 and the rest — the same set that lines it in 3QN1. Measured
+by superposing each protomer's core (152 residues, gate and latch excluded) onto 3QN1
+chain A.
+
+So the crystal is a **half-occupied dimer**: one apo-open protomer and one holo-closed
+one.
+
+⚠️ **`S3_apo_dimer` — 3 × 300 ns, already complete — was built protein-only from both
+chains.** Its chain B is therefore a closed, ligand-shaped protomer simulated with an
+empty pocket: the same artefact §28d's `ligand_shell()` was written to prevent, except
+here it ran for 900 ns. Do not read S3 chain B as an apo-open control, and do not call
+the system apo.
+
+**§24 is unaffected.** `scripts/58_loop_dynamics_prep.py`'s `SYSTEMS` map covers S1, S2
+and S4 only — S3 was never in the loop-dynamics analysis.
+
+Two consequences for the rebuild:
+
+- **S1_apo_open from 3K3K chain A remains correct** — genuinely apo and genuinely open.
+- **A rebuilt dimer must keep chain B's ABA**, and its coordinates must come from 3K3K.
+  `data/md/A8S.mol2` carries the **3QN1** pose and is in the wrong frame — the same trap
+  recorded for S5 in §23.
+
+There is also a benefit: 3K3K chain B is an experimentally determined closed protomer
+that is *not* 3QN1, so the closed state no longer rests on a single crystal.

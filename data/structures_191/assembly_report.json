@@ -1,0 +1,51 @@
+{
+  "assembled": "2026-08-17T22:49:37.861002+00:00",
+  "seed": 20260817,
+  "builder": "67c_assemble_complexes.py",
+  "complexes": {
+    "pyr1_open_dimer_191": {
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/structures_191/pyr1_open_dimer_191.pdb",
+      "chains": [
+        "A",
+        "B"
+      ],
+      "clashes_before_refinement": 0,
+      "clashes_after_refinement": 0,
+      "refinement": {
+        "n_movable": 24,
+        "n_repacked": 33,
+        "n_packable": 33,
+        "n_protected": 20,
+        "score_REU": 272.6690033137321
+      },
+      "residue_map": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/structures_191/pyr1_open_dimer_191_residue_map.json"
+    },
+    "pyr1_closed_191": {
+      "pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/structures_191/pyr1_closed_191.pdb",
+      "aba_contacts": {
+        "n_contacts": 19,
+        "residues": [
+          59,
+          61,
+          83,
+          87,
+          88,
+          89,
+          91,
+          92,
+          94,
+          108,
+          110,
+          115,
+          117,
+          120,
+          141,
+          159,
+          163,
+          164,
+          167
+        ]
+      }
+    }
+  }
+}
