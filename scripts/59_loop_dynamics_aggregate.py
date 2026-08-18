@@ -213,6 +213,36 @@ print(f"\n  -> discarding the first {DISCARD} ns of every replicate")
 print(f"     (chosen from CORE backbone RMSD only, never from the loop "
       f"observables under test)")
 
+# ---- do the NAMES match the MEASUREMENTS? ----
+# S3's two protomers are told apart only by a chain letter, and the label
+# "S3_dimer_closedB" is an assertion about which one is closed. A label that
+# encodes a claim will eventually be trusted instead of the claim, so the claim is
+# checked here against the trajectory: every unit whose name says open must sit on
+# the open side of the watershed, and vice versa. A swapped chain letter anywhere
+# upstream stops the script instead of producing a mislabelled figure.
+print("\n  Name-vs-measurement check (gate state coordinate S, post-discard):")
+EXPECT_SIDE = {"open": -1, "dimer_openA": -1,
+               "closed": +1, "dimer_closedB": +1, "ternary": +1}
+for (sname, r), d in sorted(data.items()):
+    S = (d["gate_open"][DF:] - d["gate_closed"][DF:]).mean()
+    want = EXPECT_SIDE[SYSTEMS[sname]]
+    side = "open-like" if S < 0 else "closed-like"
+    assert np.sign(S) == want, (
+        f"{sname} rep{r}: name says {'open' if want < 0 else 'closed'} but mean "
+        f"gate S = {S:+.2f} ({side}). The chain letter or the state table is wrong.")
+    print(f"    {sname:<18} rep{r}  S = {S:+5.2f}  {side}  -- agrees with its name")
+# and the two S3 protomers must be on OPPOSITE sides, which is the whole reason
+# S3 is analysed as two units rather than one
+sA = np.mean([(data[("S3_dimer_openA", r)]["gate_open"][DF:]
+               - data[("S3_dimer_openA", r)]["gate_closed"][DF:]).mean()
+              for r in REPS if ("S3_dimer_openA", r) in data])
+sB = np.mean([(data[("S3_dimer_closedB", r)]["gate_open"][DF:]
+               - data[("S3_dimer_closedB", r)]["gate_closed"][DF:]).mean()
+              for r in REPS if ("S3_dimer_closedB", r) in data])
+assert sA < 0 < sB, "the S3 protomers are not on opposite sides of the watershed"
+print(f"    -> S3 is a MIXED dimer in the trajectory too, not just the crystal: "
+      f"protomer A {sA:+.2f}, protomer B {sB:+.2f}")
+
 print("\n  ABA validity control (S2 only; heavy-atom RMSD vs frame 1, protein-fit):")
 aba_ok = True
 for (s, r), d in sorted(data.items()):

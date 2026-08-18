@@ -4168,3 +4168,46 @@ observables cannot be reselected once their answers are known:
 Panels A/B/C/D are §24's, extended to five states; **E** adds the latch state
 coordinate in its own panel; **F** plots mean gate S over the first 50 ns after
 the discard against the last 50 ns, so "did anything move" is one glance.
+
+### 29f. Indexing audit, and why two runs are both "open + apo"
+
+Asked for directly (2026-08-18), because the latch band in panel D looks
+misaligned with the nearest RMSF peak.
+
+**The indexing is correct in all five units, verified three ways.** cpptraj writes
+the *topology* residue number in `rmsf_bb_byres.dat`, so protomer B's rows really
+do run 184–366; every row maps to a native residue with none left over; and taking
+each unit's claimed sequential index straight into the **prmtop's own
+`RESIDUE_LABEL`** returns SER-GLY-LEU-PRO-ALA at the gate and HIS-ARG-LEU at the
+latch in every case:
+
+| unit | gate native→seq | latch native→seq | latch labels |
+|---|---|---|---|
+| S1 | 85→82 | 115→112 | HIS ARG LEU |
+| S2 | 85→82 | 115→112 | HIS ARG LEU |
+| S3 protomer A | 85→85 | 115→115 | HIS ARG LEU |
+| S3 protomer B | 85→**267** | 115→**297** | HIS ARG LEU |
+| S4 | 85→83 | 115→113 | HIS ARG LEU |
+
+**The apparent misalignment is real and is not an offset.** The local maximum in
+that region sits at native **114**, one residue *before* the latch, and the latch
+lies on its shoulder — in S2 the profile reads 2.02 (113) → **2.52 (114)** → 1.71
+(115) → 1.49 (116) → 1.10 (117). The much larger peak that draws the eye is at
+**131–134**, a different loop that is not one of the three pre-registered ones and
+carries no shading. Panel D now labels each band with its residue range, tints the
+three-residue latch more heavily, and carries a 5-residue minor grid so alignment
+can be read off the axis rather than trusted.
+
+**Two units are legitimately "open + apo".** S1 and S3 protomer A are the same
+crystal chain — 3K3K chain A — once as an isolated monomer and once inside the
+dimer. They are two runs of one state, and the 2.9× difference in gate RMSF
+between them (3.05 vs 1.07 Å) is the measured cost of dimerisation, not a
+duplicated label. The closed states are the ones that differ in occupancy: **S2 is
+closed + ABA, S3 protomer B is closed + APO**, and that contrast is the whole
+point of §29b. Legend labels now name conformation and occupancy separately.
+
+**The labels are now asserted, not trusted** (§28h, `feedback` on names that carry
+claims). Script 59 checks every unit's mean gate S against the side its name
+claims and stops on disagreement, and separately asserts the two S3 protomers sit
+on *opposite* sides. They do — protomer A −3.98, protomer B +4.74 — so S3 is a
+mixed dimer in the trajectory, not only in the crystal.

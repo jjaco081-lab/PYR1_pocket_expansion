@@ -56,12 +56,19 @@ PSF = SUM["ps_per_frame"]
 DF = int(DISCARD * 1000 / PSF)
 
 # unit -> (legend label, colour, short tick label)
+# Two units are legitimately "open + apo": S1 and S3 protomer A are the SAME
+# crystal chain (3K3K A), once as an isolated monomer and once inside the dimer.
+# They are different runs of the same state, and the 2.9x difference in gate RMSF
+# between them is the measured cost of that difference, not a labelling error.
+# Labels therefore lead with the system id and spell out conformation AND
+# occupancy separately, so "closed + apo" cannot be misread as a typo for
+# "closed + ABA" -- it is the point of the analysis.
 SYSTEMS = {
-    "S1_apo_open":      ("open, apo (S1, 3K3K A monomer)",      "#1F4E79", "open"),
-    "S3_dimer_openA":   ("open, apo (S3, dimer protomer A)",    "#6BAED6", "dimerA"),
-    "S2_holo_closed":   ("closed +ABA (S2, 3QN1 A monomer)",    "#A63603", "closed"),
-    "S3_dimer_closedB": ("closed, APO (S3, dimer protomer B)",  "#FD8D3C", "apo-closed"),
-    "S4_ternary":       ("ternary +ABA +HAB1 (S4)",             "#6A51A3", "ternary"),
+    "S1_apo_open":      ("S1   open + apo        (3K3K A monomer)          ", "#1F4E79", "S1 open\napo"),
+    "S3_dimer_openA":   ("S3-A open + apo        (dimer protomer A)",          "#6BAED6", "S3-A open\napo"),
+    "S2_holo_closed":   ("S2   closed + ABA      (3QN1 A monomer)",            "#A63603", "S2 closed\n+ABA"),
+    "S3_dimer_closedB": ("S3-B closed + APO      (dimer protomer B)",          "#FD8D3C", "S3-B closed\nAPO"),
+    "S4_ternary":       ("S4   closed + ABA + HAB1 (ternary)",                 "#6A51A3", "S4 ternary\n+ABA"),
 }
 # drawing order puts the apo-closed protomer last so it is never buried
 ORDER = ["S1_apo_open", "S3_dimer_openA", "S2_holo_closed", "S4_ternary",
@@ -157,7 +164,7 @@ for s in ORDER:
         if d is None:
             continue
         pos.append(d[DF:])
-        labels.append(f"{short}\nrep{r}")
+        labels.append(f"{short} r{r}")
         colors.append(col)
 if pos:
     bp = axC.violinplot(pos, showmeans=True, showextrema=False)
@@ -165,7 +172,7 @@ if pos:
         body.set_facecolor(c)
         body.set_alpha(0.65)
     axC.set_xticks(range(1, len(labels) + 1))
-    axC.set_xticklabels(labels, fontsize=6.5, rotation=35, ha="right")
+    axC.set_xticklabels(labels, fontsize=6, rotation=40, ha="right")
 axC.axhline(4.5, color="grey", ls=":", lw=1)
 axC.set_ylabel("gate-latch minimum heavy-atom distance ($\\AA$)")
 axC.set_title("C. Gate-latch closure, per replicate")
@@ -188,10 +195,21 @@ for s in ORDER:
 # and letting them set the y-axis squashes the loops this panel exists to compare.
 # Clipped rather than trimmed, and said so, so nothing is silently hidden.
 axD.set_ylim(0, 6)
+# The bands are labelled with their residue RANGES, and the latch is only three
+# residues wide, so it gets a heavier tint and edge lines -- otherwise it reads as
+# a smear next to a much larger unannotated peak at 131-134 and looks misaligned.
+# It is not: the local maximum here sits at native 114, one residue BEFORE the
+# latch, and the latch lies on that peak's shoulder.
 for lname, (nats, lcol) in LOOPS.items():
-    axD.axvspan(min(nats) - 0.5, max(nats) + 0.5, color=lcol, alpha=0.16)
-    axD.text(np.mean(nats), 5.6, lname, ha="center",
-             fontsize=9, color=lcol, fontweight="bold")
+    lo, hi = min(nats) - 0.5, max(nats) + 0.5
+    axD.axvspan(lo, hi, color=lcol, alpha=0.28 if len(nats) < 5 else 0.16)
+    for x in (lo, hi):
+        axD.axvline(x, color=lcol, lw=0.7, alpha=0.55)
+    axD.text(np.mean(nats), 5.6, f"{lname}\n{min(nats)}-{max(nats)}", ha="center",
+             fontsize=8.5, color=lcol, fontweight="bold", linespacing=0.95)
+axD.set_xticks(np.arange(0, 200, 25))
+axD.set_xticks(np.arange(0, 190, 5), minor=True)
+axD.grid(axis="x", which="minor", lw=0.25, alpha=0.12)
 axD.text(0.99, 0.02, "y clipped at 6 $\\AA$; both termini exceed it",
          transform=axD.transAxes, ha="right", fontsize=7.5, style="italic",
          color="grey")
@@ -234,17 +252,18 @@ axF.set_title("F. Did the gate move over 300 ns?")
 axF.legend(fontsize=7.5, loc="upper left", framealpha=0.9)
 
 n = SUM.get("n_replicates", {})
-counts = ", ".join(f"{SYSTEMS[u][2]} x{n[st]}"
+counts = ", ".join(f"{SYSTEMS[u][2].replace(chr(10), ' ')} x{n[st]}"
                    for u, st in (("S1_apo_open", "open"),
                                  ("S3_dimer_openA", "dimer_openA"),
                                  ("S2_holo_closed", "closed"),
                                  ("S3_dimer_closedB", "dimer_closedB"),
                                  ("S4_ternary", "ternary")) if n.get(st))
 fig.suptitle(
-    f"PYR1 gate/latch loop dynamics -- WT MD baseline, 300 ns x  {counts}   "
-    f"(first {DISCARD} ns discarded; {SUM.get('core_residues', '?')}-residue core fit)",
-    fontsize=13)
-fig.tight_layout(rect=[0, 0, 1, 0.97])
+    "PYR1 gate/latch loop dynamics -- WT MD baseline, 12 trajectories / 15 protomers\n"
+    f"300 ns x  {counts}\n"
+    f"first {DISCARD} ns discarded; {SUM.get('core_residues', '?')}-residue core fit",
+    fontsize=12, linespacing=1.5)
+fig.tight_layout(rect=[0, 0, 1, 0.945])
 out = os.path.join(FIG, "loop_dynamics.png")
 fig.savefig(out, dpi=160)
 print(f"wrote {out}")

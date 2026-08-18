@@ -41,6 +41,24 @@ LOADING
   -> discarding the first 100 ns of every replicate
      (chosen from CORE backbone RMSD only, never from the loop observables under test)
 
+  Name-vs-measurement check (gate state coordinate S, post-discard):
+    S1_apo_open        rep0  S = -3.21  open-like  -- agrees with its name
+    S1_apo_open        rep1  S = -3.09  open-like  -- agrees with its name
+    S1_apo_open        rep2  S = -3.64  open-like  -- agrees with its name
+    S2_holo_closed     rep0  S = +2.42  closed-like  -- agrees with its name
+    S2_holo_closed     rep1  S = +3.81  closed-like  -- agrees with its name
+    S2_holo_closed     rep2  S = +4.14  closed-like  -- agrees with its name
+    S3_dimer_closedB   rep0  S = +4.76  closed-like  -- agrees with its name
+    S3_dimer_closedB   rep1  S = +4.73  closed-like  -- agrees with its name
+    S3_dimer_closedB   rep2  S = +4.72  closed-like  -- agrees with its name
+    S3_dimer_openA     rep0  S = -4.02  open-like  -- agrees with its name
+    S3_dimer_openA     rep1  S = -4.10  open-like  -- agrees with its name
+    S3_dimer_openA     rep2  S = -3.83  open-like  -- agrees with its name
+    S4_ternary         rep0  S = +4.69  closed-like  -- agrees with its name
+    S4_ternary         rep1  S = +4.85  closed-like  -- agrees with its name
+    S4_ternary         rep2  S = +4.65  closed-like  -- agrees with its name
+    -> S3 is a MIXED dimer in the trajectory too, not just the crystal: protomer A -3.98, protomer B +4.74
+
   ABA validity control (S2 only; heavy-atom RMSD vs frame 1, protein-fit):
     S2_holo_closed rep0: mean  1.60 A, max  2.70 A, final  1.46 A
     S2_holo_closed rep1: mean  2.18 A, max  3.39 A, final  1.99 A
