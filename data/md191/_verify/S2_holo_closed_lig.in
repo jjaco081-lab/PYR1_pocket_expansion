@@ -1,0 +1,5 @@
+parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.prmtop [sys]
+trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.inpcrd parm [sys]
+nativecontacts :59 :A8S&!@H= mindist out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/_verify/S2_holo_closed_k59.dat distance 4.0
+run
+quit

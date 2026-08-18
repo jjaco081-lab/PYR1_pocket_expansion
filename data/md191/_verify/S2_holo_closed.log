@@ -1,0 +1,68 @@
+
+CPPTRAJ: Trajectory Analysis. V6.4.4 (AmberTools)
+    ___  ___  ___  ___
+     | \/ | \/ | \/ | 
+    _|_/\_|_/\_|_/\_|_
+
+| Date/time: 08/18/26 13:07:58
+| Available memory: 879.853 GB
+
+INPUT: Reading input from '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/_verify/S2_holo_closed.in'
+  [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.prmtop]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.prmtop' as Amber Topology
+	Radius Set: modified Bondi radii (mbondi)
+  [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.inpcrd]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.inpcrd' as Amber Restart
+  [strip :WAT,K+,Cl-,Na+]
+    STRIP: Stripping atoms in mask [:WAT,K+,Cl-,Na+]
+  [trajout /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/_verify/S2_holo_closed.frame1.pdb pdb]
+	Writing '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/_verify/S2_holo_closed.frame1.pdb' as PDB
+  [run]
+---------- RUN BEGIN -------------------------------------------------
+
+PARAMETER FILES (1 total):
+ 0: system.prmtop, 46570 atoms, 11126 res, box: Truncated octahedron, 10936 mol, 10867 solvent
+
+INPUT TRAJECTORIES (1 total):
+ 0: 'system.inpcrd' is an AMBER restart file, no velocities, Parm system.prmtop (Truncated octahedron box) (reading 1 of 1)
+  Coordinate processing will occur on 1 frames.
+
+OUTPUT TRAJECTORIES (1 total):
+  'S2_holo_closed.frame1.pdb' (1 frames) is a PDB file
+
+BEGIN TRAJECTORY PROCESSING:
+.....................................................
+ACTION SETUP FOR PARM 'system.prmtop' (1 actions):
+  0: [strip :WAT,K+,Cl-,Na+]
+	Stripping 43535 atoms.
+	Stripped topology: 3035 atoms, 192 res, box: Truncated octahedron, 2 mol
+Warning: No PDB space group specified.
+.....................................................
+ACTIVE OUTPUT TRAJECTORIES (1):
+  /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/_verify/S2_holo_closed.frame1.pdb (coordinates, box)
+----- system.inpcrd (1-1, 1) -----
+100% Complete.
+
+Read 1 frames and processed 1 frames.
+TIME: Avg. throughput= 79.6495 frames / second.
+
+ACTION OUTPUT:
+TIME: Analyses took 0.0000 seconds.
+
+RUN TIMING:
+TIME:		Init               : 0.0000 s (  0.16%)
+TIME:		Trajectory Process : 0.0126 s ( 95.61%)
+TIME:		Action Post        : 0.0000 s (  0.00%)
+TIME:		Analysis           : 0.0000 s (  0.00%)
+TIME:		Data File Write    : 0.0000 s (  0.01%)
+TIME:		Other              : 0.0006 s (  0.04%)
+TIME:	Run Total 0.0131 s
+---------- RUN END ---------------------------------------------------
+  [quit]
+TIME: Total execution time: 0.1130 seconds.
+--------------------------------------------------------------------------------
+To cite CPPTRAJ use:
+Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for
+  Processing and Analysis of Molecular Dynamics Trajectory Data". J. Chem.
+  Theory Comput., 2013, 9 (7), pp 3084-3095.
+

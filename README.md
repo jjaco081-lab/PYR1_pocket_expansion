@@ -2546,6 +2546,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 28 | 08-17 | 3K3K is the apo dimer | **chain B has ABA bound** (canonical 20-residue pocket) and is **CLOSED** — gate 0.90 Å / latch 0.68 Å from the 3QN1 closed reference, against chain A's 5.24 / 5.08 Å | 3K3K is a **mixed** open-apo + closed-holo dimer. `S3_apo_dimer` (3 × 300 ns, already run) simulated its closed protomer with the ABA **stripped**. §24 is unaffected — script 58 covers S1/S2/S4 only (§28g) |
 | 29 | 08-17 | a frozen backbone means the crystal structure was preserved, and a MoveMap freezes what it names | core preservation reported **0.000 Å** while two defects went through: A87–B116 at **0.36 Å** (crystal 3.09 Å) and **K59 collapsing 2.85 → 1.68 Å** into the empty ABA cavity — K59 was in an explicit "frozen" set and moved anyway | **`FastRelax.set_movemap()` restricts minimisation only**; repacking needs a TaskFactory or the whole pose is repacked. Backbone RMSD also watches N/CA/C only, so both were invisible. Fixed in `lib_rosetta.py`; 178/191 residues now keep their input rotamers, and the dimer assembles with **zero** clashes before any refinement (§28d) |
 | 30 | 08-18 | the §24b closed-state stability filter reports something about the ligand | the apo-closed protomer (S3 chain B, closed and ligand-shaped, pocket empty) holds its state for **3 × 300 ns with zero crossings**, drift **−0.07 Å**, and has the **least mobile gate of all fifteen units** (RMSF 0.72 Å vs 1.39 with ABA) | the filter is **conformation-reporting, not ligand-reporting**: a good gate-RMSD-to-closed score carries no evidence about occupancy. Confounded by the dimer, which alone drops the open gate 3.05 → 1.07 Å, so `S9_apo_closed` (the apo-closed **monomer**) is now the highest-value unrun system (§29c) |
+| 31 | 08-18 | the apo-closed cell could be filled by running the S9 built on 08-14 against the existing S1/S2 | the old-tree S9 is **KCl** (K⁺ 33/Cl⁻ 28) while S1/S2 are **NaCl** (Na⁺ 35/34) — read from the topologies, not the build logs | pairing them would confound ligand removal with a **cation swap** inside the one comparison the factorial exists to make. All four cells rebuilt on `md191`; job 27547457, 12 tasks (§30a) |
 
 ### Bugs caught before they cost anything
 
@@ -4211,3 +4212,102 @@ claims). Script 59 checks every unit's mean gate S against the side its name
 claims and stops on disagreement, and separately asserts the two S3 protomers sit
 on *opposite* sides. They do — protomer A −3.98, protomer B +4.74 — so S3 is a
 mixed dimer in the trajectory, not only in the crystal.
+
+---
+
+## 30. The conformation × occupancy factorial (2026-08-18)
+
+§19b set up a 2×2 and only the diagonal was ever run. §29 showed why that matters:
+the closed state holds its conformation with no ligand at all, so the §24b
+stability filter reports conformation rather than occupancy — but the only
+apo-closed data was a protomer inside a dimer, and dimerisation alone changes gate
+RMSF by 2.9×.
+
+| | apo | + ABA |
+|---|---|---|
+| **open** | S1 ✅ 3 × 300 ns (old protocol) | **S10 — never existed** |
+| **closed** | S9 built 08-14, never run | S2 ✅ 3 × 300 ns (old protocol) |
+
+Both "right" forms were done and neither "wrong" form had a single step of MD.
+
+### 30a. Why all four are re-run, including the two we already have
+
+The old-tree S9 was built three days after S1/S2 and is **KCl**; S1 and S2 are
+**NaCl** (verified from the topologies: S1 Na⁺ 35/Cl⁻ 30, S2 Na⁺ 34/Cl⁻ 28, S9 K⁺
+33/Cl⁻ 28). Pairing them would confound ligand removal with a cation swap inside
+the one comparison the factorial exists to make — and Na⁺ binds carboxylates more
+strongly than K⁺ (§ canonical settings). A factorial whose cells differ in the
+build is not a factorial, so all four cells run on `data/md191/`.
+
+The `data/md/` trajectories are **not** discarded: they remain the evidence behind
+§24 and §29 on their own protocol, and are never pooled with md191.
+
+### 30b. Building S10 — open backbone, ABA present
+
+`scripts/69_build_holo_open.py`. ABA is **transplanted, not docked**: superposed
+from the closed structure by the rigid core (656 backbone atoms over 164 residues,
+gate/latch/Lβ7α5 and the modelled 182–191 tail excluded, fit RMSD 1.07 Å). Docking
+would answer a weaker question and add pose uncertainty to the one arm whose point
+is that the ligand starts in its known correct position.
+
+The open pocket holds ABA **half-formed**, which is the expected result:
+
+- **retained** (11): 59, 83, 92, 94, 108, 110, 115, 120, 141, 159, 167
+- **lost** (8): 61, **87, 88, 89** (the gate itself), 91, 117, 163, 164
+- **gained** (3): 85, 156, 160
+
+The transplant left one tight contact — ABA O2 against **H115 CE1**, the latch
+histidine, at 2.30 Å. Repaired by repacking **only** the two residues within 3.0 Å
+(59, 115) with a **PackRotamersMover**, not a FastRelax, so the backbone cannot
+move by construction; then a **chi-only** minimisation, because a discrete rotamer
+library cannot make a sub-ångström adjustment. Result: closest contact **2.72 Å,
+and it is now O4···K59 NZ** — the carboxylate salt bridge itself, at an ideal
+distance. ref2015 +79.1 → −36.3 REU.
+
+⚠ **This system's entire value is that its backbone is OPEN**, so any relaxation
+toward closed would pre-bias the experiment. Gate and latch backbones are asserted
+**bit-identical** to `pyr1_open_191.pdb` (max 0.0000 Å) and all 189 non-repacked
+residues are frozen all-atom (max 0.0000 Å).
+
+### 30c. Pre-registered reading — fixed before the runs finish
+
+- **S10 has three outcomes and only two are informative.** The gate **closes** (the
+  ligand drives closure and MD can see it), or ABA **leaves** (the open pocket does
+  not retain it). *Nothing happening is the uninformative case* — 300 ns against a
+  barrier §24 showed is never crossed in 1.8 μs — and must not be written up as
+  "ABA does not close the gate".
+- **S9 vs S2 is the ligand-removal contrast without the dimer clamp** that
+  confounds §29's S3 protomer B.
+- **Observables are §19d's, unchanged.** Nothing new is added, so the answer cannot
+  be shopped for. Analysis goes through scripts 58–60 with `data/md191` swapped in.
+
+### 30d. Verification and submission
+
+`69b_verify_md191.sh` re-derives each cell's claims from `system.prmtop` and
+`system.inpcrd` — never the directory name (§28h) — via a solvent-stripped frame:
+
+| system | protein | A8S | gate→open | gate→closed | verdict | K59 NZ→ABA |
+|---|---|---|---|---|---|---|
+| S1_apo_open | 191 (1–191) | 0 | 0.00 | 5.52 | open ✓ | — |
+| S2_holo_closed | 191 | 1 | 5.52 | 0.00 | closed ✓ | **2.85 Å**, 19 lining |
+| S9_apo_closed | 191 | 0 | 5.52 | 0.00 | closed ✓ | — |
+| S10_holo_open | 191 | 1 | 0.00 | 5.52 | open ✓ | **2.72 Å**, 14 lining |
+
+The K59 distance is the check that a **wrong-frame ligand** cannot survive: it
+would pass residue counts, conformation and clash tests while sitting in bulk
+solvent.
+
+**Job 27547457**, 12 tasks (4 systems × 3 replicates), `70_md_run_factorial.sh`.
+Split across partitions because `preempt_gpu` caps this account at **1 concurrent
+GPU** — tasks 1/3/6/9 (one per system, so every cell gets an early replicate) moved
+to `gpu` at 4 concurrent, the rest queued on `preempt_gpu`. ~300 ns/day, so ≈3 days
+rather than ≈12.
+
+⚠ Two bugs caught while building, both of the class this project keeps hitting:
+mol2 **column 6 is the GAFF2 type** (`ca`, `ho` — lower case), so testing it
+against `"H"` classed every hydrogen as heavy; and PDB residue name occupies
+**columns 18–20**, so an atom name written from column 13 with no altLoc slot
+shifted `A8S` left and Rosetta reported `Unrecognized residue: 8S`. A third was
+caught by the verifier itself: cpptraj writes the ligand as `ATOM`, not `HETATM`,
+so a hetflag test counted A8S as a 192nd protein residue and measured it against
+itself — reporting a 0.00 Å "clash" and a 0.00 Å K59 distance that passed.

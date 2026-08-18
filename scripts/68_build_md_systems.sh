@@ -67,8 +67,11 @@ mkdir -p "$OUT"
 # S2  3QN1 chain A + the crystal ABA. A8S.mol2 carries the 3QN1 pose and 67c asserts
 #     the rebuilt receptor still presents an identical pocket (19/19 contacts, within
 #     0.05 A), which is what licenses reusing it rather than re-docking.
-# S9  apo-closed BY DESIGN -- the missing cell of the 19b factorial (§27). The empty
+# S9  apo-closed BY DESIGN -- a missing cell of the 19b factorial (§27). The empty
 #     pocket is the experiment, not an oversight.
+# S10 open + ABA -- the OTHER missing cell, and the only arm where the barrier this
+#     project has never crossed is plausibly downhill (gate closure is the
+#     physiological direction). Built by script 69.
 #
 # ⚠ S3 IS DELIBERATELY ABSENT. 3K3K is a MIXED dimer: chain A is apo-open but chain B
 #   is CLOSED WITH ABA BOUND (§28g). Building it protein-only would simulate a
@@ -76,10 +79,18 @@ mkdir -p "$OUT"
 #   ligand_shell() exists to prevent, and exactly what the first-generation
 #   S3_apo_dimer did for 3 x 300 ns. It needs an ABA in 3K3K's frame first:
 #   data/md/A8S.mol2 holds the 3QN1 pose and is in the WRONG FRAME for this dimer.
+#
+# S10 completes the conformation x occupancy factorial (README 30). Its ligand is
+# A8S_open_frame.mol2, NOT A8S.mol2: same molecule, same GAFF2 types and AM1-BCC
+# charges, coordinates rotated into the OPEN receptor's frame by script 69. Using
+# A8S.mol2 here would place ABA by the closed structure's coordinates and drop it
+# somewhere in bulk solvent -- the same class of frame error as the S3 dimer
+# (README 28g). The frcmod is shared because the molecule is unchanged.
 SYSTEMS=(
   "S1_apo_open|$STRUCT/pyr1_open_191.pdb|-|-"
   "S2_holo_closed|$STRUCT/pyr1_closed_191.pdb|$LIGDIR/A8S.mol2|$LIGDIR/A8S.frcmod"
   "S9_apo_closed|$STRUCT/pyr1_closed_191.pdb|-|-"
+  "S10_holo_open|$STRUCT/pyr1_open_holo_191.pdb|$STRUCT/A8S_open_frame.mol2|$LIGDIR/A8S.frcmod"
 )
 
 want=("$@")
