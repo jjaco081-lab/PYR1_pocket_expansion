@@ -1,0 +1,70 @@
+
+CPPTRAJ: Trajectory Analysis. V6.4.4 (AmberTools)
+    ___  ___  ___  ___
+     | \/ | \/ | \/ | 
+    _|_/\_|_/\_|_/\_|_
+
+| Date/time: 08/18/26 13:14:55
+| Available memory: 704.255 GB
+
+INPUT: Reading input from '_ligchk.in'
+  [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.prmtop]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.prmtop' as Amber Topology
+	Radius Set: modified Bondi radii (mbondi)
+  [trajin min2.rst7]
+	Reading 'min2.rst7' as Amber NC Restart
+  [strip :WAT,K+,Cl-,Na+]
+    STRIP: Stripping atoms in mask [:WAT,K+,Cl-,Na+]
+  [distance k59_aba :59@NZ :A8S&!@H= out _k59_aba.dat]
+    DISTANCE: :59@NZ to :A8S&!@H*, center of mass.
+  [run]
+---------- RUN BEGIN -------------------------------------------------
+
+PARAMETER FILES (1 total):
+ 0: system.prmtop, 46570 atoms, 11126 res, box: Truncated octahedron, 10936 mol, 10867 solvent
+
+INPUT TRAJECTORIES (1 total):
+ 0: 'min2.rst7' is a NetCDF AMBER restart file with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 1 of 1)
+  Coordinate processing will occur on 1 frames.
+
+BEGIN TRAJECTORY PROCESSING:
+.....................................................
+ACTION SETUP FOR PARM 'system.prmtop' (2 actions):
+  0: [strip :WAT,K+,Cl-,Na+]
+	Stripping 43535 atoms.
+	Stripped topology: 3035 atoms, 192 res, box: Truncated octahedron, 2 mol
+  1: [distance k59_aba :59@NZ :A8S&!@H= out _k59_aba.dat]
+	:59@NZ (1 atoms) to :A8S&!@H* (19 atoms), imaged.
+----- min2.rst7 (1-1, 1) -----
+100% Complete.
+
+Read 1 frames and processed 1 frames.
+TIME: Avg. throughput= 277.1619 frames / second.
+
+ACTION OUTPUT:
+TIME: Analyses took 0.0000 seconds.
+
+DATASETS (1 total):
+	k59_aba "k59_aba" (double, distance), size is 1 (0.008 kB)
+    Total data set memory usage is at least 0.008 kB
+
+DATAFILES (1 total):
+  _k59_aba.dat (Standard Data File):  k59_aba
+
+RUN TIMING:
+TIME:		Init               : 0.0000 s (  1.08%)
+TIME:		Trajectory Process : 0.0036 s ( 82.64%)
+TIME:		Action Post        : 0.0000 s (  0.02%)
+TIME:		Analysis           : 0.0000 s (  0.02%)
+TIME:		Data File Write    : 0.0006 s ( 13.22%)
+TIME:		Other              : 0.0001 s (  0.03%)
+TIME:	Run Total 0.0044 s
+---------- RUN END ---------------------------------------------------
+  [quit]
+TIME: Total execution time: 0.0580 seconds.
+--------------------------------------------------------------------------------
+To cite CPPTRAJ use:
+Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for
+  Processing and Analysis of Molecular Dynamics Trajectory Data". J. Chem.
+  Theory Comput., 2013, 9 (7), pp 3084-3095.
+
