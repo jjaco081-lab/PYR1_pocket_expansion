@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 58_loop_dynamics_prep.py -- establish and VERIFY the residue-numbering map for the
-gate/latch loop-dynamics analysis, PER SYSTEM, then hand the masks to 58b.
+gate/latch loop-dynamics analysis, PER ANALYSIS UNIT, then hand the masks to 58b.
 
 WHY THIS SCRIPT EXISTS SEPARATELY FROM THE ANALYSIS
 ---------------------------------------------------
@@ -11,33 +11,44 @@ and the crystal files have gaps, so `:85-89` in a cpptraj mask does NOT select t
 gate. Getting this wrong is silent: cpptraj returns RMSD values for the wrong loop
 and every downstream conclusion is confidently wrong.
 
-AND THE MAP IS NOT THE SAME FOR EVERY SYSTEM. That is the trap this file was
-rewritten to close:
+AND THE MAP IS NOT THE SAME FOR EVERY UNIT. The offsets actually in play:
 
-    S1_apo_open / S2_holo_closed   178 residues, gate = sequential 82-86
-    S4_ternary                     179 residues, gate = sequential 83-87
+    S1_apo_open / S2_holo_closed   178 residues, chain A, gate = sequential 82-86
+    S4_ternary                     179 residues, chain A, gate = sequential 83-87
+    S3 chain A                     183 residues, prmtop 1-183,   gate = 85-89
+    S3 chain B                     183 residues, prmtop 184-366, gate = 268-272
 
-S1 and S2 come from script 30, which took the INTERSECTION of 3K3K and 3QN1 and so
+S1/S2 come from script 30, which took the INTERSECTION of 3K3K and 3QN1 and so
 dropped residue 2 (disordered in 3K3K). S4 was built straight from 3QN1, which HAS
 residue 2 -- as ALA, the P2A that README 23 records 3QN1 handing to every pipeline
-in this project. One extra residue near the N-terminus shifts everything after it
-by one, so reusing S1's masks on S4 would measure a loop one residue out of
-register and never complain.
+in this project. S3 was built from 3K3K directly and keeps both protomers, so its
+chain A is gap-free 1-183 and its chain B is 2-184 (one residue fewer at the N
+terminus, one more at the C terminus -- verified, not assumed).
 
-So the map is rebuilt from each system's own protein.pdb and verified by residue
-IDENTITY, never assumed or shared.
+WHY S3 IS ANALYSED AS TWO UNITS
+-------------------------------
+3K3K is a MIXED dimer (README 28g): chain A is apo-open, but chain B is CLOSED and
+was ABA-bound in the crystal. S3 was built protein-only, so its chain B is a
+closed, ligand-shaped protomer simulated around an EMPTY pocket -- which is the
+apo-closed cell that README 24e names as the missing control. The two protomers
+are therefore different experiments in one box and are never pooled.
 
 WHAT IT CHECKS
 --------------
-  1. per system: sequential index -> native resnum, built by ORDER within the PYR1
-     chain, then verified by RESNAME at a dozen known positions
-  2. the gate, latch and Lbeta7-alpha5 loops carry their expected sequences
-     (gate = SER GLY LEU PRO ALA, latch = HIS ARG LEU) in every system
-  3. the open/closed references really are an open/closed pair, by recovering a
-     ~5 A gate/latch stroke. A MAGNITUDE check only: the 5.23/5.34 A figures in
-     script 30's header come from script 24 on the UNTRIMMED structures, and this
-     script uses a third core again (it also excludes Lb7a5), so exact agreement
-     is not expected and would be suspicious if claimed.
+  1. per unit: sequential index -> native resnum, built by ORDER across the whole
+     protein (so a second chain gets the right offset), then verified by RESNAME
+     at a dozen known positions
+  2. the same landmarks are re-verified against the PRMTOP's own RESIDUE_LABEL
+     block -- the file cpptraj will actually read -- so a protein.pdb that
+     disagrees with the topology cannot pass
+  3. the gate, latch and Lbeta7-alpha5 loops carry their expected sequences
+     (gate = SER GLY LEU PRO ALA, latch = HIS ARG LEU) in every unit
+  4. ONE common core superposition set, the intersection over every unit and the
+     references, asserted identical everywhere. S3 chain B lacks native residue 1,
+     so the core is now 160 residues where the S1/S2/S4-only run used 161; every
+     unit is refitted on the same set rather than letting the sets drift apart.
+  5. the open/closed references really are an open/closed pair, by recovering a
+     ~5 A gate/latch stroke. A MAGNITUDE check only.
 
 OBSERVABLES (pre-registered in README 19d, fixed before the runs finished)
 -------------------------------------------------------------------------
@@ -51,6 +62,7 @@ Run with the pyr1_docking env python.
 """
 import json
 import os
+import re
 
 import numpy as np
 from Bio.PDB import PDBParser
@@ -77,8 +89,18 @@ EXPECT = {85: "SER", 86: "GLY", 87: "LEU", 88: "PRO", 89: "ALA",
 # tleap renames histidines by protonation state
 ALIAS = {"HIE": "HIS", "HID": "HIS", "HIP": "HIS", "CYX": "CYS"}
 
-# system -> chain holding PYR1 in that system's protein.pdb
-SYSTEMS = {"S1_apo_open": "A", "S2_holo_closed": "A", "S4_ternary": "A"}
+# analysis unit -> (system directory, chain holding the PYR1 protomer)
+#
+# S3 contributes TWO units from the SAME trajectory. They are separate rows, not a
+# single "S3", because the two protomers are in different conformational states
+# (README 28g) and averaging them would erase the only apo-closed data we have.
+UNITS = {
+    "S1_apo_open":      ("S1_apo_open",    "A"),
+    "S2_holo_closed":   ("S2_holo_closed", "A"),
+    "S3_dimer_openA":   ("S3_apo_dimer",   "A"),
+    "S3_dimer_closedB": ("S3_apo_dimer",   "B"),
+    "S4_ternary":       ("S4_ternary",     "A"),
+}
 REFS = {"open": os.path.join(DATA, "pyr1_open_A.pdb"),
         "closed": os.path.join(DATA, "pyr1_closed_A.pdb")}
 
@@ -86,34 +108,53 @@ p = PDBParser(QUIET=True)
 
 
 def residues(path, chain=None):
-    """ordered [(resnum, resname)] of standard amino acids with a full backbone"""
+    """
+    Ordered [(seq, resnum, resname)] of standard amino acids with a full backbone.
+
+    `seq` counts across the WHOLE protein in file order, not from 1 within the
+    requested chain, because that is what tleap does: in S3 the second protomer
+    starts at prmtop residue 184, and restarting the count per chain would put
+    every mask on the wrong protomer while looking perfectly sensible.
+    """
     st = p.get_structure("x", path)[0]
-    out = []
+    out, i = [], 0
     for ch in st:
-        if chain is not None and ch.id != chain:
-            continue
         for r in ch:
             if r.id[0] != " " or not is_aa(r, standard=True):
                 continue
             if not all(a in r for a in BB):
                 continue
-            out.append((r.id[1], ALIAS.get(r.get_resname(), r.get_resname())))
+            i += 1
+            if chain is None or ch.id == chain:
+                out.append((i, r.id[1], ALIAS.get(r.get_resname(), r.get_resname())))
     return out
 
 
-def build_map(reslist, label, common=None):
+def prmtop_labels(path):
+    """RESIDUE_LABEL from the prmtop -- the file cpptraj actually reads."""
+    txt = open(path).read()
+    m = re.search(r"%FLAG RESIDUE_LABEL\s*\n%FORMAT\((\d+)a(\d+)\)\s*\n(.*?)(?=%FLAG|\Z)",
+                  txt, re.S)
+    assert m, f"no RESIDUE_LABEL block in {path}"
+    w = int(m.group(2))
+    labels = []
+    for line in m.group(3).rstrip("\n").split("\n"):
+        labels += [line[i:i + w].strip() for i in range(0, len(line.rstrip()), w)]
+    return [x for x in labels if x]
+
+
+def build_map(reslist, label, common):
     """
     sequential (1-based, in prmtop order) -> native, verified by identity.
 
-    `common` restricts the CORE (superposition) mask to residues that also exist
-    in the reference structures. Without it S4's core mask spans 162 residues
+    `common` restricts the CORE (superposition) mask to residues present in EVERY
+    unit and in the references. Without it S4's core mask spans 162 residues
     against the references' 161 -- S4 keeps 3QN1's residue 2 -- and cpptraj sets
-    the rms up ANYWAY, silently returning ~84 A instead of refusing. The fit never
-    happens and every loop RMSD downstream is meaningless.
+    the rms up ANYWAY, silently returning ~84 A instead of refusing.
     """
-    seq2nat = {i: rn for i, (rn, _) in enumerate(reslist, start=1)}
-    nat2seq = {rn: i for i, rn in seq2nat.items()}
-    name_by_nat = {rn: nm for rn, nm in reslist}
+    seq2nat = {i: rn for i, rn, _ in reslist}
+    nat2seq = {rn: i for i, rn, _ in reslist}
+    name_by_nat = {rn: nm for _, rn, nm in reslist}
     for nat, want in sorted(EXPECT.items()):
         assert nat in nat2seq, f"{label}: native residue {nat} absent"
         got = name_by_nat[nat]
@@ -131,8 +172,7 @@ def build_map(reslist, label, common=None):
              "lb7a5": span(LB7A5, "Lb7a5")}
 
     mobile = set(GATE) | set(LATCH) | set(LB7A5)
-    core_nat = [rn for rn, _ in reslist
-                if rn not in mobile and (common is None or rn in common)]
+    core_nat = [rn for _, rn, _ in reslist if rn not in mobile and rn in common]
     core_seq = sorted(nat2seq[n] for n in core_nat)
     ranges, start, prev = [], core_seq[0], core_seq[0]
     for v in core_seq[1:]:
@@ -143,66 +183,109 @@ def build_map(reslist, label, common=None):
         start = prev = v
     ranges.append((start, prev))
     core_mask = ",".join(f"{a}-{b}" if a != b else str(a) for a, b in ranges)
-    return dict(n_residues=len(reslist), seq_to_native=seq2nat,
-                native_to_seq=nat2seq, masks_sequential=masks,
-                core_mask_sequential=core_mask, core_native=core_nat)
+    seqs = [i for i, _, _ in reslist]
+    return dict(n_residues=len(reslist), first_seq=min(seqs), last_seq=max(seqs),
+                seq_to_native=seq2nat, native_to_seq=nat2seq,
+                masks_sequential=masks, core_mask_sequential=core_mask,
+                core_native=core_nat)
 
 
 print("=" * 78)
-print("PER-SYSTEM RESIDUE MAPS")
+print("PER-UNIT RESIDUE MAPS")
 print("=" * 78)
 
 ref_res = {k: residues(v) for k, v in REFS.items()}
-assert ref_res["open"] == ref_res["closed"], (
+assert [(n, m) for _, n, m in ref_res["open"]] == [(n, m) for _, n, m in ref_res["closed"]], (
     "the open and closed references disagree on numbering or identity; script 30 "
     "guarantees they match -- re-run 30_prepare_open_closed.py")
 canonical = ref_res["open"]
-refmap = build_map(canonical, "references")
+
+# ---- one common core for every unit, computed BEFORE any map is built ----
+# The superposition only means anything if every unit is fitted on the SAME
+# residues. S3 chain B starts at native 2, so it cannot supply residue 1 and the
+# 161-residue core used for the S1/S2/S4-only run is no longer available to all.
+# Intersect rather than special-case: the alternative is per-unit cores that drift
+# apart and make the RMSDs quietly incomparable.
+present = {lab: {rn for _, rn, _ in residues(os.path.join(MD, d, "protein.pdb"), ch)}
+           for lab, (d, ch) in UNITS.items()
+           if os.path.exists(os.path.join(MD, d, "protein.pdb"))}
+common = {rn for _, rn, _ in canonical}
+for lab, s in present.items():
+    common &= s
+dropped = ({rn for _, rn, _ in canonical} - common)
+print(f"  common residue set: {len(common)} of {len(canonical)} reference residues")
+if dropped:
+    print(f"  dropped (absent from at least one unit): {sorted(dropped)}")
+
+refmap = build_map(canonical, "references", common)
 print(f"  references     : {len(canonical)} res, gate = :{refmap['masks_sequential']['gate']}")
 
 maps = {"_reference": refmap}
-for s, chain in SYSTEMS.items():
-    path = os.path.join(MD, s, "protein.pdb")
+for lab, (d, ch) in UNITS.items():
+    path = os.path.join(MD, d, "protein.pdb")
     if not os.path.exists(path):
-        print(f"  {s:<15}: protein.pdb absent -- skipped")
+        print(f"  {lab:<17}: protein.pdb absent -- skipped")
         continue
-    rl = residues(path, chain)
-    m = build_map(rl, s, common={rn for rn, _ in canonical})
-    maps[s] = m
+    rl = residues(path, ch)
+    m = build_map(rl, lab, common)
+    m["dir"], m["chain"] = d, ch
+    maps[lab] = m
     same = "same as references" if m["masks_sequential"] == refmap["masks_sequential"] \
         else "DIFFERS from references"
-    print(f"  {s:<15}: {m['n_residues']} res, gate = :{m['masks_sequential']['gate']}, "
+    print(f"  {lab:<17}: {m['n_residues']} res (prmtop {m['first_seq']}-{m['last_seq']}), "
+          f"gate = :{m['masks_sequential']['gate']}, "
           f"latch = :{m['masks_sequential']['latch']}   <- {same}")
 
-# the references must share numbering with whatever they are compared against
-for s in ("S1_apo_open", "S2_holo_closed", "S4_ternary"):
-    if s not in maps:
+# ---- re-verify against the TOPOLOGY, not just the pdb it was built from ----
+# protein.pdb is an input to tleap; the prmtop is what cpptraj reads. They are
+# supposed to agree residue-for-residue, so check it instead of assuming it.
+print("\n  Landmark re-check against each prmtop's RESIDUE_LABEL:")
+for lab, m in maps.items():
+    if lab == "_reference":
         continue
-    if maps[s]["masks_sequential"] != refmap["masks_sequential"]:
-        print(f"\n  !! {s} does not share the references' numbering. cpptraj masks "
+    top = os.path.join(MD, m["dir"], "system.prmtop")
+    if not os.path.exists(top):
+        print(f"    {lab:<17} prmtop absent -- NOT verified")
+        continue
+    labels = prmtop_labels(top)
+    for nat, want in sorted(EXPECT.items()):
+        seq = m["native_to_seq"][nat]
+        got = ALIAS.get(labels[seq - 1], labels[seq - 1])
+        assert got == want, (
+            f"{lab}: prmtop residue {seq} is {got}, but the map says native {nat} "
+            f"= {want}. protein.pdb and system.prmtop disagree -- every mask "
+            f"derived here would address the wrong residue.")
+    print(f"    {lab:<17} {len(EXPECT)}/{len(EXPECT)} landmarks agree with {os.path.basename(top)}")
+
+# the references must share numbering with whatever they are compared against
+for lab, m in maps.items():
+    if lab == "_reference":
+        continue
+    if m["masks_sequential"] != refmap["masks_sequential"]:
+        print(f"\n  !! {lab} does not share the references' numbering. cpptraj masks "
               f"for\n     the TRAJECTORY and for the REFERENCE must therefore "
               f"differ -- 58b handles\n     this with an explicit refmask.")
 
 # The superposition only means anything if the trajectory core and the reference
 # core contain the SAME residues in the same order. Assert it rather than trust it.
-for s2, m in maps.items():
-    if s2 == "_reference":
+for lab, m in maps.items():
+    if lab == "_reference":
         continue
     assert m["core_native"] == refmap["core_native"], (
-        f"{s2}: core residue list differs from the references "
+        f"{lab}: core residue list differs from the references "
         f"({len(m['core_native'])} vs {len(refmap['core_native'])}) -- cpptraj "
         f"would set the fit up anyway and return garbage")
 print(f"\n  core superposition set: {len(refmap['core_native'])} residues, "
-      f"identical in every system (asserted)")
+      f"identical in every unit (asserted)")
 
-print("\n  Loop identities, verified per system:")
-for s, m in maps.items():
-    nm = {rn: n for rn, n in (canonical if s == "_reference"
-                              else residues(os.path.join(MD, s, "protein.pdb"),
-                                            SYSTEMS[s]))}
+print("\n  Loop identities, verified per unit:")
+for lab, m in maps.items():
+    rl = canonical if lab == "_reference" else residues(
+        os.path.join(MD, m["dir"], "protein.pdb"), m["chain"])
+    nm = {rn: n for _, rn, n in rl}
     g = " ".join(nm[n] for n in GATE)
     l = " ".join(nm[n] for n in LATCH)
-    print(f"    {s:<15} gate={g}  latch={l}")
+    print(f"    {lab:<17} gate={g}  latch={l}")
 
 # ---- confirm open really is open ----
 print()
@@ -253,10 +336,12 @@ assert c < 1.5, f"core differs by {c:.2f} A; it is supposed to be the rigid part
 print("  -> the 5 A stroke is real and the core is rigid: the projection is valid")
 
 out = dict(
-    note="sequential = 1-based residue index in the tleap prmtop (PYR1 chain "
-         "only); native = PYR1/UniProt O49686 numbering. MAPS ARE PER SYSTEM: "
-         "S4 carries 3QN1's residue 2 and is shifted by one relative to S1/S2.",
+    note="sequential = 1-based residue index in the tleap prmtop, counted across "
+         "the whole protein; native = PYR1/UniProt O49686 numbering. MAPS ARE PER "
+         "UNIT: S4 carries 3QN1's residue 2, and S3 contributes two protomers from "
+         "one trajectory (chain B starts at prmtop 184).",
     gate_native=GATE, latch_native=LATCH, lb7a5_native=LB7A5,
+    common_core_native=sorted(common),
     systems=maps,
     ref_open_vs_closed={"gate_bb_rmsd": g, "latch_bb_rmsd": l, "core_bb_rmsd": c},
 )

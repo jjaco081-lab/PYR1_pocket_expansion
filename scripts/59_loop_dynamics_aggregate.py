@@ -58,13 +58,35 @@ def natmap(sysname):
     """per-system native->sequential; S4 is shifted by one, see script 58"""
     return {int(k): v for k, v in MAP["systems"][sysname]["native_to_seq"].items()}
 
-# S4 is deliberately its OWN state, never pooled with S2. It is closed too, but it
-# also carries HAB1 and Mn2+, so pooling it into "closed" would mix the effect of
-# the partner protein into a WT open-vs-closed contrast. The primary comparison
-# stays S1 vs S2; S4 is reported alongside.
+# EVERY UNIT IS ITS OWN STATE. Nothing is pooled that differs in more than one
+# way, because the whole point of README 24e was that S1 and S2 differ in BOTH
+# conformation and ligand occupancy.
+#
+#   open           S1, 3K3K chain A monomer, apo + open
+#   closed         S2, 3QN1 chain A monomer, ABA + closed
+#   dimer_openA    S3 chain A, apo + open, but inside a dimer
+#   dimer_closedB  S3 chain B, apo + CLOSED  <-- the missing cell of 19b
+#   ternary        S4, ABA + closed + HAB1 + Mn2+
+#
+# S4 is closed too, but pooling it into "closed" would mix the partner protein
+# into a WT open-vs-closed contrast. S3's two protomers share a box and a
+# thermostat, so they are not independent of each other -- they are reported as
+# their own states and never averaged together or into S1/S2.
+#
+# THE CELL THAT MATTERS. dimer_closedB is a closed, ligand-shaped protomer
+# simulated with an EMPTY pocket: 3K3K chain B was ABA-bound in the crystal
+# (README 28g) and S3 was built protein-only. It was not designed as the
+# apo-closed control -- it is one by accident -- so its confounds are stated
+# rather than glossed: it sits in a dimer against an open protomer, and it is on
+# the OLD build protocol. It is still the only apo-closed trajectory that exists.
 SYSTEMS = {"S1_apo_open": "open", "S2_holo_closed": "closed",
+           "S3_dimer_openA": "dimer_openA",
+           "S3_dimer_closedB": "dimer_closedB",
            "S4_ternary": "ternary"}
+# The headline open-vs-closed contrast stays S1 vs S2 -- the same pair README 24
+# reported -- so adding systems cannot quietly redefine the published result.
 PRIMARY = ("open", "closed")
+STATE_ORDER = ["open", "closed", "dimer_openA", "dimer_closedB", "ternary"]
 REPS = [0, 1, 2]
 PS_PER_FRAME = 10.0     # ntwx=5000 steps * 2 fs
 GATE, LATCH, LB7A5 = MAP["gate_native"], MAP["latch_native"], MAP["lb7a5_native"]
@@ -277,32 +299,31 @@ OBS = {
 }
 
 summary = {}
-print(f"  {'observable':<26}{'open reps (mean/rep)':<30}{'closed (S2)':<20}"
-      f"{'S4':<8}{'gap':>7}{'AUC':>6}")
-print("  " + "-" * 97)
+print("  Each cell is the REPLICATE MEANS for that state, one number per replicate.")
+print("  'gap' and 'AUC' are the S1-vs-S2 contrast only (the README 24 pair).\n")
+hdr3 = f"  {'observable':<26}" + "".join(f"{st:<22}" for st in STATE_ORDER) + f"{'gap':>7}{'AUC':>6}"
+print(hdr3)
+print("  " + "-" * (len(hdr3) - 2))
 for name, fn in OBS.items():
-    per = {st: [] for st in SYSTEMS.values()}
-    pool = {st: [] for st in SYSTEMS.values()}
-    for (s, r), d in sorted(data.items()):
-        v = fn(d)
+    per = {st: [] for st in STATE_ORDER}
+    pool = {st: [] for st in STATE_ORDER}
+    for s, r in sorted(data):
+        v = fn(data[(s, r)])
         per[SYSTEMS[s]].append(v.mean())
         pool[SYSTEMS[s]].append(v)
     if not per["open"] or not per["closed"]:
         continue
-    a = np.concatenate(pool["open"])
-    b = np.concatenate(pool["closed"])
-    A = auc(a, b)
+    A = auc(np.concatenate(pool["open"]), np.concatenate(pool["closed"]))
     lo_o, hi_o = min(per["open"]), max(per["open"])
     lo_c, hi_c = min(per["closed"]), max(per["closed"])
     # gap between the two replicate-level ranges; negative means they overlap
     gap = (lo_c - hi_o) if lo_c > hi_o else (lo_o - hi_c if lo_o > hi_c else
                                             -(min(hi_o, hi_c) - max(lo_o, lo_c)))
-    summary[name] = dict(open_reps=per["open"], closed_reps=per["closed"],
-                         ternary_reps=per["ternary"], auc=A, gap=float(gap))
-    o_txt = " ".join(f"{v:.2f}" for v in per["open"])
-    c_txt = " ".join(f"{v:.2f}" for v in per["closed"])
-    t_txt = " ".join(f"{v:.2f}" for v in per["ternary"]) or "-"
-    print(f"  {name:<26}{o_txt:<30}{c_txt:<20}{t_txt:<8}{gap:7.2f}{A:6.2f}")
+    summary[name] = dict({st + "_reps": per[st] for st in STATE_ORDER},
+                         auc=A, gap=float(gap))
+    cells = "".join((" ".join(f"{v:.2f}" for v in per[st]) or "-").ljust(22)
+                    for st in STATE_ORDER)
+    print(f"  {name:<26}{cells}{gap:7.2f}{A:6.2f}")
 
 print("\n  'gap' = distance between the open and closed REPLICATE-MEAN ranges.")
 print("  Positive = the replicate means do not overlap at all (a usable filter).")
@@ -333,18 +354,83 @@ for (s, r), d in sorted(data.items()):
     rmsf_rows.append(dict(sys=s, rep=r, gate=g, latch=l, lb7a5=lb, core=core))
     print(f"  {s:<16}{r:>3}{g:8.2f}{l:8.2f}{lb:8.2f}{core:8.2f}")
 
+print()
 for loop in ("gate", "latch", "lb7a5"):
-    o = [x[loop] for x in rmsf_rows if SYSTEMS[x["sys"]] == "open"]
-    c = [x[loop] for x in rmsf_rows if SYSTEMS[x["sys"]] == "closed"]
-    if o and c:
-        print(f"    {loop:<6} open {np.mean(o):.2f} (range {min(o):.2f}-{max(o):.2f})"
-              f"   closed {np.mean(c):.2f} (range {min(c):.2f}-{max(c):.2f})"
-              f"   ratio {np.mean(o)/np.mean(c):.2f}x")
+    line = f"    {loop:<6}"
+    for st in STATE_ORDER:
+        v = [x[loop] for x in rmsf_rows if SYSTEMS[x["sys"]] == st]
+        line += f"  {st} {np.mean(v):.2f} ({min(v):.2f}-{max(v):.2f})" if v else ""
+    print(line)
+o = [x["gate"] for x in rmsf_rows if SYSTEMS[x["sys"]] == "open"]
+c = [x["gate"] for x in rmsf_rows if SYSTEMS[x["sys"]] == "closed"]
+if o and c:
+    print(f"\n    gate open/closed ratio {np.mean(o)/np.mean(c):.2f}x")
+
+# ------------------------------------------------ 5. the apo-closed question
+print()
+print("=" * 78)
+print("5. DOES A CLOSED PROTOMER OPEN WHEN THE LIGAND IS ABSENT?")
+print("=" * 78)
+print("""  README 24 could not ask this: every closed replicate there had ABA in it, so
+  conformation and occupancy were confounded (24e). S3 chain B answers it by
+  accident -- 3K3K chain B is closed and was ABA-bound in the crystal, and S3 was
+  built protein-only, so it is a closed, ligand-shaped protomer around an empty
+  pocket.
+
+  Read DRIFT, not level. The question is not "is S positive" (it starts positive
+  by construction) but "does it move toward the open basin over 300 ns".
+  first/last are the mean of the first and last 50 ns after the discard.
+""")
+WIN = int(50 * 1000 / PS_PER_FRAME)
+drift_rows = []
+for loop, (ok, ck) in (("gate", ("gate_open", "gate_closed")),
+                       ("latch", ("latch_open", "latch_closed"))):
+    print(f"  {loop.upper()}")
+    print(f"    {'unit':<18}{'rep':>3}{'S first':>9}{'S last':>9}{'drift':>8}"
+          f"{'min':>8}{'max':>8}{'cross':>7}")
+    for (sname, r), d in sorted(data.items()):
+        S = d[ok][DF:] - d[ck][DF:]
+        if len(S) < 2 * WIN:
+            continue
+        a, b = float(S[:WIN].mean()), float(S[-WIN:].mean())
+        cross = int(np.sum(np.diff(np.sign(S)) != 0))
+        drift_rows.append(dict(unit=sname, rep=r, loop=loop, S_first=a, S_last=b,
+                               drift=b - a, S_min=float(S.min()),
+                               S_max=float(S.max()), crossings=cross))
+        print(f"    {sname:<18}{r:>3}{a:9.2f}{b:9.2f}{b-a:8.2f}"
+              f"{S.min():8.2f}{S.max():8.2f}{cross:7d}")
+    print()
+
+# The comparison that decides it: the apo-closed protomer against the two closed
+# systems that DO have a ligand. If removing ABA released the gate, apo-closed
+# should drift negative while holo-closed and the ternary do not.
+gd = [x for x in drift_rows if x["loop"] == "gate"]
+by_state = {}
+for x in gd:
+    by_state.setdefault(SYSTEMS[x["unit"]], []).append(x["drift"])
+print("  Gate drift over 300 ns, by state (negative = moving toward OPEN):")
+for st in STATE_ORDER:
+    if st not in by_state:
+        continue
+    v = by_state[st]
+    print(f"    {st:<16} {np.mean(v):+6.2f} A   (per replicate: "
+          f"{' '.join(f'{x:+.2f}' for x in v)})")
+n_cross = sum(x["crossings"] for x in gd
+              if SYSTEMS[x["unit"]] == "dimer_closedB")
+print(f"\n  apo-closed protomer: {n_cross} crossings of the open/closed watershed "
+      f"in {len([x for x in gd if SYSTEMS[x['unit']] == 'dimer_closedB'])} x 300 ns")
+print("""
+  A null here is WEAK EVIDENCE, and must be reported as such. Gate opening after
+  ligand loss is a barrier crossing, and README 24 already showed no crossing is
+  sampled in 1.8 us aggregate from either basin. "It stayed closed" is therefore
+  consistent both with the gate being ligand-independent AND with the run simply
+  being too short. A DRIFT toward open is the informative outcome; its absence is
+  not the converse.""")
 
 # ------------------------------------------------ 5. discard sensitivity
 print()
 print("=" * 78)
-print("5. SENSITIVITY TO THE EQUILIBRATION DISCARD")
+print("6. SENSITIVITY TO THE EQUILIBRATION DISCARD")
 print("=" * 78)
 print("  The detector wanted different windows for different replicates, and one")
 print("  common window had to be capped. If the separation is real it should not")
@@ -372,7 +458,10 @@ print("  open/closed split is a property of the trajectories, not of the trimmin
 
 out = dict(discard_ns=DISCARD, ps_per_frame=PS_PER_FRAME,
            per_replicate=rows, separability=summary, rmsf=rmsf_rows,
-           aba_ok=bool(aba_ok),
+           drift=drift_rows, aba_ok=bool(aba_ok),
+           core_residues=len(CORE_NATIVE),
+           n_replicates={st: sum(1 for k in data if SYSTEMS[k[0]] == st)
+                         for st in STATE_ORDER},
            n_open=sum(1 for k in data if SYSTEMS[k[0]] == "open"),
            n_closed=sum(1 for k in data if SYSTEMS[k[0]] == "closed"))
 json.dump(out, open(os.path.join(LD, "summary.json"), "w"), indent=1, default=float)

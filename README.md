@@ -2545,6 +2545,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 27 | 08-17 | 3QN1 breaks at C(1)–N(3) as well as 68→71, and 3K3K shares those gaps | audited both CIFs per chain: **3K3K is entirely gap-free** (A 1–183, B 2–184, zero broken bonds) and **3QN1 chain A misses only 69–70**. The 3.02 Å break is in OUR `data/md/S1_apo_open/protein.pdb`, which script 30 made by intersecting the two crystals; 3QN1 does model residue 2, as the P2A **mutation** | a defect in an intermediate of ours was attributed to the PDB. PYR1 needs **one** 2-residue loop, not two, and the open form needs none (§28a) |
 | 28 | 08-17 | 3K3K is the apo dimer | **chain B has ABA bound** (canonical 20-residue pocket) and is **CLOSED** — gate 0.90 Å / latch 0.68 Å from the 3QN1 closed reference, against chain A's 5.24 / 5.08 Å | 3K3K is a **mixed** open-apo + closed-holo dimer. `S3_apo_dimer` (3 × 300 ns, already run) simulated its closed protomer with the ABA **stripped**. §24 is unaffected — script 58 covers S1/S2/S4 only (§28g) |
 | 29 | 08-17 | a frozen backbone means the crystal structure was preserved, and a MoveMap freezes what it names | core preservation reported **0.000 Å** while two defects went through: A87–B116 at **0.36 Å** (crystal 3.09 Å) and **K59 collapsing 2.85 → 1.68 Å** into the empty ABA cavity — K59 was in an explicit "frozen" set and moved anyway | **`FastRelax.set_movemap()` restricts minimisation only**; repacking needs a TaskFactory or the whole pose is repacked. Backbone RMSD also watches N/CA/C only, so both were invisible. Fixed in `lib_rosetta.py`; 178/191 residues now keep their input rotamers, and the dimer assembles with **zero** clashes before any refinement (§28d) |
+| 30 | 08-18 | the §24b closed-state stability filter reports something about the ligand | the apo-closed protomer (S3 chain B, closed and ligand-shaped, pocket empty) holds its state for **3 × 300 ns with zero crossings**, drift **−0.07 Å**, and has the **least mobile gate of all fifteen units** (RMSF 0.72 Å vs 1.39 with ABA) | the filter is **conformation-reporting, not ligand-reporting**: a good gate-RMSD-to-closed score carries no evidence about occupancy. Confounded by the dimer, which alone drops the open gate 3.05 → 1.07 Å, so `S9_apo_closed` (the apo-closed **monomer**) is now the highest-value unrun system (§29c) |
 
 ### Bugs caught before they cost anything
 
@@ -4042,3 +4043,128 @@ the difference is `reduce` responding to genuinely different local H-bond networ
 forced: overriding a geometry-based assignment to manufacture consistency would be
 worse than the confound. Flagged so it is not rediscovered as a surprise in an
 open-vs-closed comparison.
+
+---
+
+## 29. All twelve WT trajectories, including the apo-closed protomer (2026-08-18)
+
+§24 analysed three systems. This re-runs the same pre-registered observables over
+**all four**, and the addition is the one §24e named as missing.
+
+### 29a. What changed, and why the §24 numbers moved slightly
+
+`S3_apo_dimer` was never analysed — script 58's system table covered S1/S2/S4
+only. It is a **mixed** dimer (§28g): chain A apo-open, chain B **closed and
+ABA-bound in the crystal**, built protein-only. Its chain B is therefore a closed,
+ligand-shaped protomer simulated around an **empty pocket** — the apo-closed cell,
+arrived at by accident rather than design.
+
+| | before | now |
+|---|---|---|
+| trajectories | 7 | **12** (S1×3, S2×3, S3×3, S4×3) |
+| analysis units | 7 | **15** — S3 contributes two, one per protomer |
+| ternary | n=1 | **n=3** |
+| core superposition set | 161 residues | **160** |
+
+The core shrank by one because S3 chain B is modelled from native residue 2 and
+cannot supply residue 1. Every unit is refitted on the intersection rather than
+letting per-system cores drift apart, so the S1/S2/S4 numbers here are **not
+bit-identical** to §24's. They are not materially different either: the gate gap
+is 5.47 Å against §24's 5.57, and stays 5.47–5.61 at every discard from 0 to
+150 ns.
+
+**The ternary at n=3 confirms the n=1 result.** Gate S = +4.76 / +4.89 / +3.92
+(§24 reported +4.66 from one replicate); gate RMSF 0.81 Å (§24: 0.76). ABA stays
+in the pocket in all six ligand-bearing replicates (mean 1.21–2.50 Å).
+
+Two new safety checks in `58_loop_dynamics_prep.py`: landmarks are re-verified
+against each **prmtop's own `RESIDUE_LABEL` block**, not only the `protein.pdb`
+tleap was fed, and the per-protomer prmtop range drives the RMSF mask — `:1-N`
+would have reported protomer A's fluctuations as protomer B's, since chain B
+occupies prmtop residues **184–366**.
+
+### 29b. Removing the ligand does not open the gate — and does not loosen it
+
+| state | gate S (per replicate) | sd | drift over 300 ns | crossings |
+|---|---|---|---|---|
+| open, apo (S1 monomer) | −3.21 −3.09 −3.64 | 0.42–1.15 | −0.63 Å | 0–166 |
+| open, apo (S3 protomer A) | −3.90 −4.14 −3.85 | ~0.4 | +0.10 Å | 0 |
+| closed +ABA (S2 monomer) | +2.42 +3.81 +4.14 | 0.65–0.81 | −0.61 Å | 0–30 |
+| **closed, APO (S3 protomer B)** | **+4.76 +4.73 +4.74** | **0.13** | **−0.07 Å** | **0** |
+| ternary (S4) | +4.76 +4.89 +3.92 | — | +0.12 Å | 0 |
+
+**Zero crossings of the watershed in 3 × 300 ns**, and the drift is −0.07 Å —
+indistinguishable from not moving. The apo-closed protomer is not merely stable;
+it has the **tightest** gate in the entire set (sd 0.13 Å against 0.65–0.81 for the
+holo monomer) and the tightest gate–latch staple (3.03–3.05 Å, tighter than the
+ternary's 3.72–3.88).
+
+Backbone RMSF ladder, gate:
+
+```
+open monomer (S1)        3.05
+closed +ABA (S2)         1.39
+open protomer   (S3 A)   1.07
+ternary (S4)             0.81
+closed apo protomer (S3 B) 0.72   <- least mobile gate of all
+```
+
+### 29c. What this licenses, and what it does not
+
+**The dimer is a large confound and must be stated first.** Dimerisation alone
+takes the open gate from 3.05 Å (S1 monomer) to 1.07 Å (S3 protomer A) — a 2.9×
+drop with no change of conformation and no ligand. So the apo-closed protomer's
+rigidity cannot be attributed to ligand removal; it is measured inside a clamp.
+
+The **controlled** comparison is within the single S3 box, where both protomers
+share a thermostat, a barostat, a build protocol and an absence of ligand, and
+differ only in conformation: **open 1.07 Å vs closed 0.72 Å, a 1.5× ratio.** The
+S1-vs-S2 ratio, where conformation *and* occupancy both differ, is 2.20×. Read
+crudely, conformation supplies most of the §24 RMSF ladder and the ligand the
+remainder.
+
+1. **The §24b stability filter is conformation-reporting, not ligand-reporting.**
+   §27 was designed to test whether the closed state holds equally around a
+   non-cognate ligand. This is the stronger version of that test — the closed
+   state holds with **no ligand at all**, for 900 ns, more rigidly than with ABA.
+   A design that scores well on gate-RMSD-to-closed is being scored for holding a
+   conformation, and that number carries **no evidence about occupancy**.
+2. **A null here is weak evidence and is reported as such.** Gate opening after
+   ligand loss is a barrier crossing; §24 already established that no crossing is
+   sampled in 1.8 μs from either basin. "It stayed closed" is consistent both with
+   the gate being ligand-independent and with 300 ns being too short. The
+   informative outcome would have been a drift toward open; its absence is not the
+   converse. See §29d.
+3. **S9_apo_closed became more valuable, not less.** It is the apo-closed
+   **monomer** — the same cell without the dimer clamp — and it is the only way to
+   tell "closed holds without a ligand" from "the dimer holds it". It is built
+   (`data/md191/S9_apo_closed`) and unsubmitted.
+
+### 29d. Pre-registered reading, for the ligand-dependence runs
+
+Fixed here, before the enantiomer and non-cognate systems are built, so §27's
+observables cannot be reselected once their answers are known:
+
+- **Do not read gate opening as the ligand-dependence signal.** Nothing opens on
+  this timescale in any of 15 units. The comparison that *does* respond to ligand
+  is the graded **RMSF ladder**, and it must be read against a same-box control.
+- **Compare like with like.** A monomer contrast is only interpretable against
+  monomers; the 2.9× dimerisation effect measured here is larger than the ligand
+  effect being looked for.
+- **Switchability still requires biased sampling** — a PMF along S — and no
+  unbiased 300 ns run of any composition will supply it.
+
+### 29e. Artefacts
+
+| what | where |
+|---|---|
+| figure (6 panels, 15 units) | `figures/loop_dynamics.png` |
+| full numeric report | `data/loop_dynamics/aggregate_report.txt` |
+| machine-readable summary | `data/loop_dynamics/summary.json` |
+| per-unit masks and maps | `data/loop_dynamics/residue_map.json` |
+| per-unit cpptraj output | `data/loop_dynamics/<unit>/rep<N>/` |
+| SLURM | job 27545237, 15 tasks, `cutlerlab`, ~2 min each |
+
+Panels A/B/C/D are §24's, extended to five states; **E** adds the latch state
+coordinate in its own panel; **F** plots mean gate S over the first 50 ns after
+the discard against the last 50 ns, so "did anything move" is one glance.

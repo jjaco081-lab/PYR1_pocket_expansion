@@ -2,9 +2,9 @@
 #SBATCH -p cutlerlab
 #SBATCH -c 2
 #SBATCH --mem=10G
-#SBATCH -t 08:00:00
+#SBATCH -t 12:00:00
 #SBATCH -J loopdyn
-#SBATCH -a 0-6
+#SBATCH -a 0-14
 #SBATCH -o /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/logs/loopdyn_%a.log
 #
 # 58b_loop_dynamics_run.sh -- gate/latch loop dynamics on the finished WT MD.
@@ -32,12 +32,27 @@
 #   native-to-sequential offset is NOT constant (it takes values 0, 1 and 3).
 #   A mask of ':85-89' does NOT select the gate and would fail silently.
 #
-#   Worse, THE MAP IS NOT THE SAME IN EVERY SYSTEM. S1/S2 come from script 30,
+#   Worse, THE MAP IS NOT THE SAME IN EVERY UNIT. S1/S2 come from script 30,
 #   which intersected 3K3K and 3QN1 and so dropped residue 2; S4 was built from
 #   3QN1 alone and keeps it (as ALA, the P2A). So the gate is sequential 82-86 in
-#   S1/S2 but 83-87 in S4. Masks below come from 58_loop_dynamics_prep.py, which
-#   rebuilds the map per system and verifies every loop by residue identity
-#   (gate = SER GLY LEU PRO ALA, latch = HIS ARG LEU). Do not hand-edit them.
+#   S1/S2 but 83-87 in S4 -- and 267-271 in S3's SECOND protomer, which does not
+#   even start at prmtop residue 1. Masks below are READ from the JSON written by
+#   58_loop_dynamics_prep.py, which rebuilds the map per unit and verifies every
+#   loop by residue identity against BOTH protein.pdb and the prmtop's own
+#   RESIDUE_LABEL block. Do not hand-edit them and do not retype them here.
+#
+# S3 IS TWO UNITS FROM ONE TRAJECTORY
+#   3K3K is a mixed dimer (README 28g): chain A apo-open, chain B closed and
+#   ABA-bound in the crystal. S3 was built protein-only, so chain B is a closed,
+#   ligand-shaped protomer around an EMPTY pocket -- the apo-closed control README
+#   24e names as missing. The trajectory is read twice, once per protomer, so the
+#   masks stay per-unit and the two states are never averaged together.
+#
+# THE CORE IS NOW 160 RESIDUES, NOT 161
+#   S3 chain B is modelled from native residue 2, so it cannot supply residue 1.
+#   The superposition set is the intersection over every unit, which means the
+#   S1/S2/S4 numbers here are NOT bit-identical to the earlier 161-residue run.
+#   Every unit is refitted on the same set; that is the point.
 #
 # TWO-REFERENCE PROJECTION
 #   Each frame is superposed on the RIGID CORE (161 residues, gate/latch/Lb7a5
@@ -58,9 +73,11 @@ MAP=$OUT/residue_map.json
 
 SYSREP=(S1_apo_open:0 S1_apo_open:1 S1_apo_open:2
         S2_holo_closed:0 S2_holo_closed:1 S2_holo_closed:2
-        S4_ternary:0)
+        S3_dimer_openA:0 S3_dimer_openA:1 S3_dimer_openA:2
+        S3_dimer_closedB:0 S3_dimer_closedB:1 S3_dimer_closedB:2
+        S4_ternary:0 S4_ternary:1 S4_ternary:2)
 entry=${SYSREP[$SLURM_ARRAY_TASK_ID]}
-SYS=${entry%%:*}
+UNIT=${entry%%:*}
 REP=${entry##*:}
 
 # Masks come from the verified per-system map, never retyped and never shared
@@ -69,23 +86,31 @@ REP=${entry##*:}
 # The REFERENCE pdbs keep the script-30 numbering, so trajectory masks and
 # reference masks are read separately and passed to cpptraj as `<mask> <refmask>`.
 q() { python3 -c "import json,sys;m=json.load(open('$MAP'));print(m['systems'][sys.argv[1]][sys.argv[2]] if sys.argv[2]!='m' else m['systems'][sys.argv[1]]['masks_sequential'][sys.argv[3]])" "$@"; }
-GATE=$(q "$SYS" m gate)
-LATCH=$(q "$SYS" m latch)
-LB=$(q "$SYS" m lb7a5)
-CORE=$(q "$SYS" core_mask_sequential)
+GATE=$(q "$UNIT" m gate)
+LATCH=$(q "$UNIT" m latch)
+LB=$(q "$UNIT" m lb7a5)
+CORE=$(q "$UNIT" core_mask_sequential)
 RGATE=$(q _reference m gate)
 RLATCH=$(q _reference m latch)
 RCORE=$(q _reference core_mask_sequential)
+SYS=$(q "$UNIT" dir)
+CHAIN=$(q "$UNIT" chain)
+# RMSF must cover THIS protomer only. ':1-N' is wrong for S3 chain B, which
+# occupies prmtop 184-366; taking the range from the map keeps the second
+# protomer's fluctuations from being reported as the first one's.
+FIRST=$(q "$UNIT" first_seq)
+LAST=$(q "$UNIT" last_seq)
+NRES=$(q "$UNIT" n_residues)
+echo "unit $UNIT = $SYS chain $CHAIN, prmtop residues $FIRST-$LAST ($NRES)"
 echo "traj masks: gate=:$GATE latch=:$LATCH lb7a5=:$LB"
-NRES=$(q "$SYS" n_residues)
-echo "ref  masks: gate=:$RGATE latch=:$RLATCH   PYR1 residues=$NRES"
+echo "ref  masks: gate=:$RGATE latch=:$RLATCH"
 D=$MD/$SYS/rep$REP
-O=$OUT/$SYS/rep$REP
+O=$OUT/$UNIT/rep$REP
 mkdir -p "$O"
 
 [[ -s $D/prod.nc ]] || { echo "no production trajectory in $D -- skipping"; exit 0; }
 
-echo "=== $SYS rep$REP  $(date) ==="
+echo "=== $UNIT rep$REP  $(date) ==="
 
 # trajectory list: prod.nc then any preemption-continuation segments, in order
 TRAJIN="trajin $D/prod.nc parm [sysparm]"
@@ -109,7 +134,7 @@ done
 # moved relative to the protein it started in", which is what decides whether the
 # system is still holo.
 LIGBLOCK=""
-if [[ "$SYS" == "S2_holo_closed" || "$SYS" == "S4_ternary" ]]; then
+if [[ "$SYS" == "S2_holo_closed" || "$SYS" == "S4_ternary" ]]; then   # S3 has no ligand: it was built protein-only
 LIGBLOCK="rmsd aba_rmsd :A8S&!@H= first nofit out $O/aba_rmsd.dat
 distance aba_gate :A8S&!@H= :$GATE&!@H= out $O/aba_gate_dist.dat"
 fi
@@ -170,8 +195,8 @@ average crdset AVGSTRUCT
 run
 
 rms fit_to_avg :$CORE@N,CA,C,O ref AVGSTRUCT
-atomicfluct out $O/rmsf_byres.dat :1-$NRES&!@H= byres
-atomicfluct out $O/rmsf_bb_byres.dat :1-$NRES@N,CA,C,O byres
+atomicfluct out $O/rmsf_byres.dat :$FIRST-$LAST&!@H= byres
+atomicfluct out $O/rmsf_bb_byres.dat :$FIRST-$LAST@N,CA,C,O byres
 run
 quit
 EOF
@@ -201,6 +226,6 @@ fi
 
 NFRAME=$(awk 'END{print NR-1}' "$O/gate_to_open.dat" 2>/dev/null || echo 0)
 echo "frames analysed: $NFRAME"
-echo "LOOPDYN_DONE sys=$SYS rep=$REP rc=$rc fail=$fail frames=$NFRAME"
+echo "LOOPDYN_DONE unit=$UNIT rep=$REP rc=$rc fail=$fail frames=$NFRAME"
 date
 exit $fail
