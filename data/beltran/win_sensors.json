@@ -1,0 +1,537 @@
+{
+ "positions": [
+  "E4",
+  "Y23",
+  "D26",
+  "Y58",
+  "K59",
+  "V81",
+  "V83",
+  "L87",
+  "A89",
+  "E102",
+  "H115",
+  "Y120",
+  "E141",
+  "M158",
+  "F159",
+  "A160",
+  "V164",
+  "Q169",
+  "D184",
+  "V190"
+ ],
+ "sensors": [
+  {
+   "name": "1",
+   "ligand": "JWH-193",
+   "lib": "CB-S1",
+   "muts": [
+    "Y120G",
+    "F159V",
+    "A160G"
+   ],
+   "minresp": 25000
+  },
+  {
+   "name": "2",
+   "ligand": "JWH-193",
+   "lib": "CB-S3",
+   "muts": [
+    "L87M",
+    "A89V",
+    "E102K",
+    "Y120G",
+    "F159V",
+    "A160G"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "3",
+   "ligand": "WIN 55,212",
+   "lib": "DSM",
+   "muts": [
+    "F159G",
+    "A160V"
+   ],
+   "minresp": 10004
+  },
+  {
+   "name": "4",
+   "ligand": "WIN 55,212",
+   "lib": "DSM",
+   "muts": [
+    "F159S",
+    "A160L"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "5",
+   "ligand": "WIN 55,212",
+   "lib": "DSM",
+   "muts": [
+    "F159G",
+    "A160I"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "6",
+   "ligand": "WIN 55,212",
+   "lib": "DSM",
+   "muts": [
+    "F159S",
+    "A160V"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "7",
+   "ligand": "WIN 55,212",
+   "lib": "DSM",
+   "muts": [
+    "F159T",
+    "A160L"
+   ],
+   "minresp": 1000
+  },
+  {
+   "name": "8",
+   "ligand": "WIN 55,212",
+   "lib": "CB-S1",
+   "muts": [
+    "K59Q",
+    "F159A",
+    "A160I"
+   ],
+   "minresp": 50
+  },
+  {
+   "name": "9",
+   "ligand": "WIN 55,212",
+   "lib": "CB-S1",
+   "muts": [
+    "K59Q",
+    "F159A",
+    "A160I",
+    "Q169R"
+   ],
+   "minresp": 50
+  },
+  {
+   "name": "10",
+   "ligand": "WIN 55,212",
+   "lib": "CB-S1",
+   "muts": [
+    "Y23H",
+    "D26G",
+    "K59Q",
+    "F159A",
+    "A160I"
+   ],
+   "minresp": 50
+  },
+  {
+   "name": "PYR1 WIN",
+   "ligand": "WIN 55,212",
+   "lib": "CB-S2",
+   "muts": [
+    "E4G",
+    "Y23H",
+    "D26G",
+    "K59Q",
+    "F159A",
+    "A160I"
+   ],
+   "minresp": 10
+  },
+  {
+   "name": "12",
+   "ligand": "JWH-015",
+   "lib": "DSM",
+   "muts": [
+    "F159A",
+    "V164H"
+   ],
+   "minresp": 25000
+  },
+  {
+   "name": "13",
+   "ligand": "JWH-015",
+   "lib": "DSM",
+   "muts": [
+    "Y120G",
+    "A160G"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "14",
+   "ligand": "JWH-015",
+   "lib": "DSM",
+   "muts": [
+    "Y120H",
+    "A160G"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "15",
+   "ligand": "JWH-015",
+   "lib": "DSM",
+   "muts": [
+    "Y120A",
+    "A160G"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "16",
+   "ligand": "JWH-015",
+   "lib": "DSM",
+   "muts": [
+    "F159A",
+    "A160I"
+   ],
+   "minresp": 1000
+  },
+  {
+   "name": "17",
+   "ligand": "JWH-015",
+   "lib": "CB-S1",
+   "muts": [
+    "K59N",
+    "Y120H",
+    "A160G"
+   ],
+   "minresp": 50
+  },
+  {
+   "name": "PYR1 JWH-015",
+   "ligand": "JWH-015",
+   "lib": "CB-S2",
+   "muts": [
+    "K59N",
+    "Y120H",
+    "F159L",
+    "A160G"
+   ],
+   "minresp": 25
+  },
+  {
+   "name": "19",
+   "ligand": "JWH-072",
+   "lib": "DSM",
+   "muts": [
+    "Y120G",
+    "A160G"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "20",
+   "ligand": "JWH-072",
+   "lib": "DSM",
+   "muts": [
+    "Y120H",
+    "A160G"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "21",
+   "ligand": "JWH-072",
+   "lib": "DSM",
+   "muts": [
+    "K59T",
+    "Y120G",
+    "A160G"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "22",
+   "ligand": "JWH-072",
+   "lib": "DSM",
+   "muts": [
+    "Y120A",
+    "A160G"
+   ],
+   "minresp": 1000
+  },
+  {
+   "name": "23",
+   "ligand": "JWH-072",
+   "lib": "CB-S1",
+   "muts": [
+    "K59N",
+    "Y120H",
+    "A160G"
+   ],
+   "minresp": 50
+  },
+  {
+   "name": "PYR1 JWH-072",
+   "ligand": "JWH-072",
+   "lib": "CB-S2",
+   "muts": [
+    "E4G",
+    "K59N",
+    "Y120H",
+    "F159L",
+    "A160G"
+   ],
+   "minresp": 10
+  },
+  {
+   "name": "25",
+   "ligand": "JWH-018",
+   "lib": "DSM",
+   "muts": [
+    "Y120G",
+    "A160G"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "PYR1 JWH-018",
+   "ligand": "JWH-018",
+   "lib": "CB-S1",
+   "muts": [
+    "Y120G",
+    "M158I",
+    "A160G"
+   ],
+   "minresp": 1000
+  },
+  {
+   "name": "27",
+   "ligand": "JWH-007",
+   "lib": "CB-S1",
+   "muts": [
+    "K59S",
+    "V83W",
+    "Y120G",
+    "F159A"
+   ],
+   "minresp": 25000
+  },
+  {
+   "name": "28",
+   "ligand": "JWH-007",
+   "lib": "CB-S3",
+   "muts": [
+    "V83W",
+    "Y120G",
+    "F159A",
+    "A160I"
+   ],
+   "minresp": 1000
+  },
+  {
+   "name": "29",
+   "ligand": "JWH-016",
+   "lib": "DSM",
+   "muts": [
+    "Y120A",
+    "A160G"
+   ],
+   "minresp": 1000
+  },
+  {
+   "name": "30",
+   "ligand": "JWH-016",
+   "lib": "CB-S1",
+   "muts": [
+    "V81I",
+    "Y120G",
+    "A160G"
+   ],
+   "minresp": 50
+  },
+  {
+   "name": "PYR1 JWH-016",
+   "ligand": "JWH-016",
+   "lib": "CB-S2",
+   "muts": [
+    "V81I",
+    "Y120G",
+    "F159L",
+    "A160G"
+   ],
+   "minresp": 10
+  },
+  {
+   "name": "32",
+   "ligand": "JWH-030",
+   "lib": "DSM",
+   "muts": [
+    "Y120A",
+    "A160G"
+   ],
+   "minresp": 25000
+  },
+  {
+   "name": "PYR1 JWH-030",
+   "ligand": "JWH-030",
+   "lib": "DSM",
+   "muts": [
+    "Y120G",
+    "A160G"
+   ],
+   "minresp": 25000
+  },
+  {
+   "name": "34",
+   "ligand": "JWH-167",
+   "lib": "CB-S1",
+   "muts": [
+    "Y120G",
+    "F159L",
+    "A160G"
+   ],
+   "minresp": 25000
+  },
+  {
+   "name": "35",
+   "ligand": "JWH-167",
+   "lib": "CB-S3",
+   "muts": [
+    "K59S",
+    "V83W",
+    "H115Q",
+    "Y120G",
+    "F159L",
+    "A160G"
+   ],
+   "minresp": 50
+  },
+  {
+   "name": "PYR1 JWH-167",
+   "ligand": "JWH-167",
+   "lib": "CB-S3",
+   "muts": [
+    "Y58F",
+    "V81M",
+    "V83F",
+    "H115Q",
+    "Y120G",
+    "F159L",
+    "A160G",
+    "D184G"
+   ],
+   "minresp": 25
+  },
+  {
+   "name": "PYR1 4F",
+   "ligand": "4F-MDMB-BUTINACA",
+   "lib": "CB-S3",
+   "muts": [
+    "H115Q",
+    "Y120G",
+    "F159V",
+    "A160G"
+   ],
+   "minresp": 25
+  },
+  {
+   "name": "38",
+   "ligand": "AB-PINACA",
+   "lib": "CB-S1",
+   "muts": [
+    "Y120G",
+    "F159V",
+    "A160G"
+   ],
+   "minresp": 25000
+  },
+  {
+   "name": "PYR1 AB-PINACA",
+   "ligand": "AB-PINACA",
+   "lib": "CB-S3",
+   "muts": [
+    "H115Q",
+    "Y120G",
+    "F159V",
+    "A160G"
+   ],
+   "minresp": 1000
+  },
+  {
+   "name": "40",
+   "ligand": "(\u00b1)-CP 47,497",
+   "lib": "DSM",
+   "muts": [
+    "K59A",
+    "V83L",
+    "E141F"
+   ],
+   "minresp": 10000
+  },
+  {
+   "name": "41",
+   "ligand": "\u22069-THC",
+   "lib": "CBS-1",
+   "muts": [
+    "E4G",
+    "H115Q",
+    "Y120G",
+    "A160G"
+   ],
+   "minresp": 25000
+  },
+  {
+   "name": "PYR1 \u22069-THC",
+   "ligand": "\u22069-THC",
+   "lib": "CBS-4",
+   "muts": [
+    "E4G",
+    "K59R",
+    "H115Q",
+    "Y120G"
+   ],
+   "minresp": NaN
+  },
+  {
+   "name": "42",
+   "ligand": "CBDA",
+   "lib": "CB-S3",
+   "muts": [
+    "E4G",
+    "K59R",
+    "H115Q",
+    "Y120G",
+    "E141M"
+   ],
+   "minresp": 25000
+  },
+  {
+   "name": "43",
+   "ligand": "CBDA",
+   "lib": "CB-S3",
+   "muts": [
+    "K59R",
+    "H115Q",
+    "Y120G",
+    "V164W",
+    "V190A"
+   ],
+   "minresp": 1000
+  },
+  {
+   "name": "PYR1 CBDA",
+   "ligand": "CBDA",
+   "lib": "CB-S4",
+   "muts": [
+    "K59R",
+    "H115Q",
+    "Y120G",
+    "E141M",
+    "V164W"
+   ],
+   "minresp": NaN
+  }
+ ]
+}

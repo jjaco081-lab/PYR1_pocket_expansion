@@ -2560,6 +2560,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 29 | 08-17 | a frozen backbone means the crystal structure was preserved, and a MoveMap freezes what it names | core preservation reported **0.000 Å** while two defects went through: A87–B116 at **0.36 Å** (crystal 3.09 Å) and **K59 collapsing 2.85 → 1.68 Å** into the empty ABA cavity — K59 was in an explicit "frozen" set and moved anyway | **`FastRelax.set_movemap()` restricts minimisation only**; repacking needs a TaskFactory or the whole pose is repacked. Backbone RMSD also watches N/CA/C only, so both were invisible. Fixed in `lib_rosetta.py`; 178/191 residues now keep their input rotamers, and the dimer assembles with **zero** clashes before any refinement (§28d) |
 | 30 | 08-18 | the §24b closed-state stability filter reports something about the ligand | the apo-closed protomer (S3 chain B, closed and ligand-shaped, pocket empty) holds its state for **3 × 300 ns with zero crossings**, drift **−0.07 Å**, and has the **least mobile gate of all fifteen units** (RMSF 0.72 Å vs 1.39 with ABA) | the filter is **conformation-reporting, not ligand-reporting**: a good gate-RMSD-to-closed score carries no evidence about occupancy. Confounded by the dimer, which alone drops the open gate 3.05 → 1.07 Å, so `S9_apo_closed` (the apo-closed **monomer**) is now the highest-value unrun system (§29c) |
 | 31 | 08-18 | the apo-closed cell could be filled by running the S9 built on 08-14 against the existing S1/S2 | the old-tree S9 is **KCl** (K⁺ 33/Cl⁻ 28) while S1/S2 are **NaCl** (Na⁺ 35/34) — read from the topologies, not the build logs | pairing them would confound ligand removal with a **cation swap** inside the one comparison the factorial exists to make. All four cells rebuilt on `md191`; job 27547457, 12 tasks (§30a) |
+| 32 | 08-18 | per-position steric admissibility could generate ligand-specific menus, since geometry excludes rather than ranks | it admits **14.7 of 20** residues at a typical pocket position, ABA and mandipropamid menus overlap at **Jaccard 0.84**, and all four mandipropamid ground-truth substitutions are admissible **for ABA too** — recalled without being ligand-conditional, exactly like the stage-1 clash baseline | the per-position step is dead, but the diagnosis is useful: every miss (V83W, V164W, V164H, V83F, A89V, E141F) is a **grow** mutation, and the real sensors are **compensating shrink/grow pairs** (F159A+A160I, Y120G+A160G). A per-position filter judges each mutation in a context where its partner has not happened. Enumerate **pairs** against a re-evaluated pocket (§31c) |
 
 ### Bugs caught before they cost anything
 
@@ -4413,3 +4414,95 @@ build was compiled for. Exclude by node:
 assertions inside 58 are the reproduction test. If the four cells verify and the
 15 unit maps pass their `RESIDUE_LABEL` check, the pipeline is wired correctly;
 if they do not, nothing downstream is worth reading.
+
+---
+
+## 31. Headroom check: steric admissibility does not generate menus (2026-08-18)
+
+### 31a. The idea and why it was worth testing
+
+Stage 1 failed because we asked a score function to **rank** residues, and
+ref2015's ranking is wrong in this pocket for a quantified reason (§23j: +10.1 REU
+to bury K59's ammonium). Geometry does not rank — it **excludes**. So: at each
+pocket position, which residues can be placed at all with the ligand present? A
+hard yes/no, ligand-conditional by construction, needing no null arm.
+
+Measured **before** building anything on it, because §25 established that pocket
+positions are near ligand-independent and the stage-1 clash baseline already gave
+3 of 4 ground-truth positions free. `scripts/71_admissibility.py`, results in
+`data/admissibility/admissibility.json`. Rotamers from Rosetta's
+backbone-independent library used as a catalogue of observed geometry; accept/
+reject by hard-sphere overlap on explicit Bondi radii. **ref2015 is never called**;
+the only Rosetta energy used anywhere is `fa_rep` alone, to settle chi.
+
+### 31b. Verdict: it does not clear
+
+26 positions within 5 Å of either ligand, WT PYR1 backbone, ABA (`A8S`, 19 heavy)
+vs mandipropamid (`3UZ`, 29 heavy).
+
+| | ABA | mandipropamid |
+|---|---|---|
+| mean admissible, of 20 | **14.7** | **14.1** |
+| mean per-position Jaccard(ABA, mandi) | colspan | **0.84** |
+
+**Too permissive.** Three quarters of all residues are placeable at a typical
+position. On the six positions that actually carry cannabinoid sensors
+(59, 81, 108, 120, 159, 160) the menus give 7.1 × 10⁶ combinations against 6.4 ×
+10⁷ unrestricted — a **9× reduction**, where Tian's coumarin focused library is
+1.4 × 10⁵. Fifty times too big.
+
+**And ligand-blind where it matters.** All four mandipropamid ground-truth
+substitutions — K59R, V81I, F108A, F159L — are admissible, but **all four are
+admissible for ABA too**. They are recalled without being ligand-conditional,
+which is exactly how the stage-1 clash baseline behaved. Recall against the 45
+Beltrán cannabinoid sensors is **93%** of in-pocket substitution occurrences — high
+recall with no selectivity is not a filter.
+
+### 31c. Why it fails, which is the useful part
+
+The misses are all one kind: **V83W, V83F, V164W, V164H, A89V, E141F** — every one
+a *grow* mutation. Admissibility on a fixed WT backbone rejects them because in the
+unmutated pocket there is no room. Real sensors use them anyway.
+
+Look at what the sensors actually are: **F159A + A160I** (WIN), **Y120G + A160G**
+(the JWH series, 27 and 23 occurrences). These are **compensating shrink/grow
+pairs** — the shrink is what creates room for the grow. A per-position filter
+evaluates each mutation in a context where its partner has not happened yet, so it
+is structurally incapable of seeing the dominant empirical pattern.
+
+⚠ **This kills the per-position menu step, not the combinatorial idea.** The
+prerequisite that looked obvious — build menus, then combine — is the part that
+breaks. Pairs have to be enumerated directly against a re-evaluated pocket.
+
+### 31d. Two other things the data says
+
+**Position frequency across the 45 cannabinoid sensors** is even more saturated
+than coumarin: **A160 in 38, Y120 in 33, F159 in 24** of 45. Substitutions are
+reused too — A160G 27×, Y120G 23×. Within a chemical family the menu is largely
+conserved; the ligand-specific signal sits at **K59** (Q/N/S/T/A/R), **H115Q**,
+**V83** (W/L/F), **E141** (F/M), **V164** (H/W), **V81** (I/M).
+
+**Nine sensor substitutions are outside the 5 Å pocket entirely** — E4G (5
+sensors), Y23H, D26G, Y58F, E102K, M158I, Q169R, D184G, V190A. `PYR1^WIN` gets its
+last order of magnitude (50 → 10 nM) from adding **E4G**. No pocket-based method
+of any kind can reach these.
+
+### 31e. Confidence, and the one residual defect
+
+Controls: WT admissible at its own position **23/26**; GLY admissible everywhere;
+TRP excluded in 33 of 52 position-ligand pairs. Two control failures were diagnosed
+and fixed rather than absorbed into the tolerance — a peptide **bond** scored as a
+2.05 Å clash (`PRO88:NV — LEU87:C`, d = 1.35 Å), and single-start chi minimisation
+landing in the wrong basin (now 5 restarts).
+
+**R79, V83 and H115 still fail.** They make no crystal contact worse than 0.4 Å, so
+this is placement, not the pocket. It does not threaten the conclusion: a failure of
+this kind wrongly **excludes** a residue, so it makes admissibility look *more*
+selective than it is. The saturation cannot be an artefact of it — only understated.
+⚠ V83 is the exception worth remembering: it fails its own control **and** its
+grow-mutations V83W/V83F are among the misses, so V83's numbers specifically are
+not trustworthy.
+
+The verdict is stable across the whole tolerance sweep: Jaccard 0.83–0.95 from 0.0
+to 1.0 Å, and mean |admissible| never drops below 8.5 at a tolerance where the WT
+control already fails 14 of 26.
