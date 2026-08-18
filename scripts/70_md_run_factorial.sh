@@ -2,6 +2,7 @@
 #SBATCH -p preempt_gpu
 #SBATCH -A preempt
 #SBATCH --gres=gpu:1
+#SBATCH --exclude=gpu01,gpu02,gpu03,gpu13,gpu14
 #SBATCH -c 4
 #SBATCH --mem=24G
 #SBATCH -t 7-00:00:00
@@ -54,9 +55,22 @@
 # the queue and re-runs from the top. Every resume writes a fresh prod_cont_NNN.nc
 # and recomputes the remaining steps from the restart file's own clock, so a
 # requeue never runs a further full 300 ns. S4 rep0 needed 23 segments to finish
-# this way. --gres=gpu:1 rather than a named card: preempt_gpu holds a100, ada6000,
-# blackwell6000, h100, p100 and k80, and pinning to one type only lengthens the
-# wait. (k80 is too old for this build; if a task lands on one, cancel that task.)
+# this way.
+#
+# GPU SELECTION -- --gres=gpu:1 rather than a named card, so a task takes whichever
+# of preempt_gpu's mixed cards is free instead of waiting for one type. But two
+# node groups must be excluded, at BOTH ends of the age range:
+#
+#   gpu01-03  k80            too OLD  -- compute capability below this build's floor
+#   gpu13-14  blackwell6000  too NEW  -- pmemd.cuda from amber/22 dies immediately with
+#                                       "cudaMemcpyToSymbol: SetSim copy to cSim
+#                                       failed invalid device symbol", i.e. the CUDA
+#                                       binary has no kernel for this architecture
+#
+# Learned the hard way: tasks 2 and 4 of job 27547457 landed on gpu14 and failed in
+# 10 and 3 seconds. Verified working: a100, ada6000 (RTX 6000 Ada). h100 is
+# untested here and is left in.
+
 set -uo pipefail
 module load amber/22_mpi_cuda >/dev/null 2>&1
 

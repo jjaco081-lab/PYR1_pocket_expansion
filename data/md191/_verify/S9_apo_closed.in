@@ -1,6 +1,0 @@
-parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/system.prmtop
-trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/system.inpcrd
-strip :WAT,K+,Cl-,Na+
-trajout /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/_verify/S9_apo_closed.frame1.pdb pdb
-run
-quit

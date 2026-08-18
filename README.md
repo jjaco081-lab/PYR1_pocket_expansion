@@ -4386,6 +4386,14 @@ trajectories are reproducible only in distribution, which is the intent.
 | `data/aba_params/A8S.params` | Rosetta ligand params, used solely for the 69 repack |
 | `pyr1_open_A.pdb`, `pyr1_closed_A.pdb` | script 30's references, 178 residues — still the loop-dynamics references, and NOT the same numbering as `md191` |
 
+**⚠ GPU compatibility, found by two immediate failures.** `pmemd.cuda` from
+`amber/22_mpi_cuda` has **no kernel for the Blackwell cards** on `gpu13-14`: tasks
+2 and 4 of job 27547457 landed there and died in 10 and 3 seconds with
+`cudaMemcpyToSymbol: SetSim copy to cSim failed invalid device symbol`. The k80
+nodes (`gpu01-03`) are too old at the other end. Script 70 now carries
+`--exclude=gpu01,gpu02,gpu03,gpu13,gpu14`; the two tasks were resubmitted as job
+27547617. Verified working: **a100** and **ada6000**; h100 untested.
+
 **What a reproducer should check rather than trust:** `69b_verify_md191.sh` and the
 assertions inside 58 are the reproduction test. If the four cells verify and the
 15 unit maps pass their `RESIDUE_LABEL` check, the pipeline is wired correctly;
