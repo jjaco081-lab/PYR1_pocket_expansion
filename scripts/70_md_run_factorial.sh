@@ -2,7 +2,7 @@
 #SBATCH -p preempt_gpu
 #SBATCH -A preempt
 #SBATCH --gres=gpu:1
-#SBATCH --exclude=gpu01,gpu02,gpu03,gpu13,gpu14
+#SBATCH --exclude=gpu01,gpu02,gpu03,gpu05,gpu13,gpu14
 #SBATCH -c 4
 #SBATCH --mem=24G
 #SBATCH -t 7-00:00:00
@@ -61,15 +61,25 @@
 # of preempt_gpu's mixed cards is free instead of waiting for one type. But two
 # node groups must be excluded, at BOTH ends of the age range:
 #
-#   gpu01-03  k80            too OLD  -- compute capability below this build's floor
+#   gpu01-03  k80            too OLD  -- below this build's compute-capability floor
 #   gpu13-14  blackwell6000  too NEW  -- pmemd.cuda from amber/22 dies immediately with
 #                                       "cudaMemcpyToSymbol: SetSim copy to cSim
 #                                       failed invalid device symbol", i.e. the CUDA
 #                                       binary has no kernel for this architecture
+#   gpu05     p100           WORKS but is a 2016 Pascal card; excluded for throughput,
+#                                       not compatibility -- it would turn a ~1-day
+#                                       replicate into several
+#
+# ⚠ DO NOT REPLACE THIS WITH `--constraint=gpu_latest`. It is the obvious fix and it
+#   is wrong: this cluster tags gpu13-14 as gpu_latest,gpu_highmem, so asking for the
+#   newest hardware selects EXACTLY the cards that fail. The feature names describe
+#   the silicon, not what amber/22 was compiled for.
 #
 # Learned the hard way: tasks 2 and 4 of job 27547457 landed on gpu14 and failed in
-# 10 and 3 seconds. Verified working: a100, ada6000 (RTX 6000 Ada). h100 is
-# untested here and is left in.
+# 10 and 3 seconds. Leaves a100 (gpu06-08), ada6000 (gpu09/10/12) and h100 (gpu11).
+# Verified working: a100, ada6000. h100 is UNTESTED and left in -- it is 2 cards, so
+# the chance of landing there is small, and a failure shows up as an immediate
+# min1 error in the log rather than a corrupted run.
 
 set -uo pipefail
 module load amber/22_mpi_cuda >/dev/null 2>&1

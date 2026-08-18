@@ -4386,13 +4386,28 @@ trajectories are reproducible only in distribution, which is the intent.
 | `data/aba_params/A8S.params` | Rosetta ligand params, used solely for the 69 repack |
 | `pyr1_open_A.pdb`, `pyr1_closed_A.pdb` | script 30's references, 178 residues — still the loop-dynamics references, and NOT the same numbering as `md191` |
 
-**⚠ GPU compatibility, found by two immediate failures.** `pmemd.cuda` from
-`amber/22_mpi_cuda` has **no kernel for the Blackwell cards** on `gpu13-14`: tasks
-2 and 4 of job 27547457 landed there and died in 10 and 3 seconds with
-`cudaMemcpyToSymbol: SetSim copy to cSim failed invalid device symbol`. The k80
-nodes (`gpu01-03`) are too old at the other end. Script 70 now carries
-`--exclude=gpu01,gpu02,gpu03,gpu13,gpu14`; the two tasks were resubmitted as job
-27547617. Verified working: **a100** and **ada6000**; h100 untested.
+**⚠ GPU selection.** Script 70 requests `--gres=gpu:1` — *any* card — and excludes
+by node, because neither "newest" nor a single named type is right.
+
+| nodes | cards | feature | status for amber/22 |
+|---|---|---|---|
+| gpu01–03 | k80 | `gpu_legacy` | too OLD — below the build's compute-capability floor |
+| gpu05 | p100 | `gpu_prev` | runs, but a 2016 Pascal card — excluded for **throughput**, not compatibility |
+| gpu06–08 | a100 | `gpu_latest,gpu_highmem` | ✅ verified |
+| gpu09/10/12 | ada6000 | `gpu_latest` | ✅ verified |
+| gpu11 | h100 | `gpu_latest,gpu_highmem` | untested; left in (2 cards) |
+| gpu13–14 | blackwell6000 | `gpu_latest,gpu_highmem` | **FAILS in seconds** |
+
+`pmemd.cuda` from `amber/22_mpi_cuda` has **no kernel for the Blackwell cards**:
+tasks 2 and 4 of job 27547457 landed on `gpu14` and died in 10 and 3 seconds with
+`cudaMemcpyToSymbol: SetSim copy to cSim failed invalid device symbol`. They were
+resubmitted as job 27547617.
+
+⚠ **`--constraint=gpu_latest` is the obvious fix and it is wrong.** The cluster
+tags gpu13–14 as `gpu_latest`, so asking for the newest hardware selects exactly
+the cards that fail. The feature names describe the silicon, not what this AMBER
+build was compiled for. Exclude by node:
+`--exclude=gpu01,gpu02,gpu03,gpu05,gpu13,gpu14`.
 
 **What a reproducer should check rather than trust:** `69b_verify_md191.sh` and the
 assertions inside 58 are the reproduction test. If the four cells verify and the
