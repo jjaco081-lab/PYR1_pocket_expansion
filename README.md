@@ -2561,6 +2561,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 30 | 08-18 | the §24b closed-state stability filter reports something about the ligand | the apo-closed protomer (S3 chain B, closed and ligand-shaped, pocket empty) holds its state for **3 × 300 ns with zero crossings**, drift **−0.07 Å**, and has the **least mobile gate of all fifteen units** (RMSF 0.72 Å vs 1.39 with ABA) | the filter is **conformation-reporting, not ligand-reporting**: a good gate-RMSD-to-closed score carries no evidence about occupancy. Confounded by the dimer, which alone drops the open gate 3.05 → 1.07 Å, so `S9_apo_closed` (the apo-closed **monomer**) is now the highest-value unrun system (§29c) |
 | 31 | 08-18 | the apo-closed cell could be filled by running the S9 built on 08-14 against the existing S1/S2 | the old-tree S9 is **KCl** (K⁺ 33/Cl⁻ 28) while S1/S2 are **NaCl** (Na⁺ 35/34) — read from the topologies, not the build logs | pairing them would confound ligand removal with a **cation swap** inside the one comparison the factorial exists to make. All four cells rebuilt on `md191`; job 27547457, 12 tasks (§30a) |
 | 32 | 08-18 | per-position steric admissibility could generate ligand-specific menus, since geometry excludes rather than ranks | it admits **14.7 of 20** residues at a typical pocket position, ABA and mandipropamid menus overlap at **Jaccard 0.84**, and all four mandipropamid ground-truth substitutions are admissible **for ABA too** — recalled without being ligand-conditional, exactly like the stage-1 clash baseline | the per-position step is dead, but the diagnosis is useful: every miss (V83W, V164W, V164H, V83F, A89V, E141F) is a **grow** mutation, and the real sensors are **compensating shrink/grow pairs** (F159A+A160I, Y120G+A160G). A per-position filter judges each mutation in a context where its partner has not happened. Enumerate **pairs** against a re-evaluated pocket (§31c) |
+| 33 | 08-18 | evaluating mutation pairs jointly would expose the compensation a per-position filter misses | with a **summed** (hence additive) ligand-overlap objective it exposes nothing: relief of every top pair equalled the sum of its singles, and the best residue at a position changed with its partner in **15 of 4187 contexts**. Adding a packing term that counts only NON-overlapping contacts recovers **F108A rank 5, F159L rank 75, V81I rank 150 of 13,457**, with shrink/grow enriched to 62 % vs 42 % for the ABA control | pairs work, but only once the objective can represent the grow half. The remaining miss, K59R, is blind **by category** — it does not clash, so a steric method cannot reach it; that is the same residue and the same reason that defeated both stage-1 methods (§32d) |
 
 ### Bugs caught before they cost anything
 
@@ -4506,3 +4507,88 @@ not trustworthy.
 The verdict is stable across the whole tolerance sweep: Jaccard 0.83–0.95 from 0.0
 to 1.0 Å, and mean |admissible| never drops below 8.5 at a tolerance where the WT
 control already fails 14 of 26.
+
+---
+
+## 32. Pairwise enumeration against a jointly re-evaluated pocket (2026-08-18)
+
+§31 killed the per-position menu step and gave the reason: real sensors are
+compensating shrink/grow **pairs**, and a per-position filter judges each mutation
+in a context where its partner has not happened. So evaluate both at once.
+`scripts/72_pairwise.py`, results in `data/pairwise/pairwise.json`.
+
+### 32a. The signal, measured before building anything on it
+
+| ligand in WT PYR1 | max lig-protein overlap | clashing atoms | summed overlap |
+|---|---|---|---|
+| ABA (cognate) | **0.22 Å** | 0 of 19 | 0.29 Å |
+| mandipropamid | **2.78 Å** | 7 of 29 | 31.07 Å |
+
+The cognate ligand fits its own pocket and the non-cognate one does not, which
+makes **ABA a built-in negative control**: no mutation should improve it. The clash
+already names **PHE108 (2.78 Å)** and **PHE159 (1.42 Å)** unprompted — 2 of the 4
+mandipropamid ground-truth mutations. K59R and V81I do **not** clash (2.86 and
+3.28 Å away), so they cannot be reached by clash relief at all.
+
+### 32b. Two objectives, and two mistakes made getting there
+
+`lig_ov` = **summed** ligand-protein van der Waals overlap. Summed rather than
+maxed so it is **additive over protein atoms**, which splits a double mutant into
+fixed environment + rotamer i + rotamer j exactly, turning 25×20 × 25×20 into a
+precompute plus a tiny per-pair search.
+
+⚠ **Mistake 1 — an additive objective cannot show synergy.** Ranking on `lig_ov`
+alone, every top pair had relief exactly equal to the sum of its singles, and the
+best residue at position i changed with its partner in **15 of 4187 contexts
+(0.4%)**, all trivial A→G. The decomposition that made it fast removed the very
+thing being looked for. The grow half of a shrink/grow pair does not reduce clash —
+it restores **packing** — so it is invisible to a clash-relief objective by
+construction.
+
+⚠ **Mistake 2 — counting contacts within a flat 4.5 Å rewards clashes.** The first
+packing term put `83W+163Y` at the top of the Pareto front with 335 "contacts" and
+a relief of **−71.7 Å**: it made the overlap catastrophically worse and scored as
+the best-packed pair on the board. A contact is favourable only if the atoms touch
+**without interpenetrating**, so `contacts` now counts pairs with overlap in
+[−1.0, +0.25] Å.
+
+### 32c. What it delivers once both objectives are right
+
+Ranking by relief subject to *not losing packing* (contacts ≥ WT):
+
+| ground truth | best packing-preserving pair | relief | rank of 13,457 |
+|---|---|---|---|
+| **F108A** | 81Q+108A | 24.16 | **5** (top 0.04 %) |
+| **F159L** | 115H+159L | 4.39 | **75** (top 0.6 %) |
+| **V81I** | 81I+83T | 0.46 | **150** (top 1.1 %) |
+| K59R | 59R+81Q | −0.04 | 3907 (top 29 %) |
+
+**3 of 4 in the top 150 of 13,457 — a 90× narrowing at 3/4 recall.** Full 4/4
+recall needs 3907 pairs, i.e. K59R alone costs 26× the library.
+
+**Shrink/grow enrichment is real and ligand-specific**: 123 of the top 200 mandi
+pairs change volume in opposite directions (62 %) against **85 of 200 (42 %) for
+ABA**, where chance is ~50 %. ⚠ No p-value is quoted — the top-200 pairs share
+positions and are not independent, the same trap as §14a.
+
+And the top mandi pairs are **81+108 shrink/grow combinations** — `81K+108V`,
+`81Q+108A`, `81Q+108S`. The true answer is V81I + F108A. **The method finds the
+right pair of positions and the wrong identity at 81**, which is §25's
+positions-are-easy/substitutions-are-hard result reappearing at the pair level.
+
+### 32d. Where the boundary actually is
+
+K59R is not a failure of implementation, it is a failure of *category*. K59 does
+not clash; its contribution is the salt bridge to the ligand, which is
+electrostatic. A steric method cannot see it **by construction** — and this is the
+same residue, for the same underlying reason, that defeated both LigandMPNN and
+Rosetta FastDesign in §23j, where ref2015 saw the salt bridge and then overcharged
+its desolvation by +10.1 REU.
+
+So the honest scope: **this recovers sterically-driven substitutions and is blind
+to electrostatically-driven ones.** That is a principled boundary, and it says what
+a second stage must supply — electrostatic complementarity at non-clashing
+positions — rather than leaving "it did not work" undiagnosed.
+
+The ABA negative control behaves correctly throughout: best relief 0.27 Å against a
+WT overlap of 0.29 Å, i.e. nothing to fix and nothing invented.
