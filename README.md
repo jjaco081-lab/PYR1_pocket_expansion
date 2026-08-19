@@ -2562,6 +2562,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 31 | 08-18 | the apo-closed cell could be filled by running the S9 built on 08-14 against the existing S1/S2 | the old-tree S9 is **KCl** (K⁺ 33/Cl⁻ 28) while S1/S2 are **NaCl** (Na⁺ 35/34) — read from the topologies, not the build logs | pairing them would confound ligand removal with a **cation swap** inside the one comparison the factorial exists to make. All four cells rebuilt on `md191`; job 27547457, 12 tasks (§30a) |
 | 32 | 08-18 | per-position steric admissibility could generate ligand-specific menus, since geometry excludes rather than ranks | it admits **14.7 of 20** residues at a typical pocket position, ABA and mandipropamid menus overlap at **Jaccard 0.84**, and all four mandipropamid ground-truth substitutions are admissible **for ABA too** — recalled without being ligand-conditional, exactly like the stage-1 clash baseline | the per-position step is dead, but the diagnosis is useful: every miss (V83W, V164W, V164H, V83F, A89V, E141F) is a **grow** mutation, and the real sensors are **compensating shrink/grow pairs** (F159A+A160I, Y120G+A160G). A per-position filter judges each mutation in a context where its partner has not happened. Enumerate **pairs** against a re-evaluated pocket (§31c) |
 | 33 | 08-18 | evaluating mutation pairs jointly would expose the compensation a per-position filter misses | with a **summed** (hence additive) ligand-overlap objective it exposes nothing: relief of every top pair equalled the sum of its singles, and the best residue at a position changed with its partner in **15 of 4187 contexts**. Adding a packing term that counts only NON-overlapping contacts recovers **F108A rank 5, F159L rank 75, V81I rank 150 of 13,457**, with shrink/grow enriched to 62 % vs 42 % for the ABA control | pairs work, but only once the objective can represent the grow half. The remaining miss, K59R, is blind **by category** — it does not clash, so a steric method cannot reach it; that is the same residue and the same reason that defeated both stage-1 methods (§32d) |
+| 34 | 08-18 | the K59R miss is a scoring problem — ref2015's desolvation in §23j, category blindness in §32 | transplanting the **crystal** Arg59 from 4WVO scores **2 hydrogen bonds** (NE–O2 2.64 Å, NH1–O2 3.26 Å) with a worst genuine overlap of 0.56 Å, **below** the feasibility threshold — the scoring accepts it. Its χ3 ≈ **100°** is non-rotameric and the backbone-independent library never proposes it | at this stage the miss is **SAMPLING**, not scoring, and chi minimisation cannot fix it: relieving strain does not create a hydrogen bond. Also found: hydrogen bonds are being counted as steric clashes (donor–acceptor at 2.64 Å = 0.43 Å hard-sphere overlap), which reaches back into §31/§32 and likely explains §31e's R79/V83/H115 control failures (§33b–c) |
 
 ### Bugs caught before they cost anything
 
@@ -4592,3 +4593,108 @@ positions — rather than leaving "it did not work" undiagnosed.
 
 The ABA negative control behaves correctly throughout: best relief 0.27 Å against a
 WT overlap of 0.29 Å, i.e. nothing to fix and nothing invented.
+
+---
+
+## 33. Electrostatic complementarity at non-clashing positions (2026-08-18)
+
+§32d specified this stage: steric enumeration recovers sterically-driven
+substitutions and is blind to electrostatically-driven ones, so K59R needs a
+complementarity screen. `scripts/73_electrostatic.py`.
+
+### 33a. The decisive test, and its result
+
+The two ligands differ exactly where it matters — **ABA is an anion (−0.97)**
+presenting a carboxylate; **mandipropamid is neutral (+0.10)** presenting an amide.
+ABA's answer at 59 is WT Lys; mandipropamid's is Arg. One method, two ligands, one
+flip.
+
+| | rank 1 | LYS rank | ARG rank |
+|---|---|---|---|
+| ABA | **K** ✅ | 1 | 2 |
+| mandipropamid | K ❌ | 1 | 3 |
+
+**Half a pass.** With ABA it puts Lys first *for the right reason* — a bidentate
+salt bridge, NZ–O4 **2.83 Å** and NZ–O3 **3.31 Å**. That is worth stating plainly:
+stage 1's null arm retained K59 in **0 %** of trajectories even with the cognate
+ligand (§23j), and this retains it at rank 1. The pathology that defeated ref2015
+is genuinely absent here.
+
+With mandipropamid it does not flip. **K59R was missed.**
+
+### 33b. Why — sampling, not scoring, and that is testable
+
+Transplanting the crystal Arg59 from 4WVO onto our model (core superposition, 170
+Cα, 0.47 Å) and scoring it under *this script's own criteria*:
+
+- **2 hydrogen bonds**: NE–O2 **2.64 Å**, NH1–O2 **3.26 Å**
+- worst genuine steric overlap **0.56 Å** (against Tyr58) — **below** the 0.75 Å
+  feasibility threshold
+- its χ angles are −78 / 176 / **100** / 69; **χ3 ≈ 100° is non-rotameric**
+
+So the conformation is acceptable to the scoring and would have been ranked highly.
+It was never proposed. The backbone-independent rotamer library does not contain
+it, and §31's chi-minimisation fix cannot help: minimising against `fa_rep`
+relieves strain, it does not *create* a hydrogen bond.
+
+**This is the first time the K59 miss has been localised to sampling.** In §23j it
+was ref2015's desolvation; in §32 it was category (no clash). Here the physics is
+right and the search is the limit — a different and much more tractable problem.
+
+### 33c. Two bugs found, one of which reaches backwards
+
+1. **The van der Waals table has no hydrogen radius**, so `VDW.get("H", 1.7)`
+   silently gave hydrogens a carbon-sized 1.70 Å instead of 1.20 Å, inflating every
+   H contact by 0.5 Å. Confined to diagnostics here — the script's steric test is
+   heavy-atom only — but it is in `lib`-shaped code and will bite elsewhere.
+2. **Hydrogen bonds are counted as steric clashes.** A donor–acceptor pair at
+   2.64 Å has a hard-sphere overlap of 1.55 + 1.52 − 2.64 = **0.43 Å**. Polar–polar
+   contacts are *supposed* to interpenetrate. ⚠ This reaches back into **§31 and
+   §32**, whose feasibility tests use the same hard-sphere rule, and is the likely
+   explanation for §31e's three unresolved control failures — **R79** (salt bridge
+   to E94), **V83** and **H115** are exactly the polar/charged positions such a rule
+   would wrongly exclude. Not yet confirmed; recorded so it is not rediscovered.
+
+### 33d. The screen fails its own controls, in the predicted direction
+
+Ranking every non-clashing position:
+
+| control | ABA | mandipropamid |
+|---|---|---|
+| WT retained as top choice | **1/27 (4 %)** | **4/30 (13 %)** |
+| ARG or LYS picked | **16/27 (59 %)** | 8/30 (27 %) |
+| top choice differs between ligands | colspan | 18/27 (67 %) |
+
+With no desolvation term, everything wants to be charged against an anionic ligand
+— 59 % Lys/Arg for ABA against 27 % for the neutral one. This is the **predicted
+mirror image** of ref2015's failure, written into the script's docstring before the
+run, and the Arg-everywhere control exists precisely to catch it. It did.
+
+So: **not usable as a ranker.** 4 % WT retention is disqualifying, and the 67 %
+ligand discrimination cannot be credited while most of it is monopole attraction.
+What the screen *does* do correctly is evaluate a supplied conformation — which is
+the role §33b shows it should have: a **filter over candidates**, with sampling
+supplied by something else.
+
+### 33e. Three silent input failures, all caught by assertions
+
+None of these raised an error on its own, and all three would have produced
+confident numbers:
+
+1. **The params were never used.** Both stage-1 params declare `NAME LIG` while
+   `data/stage1/wt_*.pdb` contain `A8S`/`3UZ`. Rosetta silently built the ligand
+   from its PDB-components dictionary — `pdb_A8S`, **neutral, charge sum 0.000**
+   where the params sum to −0.970.
+2. **Renaming did not fix it**: those PDBs carry RCSB atom names (`CAC CAB OAI…`)
+   and the params carry generation order (`C12 N1 C11…`). They were never a matched
+   pair. The matched inputs are stage 1's own Rosetta-written
+   `results/stage1_rosetta/_input_wt_*.pdb`, ligand `LIG`, 38 and 51 atoms.
+3. **Two ligands cannot share a name in one process.** Both params are `LIG`, and
+   PyRosetta's residue type set is global, so a second `init` does not replace the
+   first type — mandipropamid loaded with **ABA's charges** (−0.970 instead of
+   +0.100). Fixed by one subprocess per ligand.
+
+Caught only because the ligand net charge is asserted against the params file.
+⚠ **§32 is unaffected**: it used coordinates and element-derived radii only, never
+a charge, and the ligand coordinates are identical either way — confirmed, the
+mandipropamid pose in our WT model is the 4WVO pose to **0.01 Å**.
