@@ -2564,6 +2564,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 33 | 08-18 | evaluating mutation pairs jointly would expose the compensation a per-position filter misses | with a **summed** (hence additive) ligand-overlap objective it exposes nothing: relief of every top pair equalled the sum of its singles, and the best residue at a position changed with its partner in **15 of 4187 contexts**. Adding a packing term that counts only NON-overlapping contacts recovers **F108A rank 5, F159L rank 75, V81I rank 150 of 13,457**, with shrink/grow enriched to 62 % vs 42 % for the ABA control | pairs work, but only once the objective can represent the grow half. The remaining miss, K59R, is blind **by category** — it does not clash, so a steric method cannot reach it; that is the same residue and the same reason that defeated both stage-1 methods (§32d) |
 | 34 | 08-18 | the K59R miss is a scoring problem — ref2015's desolvation in §23j, category blindness in §32 | transplanting the **crystal** Arg59 from 4WVO scores **2 hydrogen bonds** (NE–O2 2.64 Å, NH1–O2 3.26 Å) with a worst genuine overlap of 0.56 Å, **below** the feasibility threshold — the scoring accepts it. Its χ3 ≈ **100°** is non-rotameric and the backbone-independent library never proposes it | at this stage the miss is **SAMPLING**, not scoring, and chi minimisation cannot fix it: relieving strain does not create a hydrogen bond. Also found: hydrogen bonds are being counted as steric clashes (donor–acceptor at 2.64 Å = 0.43 Å hard-sphere overlap), which reaches back into §31/§32 and likely explains §31e's R79/V83/H115 control failures (§33b–c) |
 | 35 | 08-19 | Leonard et al.'s protocol is a general computational route to new PYR1 specificity | read from their Methods: the pose comes from **"dock to sequence"**, in which the WT sequence is first **mutated to match a known low-affinity binder found by Y2H screening**. It also hard-filters on an H-bond to the latch water, which §23a measured mandipropamid to miss by **5.07–5.19 Å** | the method **improves a known weak hit**; it cannot start from a ligand alone, and applied to mandipropamid it would reject the correct pose. Our benchmark is strictly harder and comparisons must say so (§34a) |
+| 36 | 08-19 | the hydrogen-bond-as-clash bug explained §31e's R79/V83/H115 control failures | with the exemption applied those three fail at the **same** overlaps (0.65/0.69/1.12). The crystal R79 is now clash-free (0.306 → 0.000 Å) but no library **rotamer** reproduces it | §31e's original diagnosis — wrong chi basin — was right and my §33c speculation was wrong. The fix is still correct and matters at hard-sphere tolerance (WT-ok 12 → 16 of 26 at tol 0), but §31's and §32's verdicts are unchanged (§35) |
+| 37 | 08-19 | the K59R miss might be a sampling limit that backbone flexibility would fix | **coupled moves** — the method Kortemme built for exactly this benchmark, sampling sequence + side chains + backbone + ligand pose — recovers F108A at **+0.74** but retains K59 in **0 % of 50 trajectories in the ABA arm**, where the cognate ligand makes K59 unambiguously correct. Identical to fixed-backbone FastDesign | **scoring, confirmed by a second independent sampler.** Adding flexibility cannot recover K59R; any method using ref2015's desolvation on buried charge inherits it. Coupled moves still helps everywhere else — WT retention 29 % → 42 % (§36a) |
 
 ### Bugs caught before they cost anything
 
@@ -4784,3 +4786,104 @@ library), confirming that outside Leonard this field is screening, not design.
    intra-protein H-bond, not a modelling artefact.
 4. **Our benchmark is harder than Leonard's by construction.** They start from a
    weak hit; we start from the ligand. Any comparison must say so.
+
+---
+
+## 35. The hydrogen-bond-as-clash fix (2026-08-19)
+
+`scripts/lib_sterics.py` — one clash rule, now shared by 71, 72 and 73 so they
+cannot drift apart.
+
+**The bug.** A hard-sphere test treats every close approach as a clash, and a
+hydrogen bond *is* a close approach: donor–acceptor at 2.6–3.2 Å against a Bondi
+radius sum of 3.07 Å registers as ~0.4 Å of "overlap". The rule now exempts a pair
+when one atom can donate and the other accept, treating it as a clash only below
+**2.5 Å** — shorter than any real hydrogen bond, and below the 2.64 Å of the 4WVO
+Arg59 contact. Acceptor–acceptor and donor–donor pairs are **not** exempt, which is
+why donor and acceptor are tracked separately rather than collapsed to "polar".
+
+Unit-tested: donor/acceptor at 2.8 Å → exempt; acceptor/acceptor at 2.8 Å → 0.27 Å
+clash; donor/acceptor at 2.2 Å → 0.87 Å clash. On the real structure, R79's crystal
+side chain goes from **0.306 Å overlap to 0.000**.
+
+**What it changed — and what it did not.** It matters exactly where it should, at
+hard-sphere tolerance, and is invisible at the tolerances §31 actually used, because
+a 0.5 Å tolerance already absorbs a typical H-bond's 0.43 Å:
+
+| tol (Å) | WT-ok before | WT-ok after |
+|---|---|---|
+| 0.00 | 12/26 | **16/26** |
+| 0.25 | 21/26 | 21/26 |
+| 0.50 | 23/26 | 23/26 |
+
+§31's verdict is unchanged: mean |admissible| 14.7 / 14.1, Jaccard 0.84, still
+saturated and largely ligand-blind. §32's ranking barely moves — F108A rank 5
+(unchanged), V81I 150 → 147, F159L 75 → 81 — which is a useful stability check on
+that result rather than a revision of it.
+
+⚠ **CORRECTION to §33c.** I wrote that this bug was the "likely explanation" for
+§31e's R79/V83/H115 control failures. **It is not.** With the exemption applied,
+those three still fail at the same overlaps (0.65 / 0.69 / 1.12). The crystal R79 is
+now clash-free, but no *library rotamer* reproduces it — so §31e's original
+diagnosis, wrong chi basin, was right and the later speculation was wrong. The
+literature agreement in §34b (R79 H-bonds F52's carbonyl at >90 %) confirmed the
+chemistry, not my explanation of the control failure.
+
+## 36. Coupled moves: sampling is not what defeats K59
+
+`scripts/74_coupled_moves.py` + `74b`. Stage 1 re-run with the sampler the
+literature prescribes (§34): Ollikainen & Kortemme's **coupled moves**, which
+samples sequence, side chains, backbone **and the ligand's pose** together and gave
+a 5.75× improvement on exactly this task. Same designable positions, same two arms,
+same ligand-swap scoring rule as §23j — **only the sampler changed**.
+
+Job 27560390, 100 tasks on `cutlerlab`, 50 trajectories per arm × 1000 trials,
+`ligand_mode` on, backrub backbone mover, ref2015, all rc=0.
+
+| ground truth | f(mandi) | f(ABA) | delta | verdict |
+|---|---|---|---|---|
+| **F108A** | **0.74** | 0.00 | **+0.74** | recovered, cleanly ligand-conditional |
+| V81I | 0.08 | 0.28 | −0.20 | **inverted**, as in both stage-1 methods |
+| K59R | 0.00 | 0.00 | 0.00 | missed |
+| F159L | 0.00 | 0.00 | 0.00 | missed |
+
+### 36a. The pre-registered reading, applied
+
+§36 was registered before the run with two competing diagnoses and a rule for
+telling them apart: *K59R recovered ⇒ sampling was the limit; K59R still missed ⇒
+the scoring diagnosis stands and no sampler will fix it.*
+
+**K59R was missed, and the decisive number is the control.** In the ABA arm — with
+the **cognate** ligand, where K59 is unambiguously correct — coupled moves retains
+K59 in **0 % of 50 trajectories**. Identical to fixed-backbone FastDesign, and to
+every favour-native weight up to 1.5.
+
+That cannot be a sampling failure. Lysine is in every rotamer library, its native
+conformation is in the input pose, and `IncludeCurrent` was on. Backbone and ligand
+flexibility were added and it changed nothing. **The +10.1 REU Lazaridis–Karplus
+desolvation penalty for burying the ammonium (§23j) is confirmed as the cause, now
+by a second and methodologically independent sampler.**
+
+Coupled moves *is* better overall — WT retention rises from **29 % to 42 %** — so
+the flexibility helps everywhere except the one position whose problem is energetic.
+
+### 36b. Where each K59R miss now sits
+
+Four methods, four localisations, and they are no longer contradictory:
+
+| method | why it missed K59R |
+|---|---|
+| LigandMPNN (§23h) | learned prior; no mass on a non-clashing substitution |
+| Rosetta FastDesign (§23j) | **scoring** — buried-charge desolvation |
+| steric pairs (§32) | **category** — K59 does not clash at all |
+| electrostatic screen (§33b) | **sampling** — crystal Arg is non-rotameric, χ3 ≈ 100° |
+| **coupled moves (§36)** | **scoring, confirmed** — better sampling, same 0 % retention |
+
+§33b's sampling diagnosis was about *my* hand-rolled rotamer enumeration, and stands
+for that script. It was never a claim about the design stage, and §36 now closes the
+design stage: the limit there is the energy function, not the search.
+
+⚠ **What this rules out.** Adding flexibility — more rotamers, backbone moves,
+ligand moves — will not recover K59R. Any method that scores buried charge with
+ref2015's desolvation term inherits the same failure. That is a constraint on every
+future stage of this pipeline, and it is now measured twice rather than argued once.

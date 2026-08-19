@@ -70,13 +70,17 @@ from collections import defaultdict
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import lib_sterics as st            # noqa: E402  shared clash rule, H-bond aware
 ROOT = os.path.dirname(HERE)
 STAGE1 = os.path.join(ROOT, "data", "stage1")
 OUT = os.path.join(ROOT, "data", "pairwise")
 os.makedirs(OUT, exist_ok=True)
 
-VDW = {"C": 1.70, "N": 1.55, "O": 1.52, "S": 1.80, "F": 1.47, "CL": 1.75,
-       "BR": 1.85, "I": 1.98, "P": 1.80}
+# ⚠ Radii AND the clash rule now come from lib_sterics, so hydrogen bonds are no
+# longer scored as clashes here either (README 36). Before the change this script
+# penalised every polar contact it should have rewarded.
+VDW = st.VDW
 AA20 = ["ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU",
         "MET", "ASN", "PRO", "GLN", "ARG", "SER", "THR", "VAL", "TRP", "TYR"]
 BB = ("N", "CA", "C", "O")
@@ -102,29 +106,6 @@ def log(m):
     print(m, flush=True)
 
 
-def good_contacts(xyz, rad, exyz, erad):
-    """pairs in van der Waals CONTACT: touching, but not interpenetrating"""
-    if len(xyz) == 0 or len(exyz) == 0:
-        return 0
-    d = np.linalg.norm(xyz[:, None, :] - exyz[None, :, :], axis=2)
-    ov = (rad[:, None] + erad[None, :]) - d
-    return int(((ov >= -CONTACT_FAR) & (ov <= CONTACT_NEAR)).sum())
-
-
-def sum_overlap(xyz, rad, exyz, erad):
-    if len(xyz) == 0 or len(exyz) == 0:
-        return 0.0
-    d = np.linalg.norm(xyz[:, None, :] - exyz[None, :, :], axis=2)
-    return float(np.clip((rad[:, None] + erad[None, :]) - d, 0, None).sum())
-
-
-def max_overlap(xyz, rad, exyz, erad):
-    if len(xyz) == 0 or len(exyz) == 0:
-        return 0.0
-    d = np.linalg.norm(xyz[:, None, :] - exyz[None, :, :], axis=2)
-    return float(((rad[:, None] + erad[None, :]) - d).max())
-
-
 def analyse(tag, pdb, params):
     import pyrosetta
     from pyrosetta.rosetta.core.chemical import ChemicalManager
@@ -139,17 +120,17 @@ def analyse(tag, pdb, params):
     prot, lig = {}, None
     for i in range(1, pose.total_residue() + 1):
         r = pose.residue(i)
-        bbx, bbr, scx, scr = [], [], [], []
-        for a in range(1, r.natoms() + 1):
-            e = r.atom_type(a).element().strip().upper()
-            if e == "H":
-                continue
-            v = r.xyz(a)
-            nm = r.atom_name(a).strip()
-            (bbx if nm in BB else scx).append([v.x, v.y, v.z])
-            (bbr if nm in BB else scr).append(VDW.get(e, 1.7))
-        d = dict(idx=i, bbx=np.array(bbx).reshape(-1, 3), bbr=np.array(bbr),
-                 scx=np.array(scx).reshape(-1, 3), scr=np.array(scr),
+        allx, allr, allf = st.atom_arrays(r)
+        scx, scr, scf = st.atom_arrays(r, side_chain_only=True)
+        nsc = len(scx)
+        bbx, bbr, bbf = (allx[:len(allx) - nsc], allr[:len(allr) - nsc],
+                         allf[:len(allf) - nsc]) if nsc else (allx, allr, allf)
+        names = [r.atom_name(a).strip() for a in range(1, r.natoms() + 1)
+                 if r.atom_type(a).element().strip().upper() != "H"]
+        keep_bb = [k for k, n in enumerate(names) if n in BB]
+        keep_sc = [k for k, n in enumerate(names) if n not in BB]
+        d = dict(idx=i, bbx=allx[keep_bb], bbr=allr[keep_bb], bbf=allf[keep_bb],
+                 scx=allx[keep_sc], scr=allr[keep_sc], scf=allf[keep_sc],
                  name3=r.name3().strip())
         if r.is_protein():
             prot[pi.number(i)] = d
@@ -157,6 +138,7 @@ def analyse(tag, pdb, params):
             lig = d
     LX = np.vstack([lig["bbx"], lig["scx"]]) if len(lig["bbx"]) else lig["scx"]
     LR = np.concatenate([lig["bbr"], lig["scr"]]) if len(lig["bbr"]) else lig["scr"]
+    LF = np.concatenate([lig["bbf"], lig["scf"]]) if len(lig["bbf"]) else lig["scf"]
 
     pocket = sorted(n for n, d in prot.items()
                     if len(d["scx"]) and np.linalg.norm(
@@ -170,8 +152,11 @@ def analyse(tag, pdb, params):
                       for d in prot.values()])
     allr = np.concatenate([np.concatenate([d["bbr"], d["scr"]]) if len(d["scr"])
                            else d["bbr"] for d in prot.values()])
-    wt_ov = sum_overlap(LX, LR, allx, allr)
-    wt_ct = good_contacts(LX, LR, allx, allr)
+    allf = np.concatenate([np.concatenate([d["bbf"], d["scf"]]) if len(d["scf"])
+                           else d["bbf"] for d in prot.values()])
+    wt_ov = st.sum_overlap(LX, LR, LF, allx, allr, allf)
+    wt_ct = st.good_contacts(LX, LR, LF, allx, allr, allf,
+                             far=CONTACT_FAR, near=CONTACT_NEAR)
     log(f"  WT: lig_ov {wt_ov:.2f} A, contacts {wt_ct}")
 
     # ---- precompute rotamers ----
@@ -179,12 +164,13 @@ def analyse(tag, pdb, params):
     # against everything that is NOT a pocket side chain, and its clash against each
     # pocket side chain separately -- so a pair can drop exactly the two side chains
     # it replaces without recomputing anything.
-    nonpocket_x, nonpocket_r = [], []
+    nonpocket_x, nonpocket_r, nonpocket_f = [], [], []
     for n, d in prot.items():
-        nonpocket_x.append(d["bbx"]); nonpocket_r.append(d["bbr"])
+        nonpocket_x.append(d["bbx"]); nonpocket_r.append(d["bbr"]); nonpocket_f.append(d["bbf"])
         if n not in pocket and len(d["scx"]):
-            nonpocket_x.append(d["scx"]); nonpocket_r.append(d["scr"])
+            nonpocket_x.append(d["scx"]); nonpocket_r.append(d["scr"]); nonpocket_f.append(d["scf"])
     NPX, NPR = np.vstack(nonpocket_x), np.concatenate(nonpocket_r)
+    NPF = np.concatenate(nonpocket_f)
 
     rot = defaultdict(dict)
     for n in pocket:
@@ -200,7 +186,7 @@ def analyse(tag, pdb, params):
             off += k
             if m not in pocket and len(d["scx"]):
                 off += len(d["scx"])
-        EX, ER = NPX[keep], NPR[keep]
+        EX, ER, EF = NPX[keep], NPR[keep], NPF[keep]
         for aa in AA20:
             cands = []
             try:
@@ -210,41 +196,36 @@ def analyse(tag, pdb, params):
             for k in range(1, len(rots) + 1):
                 r = rots[k].clone()
                 r.orient_onto_residue(target)
-                xs, rs = [], []
-                for a in range(1, r.natoms() + 1):
-                    e = r.atom_type(a).element().strip().upper()
-                    nm = r.atom_name(a).strip()
-                    if e == "H" or nm in BB:
-                        continue
-                    v = r.xyz(a)
-                    xs.append([v.x, v.y, v.z]); rs.append(VDW.get(e, 1.7))
-                X, R = np.array(xs).reshape(-1, 3), np.array(rs)
-                if max_overlap(X, R, EX, ER) > TOL:
+                X, R, F = st.atom_arrays(r, side_chain_only=True)
+                if st.max_overlap(X, R, F, EX, ER, EF) > TOL:
                     continue                      # infeasible against fixed context
-                vs = {m: max_overlap(X, R, prot[m]["scx"], prot[m]["scr"])
+                vs = {m: st.max_overlap(X, R, F, prot[m]["scx"], prot[m]["scr"],
+                                        prot[m]["scf"])
                       for m in pocket if m != n and len(prot[m]["scx"])}
-                cands.append(dict(X=X, R=R,
-                                  lig=sum_overlap(X, R, LX, LR),
-                                  ct=good_contacts(LX, LR, X, R),
+                cands.append(dict(X=X, R=R, F=F,
+                                  lig=st.sum_overlap(X, R, F, LX, LR, LF),
+                                  ct=st.good_contacts(LX, LR, LF, X, R, F,
+                                                      far=CONTACT_FAR, near=CONTACT_NEAR),
                                   vs=vs))
             cands.sort(key=lambda c: c["lig"])
             rot[n][aa] = cands
     nrot = sum(len(v) for d in rot.values() for v in d.values())
     log(f"  precomputed {nrot} feasible rotamers over {len(pocket)}x{len(AA20)} slots")
-    return dict(pose=pose, prot=prot, pocket=pocket, LX=LX, LR=LR, rot=rot,
+    return dict(pose=pose, prot=prot, pocket=pocket, LX=LX, LR=LR, LF=LF, rot=rot,
                 wt_ov=wt_ov, wt_ct=wt_ct, NPX=NPX, NPR=NPR)
 
 
 def baseline(ctx, i, j):
     """ligand overlap and contacts from everything EXCEPT positions i and j"""
-    prot, LX, LR = ctx["prot"], ctx["LX"], ctx["LR"]
-    xs, rs = [], []
+    prot, LX, LR, LF = ctx["prot"], ctx["LX"], ctx["LR"], ctx["LF"]
+    xs, rs, fs = [], [], []
     for n, d in prot.items():
-        xs.append(d["bbx"]); rs.append(d["bbr"])
+        xs.append(d["bbx"]); rs.append(d["bbr"]); fs.append(d["bbf"])
         if n not in (i, j) and len(d["scx"]):
-            xs.append(d["scx"]); rs.append(d["scr"])
-    X, R = np.vstack(xs), np.concatenate(rs)
-    return sum_overlap(LX, LR, X, R), good_contacts(LX, LR, X, R)
+            xs.append(d["scx"]); rs.append(d["scr"]); fs.append(d["scf"])
+    X, R, F = np.vstack(xs), np.concatenate(rs), np.concatenate(fs)
+    return (st.sum_overlap(LX, LR, LF, X, R, F),
+            st.good_contacts(LX, LR, LF, X, R, F, far=CONTACT_FAR, near=CONTACT_NEAR))
 
 
 def best_single(ctx, n, aa):
@@ -311,8 +292,14 @@ def main():
             else:
                 Ri = np.concatenate([c["R"] for _, _, c in fi])
                 Rj = np.concatenate([c["R"] for _, _, c in fj])
+                Fi = np.concatenate([c["F"] for _, _, c in fi])
+                Fj = np.concatenate([c["F"] for _, _, c in fj])
                 D = np.linalg.norm(Xi[:, None, :] - Xj[None, :, :], axis=2)
                 OV = (Ri[:, None] + Rj[None, :]) - D
+                # same hydrogen-bond exemption between the two designed side chains
+                da = ((Fi[:, None] & st.DONOR) > 0) & ((Fj[None, :] & st.ACCEPTOR) > 0)
+                ad = ((Fi[:, None] & st.ACCEPTOR) > 0) & ((Fj[None, :] & st.DONOR) > 0)
+                OV = np.where((da | ad) & (D >= st.HBOND_MIN), -np.inf, OV)
                 # collapse atoms -> rotamers with grouped maxima (GLY has no atoms,
                 # so its group is empty and must default to "no clash", not -inf)
                 red = np.full((len(fi), len(fj)), -np.inf)

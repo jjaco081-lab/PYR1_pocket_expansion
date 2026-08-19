@@ -97,15 +97,16 @@ from collections import defaultdict
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import lib_sterics as st            # noqa: E402  one clash rule, shared
 ROOT = os.path.dirname(HERE)
 STAGE1 = os.path.join(ROOT, "data", "stage1")
 OUT = os.path.join(ROOT, "data", "admissibility")
 os.makedirs(OUT, exist_ok=True)
 
-# van der Waals radii, A (Bondi 1964). Explicit rather than borrowed from a score
-# function, because the point of this script is not to use one.
-VDW = {"C": 1.70, "N": 1.55, "O": 1.52, "S": 1.80, "F": 1.47, "CL": 1.75,
-       "BR": 1.85, "I": 1.98, "P": 1.80, "H": 1.20}
+# Radii and the clash rule both come from lib_sterics, so this script, 72 and 73
+# cannot drift apart -- and so the hydrogen-bond exemption applies everywhere at once.
+VDW = st.VDW
 AA20 = ["ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU",
         "MET", "ASN", "PRO", "GLN", "ARG", "SER", "THR", "VAL", "TRP", "TYR"]
 POCKET_CUTOFF = 5.0        # a position is "in the pocket" at this range from the ligand
@@ -141,19 +142,14 @@ def load(pdb, params):
 
 
 def pose_arrays(pose):
-    """per-residue heavy-atom coords and radii, plus the ligand's"""
+    """per-residue heavy-atom coords, radii and donor/acceptor flags, plus the ligand's"""
     res, lig = {}, None
     for i in range(1, pose.total_residue() + 1):
         r = pose.residue(i)
-        xyz, rad, nm = [], [], []
-        for a in range(1, r.natoms() + 1):
-            if r.atom_type(a).element().strip().upper() == "H":
-                continue
-            v = r.xyz(a)
-            xyz.append([v.x, v.y, v.z])
-            rad.append(VDW.get(r.atom_type(a).element().strip().upper(), 1.7))
-            nm.append(r.atom_name(a).strip())
-        d = dict(xyz=np.array(xyz), rad=np.array(rad), names=nm,
+        xyz, rad, flag = st.atom_arrays(r)
+        names = [r.atom_name(a).strip() for a in range(1, r.natoms() + 1)
+                 if r.atom_type(a).element().strip().upper() != "H"]
+        d = dict(xyz=xyz, rad=rad, flag=flag, names=names,
                  name3=r.name3().strip(), is_protein=r.is_protein())
         if r.is_protein():
             res[pose.pdb_info().number(i)] = (i, d)
@@ -177,41 +173,7 @@ def rotamer_objects(restype, target_res):
     return out
 
 
-def rotamer_side_chains(restype, target_res):
-    """
-    Side-chain heavy atoms of every backbone-independent rotamer of `restype`,
-    oriented onto the target position's backbone.
-
-    The library is used as a CATALOGUE OF OBSERVED GEOMETRIES, not as an energy
-    model -- no score function is consulted here or anywhere below.
-    """
-    from pyrosetta.rosetta.core.pack.rotamer_set import bb_independent_rotamers
-    out = []
-    try:
-        rots = bb_independent_rotamers(restype)
-    except Exception:
-        return out
-    for k in range(1, len(rots) + 1):
-        r = rots[k]
-        r.orient_onto_residue(target_res)
-        xyz, rad = [], []
-        for a in range(1, r.natoms() + 1):
-            nm = r.atom_name(a).strip()
-            if r.atom_type(a).element().strip().upper() == "H":
-                continue
-            if nm in ("N", "CA", "C", "O"):        # backbone is fixed, not placed
-                continue
-            v = r.xyz(a)
-            xyz.append([v.x, v.y, v.z])
-            rad.append(VDW.get(r.atom_type(a).element().strip().upper(), 1.7))
-        if xyz:
-            out.append((np.array(xyz), np.array(rad)))
-        else:
-            out.append((np.zeros((0, 3)), np.zeros(0)))   # GLY
-    return out
-
-
-def relaxed_overlap(pose, idx, rotamer_res, env_xyz, env_rad, sf_rep):
+def relaxed_overlap(pose, idx, rotamer_res, env, sf_rep):
     """Place one rotamer, chi-minimise it sterically, and re-measure the overlap.
 
     Backbone and every other residue are fixed; only this side chain's chi angles
@@ -227,25 +189,8 @@ def relaxed_overlap(pose, idx, rotamer_res, env_xyz, env_rad, sf_rep):
     mm.set_chi(False)
     mm.set_chi(idx, True)
     MinMover(mm, sf_rep, "lbfgs_armijo_nonmonotone", 1e-3, True).apply(work)
-    r = work.residue(idx)
-    xyz, rad = [], []
-    for a in range(1, r.natoms() + 1):
-        nm = r.atom_name(a).strip()
-        if r.atom_type(a).element().strip().upper() == "H" or nm in ("N", "CA", "C", "O"):
-            continue
-        v = r.xyz(a)
-        xyz.append([v.x, v.y, v.z])
-        rad.append(VDW.get(r.atom_type(a).element().strip().upper(), 1.7))
-    return max_overlap(np.array(xyz), np.array(rad), env_xyz, env_rad)
-
-
-def max_overlap(xyz, rad, env_xyz, env_rad):
-    """largest van der Waals interpenetration, A; 0 means no contact closer than touching"""
-    if len(xyz) == 0 or len(env_xyz) == 0:
-        return 0.0
-    d = np.linalg.norm(xyz[:, None, :] - env_xyz[None, :, :], axis=2)
-    ov = (rad[:, None] + env_rad[None, :]) - d
-    return float(ov.max())
+    x, rr, f = st.atom_arrays(work.residue(idx), side_chain_only=True)
+    return st.max_overlap(x, rr, f, *env)
 
 
 def main():
@@ -300,6 +245,7 @@ def main():
             # covalently joined, which the first version scored as a 2.05 A clash.
             env_xyz = [lig["xyz"]]
             env_rad = [lig["rad"]]
+            env_flag = [lig["flag"]]
             for onum, (oidx, od) in res.items():
                 if oidx == idx or len(od["xyz"]) == 0:
                     continue
@@ -310,10 +256,12 @@ def main():
                         continue
                     env_xyz.append(od["xyz"][keep])
                     env_rad.append(od["rad"][keep])
+                    env_flag.append(od["flag"][keep])
                 else:
                     env_xyz.append(od["xyz"])
                     env_rad.append(od["rad"])
-            E, R = np.vstack(env_xyz), np.concatenate(env_rad)
+                    env_flag.append(od["flag"])
+            E = (np.vstack(env_xyz), np.concatenate(env_rad), np.concatenate(env_flag))
             for aa in AA20:
                 objs = rotamer_objects(rts.name_map(aa), target)
                 if not objs:
@@ -321,16 +269,8 @@ def main():
                     continue
                 scored = []
                 for r in objs:
-                    xyz, rad = [], []
-                    for a in range(1, r.natoms() + 1):
-                        nm = r.atom_name(a).strip()
-                        if r.atom_type(a).element().strip().upper() == "H" \
-                                or nm in ("N", "CA", "C", "O"):
-                            continue
-                        v = r.xyz(a)
-                        xyz.append([v.x, v.y, v.z])
-                        rad.append(VDW.get(r.atom_type(a).element().strip().upper(), 1.7))
-                    scored.append((max_overlap(np.array(xyz), np.array(rad), E, R), r))
+                    x, rr, f = st.atom_arrays(r, side_chain_only=True)
+                    scored.append((st.max_overlap(x, rr, f, *E), r))
                 scored.sort(key=lambda t: t[0])
                 # Minimise the best FIVE rotamers, not just the best one. Chi
                 # minimisation is local, so a single start can settle into the wrong
@@ -338,7 +278,7 @@ def main():
                 # Five starts is still ~100x cheaper than minimising every rotamer.
                 best = scored[0][0]
                 for _, r in scored[:N_MIN_STARTS]:
-                    best = min(best, relaxed_overlap(pose, idx, r, E, R, sf_rep))
+                    best = min(best, relaxed_overlap(pose, idx, r, E, sf_rep))
                 adm[tag][num][aa] = (best, len(objs))
 
     # ---- controls ----
