@@ -1,0 +1,2162 @@
+ 
+ 
+Supplementary Materials for 
+ 
+Binding and sensing diverse small molecules using shape-complementary 
+pseudocycles 
+ 
+Linna An et al. 
+ 
+Corresponding authors: Linna An, linnaan@uw.edu; David Baker, dabaker@uw.edu 
+ 
+Science 385, 276 (2024) 
+DOI: 10.1126/science.adn3780 
+ 
+The PDF file includes: 
+ 
+Materials and Methods 
+Figs. S1 to S20 
+Tables S1 to S4 
+References 
+ 
+Other Supplementary Material for this manuscript includes the following: 
+ 
+MDAR Reproducibility Checklist 
+
+Figure S1 Computational design pipeline. 
+(a) The flowchart of the first computational step to identify scaffolds suitable with the each SM
+ligands; (b) The flowchart of the second computational step to focus on the verified suitable
+scaffold-ligand pair and sampling the docking and the interface pac king of the designed binder
+proteins; (c) The histogram plots comparison of MTX, T44 binders for order from the first step
+sampling (1st_round) v.s second step sampling (2nd_round). The contacts between the ligand and
+the protein got significant improvemen t through stepwise sampling.
+
+ 
+ 
+Figure S2 Characterization of the CHD and T44 binders from the first round of sampling. 
+The initial hits from the first step screening are shown in each panel, the design model, interface, 
+binding and competition assays from FP studies of the Two binders for CHD (a-b) and T44 (c-d). 
+The monomeric fraction of CHD_r2 was collected and marked with a star on the third panel in (b). 
+The designs were shown in cartoons, the ligand and key interacting residues were shown in sticks. 
+Oxygen, nitrogen, and sulfur were colored in red, blue, and yellow, respectively. 
+
+ 
+Figure S3 MTX and AMA binders from the first round of sampling. 
+The initial hits from the first step screening are shown in each panel, the design model, interface, 
+binding and competition assays from yeast surface display studies of the MTX (a-b) and AMA (c-
+d). Positive x-axis (BL1-A) representing protein expression, positive y-axis (YL1-A) representing 
+ligand binding. The yeast showed double positive signals (red for MTX, blue for AMA) when 
+ligand was added, and loss of y -axis (YL1-A) signals had no ligand presence (blue for MTX, 
+orange for AMA), suggesting potential ligand binding of the displayed binders. The design model 
+of the corresponding binder hits were shown in ca rtoons, the ligand and key interacting residues 
+were shown in sticks. Oxygen, nitrogen, and sulfur were colored in red, blue, and yellow, 
+respectively. 
+
+ 
+Figure S4. Target ligands. 
+(a-b) The structure and the tagged version of AMA (synthesized by WuXi Che mistry Service), 
+CHD (both commercially available), T44 (tagged version synthesized in house, no-tagged version 
+commercially available), MTX (commercially available for tagged and untagged). While both the 
+tagged structure of fluorescein -labeled MTX (MTX -fl), and biotinylated MTX (btn -MTX) is 
+commercially available, the structure was not reported, but the tagged site was reported, marked 
+in red. (e-f) Tagged version of folic acid (commercially available) and digoxigenin. Tagged site 
+marked in red. (g) The features of ligands designed against in this work and previous works. Only 
+ligands with affinity (Kd) and validation (SSM, binding competition, or crystallography) data are 
+included. More details of ligand features, see Table S4 . 
+ 
+
+ 
+ 
+Figure S5. Two-step predictor scores are correlated with scores after full design 
+One example of evaluation on how predictive the two-step predictor is. 1000 docks to CHD were 
+randomly selected to evaluable how the predictor works. For each set, the left panel is the scores 
+generated from score from predictor (x -axis) v.s. final PSSM -based Rosetta design protocol (y -
+axis). The right panel is the receiver operating characteristic curve (ROC) curve at different 
+quantiles to measure the predictiveness of the predictor script on the reported metric. The higher 
+the false positive rate (fpr) with the increase of true positive rate (tpr), the more predictive the 
+scripts are on the measured metric. The predictiveness at each quantile was also reported using 
+area under curve (AUC), and the higher the AUC, the better the predictions are. (a) The CMS of 
+input docks were clearly predicted well with predictor1; (b) The ‘CMS’, binding energy (‘ddg2’), 
+burial of the ligands (‘dsasa’ and ‘holes_around_lig’) and the protein quality (‘score_per_res’ ) 
+were highly predicted using the second predictor. 
+ 
+
+ 
+Figure S6. The other potential binding scaffold hits (not shown in Fig 1) from the first step 
+sampling. 
+During first step HTP binder screening, for MTX and AMA, we also identified other scaffolds 
+(apart from those shown in Fig 1b), which NGS enrichment suggested to be potential binders. 
+These scaffolds were also identified as scaffolds in hit ligand -scaffold pairs and were used for 
+second step computational sampling. Individual binders from these pseudocycle scaffolds were 
+not verified individually for prioritization of other better performing binders. (a) One other 
+potential binding pseudocycle scaffolds for MTX; (b) Two other potential binding pseudocycle 
+scaffolds for AMA. 
+ 
+
+ 
+ 
+Figure S7. The comparison of crystal structures of CHD_r1 complex and CHD_buttress 
+complex. 
+The crystal structure of CHD_r1 (a, c, d) and CHD_buttress (b, e, f). The electron density from 
+the 2Fo-Fc map at 1 σ level is shown in mesh and the refined crystal structure is shown in gray (a, 
+b). Ligand was not modeled in CHD_r1 (a, c, d) due to partial ligand electron density (c). 
+Composite omit map of interface region, 2mFo -DFc map at 1 σ level for CHD_buttress (e), 
+supporting ligand presence. The 2mFo -DFc map at 1 σ level for CHD_r1 (d) and CHD_buttress 
+(f) supported the modeling of the interface side chain, and the ligand and interface side chain 
+positions, respectively, which closely re sembled the designs. The ligand and the key interaction 
+rotamers are shown in sticks, where oxygen, nitrogen are colored in red and blue, respectively. 
+ 
+ 
+
+ 
+Figure S8. SEC profiles of 2nd round CHD binders. 
+SEC traces of all CHD binders chosen for off-yeast binding test are shown here. For traces where 
+multiple oligomeric states are present, the monomeric peaks collected for FP studies are marked 
+with stars. 
+ 
+
+ 
+Figure S9. Fluorescence polarization titrations for all 2nd round CHD binders 
+FP profiles for all 37 purified 2nd round CHD binders; also see Fig 3 . 
+ 
+
+ 
+Figure S10. Competition of 2nd round CHD binders on yeast surface by free CHD 
+The designs were displayed on the surface of yeast, using 5 μM CHD-fl for binding and 5 mM free 
+CHD for competition. The binder expressed yeast showed a positive PE signal (YL1 -A), and the 
+binding yeast showed a positive FITC signal (BL1 -A). All binder expressed yeast showed clear 
+strong double positive signals (blue), while weaker FITC signal upon free ligand competition 
+(orange), and only PE signals when no FITC -labeThe binder expressed yeast showed a positive 
+PE signal (YL1 -A), and the binding yeast showed a positive FITC signal (BL1 -A). All binder 
+expressed yeast showed clear strong double positive signal (blue), while weaker FITC signal upon 
+free ligand competition (orange), and only PE signal when no FITC-labeled ligand presence (red). 
+
+ 
+
+ 
+Figure S11. site saturation mutagenesis of CHD-d1 to CHD-d5. 
+SSM analyses were performed for CHD -d1 to CHD -d5 ( a-e). The interface residues were 
+analyzed, and those conserved were colored in teal. All SSMs showed high conservation are the 
+residues having contact with the ligand, supporting the designed conformations. The native 
+residues are listed on the x axial, and colored in black. The estimated binding affinity of each 
+mutant is colored based on y axial; the residue choices which may improve binding are more red, 
+while the residues jeopardizing the binding are more blue. The conserved residues are marked with 
+their residue numbers and colored in teal. 
+ 
+
+ 
+ 
+Figure S12. SPR analysis of additional 2nd round AMA binders not shown in Fig 3. 
+From left to right panel, the design model, SEC traces, and the SPR binding traces of AMA-d1 are 
+shown in each panel. The design models are shown in cartoons, the ligand and the key interacting 
+residues are shown in sticks. Oxygen, nitrogen are colored in red and blue, respectively. The 
+cartoon of and the residues from helix, sheet, and loops are colored in teal, magenta, and dark blue, 
+respectively. 
+ 
+
+ 
+Figure S13. SEC analysis of second round T44 binders 
+SEC traces of T44 binders chosen for off-yeast binding test from the second round of sampling are 
+shown here. For traces where multiple oligomeric states are present, the monomeric peaks 
+collected for FP studies are marked with stars. 
+ 
+
+ 
+Figure S14. FP analysis of 2nd round T44 binders. 
+FP profiles for all 10 purified 2nd round T44 binders; also see Fig 3. 
+ 
+
+ 
+Figure S15. Competition of T44 binding on the yeast surface by free ligand 
+The designs were displayed on the surface of yeast, using T44 -fl for binding and free T44 for 
+competition; specific concenadditionaltrations used are marked on the figure. The binder 
+expressed yeast showed a positive PE signal (YL1 -A), and the binding yeast showed a positi ve 
+FITC signal (BL1 -A). All binder expressed yeast showed clear strong double positive signals 
+(blue), while weaker FITC signal upon free ligand competition (orange), and only PE signals when 
+no FITC -labeled ligand presence (red). 
+ 
+
+ 
+ 
+Figure S16. Binding verification of MTX_d1 by site saturation mutagenesis 
+MTX-d1 showed clear binding competed by free MTX (a) on yeast. SSM analysis of MTX 
+supported the designed binding mode (b-d). In the SSM matrix figure (d), the native residues are 
+listed on the x axial, and colored in black. The estimated binding affinity of each mutant is colored 
+based on y axial; the residue choices which may improve binding are more red, while the residues 
+that jeopardize the binding are more blue. For the sorting competition assay in (a), the binder 
+expressed yeast showed a positive PE signal (YL1 -A), and the binding yeast showed a positive 
+FITC signal (BL1-A). The binder expressed yeast clearly showed a strong double positive signal 
+(blue), while weaker FITC signal upon free ligand competition (orange and green), and a PE-only 
+signal when no FITC -labeled ligand presence (red). Based on the SSM matrix (d), conservative 
+pocket residues are colored in magenta in (b), and the key conserved polar contacting residues are 
+shown in (c). The conserved residues are marked with their residue numbers and colored in teal. 
+
+ 
+Figure S17. Specificity test of designed binders. 
+The designed binders for CHD-d2, T44-d1, and CHD-d2 are challenged with ligands which they 
+are not designed against for binding tests (a). Binding curves to MTX -fl, CHD -fl, T44 -fl are 
+colored in black, teal, magenta, respectively. (b) MTX-d1 was challenged with folic acid -fl, 
+showing no binding; (c) CHD-d2 was challenged with digoxigenin-fl, showing no binding. 
+ 
+
+ 
+Figure S18. Circular dichroism data of selected binders. 
+The purified designs were measured for their CD characteristic under various temperatures, 
+specifically, 24 ℃ (blue), 34 ℃ (pink), 54 ℃ (orange), 94 ℃ (green), and refolded at 25 ℃ 
+(purple). The displayed designs were also predicted with SESCA CD prediction and the simulated 
+data were plotted in black(36). 
+
+ 
+Figure S19. Characterization of binder fused nanopore. 
+The original nanopore did not show obvious blocking in presence of the ligand (a). The binder 
+fused nanopore can transition to off states and can be reversed by reversing the voltage (b). Based 
+on the ligand blocking dwell times (c, cutoff of > 100 ms shown here), the Kd of the binder-fused 
+nanopore was estimated, which is in good agreement with reported Kd (CHD -r1, 5.3 ± 0.1 μM) 
+(d). See ‘Estimation of dissociation constant (Kd) from nanopore conductance measurements ’ 
+in Methods) . 
+ 
+ 
+
+ 
+Figure S20. The design procedure for buttrased binder. 
+(a) Design strategy . Single ring designs are broken into repeat units based on the structural 
+symmetry, and two helix buttresses were generated around each repeat protein using symmetric 
+diffusion. The resulting four helical repeat units were pieced back together to generate the final 
+buttrased scaffolds. ProteinMPNN was used to generate sequences. (b) The buttressed binder 
+purified as a monodisperse peak and had tighter binding affinity than the original binder, (CHD -
+r1, 5.3 ± 0.1 μM). Also see Fig S7 for the co -crystal structure of CHD_buttress with ligand. 
+ 
+
+ 
+Table S1. Computational statistics. 
+The numbers of the rotamer used, docks for ligandMPNN or Rosetta design, and final ordered 
+designs from both rounds, and the potential binder, the selected verified binders were reported. 
+‘Binders selected and verified using purified protein’ meaning, based on predicted affinity and the 
+resource, we choose a smaller number of binders to prioritize from all the NGS-verified binders to 
+purify and verify their binding affinity. 
+items CHD MTX T44 AMA 
+Rotamer number 112 28 21 1 
+Docks for long 
+design protocols 
+(1st step) 
+141,352 105,696 103,100 ~100,000 
+Ordered design 
+(1st step) 
+7,443 10,174 10,990 6,852 
+Docks for long 
+design protocols 
+(2nd step) 
+~100,000 ~100,000 489,306 62,211 
+Ordered design 
+(2nd step) 
+14,882 (5,574 from 
+PSSM-based 
+Rosetta design 
+methods, 9,308 
+from ligandMPNN 
+design method) 
+8,506 5,936 8,058 
+Binders based on 
+NGS (2nd step) 
+231 1 84 2 
+Binders selected 
+and verified using 
+purified protein 
+(2nd step) 
+37 1 10 2 
+ 
+Table S2. Summary of all reported binder in this paper. 
+The generation, characterization, sequence and structure similarity of each binder were reported 
+here. Sequence similarities were calculated using BLASTP, and structural similarities were 
+generated using Dali server (37). Pairwise similar identity (%idt) to the best hit was reported for 
+both structural and sequence similarity reports. 
+num
+ber 
+Binder Rou
+nd 
+Biochemica
+l 
+characteriz
+ation 
+Design 
+method 
+Structu
+ral 
+similar
+ity to 
+PDB50 
+Sequence similarity to 
+Uniprot50 
+Seque
+nce 
+simila
+rity to 
+closest 
+parent 
+1 CHD_r
+1 
+1 FP, 
+crystallogra
+phy, Yeast 
+surface 
+display, 
+SEC 
+PSSM-
+based 
+Rosetta 
+10% to 
+2L6X 
+40%idt with 48% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A84
+3FYG7 
+n.a 
+2 CHD_r
+2 
+1 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+10% to 
+2L6X 
+39%idt with 61% coverage 
+to UniRef50 
+RepID=>UniRef50_N9S0L
+1 
+n.a 
+3 T44_r1 1 FP, SEC PSSM-
+based 
+Rosetta 
+10% to 
+6ait-A 
+22%idt with 55% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A8H
+8XJC6 
+n.a 
+4 T44_r2 1 FP, SEC PSSM-
+based 
+Rosetta 
+10% to 
+6ait-A 
+33%idt with 44% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A1B
+1E0J0 
+n.a 
+5 AMA_
+r1 
+1 Yeast 
+surface 
+display 
+PSSM-
+based 
+Rosetta 
+14% to 
+5igh-A 
+37%idt with 49% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A1G
+5S3S9 
+n.a 
+6 AMA_
+r2 
+1 Yeast 
+surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+12% to 
+6veo-A 
+35%idt with 51% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A51
+7Y9K7 
+n.a 
+7 MTX_
+r1 
+1 Yeast 
+surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+4% 
+70kn-A 
+36%idt with 59% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A1Y
+3NG75 
+n.a 
+8 MTX_
+r2 
+1 Yeast 
+surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+9% to 
+70kn-A 
+32%idt with 52% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A52
+4MJS0 
+n.a 
+9 CHD_
+d1 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 26%idt with 40% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A7X
+1B1Q9 
+30%idt 
+with 
+54% 
+covera
+ge to 
+CHD_r
+1 
+10 CHD_
+d2 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 29%idt with 42% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A7V
+5LIS7 
+28%idt 
+with 
+55% 
+covera
+ge to 
+CHD_r
+1 
+11 CHD_
+d3 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 33%idt with 41% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A5N
+6LWE3 
+35%idt 
+with 
+65% 
+covera
+ge to 
+CHD_r
+2 
+12 CHD_
+d4 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 32%idt with 45% coverage 
+to UniRef50 
+RepID=A0A0B1RLI2_9NO
+CA 
+42%idt 
+with 
+58% 
+covera
+ge to 
+CHD_r
+1 
+13 CHD_
+d5 
+2 FP, SEC, 
+yeast surface 
+display 
+PSSM-
+based 
+Rosetta 
+n.a 29%idt with 45% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A7
+W1U1H0 
+44%idt 
+with 
+67% 
+covera
+ge to 
+CHD_r
+1 
+14 CHD_
+d6 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 30%idt with 37% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A17
+7KWZ7 
+37%idt 
+with 
+58% 
+covera
+ge to 
+CHD_r
+2 
+15 CHD_
+d7 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 26%idt with 51% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A35
+0JEW0 
+26%idt 
+with 
+41% 
+covera
+ge to 
+CHD_r
+1 
+16 CHD_
+d8 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 26%idt with 32% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A25
+6Y4E2 
+36%idt 
+with 
+55% 
+covera
+ge to 
+CHD_r
+2 
+17 CHD_
+d9 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 28%idt with 42% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A3Q
+3H3H9 
+40%idt 
+with 
+72% 
+covera
+ge to 
+CHD_r
+1 
+18 CHD_
+d10 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 32%idt with 37% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A5C
+3FD80 
+36%idt 
+with 
+79% 
+covera
+ge to 
+CHD_r
+2 
+19 CHD_
+d11 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 29%idt with 49% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A84
+3BT52 
+38%idt 
+with 
+60% 
+covera
+ge to 
+CHD_r
+1 
+20 CHD_
+d12 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 28%idt with 41% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A2Z
+5T4F6 
+51%idt 
+with 
+86% 
+covera
+ge to 
+CHD_r
+1 
+21 CHD_
+d13 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 32%idt with 44% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A0M
+2PYL4 
+28%idt 
+with 
+51% 
+covera
+ge to 
+CHD_r
+1 
+22 CHD_
+d14 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 31%idt with 33% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A1I2
+G9I0 
+36%idt 
+with 
+64% 
+covera
+ge to 
+CHD_r
+2 
+23 CHD_
+d15 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 42%idt with 64% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A6P
+8C3U5 
+40%idt 
+with 
+66% 
+covera
+ge to 
+CHD_r
+2 
+24 CHD_
+d16 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 23%idt with 44% coverage 
+to UniRef50 
+RepID=>UniRef50_I1C0H3 
+29%idt 
+with 
+56% 
+covera
+ge to 
+CHD_r
+1 
+25 CHD_
+d17 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 28%idt with 50% coverage 
+to UniRef50 
+RepID=>UniRef50_K1PVQ
+4 
+33%idt 
+with 
+67% 
+covera
+ge to 
+CHD_r
+2 
+26 CHD_
+d18 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 42%idt with 52% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A4Y
+2LRW9 
+56%idt 
+with 
+72% 
+covera
+ge to 
+CHD_r
+1 
+27 CHD_
+d19 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 26%idt with 44% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A3Q
+3H3H9 
+35%idt 
+with 
+50% 
+covera
+ge to 
+CHD_r
+1 
+28 CHD_
+d20 
+2 FP, SEC PSSM-
+based 
+Rosetta 
+n.a 34%idt with 64% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A65
+4GKB2 
+56%idt 
+with 
+78% 
+covera
+ge to 
+CHD_r
+2 
+29 CHD_
+d21 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 24%idt with 55% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A7R
+8ZID3 
+53%idt 
+with 
+78% 
+covera
+ge to 
+CHD_r
+1 
+30 CHD_
+d22 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 31%idt with 45% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A17
+3XYP3 
+32%idt 
+with 
+45% 
+covera
+ge to 
+CHD_r
+1 
+31 CHD_
+d23 
+2 FP, SEC PSSM-
+based 
+Rosetta 
+n.a 22%idt with 28% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A80
+6DV92 
+33%idt 
+with 
+55% 
+covera
+ge to 
+CHD_r
+1 
+32 CHD_
+d24 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 27%idt with 35% coverage 
+to UniRef50 
+RepID=>UniRef50_UPI000
+E68460F 
+39%idt 
+with 
+61% 
+covera
+ge to 
+CHD_r
+1 
+33 CHD_
+d25 
+2 FP, SEC PSSM-
+based 
+Rosetta 
+n.a 30%idt with 36% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A6G
+1GIV4 
+29%idt 
+with 
+56% 
+covera
+ge to 
+CHD_r
+2 
+34 CHD_
+d26 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 41%idt with 57% coverage 
+to UniRef50 
+RepID=>UniRef50_UPI001
+6673335 
+37%idt 
+with 
+62% 
+covera
+ge to 
+CHD_r
+1 
+35 CHD_
+d27 
+2 FP, SEC PSSM-
+based 
+Rosetta 
+n.a 34%idt with 46% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A3D
+4MUW3 
+36%idt 
+with 
+57% 
+covera
+ge to 
+CHD_r
+2 
+36 CHD_
+d28 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 28%idt with 32% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A7X
+7GV99 
+37%idt 
+with 
+60% 
+covera
+ge to 
+CHD_r
+2 
+37 CHD_
+d29 
+2 FP, SEC PSSM-
+based 
+Rosetta 
+n.a 28%idt with 36% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A6S
+7ITZ3 
+39%idt 
+with 
+61% 
+covera
+ge to 
+CHD_r
+1 
+38 CHD_
+d30 
+2 FP, SEC PSSM-
+based 
+Rosetta 
+n.a 27%idt with 39% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A51
+8K765 
+48%idt 
+with 
+64% 
+covera
+ge to 
+CHD_r
+1 
+39 CHD_
+d31 
+2 FP, SEC PSSM-
+based 
+Rosetta 
+n.a 34%idt with 32% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A3M
+7S8C3 
+35%idt 
+with 
+51% 
+covera
+ge to 
+CHD_r
+2 
+40 CHD_
+d32 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 34%idt with 45% coverage 
+to UniRef50 
+RepID=>UniRef50_UPI000
+711C2C5 
+52%idt 
+with 
+76% 
+covera
+ge to 
+CHD_r
+2 
+41 CHD_
+d33 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 30%idt with 60% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A5C
+5V838 
+47%idt 
+with 
+72% 
+covera
+ge to 
+CHD_r
+1 
+42 CHD_
+d34 
+2 FP, SEC PSSM-
+based 
+Rosetta 
+n.a 24%idt with 53% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A4U
+0VE94 
+54%idt 
+with 
+77% 
+covera
+ge to 
+CHD_r
+1 
+43 CHD_
+d35 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 37%idt with 32% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A1F
+9HRL8 
+41%idt 
+with 
+63% 
+covera
+ge to 
+CHD_r
+1 
+44 CHD_
+d36 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 36%idt with 47% coverage 
+to UniRef50 
+RepID=>UniRef50_Q0UZJ
+0 
+38%idt 
+with 
+66% 
+covera
+ge to 
+CHD_r
+1 
+45 CHD_
+d37 
+2 FP, SEC Repetitiv
+e 
+ligandM
+PNN 
+n.a 32%idt with 36% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A7S
+3WRZ2 
+33%idt 
+with 
+61% 
+covera
+ge to 
+CHD_r
+1 
+46 MTX_
+d1 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 32%idt with 36% coverage 
+to UniRef50 
+RepID=>UniRef50_E3HCG
+3 
+43%idt 
+with 
+57% 
+covera
+ge to 
+MTX_
+r1 
+47 AMA_
+d1 
+2 SPR, SEC, 
+yeast surface 
+display 
+PSSM-
+based 
+Rosetta 
+n.a 37%idt with 49% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A1G
+5S3S9 
+44%idt 
+with 
+67% 
+covera
+ge to 
+MTX_
+r1 
+48 AMA_
+d2 
+2 SPR, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 35%idt with 51% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A51
+7Y9K7 
+33%idt 
+with 
+61% 
+covera
+ge to 
+AMA_
+r2 
+49 T44_d
+1 
+2 FP, SEC, 
+yeast surface 
+display 
+PSSM-
+based 
+Rosetta 
+n.a 34%idt with 43% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A4P
+7A274 
+67%idt 
+with 
+83% 
+covera
+ge to 
+T44_r1 
+50 T44_d
+2 
+2 FP, SEC, 
+yeast surface 
+display 
+PSSM-
+based 
+Rosetta 
+n.a 24%idt with 31% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A8H
+8JH58 
+65%idt 
+with 
+85% 
+covera
+ge to 
+T44_r1 
+51 T44_d
+3 
+2 FP, SEC, 
+yeast surface 
+display 
+PSSM-
+based 
+Rosetta 
+n.a 28%idt with 25% coverage 
+to UniRef50 
+RepID=>UniRef50_R7RX9
+4 
+68%idt 
+with 
+84% 
+covera
+ge to 
+T44_r1 
+52 T44_d
+4 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 31%idt with 42% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A7C
+2MB67 
+54%idt 
+with 
+74% 
+covera
+ge to 
+T44_r2 
+53 T44_d
+5 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 33%idt with 57% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A7S
+3ML05 
+48%idt 
+with 
+65% 
+covera
+ge to 
+T44_r2 
+54 T44_d
+6 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 21%idt with 49% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A6A
+4XWT8 
+48%idt 
+with 
+71% 
+covera
+ge to 
+T44_r1 
+55 T44_d
+7 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 
+31%idt with 37% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A6N
+6S117 
+69%idt 
+with 
+88% 
+covera
+ge to 
+T44_r1 
+56 T44_d
+8 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 31%idt with 35% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A6I7
+PU97 
+52%idt 
+with 
+73% 
+covera
+ge to 
+T44_r2 
+57 T44_d
+9 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 30%idt with 40% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A39
+7TFF8 
+52%idt 
+with 
+75% 
+covera
+ge to 
+T44_r2 
+58 T44_d
+10 
+2 FP, SEC, 
+yeast surface 
+display 
+Repetitiv
+e 
+ligandM
+PNN 
+n.a 26%idt with 34% coverage 
+to UniRef50 
+RepID=>UniRef50_A0A1H
+8UAJ6 
+46%idt 
+with 
+70% 
+covera
+ge to 
+T44_r1 
+*Structural similarity described as %idt 
+Table S3. Data collection and refinement statistics for co-crystal structures. 
+ CHD_r1 (PDB: 8VEI) CHD_buttress (PDB:8VEJ) 
+Wavelength 0.9791 0.9201 
+Resolution range 42.56 - 2.03 (2.18 - 2.03) 29.14 - 3.59 (3.71 - 3.5) 
+Space group C 2 2 21 P 21 
+Unit cell 46.24, 57.82, 85.12; 90, 90, 90 72.61, 45.97, 73.66; 90, 
+104.05, 90 
+Unique reflections 7672 (1480) 4892 (483) 
+Multiplicity 12.8 (12.8) 2.1 (2.0) 
+Completeness (%) 99.79 (99.60) 85.8 (87.5) 
+Mean I/sigma(I) 9.7 (1.8) 4.6 (1.5) 
+Wilson B-factor 40.59 100.41 
+R-merge 0.247 (1.420) 0.143 (0.680) 
+R-pim 0.069 (0.406) 0.112 (0.551) 
+CC1/2 0.998 (0.831) 0.991 (0.510) 
+Reflections used in 
+refinement 
+7649 (741) 4894 (483) 
+Reflections used for R-free 765 (75) 484 (49) 
+R-work 0.2268 (0.3311) 0.2391 (0.278) 
+R-free 0.2638(0.3461) 0.2797 (0.353) 
+Number of non -hydrogen 
+atoms 
+1030 3713 
+ macromolecules 997 3655 
+ ligands n/a 58 
+ solvent 33 0 
+Protein residues 117 482 
+RMS(bonds) 0.002 0.003 
+RMS(angles) 0.44 0.55 
+Ramachandran favored (%) 99.13 96.17 
+Ramachandran allowed (%) 0.87 3.62 
+Ramachandran outliers (%) 0.00 0.21 
+Average B-factor 58 94 
+ macromolecules 58 95 
+ ligands n/a 60 
+ solvent 59 n/a 
+ 
+Table S4. Ligand complexity characterization. 
+The features of Ligands from previous and current work (green) of SM binder designs are extracted 
+from PubChem(38) or counted (for AMA) and listed here. Only ligands with binders with affinity 
+reported and some binding pose validations (SSM, competition, or crystallization) are included 
+here. 
+*max_total_hb equals addition of the number of hydrogen bond donors and the number of 
+hydrogen bond acceptors. 
+Full_na
+me 
+PDB_co
+de 
+max_total
+_hb* 
+flexible_b
+onds mass XLogP3-
+AA publication scaffold 
+methotre
+xate MTX 17 9 454.2 -1.8 this barrel-like 
+pseudocycle 
+Cholic 
+acid CHD 9 4 408.6 3.6 this 6 helical bundle-
+like pseudocycle 
+L-
+thyroxin
+e 
+T44 8 5 776.9 2.4 this 4 helical bundle-
+like pseudocycle 
+AMA** AMA 14 4 520.5 \ this bowl-like 
+pseudocycle 
+Digoxig
+enin DIG 8 1 390.5 1.1 
+Tinberg, 
+Nature, 
+2013; Lee, 
+biorXiv, 
+2023. 
+NTF2 
+fentanyl 7v7 1 6 336.5 4 Bick, eLife, 
+2017 
+Native scaffold 
+redesign 
+Apixaba
+n APX 6 5 459.5 2.2 Polizzi, 
+Nature, 2020 four helical bundle 
+DFHBI 1TU 6 1 252.2 1.4 Dou, Nature, 
+2018 beta barrel 
+cortisol COR 8 2 362.5 1.6 
+Lee, 
+biorXiv, 
+2023 
+NTF2 
+Rocuron
+ium RBR 6 6 529.4 5 
+Lee, 
+biorXiv, 
+2023 
+NTF2 
+Warfarin SWF 5 4 308.3 2.7 Lee, NTF2 
+biorXiv, 
+2023 
+7-Ethyl-
+10-
+hydroxy
+camptot
+hecin 
+SN-38 8 2 382.4 1.4 
+Lee, 
+biorXiv, 
+2023 
+NTF2 
+Rucapari
+b PRB 7 3 323.4 2.5 
+Lu, Science, 
+2024 four helical bundle 
+Mefupar
+ib MEB 7 4 298.31 2.3 
+Lu, Science, 
+2024 four helical bundle 
+Nirapari
+b 3JD 7 1 320.4 2.2 
+Lu, Science, 
+2024 four helical bundle 
+Velipari
+b 78P 9 1 244.29 0.4 
+Lu, Science, 
+2024 four helical bundle 
+ 
+Materials and Methods 
+Stepwise SM binder design pipeline in detail 
+All scripts on stepwise SC -optimizing SM binder design pipeline are available at github: 
+https://github.com/LAnAlchemist/Pseudocycle_small_molecule_binder. 
+All binders were designed using the same computational pipeline unless specified otherwise. 
+Ligand preparation for computational processing 
+The 3D structure of the ligands were first taken from PDB or generated using ChemDraw 3D. The 
+hydrogens were added using OpenBabel (39), and edited with VMD (40) for correct chemical 
+structures and protonation states. Around 300-700 rotamers were generated for each ligand using 
+RDKit(41). All rotamers were then relaxed using Rosetta with constraint, and scored for ddG. The 
+scored rotamers were also aligned using RDKit, function ‘Chem.rdMolAlign’, and clustered based 
+on r.m.s.d, using cutoff at 1.5 Å. The rotamer with low est Rosetta energy from each cluster was 
+selected as the starting point. The final selected rotamers are all physically allowed, but not 
+necessarily the lowest -energy rotamers among all possible rotamers. The parameter file of each 
+ligand based on ‘ref2015 ’, ‘genpot’(42) score functions were generated using Rosetta. The only 
+exception is AMA for which the design model from Salveson et al was used in the design 
+calculations(20). 
+First step SC-optimizing sampling 
+The previously published 9838 pseucocles were reduced to 9,703 based on protein length; only 
+proteins with length shorter than 155 aa were used for the following design work due to the 
+limitation of the oligo library synthesis availability. The pocket residues of pseudocycles were 
+annotated using in-house python script which identifies the largest internal cavity bounded by the 
+protein after converting the protein to polyalanine and then identifies all side chain residues 
+contacting this internal cavity(9). 
+All rotamers of all four ligands were first docked to 9,703 pseudocycles using RIFgen/RIFdock 
+suite(3) using the same docking protocol as the previous publication (9). Considering the aim of 
+the first sampling step is to identify suitable scaffold for each ligand, to save resources, only 10 
+docks were requested between each ligand rotamer to each pseudocycle scaffold. 
+Predictor to select best docks 
+All docks obtained from the previous step were collected and the interfaces (a.k.a ligand and the 
+pocket residues) were designed using a quick design and score Rosetta protocol 
+(‘FastPredictor_v2_talaris_ligand.xml’). The interface except for the previously seeded rifres was 
+quickly packed with big hydrophobic residues (a.k.a Val, Leu, ILE, PHE, TYR) using score 
+function ‘talaris2014’. No Rosetta relaxation was performed, and only 
+‘contact_molecular_surface’ (CMS) was scored to save time. On average, 10 docks takes ~ 1 CPU 
+second to score. The CMS scores were collected and ranked from highest to lowest. Docks at 
+different CMS ranks were pulled out for manual inspection, and a cutoff CMS score was selected 
+based on how well the ligand contacts with the scaffold. Usually 30 -50% of the docks were 
+dropped at this stage. 
+The selected docks were designed and scored again using another relatively quick design and score 
+Rosetta protocol. The interface except for the previously seeded rif res were packed using layer 
+design protocol (‘LA_quick_design_select_dock_genpot.xml’). On average, 1 dock takes ~ 10 
+CPU seconds to score. ‘CMS’, ‘dsasa’, ‘ddg’ (a.k.a ‘ddg_norepack’ in the protocol), 
+‘holes_around_lig’ were used as major criterias to select final docks for design. The features were 
+scored and ranked, and cutoffs were selected by manual inspection of docks at different ranks. The 
+low cutoff, low cutoff, high cutoff, and high cutoff were selected for the abovementioned metrics, 
+respectively. 
+Parallel to the second predictor step, we also check the ligand tail atom burial depth to avoid over-
+burial of the ligand to allow labeled-ligand binding. The ligand tail atom is defined as the first non-
+hydrogen atom from the linker region that is directly linked to the ligand non-hydrogen atom. We 
+use a Rosetta-based script to quickly relax the linker-added ligand, and measure the tail atom burial 
+depth using the `atomic_depth` function in pyrosetta. On average, 1 dock takes ~ 5 CPU seconds 
+to score. The `atomic_depth` was s cored, ranked, and the cutoff was selected based on manual 
+inspection of docks at different ranks. Generally, a cutoff of 6 - 7 Å was chosen and we do not 
+observe noticeable loss of docks at this step (commonly fewer than 5%). The depth detection script 
+is available at the pseudocycle binder github repository. 
+All docks post first predictor were also taken and measured the potential ligand tail atom burial to 
+avoid designs with too buried ligands. 
+All scores generated from predictor protocol scripts were found to be statistically highly correlated 
+with the scores generated from the actual design protocols, which indicates the 2-step predictor is 
+a good method to rank docks and select good docks to improve computational design efficiency 
+(Fig S5). 
+PSSM-based Rosetta design protocol 
+One PSSM file was generated for each pseudocycle scaffold using ProteinMPNN (11). 100 
+sequences were generated for each pseudocycle scaffold using ProteinMPNN with temperature at 
+0.2 to increase sequence diversity. The PSSM score at each position of each amino acid type was 
+calculated through comparin g proteinMPNN generated frequency (p_observed) to that of 
+BLOSUM62 amino acid background frequency (p_background). The calculation equation is: 
+Pssm_score = 2*log_2(p_observed/p_background) 
+Where p_observed is the frequency of the particular amino acid typ e observed at the specified 
+location. 
+Two rounds of FastDesign were performed with the sequence biased using PSSM 
+(‘design_ligand_full_noHBNet_1.py’). For a 120-aa protein, usually it takes 15 min CPU time for 
+each design and score. Because the quality of both the protein model (as assessed by AF2 (12)), 
+and the ligand docks (selected by the two -step ` predictor`) were high at this point, for both 
+protocols, strong constraints were added to disallow significant movements of the protein 
+backbone or the ligand docking conformation. 
+Iterative ligandMPNN design protocol 
+The output of the PSSM -based Rosetta designed proteins were used as input for repetitive 
+ligandMPNN design protocol (‘ligMPNN_FR_silent_in.py’). All short range interactions seeded 
+from the previous design and RIFdock (polar interactions, π -π interactions) were kept in the first 
+round of ligandMPNN design, while all residues were allowed for design during the second and 
+third round of ligandMPNN design. Rosetta minimization with strong ligand -protein constraints 
+were performed between ligandMPNN runs to remove potenti al unideal local interactions while 
+preserving the ligand docking pose and protein backbone conformations. Temperature of 0.2 and 
+polar/nonpolar bias were used to increase the sequence diversity and polar interface building bias. 
+Selection of designs for ordering 
+All designs were pooled together and filtered with the same criteria. Rosetta metrics including 
+‘CMS’, ‘ddg2’, ‘hole_around_lig’, ‘dsasa’, ‘total_hb_to_lig’ were used for design judgements. 
+Designs with different scores of above-mentioned metrics were manually inspected for low cutoff, 
+high cutoff, high cutoff, low cutoff, and low cutoff selection, respectively. The proteins of designs 
+passed Rosetta filters were then first scored using AF2, and only designs with pLDDT (predicted 
+local distance difference test) above 85, predicted Cꭤ-r.m.s.d smaller than 1 or 1.5 Å were ordered. 
+The second step SC-optimizing sampling 
+The pseudocycle scaffold-ligand pair identified from the first stem sampling and showed potential 
+binding in the laboratory (Fig 1c-f, S2, S3, S6) were used for the second computational sampling 
+step. The same second step of the sampling pipeline was used for all ligands. First, the hit scaffolds 
+were taken and resampled through generating 1000 sequences using proteinMPNN and folded 
+using AF2. Only AF2 models (model 4) predicted to be within C ɑ-r.m.s.d 3 Å, plDDT above 90, 
+predicted template modeling score (pTM) above 0.65 were taken as the newly resampled models 
+for next docking and design step. 
+The same docking procedure was used between each ligand rotamers and their hit scaffolds, except 
+for 1000-1500 docks were requested. The same two -step predictor protocol was used to identify 
+good docks for actual design protocols, which the selection criteria were changed to using the 
+scores from the previous hits. The same sequence design protocols and filter steps were used, 
+except for most of the selection criteria were taken from the previous hits. 
+Once optimal scaffold topologies were identified for each ligand in the first round, the success rate 
+in the second design round was significantly higher than in previous studies using a single protein 
+family for ligand binding(2–7). For easier targets, such as CHD, after NGS analysis, we confirmed 
+231 binders from 14,882 designs, with a 1.55% success rate. For the flexible T44, 84 binders were 
+obtained based on NGS data from 5,936 designs, a 1.42% success rate. Both are significantly 
+higher than previous studies where a single family of proteins were used for ligand binder design(3, 
+7). 
+With further data on optimal pseudocycle geometries for different target ligands, it should become 
+possible to identify optimal scaffolds for a given ligand comp utationally which could obviate the 
+need for the initial design round, considerably streamlining the design process (the 
+‘contact_molecular_surface’, measuring protein -ligand contacts, is significantly higher for the 
+round 1 designs with binding activity, but more data is needed to set thresholds; Fig S1c). 
+Some statistics about the computational steps 
+The actual computational resources needed for each ligand highly varies based on the complexity 
+of the ligand, such as comformer number, polar atom number, etc. Usually, the bigger, more 
+flexible, and more polar the ligands go, a higher sampling space is needed, and the computational 
+resource consumed would be higher. This increase usually does not go linearly. Additionally, the 
+speed of most computational steps are also tied to the size of the proteins. To provide method for 
+the readers to estimate the computational resources they needed, step -wise resources are listed 
+below, the ligands and the general protein size (90-150 aa) in this study are used as reference: 
+RIFGen: ~ 1-2 CPU hour per conformer (I/O tied instead of computing time-tied) 
+RIFdock: < 5 CPU min per conformer for 1 scaffold, providing 100 docking output. (I/O tied 
+instead of computing time-tied) 
+1st step predictor: 0.1 CPU sec/dock 
+2nd step predictor: 10 CPU sec/dock 
+pssm-based Rosetta design: ~ 10-15 CPU min/dock 
+iterative ligandMPNN design: ~ 5-10 CPU min/dock 
+Rosetta relax and scoring: ~ 5 CPU min/design 
+AF2 prediction: usually you can load the model once and batch your input together and run 
+prediction. ~ 20 GPU sec/design 
+Preparation of the FITC-labeled SM target 
+Free CHD (1133503 -200MG), T44 (T2376 -1G), MTX (454126 -100MG) were purchased from 
+Sigma-Aldrich (St. Louis, MO). MTX -fl was purchased from Thermo Fisher (M1198MP, 
+Bothwell, WA). MTX-btn (M260670) was purchased from Toronto Research Chemicals. CHD-fl 
+was purchased from Life Sciences (#451041). Biotinylated AMA were synthesized, purified, and 
+verified by WuXi Chemistry AppTec, Inc. Folic acid -fl (PG2 -FAFC-2k) was purchased from 
+Nanocs. 
+Preparation of the FITC -labeled T44 was performed as previously described with some slight 
+modifications(43). Briefly, L -thyroxine was incubated directly with N -hydroxysuccinimide-
+fluorescein (2 eq.) and N,N -diisopropoylethylamine (4 eq.) in dimethylformamide (DMF) for 4 
+hours. Following conversion to the fluorescent prod uct, which was confirmed by mass 
+spectrometry, the reaction was rotavapored to remove DMF, resuspended in acetonitrile and water, 
+and purified by reverse -phase high -performance liquid chromatography to yield FITC -labeled 
+T44. 
+All ligands were stored follow ing commercial instructions, or in 30% (v/v) dimethyl sulfoxide 
+(DMSO)/water at -20 ℃ for long-term storage. 
+High-throughput methods for binder identification 
+All library oligos were purchased from Twist Bioscience (South San Francisco, CA). The KAPA 
+HiFi HotStart Uracil+ReadyMix (KK2802) and KAPA HiFi HotStart Kit (KK2101) were 
+purchased from Roche (Basel, Switzerland). All gene fragments were purchased from Twist 
+Bioscience (South San Francisco, CA) or IDT (Coralville, IA). The EvaGreen Dye, 20 x in water 
+(#31000), was purchased from Biotium (Fremont, CA). The USER enzyme (NEB#M5508) and 
+the NEBNext End Repair Module (E6050L) were purchased from New England BioLabs (Ipswich, 
+MA). All DNA purification kits were purchased from QIAgen (Hilden, Germany). All c hemicals 
+and consumables were purchased from Thermo Fisher (Bothell, WA), unless specified otherwise. 
+The anti-cMyc-R,Phycoerythrin (anti-cMyc-PE) was purchased from Cell Signaling Technologies 
+(Danvers, MA). All tagged and free ligands were described in ‘ Preparation of the FITC-labeled 
+SM target’ in Methods. 
+Yeast surface display library preparation 
+The designed proteins were reverse transcribed using DNAworks(44) with avoidance of common 
+restriction enzyme cut sites. The nucleotide sequences were then broken into two parts (5’ part, 3’ 
+part) with common complementary sequences in the middle for assembly using an in-house python 
+script. The designs were separated into different groups of around 1000 based on length to avoid 
+quantitative PCR (qPCR) bias caused by oligo length differences. The primers complementary to 
+the pETCON3 yeast surface display vectors were added to the 5’ of the 5’ part and 3’ of the 3’ 
+part. Inner primers with AA, TT in the middle were padded to the 3’ of the 5’ part and 5’ of the 3’ 
+part to facilitate library PCR. The 250 and 300 nt oligo pools were ordered from Twist Bioscience 
+depending on the protein length. 
+The purchased oligo pools were dissolved in water to prepare 100 ng/μL stock solution and stored 
+at -20 ℃. The oligo pool stock was diluted to 2.5 ng/μL in water for qPCR experiments. The 
+individual 5’-parts and 3’ -parts were amplified using designed primers following commercially 
+available protocol from KAPA HiFi HotStart Uracil+ReadyMix. DNA was purified using a PCR 
+purification kit in between the qPCR runs. The inner primers of individual parts were removed 
+using USER enzymes and the NEBNext End Repair Module following commercially available 
+protocols. After DNA purification, the digested 5’ -parts and 3’ -parts were assembled using the 
+same qPCR protocol, and the assembled oligo pools were checke d using DNA electrophoresis. 
+The designed DNA bands were cut from gels and purified for amplification. Roughly 4 -6 μg of 
+oligo pools were used for electrocompetent yeast transformation for a library with complexity 
+between 5,000-10,000. The oligo pool and the linearized pETCON3 vector were added to yeast at 
+a ratio of 3:1 and the electro -transfer protocol for the yeast library was used for transformation 
+following the previously published protocol(45). 
+Yeast surface display experiment for enrichment of the potential binders 
+The previously established yeast surface display protocol was followed with minor 
+modification(45). PBSF, PBS with 0.1% (w/v) Bovine Serum Albumin (BSA), were used as all 
+yeast sorting buffers. EBY1 were used for all yeast surface display experiments. All library 
+fluorescence-activated cell sorting (FACS) experiments were performed on a Sony SH800S Cell 
+Sorter using 100-μm chip, which is equipped with laser 488 nm and 561 nm. 
+For all yeast surface display libraries, one round of expression sort was first performed to enrich 
+the binders with acceptable expression level. The binder -expressing yeast were stained at 1:50 
+(v/v) ratio with anti-cMyc-FITC for 30 min at 4 ℃ for expression sort; yeast with increased FITC 
+signal, indicating expression, were collected for further binding assays. After expression sort, the 
+collected yeast were grown up in C -Trp-Ura-2% glucose (CTUG) medium again, and expressed 
+overnight at 30 ℃ in a shaker in SGCAA medium for binder expression. 
+If the ligands were tagged with FITC, the expressed yeast was first stained with 1:35 (v/v) anti -
+cMyc-PE for 45 min at 4 °C, followed by two washes using PBSF. Then the stained yeast was 
+incubated with FITC-labeled ligands for 60-120 min at 4 °C. After two more washes, the stained 
+yeast was sorted. The expressed -only yeast was used as negative control, while the yeast 
+population with positive signals from both F ITC and PE channels above the negative control 
+samples were collected and grown up in CTUG medium. After 1 -2 days of growth, the collected 
+yeasts were expressed again in SGCAA medium and sorted again for binder enrichment through 
+a similar above-described method. Usually it takes two to three sorts to have clear enrichment of 
+the binding populations. If the binding population was strong (above 2%), a titration may be 
+performed to select the strongest binders. Titration sorts were performed for CHD and T44 f or 
+both round1 and round2 binding assays. Usually 5 μM FITC -labeled ligands were used for sort1. 
+The concentration would be dropped according to the positive signal intensity at sort2 and sort3. 
+Usually 100 pM - 5 uM of FITC -labeled ligands were used for t itration sorts, and the binding 
+volumes were adjusted accordingly following previously published protocol (45) to avoid ligand 
+depletion. 
+If the ligands were tagged with biotin, the expressed yeast was always stained with anti -cMyc-
+FITC at 1:50 (v/v) for 35 min at 4 °C. The first and second sort were usually performed with 
+avidity, meaning, 1 μM of biotinylated ligands were added to yeast with 0.25 μM anti-Streptavidin-
+R,Phycoerythrin (SAPE) at the same time for 120 min at 4 °C during the ligand binding step. If 
+the binding population was strong enough, the second, or third round of sorting would be 
+performed without avidity, meaning 100 nM-10 μM of biotinylated ligands were added to design-
+expressing yeast for incubation for 120 min at 4 °C. After two washes using PBSF, SAPE would 
+be added to stain the ligand-bound yeast at 1:50 (v/v) for 35 min at 4 °C. 
+Cultures from expression, and all sorting steps were collected for MiSeq analysis. All yeast sorting 
+figures were prepared using FlowJo v10 (FlowJo, Inc). 
+Next-generation sequencing data analysis 
+All sequences were assembled and matched using an in -house script, and the git repository is at: 
+https://github.com/feldman4/ngs_app. 
+For sequencing data with titration sorting, the data were analyzed based on previously published 
+scripts to identify potential binders (46), and designs with predicted Kd with equal or lower than 
+micromolar range were defined as potential binders, and some of them were selected for individual 
+purification and binding assays, including SEC, FP, and SPR. 
+For sequencing data without titration sortings, enrichment factors were calculated based on the 
+reads from sort3 versus the reads from sort2, usually the binders with enrichment factor above 10 
+and reads from sort3 more than 1000 were ordered individually for binding test. 
+Yeast surface display for individual binder identification 
+A 120 μg of each gene fragment encoding individual design was mixed with 40 μg of linearized 
+pETCON3 vectors and transferred to chemically competent yeast EBY1 following previously 
+published protocols(46). The transformed yeast were first grown in CTUG media in a 96-deep well 
+round bottom plate in plate shaker at 30 °C for 30 hours at 200 g, and expressed in SGCAA media 
+for 14 hours under the same shaking conditions. 
+The expressed yeast were stained in the same fashion as previously described (see ‘High-
+throughput methods for binder identification’ in Methods) and the binding and expression were 
+checked on an Attune Flow Cytometer equipped with 488 nm and 561 nm lasers. For competition 
+assays, free ligands were added with around 1000 folds higher than the FITC or biotin -labeled 
+ligand at the same time, with the rest of the steps following the same like those described above. 
+All yeast sorting figures were prepared using FlowJo v10 (FlowJo, Inc). 
+Expression and purification of selected proteins 
+The major procedures were adapted from a previous publica tion(9). All chemicals and supplies 
+were purchased from Thermo Fisher unless specified otherwise. 
+The selected designs were reverse-transcribed into DNA using DNAWorks. Eblocks (IDT or Twist 
+Bioscience) were cloned into a pET29b-derived vector with C-terminal SNAC cleavable His-Tags 
+using commercially available Golden Gate assembly kit (New England Biolabs, Ipswich, MA) and 
+transformed into Escherichia coli (E. coli) BL21 strain. All designs were grown in 50 mL 
+autoinduction Terrific Broth media in 250 mL baffled erlenmeyer flasks for production (6 hours 
+at 37 ℃ followed by 2 4 hours at 18 ℃ shaking at around 200 g in New Brunswick Innova® 44 
+shakers). Cells for each design culture were harvested using centrifugation and resuspended in 25 
+mL of lysis buffer (25mM Tris 100 mM NaCl, pH 8, with protease inhibitor tablet) and sonicated 
+to lyse (4.5 minutes sonication, 10 s pulse, 10 s pause, 65% amplitude). After centrifugation for 
+30 min at 14,000 g, soluble fractions were bound to 1 mL Ni-NTA resin (Qiagen) in a Econo-Pac® 
+gravity column (BIO-RAD) for 1 hour with rotation. The res in was washed with 20 CV (column 
+volume) low salt buffer (50 mM tris, 100 mM NaCl, 10 mM Imidazole, pH 8) and with 20 CV 
+high salt buffer (50 mM tris, 1000 mM NaCl, 10 mM Imidazole, pH 8). Proteins were eluted with 
+2 CV of elution buffer (20 mM tris, 100 m M NaCl, 500 mM Imidazole, pH 8) and purified on a 
+superdex 75 increase 10/300 GL column connected to ÄKTA protein purification systems in 
+isocratic TBS buffer (20 mM Tris, 100 mM NaCl, pH 8). 
+For proteins for FP, SPR, and crystallization studies, the Histags were cleaved following on-bead 
+SNAC tag cleavage protocol(47). The proteins were prepared using the same way described above 
+until protein binding onto the resin. The column was washed twice with lysis buffer to remove 
+imidazole, followed by equilibrium with 10 CV of SNAC buffer (100 mM CHES, 100 mM acetone 
+oxime, 100 mM NaCl, 500 mM guanidine chloride, pH 8.5). Then the columns were incubated 
+with 20 CV of fresh SNAC cleavage (2 mM NiCl2 in SNAC buffer) overnight at r.t. for SNAC 
+tag on resin cleavage. The resins were then washed with 10 CV of weak elution buffer (20 mM 
+Tris, 100 mM NaCl, 10 mM Imidazole, pH 8). Both SNAC cleavage solution and the weak elution 
+solution were collected, and checked with protein SDS -Page for tag -free proteins. The tag -free 
+proteins were pooled, concentrated, and purified on SEC using the same method described 
+previously. 
+All purified proteins were verified using mass spectrometry. 
+Fluorescence polarization studies 
+The protein concentrations were judged using Bradford protein assay (Bio -Rad, Hercules, CA) 
+following commercially available protocols. 
+All FP studies and analyses were performed following a previously established protocol (48) on a 
+Biotek Synergy Neo2 Reader equipped with Dual PMT optical filter cube (part number: 1035108). 
+The proteins were serial diluted and 5 or 20 nM of FITC-labeled ligands were added to the diluted 
+protein. The mixtures were transf erred to Corning 384 Well microplate (CLS4515 -10EA). After 
+30 min incubation at 25 ℃ with shaking, the parallel and perpendicular light were read with scale 
+to the highest-intensity well. Two independent FP were performed as replicates. 
+FP signal was calculated based on below equation: 
+FP = (I_parallel-I_perpendicular)/(I_parallel+I_perpendicular) 
+The data were fit using the Origin with GrowthCurve DropWise model to avoid ligand binding 
+saturation. 
+Specificity study 
+To probe design selectivity, we carried out cross binding studies ( Fig S17 ). As expected, all 
+designed binders bind to their designed targets at the highest affinities; the nanomolar binders, 
+CHD_d2, T44_d1, have strong selectivity against the others ligands, above 233 and 54900 folds, 
+respectively; the weakest binder tested, MTX_d1, showed the least selectivity, yet is still above 6 
+folds ( Fig S17a ). Similar ligands were also used for specificity tests ( Fig S17b ): fluorescein -
+labeled folic acid (folic acid -FL, Fig S4) was used to challenge MTX_d 1, showed no binding; 
+fluorescein-labeled digoxigenin (digoxigenin -FL, Fig S4) was used to test CHD -d2, showed no 
+binding. We believe it is because the shape complimentary between ligand and protein was highly 
+optimized during the design, thus leading to h igh selectivity of our binders; and the higher the 
+binding affinity, the higher the selectivity. 
+SPR studies 
+The protein concentrations were judged using Bradford protein assay (Bio -Rad, Hercules, CA) 
+following commercially available instructions. All SPR studies were performed on a Cytiva 
+Biacore 8K SPR system, using a biotin CAPture chip, and in 1x HBS-EP+ (0.1 M HEPES, 1.5 M 
+NaCl, 0.03 M EDTA and 0.5% v/v Surfactant P20, Cytiva) buffer. 
+All runs were performed using both flow cells, with one reference cell and one experimenting cell. 
+A start-up run was always first performed with running biotin CAPture reagent (Cytiva) through 
+both cells for 300 seconds contacting, at flow rate of 2 μl/min, following 25 nM biotinylated ligand 
+(biotinylated-AMA) contacting for 180 seconds at at a flow rate of 10 μl/min for flow cell 2. The 
+buffer was then flowed through with 120 seconds contacting and 60 seconds dissociation at a flow 
+rate of 30 μl/min, regeneration solution (3:1 (v/v) 8 M guanidine HCl pH 8, and 10 M NaOH ) 
+contacting for 120 seconds at flow rate of 10 μl/min, and lastly washed with buffer. 
+Blank runs were run before and after analysis runs to set up blanks, the only difference between 
+analysis runs and blank runs was that buffers were used instead of binding proteins. 
+For analysis runs, the proteins were prepared at 6 concentrations, and tested from low 
+concentration to high concentration sequentially following the same protocol. First, biotin CAPture 
+reagent was flown through both cells for 300 seconds con tacting, at a flow rate of 2 μl/min. The 
+25 nM biotinylated ligand (biotinylated-AMA) contacts for 180 seconds at a flow rate of 10 μl/min 
+for only flow cell 2. Then, the protein solution was flow through for 120 seconds, with 300 seconds 
+disassociation time, at a flow rate of 30 μl/min, to both cells. All 6 different concentrations were 
+flown through sequentially from low to high concentrations. Lastly, the generation solution and 
+wash cycle were performed similar to the start-up round. 
+The SPR data were analyzed and plotted using Cytiva Biacore Insight Evaluation software. 
+Site-specific mutagenesis SSM studies 
+SSM studies were performed following the previous protocol(46). The SSM library was prepared 
+and sorted following previous protocol (see ‘ Yeast surface display library preparation ’) with 
+minor modification. Each protei n residue was mutated to all 20 possible residues, including 
+Cystine. 1 to 5 binders to the same target were pooled together as 1 single SSM library for yeast 
+surface display studies. The only difference during sorting was that the same gate was used for 
+sort 1, 2. Various concentrations of ligands were used for sort2 for titration studies following 
+previously published protocol(45). The site-specific Shannon entropy was calculated based on the 
+counts and enrichment following the previously published protocol, and the SSM matrix plots 
+were generated based on the Shannon entropy(46). 
+Pseudocycles have well-defined pocket locations and corresponding pocket residues. The pocket 
+residues within 3.5 Å to the ligand were examined, if mutating the residue largely decreases the 
+binding affinities, the designed residue is considered as conserved. 
+Design of SM binder fused nanopore 
+The nanopore TMB12_3 from our de novo nanopore design(22) was chosen for the design of the 
+cholic acid binder-based nanopore sensor. This nanopore was shown to have a stable conductance 
+at ~230 pS in a 500 mM NaCl buffer. Also, since the SM binder for cholic acid has 6 helices, a 12 
+stranded beta-barrel nanopore seemed appropriate for th e fusion where 4 strands from the beta -
+barrel could be fused to 2 helices from the binder leading to a maximum of 6 loop connections 
+between the two proteins. 6 loops with the right lengths would possibly allow for complete 
+blockage of the nanopore opening from a direction perpendicular to the pore and SM binder axis. 
+This is a desirable feature for a binary nanopore sensor where a binding event can be associated 
+with significant current blocking leading to nanopore currents very close to 0 pA. Therefore, t he 
+SM binder was placed on one side of the nanopore and roughly aligned to match the closest helical 
+and strand termini that would generate the most optimal fusion without significantly changing the 
+structure of either protein. Complete freedom was allowed for different loop closure solutions 
+based on the orientations of the binder and the nanopore. Further sampling of the binder position 
+was carried out by rotating the binder around the pore axis within an angular range that would 
+allow for different termini distances between the fusion points of the binder and the nanopore. The 
+upper limit on termini distance (between a helix of the binder and a strand of the nanopore) was 
+chosen as 12 Å based on initial sampling which showed that further distances would l ead to a 
+different loop closure solution as compared to the starting configuration. Also, the binder was 
+translated along the pore axis within 5 -8 Å of the pore opening to allow for different loop 
+conformations upon fusion. The loop closure was carried out using a deep learning model(23) for 
+a range of starting termini confi gurations and their corresponding conformations under different 
+rotations and translations of the binder as described above. Different loop lengths were sampled 
+and final selection for the generated backbones was carried out by filtering out structures wit h 
+chain breaks. Sequence design was carried out using ProteinMPNN (11) and Rosetta total scores 
+were used for final filtering as AF2 was incapable of predicting full structures from single 
+sequences for these types of fusion proteins. 
+Expression and purification of designed binder-based nanopore sensors 
+Fusion constructs as designed above were ordered as Eblocks from IDT and cloned into a pET29b 
+vector with T7 promoter and kanamycin resistance gene. The proteins were expressed and purified 
+using an auto -induction media as previously described (49). All proteins were refolded from 
+inclusion bodies using dodecyl -phosphatidylcholine (DPC) detergent and were subsequently run 
+through a SEC column (Superdex S200 from Cytiva). Appropriate fractions were diluted to 
+nanomolar to picomolar concentrations and tested for membrane insertion and conductance as 
+described below. 
+Conductance measurement in planar lipid bilayers 
+The conductance measurements were performed as previously described(49). All ion-conductance 
+measurements were carried out using the Nanion Orbit 16TC instrument 
+(https://www.nanion.de/products/orbit-16-tc/) on MECA chips. Lipid stock solutions were freshly 
+made in dodecane at a final concentration of 5mg/mL. Di -phytanoyl-phosphatidylcholine 
+(DPhPC) lipids were used for all experiments. Designed proteins were diluted in a buffer 
+containing 0.05% DPC (~ 1 critical micelle concentration), 25 mM Tris -Cl pH 8.0 and 150 m M 
+NaCl to a final concentration of ~100 nM. Subsequently, 0.5 μL or less of this stock was added to 
+the cis chamber of the chip containing 200 μL of buffer while simultaneously making lipid bilayers 
+using the in-built rotating stir-bar setup. All measureme nts were carried out at 25 ℃ and with a 
+positive potential bias of 100 mV. Spontaneous insertions were recorded over multiple rounds of 
+bilayer formation. All chips were washed with multiple rounds of ethanol and water and 
+completely dried before testing subsequent designs. A 500 mM NaCl buffer was used on both sides 
+of the membrane for all current recordings. Raw signals were recorded at a sampling frequency of 
+5 kHz. Only current recordings from bilayers whose capacitances were in the range 15-25 pF were 
+used for subsequent analysis. The raw signals at 5 kHz were downsampled to 100 Hz using an 8 -
+pole bessel filter. Estimation of current jumps were carried out using a custom script with 
+appropriate thresholds. 
+Estimation of dissociation constant (Kd) from nanopore conductance measurements 
+The analysis of nanopore data was generally following previously published protocols (50). The 
+following assumptions were made for estimating the Kd of ligand binding to the CHD nanopore 
+sensor. First, despite the presence of three distinct current states of the nanopore in the presence of 
+ligand, only the lowest current level was considered to be indicative of ligand binding. Therefore 
+current level jumps from the lowest state to either of the higher current states were treated 
+identically and were considered to be indicative of unbinding. Second, ligand binding was assumed 
+to stabilize the binder domain in a closed conformation and likely prolong the lowest current state 
+of the nanopore. However, since the lowest current state is also observed for the control condition 
+with no ligand, it was a ssumed that the dwell time of this current state in the presence of ligand 
+would be a combination of inherent stochasticity of the binder domain closing and potential ligand 
+binding. 
+With the above assumptions, a hill equation model with hill coefficient a s one was sufficient to 
+capture the binder-domain transitions from an unbound to a ligand-bound state: 
+ f = [L]/( Kd + [L] ) 
+Here f denotes the fraction of the ligand bound state of the nanopore and [L] is the concentration 
+of the ligand in solution which was fixed at 10 uM for this experiment. 
+Dwell time distribution for events resulting in the lowest current state of the nanopore were 
+calculated for both cases (absence and presence of ligand) and were fitted to an exponential curve 
+to estimate the mean dwell times (inverse of the exponential decay constants), Tc (nanopore only) 
+and Tl (nanopore with ligand) respectively (Figure S17c). The mean dwell times were normalized 
+by the duration of the recordings to represent the probabilities of the unbound and bo und states. 
+To prevent user bias in determining a cutoff for discarding very small dwell times resulting from 
+noise or initial signal-filtering artifacts, a range of dwell time cutoffs from 50 ms to 400 ms were 
+used. This resulted in a range of mean dwell times post exponential curve -fitting for each 
+experimental condition. For each pair of Tc and Tl, the fraction of ligand -bound receptors was 
+estimated as: 
+f = ( Tl - Tc )/Tc 
+Corresponding Kd values were calculated with [L] = 10 uM. The range of calculated Kd is shown 
+as a histogram in Figure S17d. 
+Engineering/Buttressing pseudocycle binders 
+The overall steps are shown in Fig S20a. The starting pseudocycle binder was first broken into 
+individual repeat units based on their structural symmetry order and expanded to multiple perfect 
+symmetric structures. We mutated the surface residues to apolar residues to help diffuse buttrased 
+structures out. We also found use of `adjacent_matrices` helps placement of buttressed structures. 
+Then, we used symmetry diffusion t o generate buttress around the individual symmetric 
+structures(32). Sy mmetric diffusion was used because it is significantly faster and easier to 
+converge to high quality protein scaffolds than free diffusion. We then take individual parts of the 
+buttressed unit, mixed and matched them together to make buttressed binders. Th e binding 
+interface residues were not designed while the rest of the residues were redesigned using 
+proteinMPNN, scored with Rosetta, and folded using AF2. The 68 buttrased designs passed 
+Rosetta, AF2 filters were ordered using Twist gene fragments. The designs were first transformed 
+into EBY1 with pETCON3 vector for yeast surface display test to identify initial binders (see 
+method ‘Yeast surface display experiment for enrichment of the potential binders‘). The designs 
+with potential binding signal on yeas t surface display were purified following protocol 
+‘Expression and purification of selected proteins’, and the binding affinity was determined using 
+FP following protocol ‘Fluorescence polarization studies’. 
+CID design and testing 
+Computational design of CID 
+The scripts for CID design were uploaded to github: 
+https://github.com/iamlongtran/pseudocycle_paper (will change fr om private to public upon 
+BiorXiv release). 
+The design of CID starts with verified buttressed binders, which were splitted into two halves (A 
+and B). The main objective is to keep the ligand binding in presence of the SM ligand, while 
+preventing the A -B in teractions without the ligand. We first used ligandMPNN for sequence 
+design. Specifically, we kept the verified ligand -protein interface, and used tied sequence design 
+functions, which allows simultaneous sequence design on A -ligand complex, B-ligand complex, 
+and A-ligand-B complex, and used tied weight to reward A -ligand-B complex design and weak 
+the rest conformation design. 
+Once we have designed CIDs, we predicted the A-B dimer formation using superfold, an in-house 
+AF2 parser (https://github.com/rdkibler/superfold) to select designs which were predicted not to 
+form hetero/homo-dimers but form stable individual monomeric proteins. 
+For A -ligand-B complexes, we use RosettaFold All Atom (RFAA) to predi ct the complex 
+structure. We selected designs with Predicted Aligned Error (PAE) lower than 5 and predicted 
+model with low Cɑ-r.m.s.d to designs, and ordered as gene fragments from Twist Bioscience. 
+ Chromatography test for identification of CID pairs 
+The expression and purification protocol of all proteins are closely followed to the section 
+‘Expression and purification of selected proteins’, with a few minor adjustments. For the volume 
+of autoinduction TB media, for CID screening, designs were grown in 5 mL TB autoinduction 
+media in Falcon™ Round-Bottom Polypropylene Test Tubes with Cap in replicates. After growing 
+for 6 hours at 37 ℃ followed by 24 hours at 18 ℃ with shaking at 225 rpm, cultures of each design 
+were transferred to a separate well from a 24 -well plate. Design cultures were harvested using 
+centrifugation at 4000 g for 15 minutes, then resuspended in a 10 mL lysis buffer in the 24 -well 
+plate. The suspended cells were sonicated to lyse for 7.5 minutes, using 10 second pulse, 10 second 
+pause, at 65% amplitude. The lyzed mixtures in 24-well collection plates were then centrifuged at 
+2000 g for 20 minutes to separate cell debris and lysate. The soluble fraction collected post 
+centrifugation were bound to 1 mL of Ni -NTA resin in a 24 -well filter pla te, followed by wash 
+and elution facilitated by a vacuum manifesto. The individual eluted proteins were first purified 
+by SEC, and the CID pairs were analyzed on an Agilent 1260 Infinity I HPLC system with DAD 
+using an analytical SEC column, superdex 75 increase 3.2/300 GL column. An 4-minute isocratic 
+run was performed for each CID part and CID combinations to identify CID pairs. 
+Mass photometry test for identification of CID pairs 
+The mass photometry assays were performed following previously published protocol(51). All 
+mass photometry measurements were carried out in an instrument TwoMP (Refeyn) Mass 
+photometer. The same buffer (20 mM Tris 100 mM NaCl, pH 8) was used for all mass photometry 
+experiments. Due to the small size of the CID monomers (A is 9.8 kDa, B is 18.9 kDa), we fused 
+N-terminus gfp to each monomer to increase their molecular weight so that we can observe them 
+under mass photometry. CID pairs were prepared as 10 nM protein gfp-A, gfp-B, with and without 
+10 μM ligand, and were used for all measurements after 1 hour incubation at r.t. A 24-well gasket 
+was placed on a clean glass slide as sample holders. A 5 μL buffer was first added to one well of 
+this gasket and used to bring the camera into focus after orienting the laser to the center of the 
+sample well. A 5 μL sample prepared as stated -above was added to t his droplet and 1 -minute 
+videos were collected with a large field of view in AcquireMP. Ratiometric contrast values for 
+individual particles were measured and processed into mass distributions with DiscoverMP based 
+on calibration curves generated with 20 n M β-amylase (consists of monomer 56 kDa, dimer 112 
+kDa, and tetramer 224 kDa). The dimerized peak of gfp -A and gfp-B in presence of ligand was 
+clearly observed with a clear right shift compared to the monomer -only peaks and a good mass 
+fitting based on the standard curve. The monomer peak of gfp -A, gfp-B was observed, clearly 
+smaller than the dimerized peak, but cannot be fitted to report mass value due to their small size 
+(gfp-A: 37 kDa, gfp-B: 46 kDa). 
+Crystallization condition and analysis 
+Crystallization experiment for the designed protein was conducted using the sitting drop vapor 
+diffusion method. Crystallization trials were set up in 200 nL drops using the 96-well plate format 
+at 20°C. Crystallization plates were set up using a Mosquito LCP from SPT Labtech, then imaged 
+using UVEX microscopes from JAN Scientific. Diffraction quality crystals formed in 0.1 M 
+Tris/Biocine pH 8.5, 25% v/v 2 -methyl-2,4-pentanediol (MPD); 25% PEG1000; 25% w/v PEG 
+3350 and 0.093 M Sodium fluoride; 0.3 M Sodium bromide; 0. 3 M Sodium iodide for CHD_r1. 
+CHD_r1_buttress crystal formed in 0.2 M Sodium chloride 20% (w/v) PEG 3350. 
+Diffraction data were collected at Advanced Photon Source on Beamline NECAT 24IDC for 
+CHD_r1 and CHD_r1_buttress. X-ray intensities and data reduction were evaluated and integrated 
+using XDS (52) and merged/scaled using Pointless/Aimless in the CCP4 program suite (53). 
+Structure determination and refinement starting phases were obtained by molecular replacement 
+using Phaser (54) using the designed model structure. Following molecular replacement, the 
+models were improved using phenix.autobuild(55). Structures were refined in Phenix(55). Model 
+building was performed using COOT (56). The final model was evaluated using MolProbity (57). 
+Data collection and refinement statistics are recorded in the Supplementary Table S3 . Data 
+deposition, atomic coordinates, and structure factors reported for the protein in this paper have 
+been deposited in the Protein Data Bank (PDB), http://www.rcsb.org/ with accession code abcd. 
+Circular dichroism characterization of selected proteins 
+The circular dichroism (CD) spectra of selected designs were measured with a Jasco J -1500 CD 
+spectrometer. Samples were prepared with 0.5 mg mL –1 in 20 mM phosphate buffer, pH 7.4, and 
+a cuvette with a path length of 1 mm was used. The CD signal was converted to molar mean residue 
+ellipticity by dividing the raw spectra by N × C × L × 10, where N is the number of residues, C is 
+the concentration of protein, and L is the path length (0.1 cm). 
+We selected a group of key binders and measured their CD ( Fig S18). As expected, all designs 
+showed fold-specific CD signals, and most of them remained folded during the melting-refolding 
+studies. 
+References and Notes 
+1. M. Gao, J. Skolnick, The distribution of ligand-binding pockets around protein-protein 
+interfaces suggests a general mechanism for pocket formation. Proc. Natl. Acad. Sci. 
+U.S.A. 109, 3784–3789 (2012). 
+2. J. Dou, L. Doyle, P. Jr. Greisen, A. Schena, H. Park, K. Johnsson, B. L. Stoddard, D. Baker, 
+Sampling and energy evaluation challenges in ligand binding protein design. Protein Sci. 
+26, 2426–2437 (2017). 
+3. J. Dou, A. A. Vorobieva, W. Sheffler, L. A. Doyle, H. Park, M. J. Bick, B. Mao, G. W. Foight, 
+M. Y. Lee, L. A. Gagnon, L. Carter, B. Sankaran, S. Ovchinnikov, E. Marcos, P.-S. 
+Huang, J. C. Vaughan, B. L. Stoddard, D. Baker, De novo design of a fluorescence-
+activating β-barrel. Nature 561, 485–491 (2018). 
+4. M. J. Bick, P. J. Greisen, K. J. Morey, M. S. Antunes, D. La, B. Sankaran, L. Reymond, K. 
+Johnsson, J. I. Medford, D. Baker, Computational design of environmental sensors for the 
+potent opioid fentanyl. eLife 6, e28909 (2017). 
+5. N. F. Polizzi, W. F. DeGrado, A defined structural unit enables de novo design of small-
+molecule-binding proteins. Science 369, 1227–1233 (2020). 
+6. C. E. Tinberg, S. D. Khare, J. Dou, L. Doyle, J. W. Nelson, A. Schena, W. Jankowski, C. G. 
+Kalodimos, K. Johnsson, B. L. Stoddard, D. Baker, Computational design of ligand-
+binding proteins with high affinity and selectivity. Nature 501, 212–216 (2013). 
+7. G. R. Lee, S. J. Pellock, C. Norn, D. Tischer, J. Dauparas, I. Anischenko, J. A. M. Mercer, A. 
+Kang, A. Bera, H. Nguyen, I. Goreshnik, D. Vafeados, N. Roullier, H. L. Han, B. 
+Coventry, H. K. Haddox, D. R. Liu, A. H.-W. Yeh, D. Baker, Small-molecule binding 
+and sensing with a designed protein family. bioRxiv 2023.11.01.565201 [Preprint] 
+(2023). https://doi.org/10.1101/2023.11.01.565201. 
+8. L. Lu, X. Gou, S. K. Tan, S. I. Mann, H. Yang, X. Zhong, D. Gazgalis, J. Valdiviezo, H. Jo, 
+Y. Wu, M. E. Diolaiti, A. Ashworth, N. F. Polizzi, W. F. DeGrado, De novo design of 
+drug-binding proteins with predictable binding energy and specificity. Science 384, 106–
+112 (2024). 
+9. L. An, D. R. Hicks, D. Zorine, J. Dauparas, B. I. M. Wicky, L. F. Milles, A. Courbet, A. K. 
+Bera, H. Nguyen, A. Kang, L. Carter, D. Baker, Hallucination of closed repeat proteins 
+containing central pockets. Nat. Struct. Mol. Biol. 30, 1755–1760 (2023). 
+10. A. Leaver-Fay, M. Tyka, S. M. Lewis, O. F. Lange, J. Thompson, R. Jacak, K. W. Kaufman, 
+P. D. Renfrew, C. A. Smith, W. Sheffler, I. W. Davis, S. Cooper, A. Treuille, D. J. 
+Mandell, F. Richter, Y.-E. A. Ban, S. J. Fleishman, J. E. Corn, D. E. Kim, S. Lyskov, M. 
+Berrondo, S. Mentzer, Z. Popović, J. J. Havranek, J. Karanicolas, R. Das, J. Meiler, T. 
+Kortemme, J. J. Gray, B. Kuhlman, D. Baker, P. Bradley, “Rosetta3: An Object-Oriented 
+Software Suite for the Simulation and Design of Macromolecules” in Computer Methods, 
+Part C, M. L. Johnson, L. Brand, Eds., vol. 487 of Methods in Enzymology (Elsevier, 
+2011), pp. 545–574. 
+11. J. Dauparas, I. Anishchenko, N. Bennett, H. Bai, R. J. Ragotte, L. F. Milles, B. I. M. Wicky, 
+A. Courbet, R. J. de Haas, N. Bethel, P. J. Y. Leung, T. F. Huddy, S. Pellock, D. Tischer, 
+F. Chan, B. Koepnick, H. Nguyen, A. Kang, B. Sankaran, A. K. Bera, N. P. King, D. 
+Baker, Robust deep learning-based protein sequence design using ProteinMPNN. Science 
+378, 49–56 (2022). 
+12. J. Jumper, R. Evans, A. Pritzel, T. Green, M. Figurnov, O. Ronneberger, K. 
+Tunyasuvunakool, R. Bates, A. Žídek, A. Potapenko, A. Bridgland, C. Meyer, S. A. A. 
+Kohl, A. J. Ballard, A. Cowie, B. Romera-Paredes, S. Nikolov, R. Jain, J. Adler, T. Back, 
+S. Petersen, D. Reiman, E. Clancy, M. Zielinski, M. Steinegger, M. Pacholska, T. 
+Berghammer, S. Bodenstein, D. Silver, O. Vinyals, A. W. Senior, K. Kavukcuoglu, P. 
+Kohli, D. Hassabis, Highly accurate protein structure prediction with AlphaFold. Nature 
+596, 583–589 (2021). 
+13. M. Baek, F. DiMaio, I. Anishchenko, J. Dauparas, S. Ovchinnikov, G. R. Lee, J. Wang, Q. 
+Cong, L. N. Kinch, R. D. Schaeffer, C. Millán, H. Park, C. Adams, C. R. Glassman, A. 
+DeGiovanni, J. H. Pereira, A. V. Rodrigues, A. A. van Dijk, A. C. Ebrecht, D. J. 
+Opperman, T. Sagmeister, C. Buhlheller, T. Pavkov-Keller, M. K. Rathinaswamy, U. 
+Dalwadi, C. K. Yip, J. E. Burke, K. C. Garcia, N. V. Grishin, P. D. Adams, R. J. Read, D. 
+Baker, Accurate prediction of protein structures and interactions using a three-track 
+neural network. Science 373, 871–876 (2021). 
+14. J. Dauparas, G. R. Lee, R. Pecoraro, L. An, I. Anishchenko, C. Glasscock, D. Baker, Atomic 
+context-conditioned protein sequence design using LigandMPNN. bioArxiv 
+2023.12.22.573103 [Preprint] (2023). https://doi.org/10.1101/2023.12.22.573103. 
+15. X. Zhao, Z. Liu, F. Sun, L. Yao, G. Yang, K. Wang, Bile Acid Detection Techniques and 
+Bile Acid-Related Diseases. Front. Physiol. 13, 826740 (2022). 
+16. A. Shadeed, L. Kattach, S. Sam, K. Flora, Z. Farah, Examining the safety of relaxed drug 
+monitoring for methotrexate in response to the COVID-19 pandemic. Rheumatol. Adv. 
+Pract. 6, rkac100 (2022). 
+17. C. A. Spencer, “Assay of Thyroid Hormones and Related Substances” in Endotext, K. R. 
+Feingold et al., Eds. (MDText.com, 2017). 
+https://www.ncbi.nlm.nih.gov/books/NBK279113/. 
+18. K. J. Welsh, S. J. Soldin, DIAGNOSIS OF ENDOCRINE DISEASE: How reliable are free 
+thyroid and total T3 hormone assays? Eur. J. Endocrinol. 175, R255–R263 (2016). 
+19. N. K. Tripathy, S. K. Mishra, G. Nathan, S. Srivastava, A. Gupta, R. Lingaiah, A Rapid 
+Method for Determination of Serum Methotrexate Using Ultra-High-Performance Liquid 
+Chromatography-Tandem Mass Spectrometry and Its Application in Therapeutic Drug 
+Monitoring. J. Lab. Physicians 15, 344–353 (2023). 
+20. P. J. Salveson, A. P. Moyer, M. Y. Said, G. Gӧkçe, X. Li, A. Kang, H. Nguyen, A. K. Bera, 
+P. M. Levine, G. Bhardwaj, D. Baker, Expansive discovery of chemically diverse 
+structured macrocyclic oligoamides. Science 384, 420–428 (2024). 
+21. K. W. Plaxco, K. T. Simons, D. Baker, Contact order, transition state placement and the 
+refolding rates of single domain proteins. J. Mol. Biol. 277, 985–994 (1998). 
+22. S. Berhanu, S. Majumder, T. Müntener, J. Whitehouse, C. Berner, A. K. Bera, A. Kang, B. 
+Liang, G. N. Khan, B. Sankaran, L. K. Tamm, D. J. Brockwell, S. Hiller, S. E. Radford, 
+D. Baker, A. A. Vorobieva, Sculpting conducting nanopore size and shape through de 
+novo protein design. Science 385, 276–282 (2024). doi:10.1126/science.adn3796 
+23. J. Wang, S. Lisanza, D. Juergens, D. Tischer, J. L. Watson, K. M. Castro, R. Ragotte, A. 
+Saragovi, L. F. Milles, M. Baek, I. Anishchenko, W. Yang, D. R. Hicks, M. Expòsit, T. 
+Schlichthaerle, J.-H. Chun, J. Dauparas, N. Bennett, B. I. M. Wicky, A. Muenks, F. 
+DiMaio, B. Correia, S. Ovchinnikov, D. Baker, Scaffolding protein functional sites using 
+deep learning. Science 377, 387–394 (2022). 
+24. M. Ahmad, J.-H. Ha, L. A. Mayse, M. F. Presti, A. J. Wolfe, K. J. Moody, S. N. Loh, L. 
+Movileanu, A generalizable nanopore sensor for highly specific protein detection at 
+single-molecule precision. Nat. Commun. 14, 1374 (2023). 
+25. M. A. Fahie, M. Chen, Electrostatic Interactions between OmpG Nanopore and Analyte 
+Protein Surface Can Distinguish between Glycosylated Isoforms. J. Phys. Chem. B 119, 
+10198–10206 (2015). 
+26. J. C. Foster, B. Pham, R. Pham, M. Kim, M. D. Moore, M. Chen, An Engineered OmpG 
+Nanopore with Displayed Peptide Motifs for Single-Molecule Multiplex Protein 
+Detection. Angew. Chem. Int. Ed. 62, e202214566 (2023). 
+27. B. L. Greene, G. Kang, C. Cui, M. Bennati, D. G. Nocera, C. L. Drennan, J. Stubbe, 
+Ribonucleotide Reductases: Structure, Chemistry, and Metabolism Suggest New 
+Therapeutic Targets. Annu. Rev. Biochem. 89, 45–75 (2020). 
+28. M. Rappas, H. Niwa, X. Zhang, Mechanisms of ATPases—A multi-disciplinary approach. 
+Curr. Protein Pept. Sci. 5, 89–105 (2004). 
+29. L. A. Banaszynski, C. W. Liu, T. J. Wandless, Characterization of the FKBP.rapamycin.FRB 
+ternary complex. J. Am. Chem. Soc. 127, 4715–4721 (2005). 
+30. G. W. Foight, Z. Wang, C. T. Wei, P. Jr Greisen, K. M. Warner, D. Cunningham-Bryant, K. 
+Park, T. J. Brunette, W. Sheffler, D. Baker, D. J. Maly, Multi-input chemical control of 
+protein dimerization for programming graded cellular responses. Nat. Biotechnol. 37, 
+1209–1216 (2019). 
+31. B. Z. Stanton, E. J. Chory, G. R. Crabtree, Chemically induced proximity in biology and 
+medicine. Science 359, eaao5902 (2018). 
+32. J. L. Watson, D. Juergens, N. R. Bennett, B. L. Trippe, J. Yim, H. E. Eisenach, W. Ahern, A. 
+J. Borst, R. J. Ragotte, L. F. Milles, B. I. M. Wicky, N. Hanikel, S. J. Pellock, A. 
+Courbet, W. Sheffler, J. Wang, P. Venkatesh, I. Sappington, S. V. Torres, A. Lauko, V. 
+De Bortoli, E. Mathieu, S. Ovchinnikov, R. Barzilay, T. S. Jaakkola, F. DiMaio, M. 
+Baek, D. Baker, De novo design of protein structure and function with RFdiffusion. 
+Nature 620, 1089–1100 (2023). 
+33. R. Krishna, J. Wang, W. Ahern, P. Sturmfels, P. Venkatesh, I. Kalvet, G. R. Lee, F. S. 
+Morey-Burrows, I. Anishchenko, I. R. Humphreys, R. McHugh, D. Vafeados, X. Li, G. 
+A. Sutherland, A. Hitchcock, C. N. Hunter, A. Kang, E. Brackenbrough, A. K. Bera, M. 
+Baek, F. DiMaio, D. Baker, Generalized biomolecular modeling and design with 
+RoseTTAFold All-Atom. Science 384, eadl2528 (2024). 
+34. J. Shen, Y. Gu, L. Ke, Q. Zhang, Y. Cao, Y. Lin, Z. Wu, C. Wu, Y. Mu, Y.-L. Wu, C. Ren, 
+H. Zeng, Cholesterol-stabilized membrane-active nanopores with anticancer activities. 
+Nat. Commun. 13, 5985 (2022). 
+35. L. An, L. Tran, D. Feldman, “Binding and sensing diverse small molecules using shape 
+complementary pseudocycles,” v1, Zenodo (2024); 
+https://doi.org/10.5281/zenodo.11406099. 
+36. G. Nagy, H. Grubmuller, Implementation of a Bayesian secondary structure estimation 
+method for the SESCA circular dichroism analysis package. Comput. Phys. Commun. 
+266, 108022 (2021). 
+37. L. Holm, A. Laiho, P. Törönen, M. Salgado, DALI shines a light on remote homologs: One 
+hundred discoveries. Protein Sci. 32, e4519 (2023). 
+38. S. Kim, J. Chen, T. Cheng, A. Gindulyte, J. He, S. He, Q. Li, B. A. Shoemaker, P. A. 
+Thiessen, B. Yu, L. Zaslavsky, J. Zhang, E. E. Bolton, PubChem 2023 update. Nucleic 
+Acids Res. 51, D1373–D1380 (2023). 
+39. N. M. O’Boyle, M. Banck, C. A. James, C. Morley, T. Vandermeersch, G. R. Hutchison, 
+Open Babel: An open chemical toolbox. J. Cheminform. 3, 33 (2011). 
+40. W. Humphrey, A. Dalke, K. Schulten, VMD: Visual molecular dynamics. J. Mol. Graph. 14, 
+33–38, 27–28 (1996). 
+41. G. Landrum, P. Tosco, B. Kelley, D. Ric, Cosgrove, Sriniker, Gedeck, R. Vianello, 
+NadineSchneider, E. Kawashima, D. N, G. Jones, A. Dalke, B. Cole, M. Swain, S. Turk, 
+AlexanderSavelyev, A. Vaucher, M. Wójcikowski, Ichiru Take, D. Probst, K. Ujihara, V. 
+F. Scalfani, G. Godin, J. Lehtivarjo, R. Walker, A. Pahl, Francois Berenger, Jasondbiggs, 
+Strets123, crdkit/rdkit: 2023_03_3 (Q1 2023) Release, Version Release_2023_03_3, 
+Zenodo (2023); https://zenodo.org/records/8254217. 
+42. H. Park, G. Zhou, M. Baek, D. Baker, F. DiMaio, Force Field Optimization Guided by Small 
+Molecule Crystal Lattice Data Enables Consistent Sub-Angstrom Protein-Ligand 
+Docking. J. Chem. Theory Comput. 17, 2000–2010 (2021). 
+43. X. Qi, F. Loiseau, W. L. Chan, Y. Yan, Z. Wei, L.-G. Milroy, R. M. Myers, S. V. Ley, R. J. 
+Read, R. W. Carrell, A. Zhou, Allosteric modulation of hormone release from thyroxine 
+and corticosteroid-binding globulins. J. Biol. Chem. 286, 16163–16173 (2011). 
+44. D. M. Hoover, J. Lubkowski, DNAWorks: An automated method for designing 
+oligonucleotides for PCR-based gene synthesis. Nucleic Acids Res. 30, e43 (2002). 
+45. G. Chao, W. L. Lau, B. J. Hackel, S. L. Sazinsky, S. M. Lippow, K. D. Wittrup, Isolating and 
+engineering human antibodies using yeast surface display. Nat. Protoc. 1, 755–768 
+(2006). 
+46. L. Cao, B. Coventry, I. Goreshnik, B. Huang, W. Sheffler, J. S. Park, K. M. Jude, I. 
+Marković, R. U. Kadam, K. H. G. Verschueren, K. Verstraete, S. T. R. Walsh, N. 
+Bennett, A. Phal, A. Yang, L. Kozodoy, M. DeWitt, L. Picton, L. Miller, E.-M. Strauch, 
+N. D. DeBouver, A. Pires, A. K. Bera, S. Halabiya, B. Hammerson, W. Yang, S. Bernard, 
+L. Stewart, I. A. Wilson, H. Ruohola-Baker, J. Schlessinger, S. Lee, S. N. Savvides, K. C. 
+Garcia, D. Baker, Design of protein-binding proteins from the target structure alone. 
+Nature 605, 551–560 (2022). 
+47. B. Dang, M. Mravic, H. Hu, N. Schmidt, B. Mensa, W. F. DeGrado, SNAC-tag for sequence-
+specific chemical protein cleavage. Nat. Methods 16, 319–322 (2019). 
+48. L. An, D. P. Cogan, C. D. Navo, G. Jiménez-Osés, S. K. Nair, W. A. van der Donk, 
+Substrate-assisted enzymatic formation of lysinoalanine in duramycin. Nat. Chem. Biol. 
+14, 928–933 (2018). 
+49. A. A. Vorobieva, P. White, B. Liang, J. E. Horne, A. K. Bera, C. M. Chow, S. Gerben, S. 
+Marx, A. Kang, A. Q. Stiving, S. R. Harvey, D. C. Marx, G. N. Khan, K. G. Fleming, V. 
+H. Wysocki, D. J. Brockwell, L. K. Tamm, S. E. Radford, D. Baker, De novo design of 
+transmembrane β barrels. Science 371, eabc8182 (2021). 
+50. N. Varongchayakul, J. Song, A. Meller, M. W. Grinstaff, Single-molecule protein sensing in 
+a nanopore: A tutorial. Chem. Soc. Rev. 47, 8512–8524 (2018). 
+51. A. Pillai, A. Idris, A. Philomin, C. Weidle, R. Skotheim, P. J. Y. Leung, A. Broerman, C. 
+Demakis, A. J. Borst, F. Praetorius, D. Baker, De novo design of allosterically switchable 
+protein assemblies. bioRxiv 2023.11.01.565167 [Preprint] (2023). 
+https://doi.org/10.1101/2023.11.01.565167. 
+52. W. Kabsch, XDS. Acta Crystallogr. D 66, 125–132 (2010). 
+53. M. D. Winn, C. C. Ballard, K. D. Cowtan, E. J. Dodson, P. Emsley, P. R. Evans, R. M. 
+Keegan, E. B. Krissinel, A. G. W. Leslie, A. McCoy, S. J. McNicholas, G. N. 
+Murshudov, N. S. Pannu, E. A. Potterton, H. R. Powell, R. J. Read, A. Vagin, K. S. 
+Wilson, Overview of the CCP4 suite and current developments. Acta Crystallogr. D 67, 
+235–242 (2011). 
+54. A. J. McCoy, R. W. Grosse-Kunstleve, P. D. Adams, M. D. Winn, L. C. Storoni, R. J. Read, 
+Phaser crystallographic software. J. Appl. Cryst. 40, 658–674 (2007). 
+55. P. D. Adams, P. V. Afonine, G. Bunkóczi, V. B. Chen, I. W. Davis, N. Echols, J. J. Headd, 
+L.-W. Hung, G. J. Kapral, R. W. Grosse-Kunstleve, A. J. McCoy, N. W. Moriarty, R. 
+Oeffner, R. J. Read, D. C. Richardson, J. S. Richardson, T. C. Terwilliger, P. H. Zwart, 
+PHENIX: A comprehensive Python-based system for macromolecular structure solution. 
+Acta Crystallogr. D Biol. Crystallogr. 66, 213–221 (2010). 
+56. P. Emsley, K. Cowtan, Coot: Model-building tools for molecular graphics. Acta Crystallogr. 
+D Biol. Crystallogr. 60, 2126–2132 (2004). 
+57. C. J. Williams, J. J. Headd, N. W. Moriarty, M. G. Prisant, L. L. Videau, L. N. Deis, V. 
+Verma, D. A. Keedy, B. J. Hintze, V. B. Chen, S. Jain, S. M. Lewis, W. B. Arendall 3rd, 
+J. Snoeyink, P. D. Adams, S. C. Lovell, J. S. Richardson, D. C. Richardson, MolProbity: 
+More and better reference data for improved all-atom structure validation. Protein Sci. 
+27, 293–315 (2018). 

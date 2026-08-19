@@ -2563,6 +2563,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 32 | 08-18 | per-position steric admissibility could generate ligand-specific menus, since geometry excludes rather than ranks | it admits **14.7 of 20** residues at a typical pocket position, ABA and mandipropamid menus overlap at **Jaccard 0.84**, and all four mandipropamid ground-truth substitutions are admissible **for ABA too** — recalled without being ligand-conditional, exactly like the stage-1 clash baseline | the per-position step is dead, but the diagnosis is useful: every miss (V83W, V164W, V164H, V83F, A89V, E141F) is a **grow** mutation, and the real sensors are **compensating shrink/grow pairs** (F159A+A160I, Y120G+A160G). A per-position filter judges each mutation in a context where its partner has not happened. Enumerate **pairs** against a re-evaluated pocket (§31c) |
 | 33 | 08-18 | evaluating mutation pairs jointly would expose the compensation a per-position filter misses | with a **summed** (hence additive) ligand-overlap objective it exposes nothing: relief of every top pair equalled the sum of its singles, and the best residue at a position changed with its partner in **15 of 4187 contexts**. Adding a packing term that counts only NON-overlapping contacts recovers **F108A rank 5, F159L rank 75, V81I rank 150 of 13,457**, with shrink/grow enriched to 62 % vs 42 % for the ABA control | pairs work, but only once the objective can represent the grow half. The remaining miss, K59R, is blind **by category** — it does not clash, so a steric method cannot reach it; that is the same residue and the same reason that defeated both stage-1 methods (§32d) |
 | 34 | 08-18 | the K59R miss is a scoring problem — ref2015's desolvation in §23j, category blindness in §32 | transplanting the **crystal** Arg59 from 4WVO scores **2 hydrogen bonds** (NE–O2 2.64 Å, NH1–O2 3.26 Å) with a worst genuine overlap of 0.56 Å, **below** the feasibility threshold — the scoring accepts it. Its χ3 ≈ **100°** is non-rotameric and the backbone-independent library never proposes it | at this stage the miss is **SAMPLING**, not scoring, and chi minimisation cannot fix it: relieving strain does not create a hydrogen bond. Also found: hydrogen bonds are being counted as steric clashes (donor–acceptor at 2.64 Å = 0.43 Å hard-sphere overlap), which reaches back into §31/§32 and likely explains §31e's R79/V83/H115 control failures (§33b–c) |
+| 35 | 08-19 | Leonard et al.'s protocol is a general computational route to new PYR1 specificity | read from their Methods: the pose comes from **"dock to sequence"**, in which the WT sequence is first **mutated to match a known low-affinity binder found by Y2H screening**. It also hard-filters on an H-bond to the latch water, which §23a measured mandipropamid to miss by **5.07–5.19 Å** | the method **improves a known weak hit**; it cannot start from a ligand alone, and applied to mandipropamid it would reject the correct pose. Our benchmark is strictly harder and comparisons must say so (§34a) |
 
 ### Bugs caught before they cost anything
 
@@ -4698,3 +4699,88 @@ Caught only because the ligand net charge is asserted against the params file.
 ⚠ **§32 is unaffected**: it used coordinates and element-derived radii only, never
 a charge, and the ligand coordinates are identical either way — confirmed, the
 mandipropamid pose in our WT model is the 4WVO pose to **0.01 Å**.
+
+---
+
+## 34. What the field actually does — six papers, read from Methods (2026-08-19)
+
+PDFs and extracted text in `data/papers/`. Read from the Methods sections, not
+abstracts. Figures were not read.
+
+### 34a. Leonard et al. 2026 — the only comparable computational protocol
+
+| stage | what they did |
+|---|---|
+| conformers | **TREMD**: 27 replicas, **300–450 K**, **100 ns**, exchange every 2 ps. Boltzmann occupancy; keep "high occupancy" **>4 %**, discard **<1 %**. Code: `ajfriedman22/SM_ConfGen` |
+| **pose** | **"dock to sequence"** — the WT sequence is **mutated to match a known low-affinity binding sequence found by Y2H library screening**, then conformers are SVD-superposed onto the ABA ketone in **3QN1**, treating the nitazene nitro as the required H-bond acceptor |
+| perturb | PyRosetta Rigid Body Perturbation |
+| filter 1 | no backbone clash, fast-grid search against a **poly-glycine shave** |
+| filter 2 | an N or O close enough to the **latch water** to hydrogen bond |
+| refine | PyRosetta Packer relax/repack, then full-protein clash check |
+| score | standard PyRosetta scorefunction, **< −300 REU** "generally considered realistic" |
+| design | Rosetta **FastDesign**. LigandMPNN comparison at **temperature 0.2**, **0.1 Å Gaussian noise**, `ligandmpnn_v_32_010_25.pt` |
+| build | oligo pools in 3 cassettes, Golden Gate, Y2H |
+
+**No ΔΔG, no shape complementarity, no SASA filter.** Clash + water H-bond + one
+total-score cutoff. Simpler than assumed.
+
+⚠ **Two things this confirms.** First, the user's read is correct *verbatim*: the
+protocol is **seeded by a weak library hit** — it needs a known binding sequence
+before it can place a pose. It improves a known weak binder; it does not find
+specificity from nothing. Second, the **latch-water H-bond is a hard filter** in
+their pose generation, and §23a measured that mandipropamid sits **5.07–5.19 Å**
+from that water in 4WVO/8EY0. Their protocol, applied to mandipropamid, would
+reject the correct pose.
+
+### 34b. Rationalizing Diverse Binding Mechanisms (ACS Chem Biol 2024)
+
+Same collaboration (Whitehead / Shirts / Cutler) and the mechanistic foundation
+under §34a. Three things land directly on our work:
+
+1. **"It is the H-bonding capability at position R59 that is essential for ligand
+   recognition."** Independent support for treating 59 as the electrostatic
+   position (§33).
+2. **R79 hydrogen bonds the main-chain carbonyl of F52 at >90 % occupancy in both
+   apo and holo, and does not contact the ligand.** ⚠ This independently explains
+   §31e's unresolved **R79** control failure — its side chain is locked in a tight
+   intra-protein H-bond, and §33c showed our hard-sphere test scores exactly that
+   as a clash. Two routes, same conclusion.
+3. **3 × 300 ns MD of PYR1^mandi and PYR1^WIN with ligand + HAB1 gave only ONE
+   ligand conformer**, matching crystals 4WVO and 7MWN; TREMD puts that bound
+   conformer **< 1 k_BT** above the solution minimum.
+
+### 34c. An et al. 2024 — and the honest part
+
+Rotamers from RDKit, Rosetta-relaxed with constraint, ddG-scored, clustered at
+**1.5 Å RMSD**, lowest-energy per cluster. RIFgen/RIFdock onto **9,703
+pseudocycles**; pockets pre-packed with large hydrophobics (V/L/I/F/Y). Metrics:
+`CMS` (contact molecular surface), `dsasa`, `ddg_norepack`, `atomic_depth`
+(**6–7 Å**), `hole_around_lig`, `total_hb_to_lig`. AF2 gate: **pLDDT > 90**,
+**Cα-RMSD < 3 Å**, **PAE < 5**.
+
+⚠ **Their cutoffs were "selected by manual inspection of docks at different
+ranks."** Stated plainly in the supplement. The field does not have principled
+thresholds either — which is worth remembering before treating any published
+number as a standard.
+
+### 34d. Tian 2025 and Park 2023 — the library baseline
+
+Tian's targeted libraries are built from **sequence profiles of first-round hits**:
+coumarin **77,327** members, TNT **506,229**. That biasing *works experimentally* —
+it isolated sensors for 4-methylumbelliferone, 7-methoxycoumarin, TNT, DNT and
+2ADNT, all missed in round 1. ⚠ Note the asymmetry: the same information has not
+yet helped us **computationally** on the PFAS / TNT / coumarin controls.
+Park 2023 is library-driven throughout (~400,000 yeast colonies; a ~12,000-clone
+library), confirming that outside Leonard this field is screening, not design.
+
+### 34e. What we should change
+
+1. **Adopt a solution-conformer filter for prospective ligands** — TREMD, keep
+   conformers within ~1 k_BT of the minimum (§34b validates the criterion). Our
+   retrospective work uses crystal poses, which is correct, but a new ligand has no
+   crystal pose.
+2. **Do not adopt the latch-water H-bond as a hard filter** (§23a, now reinforced).
+3. **Fix the H-bond-as-clash bug** (§33c) — R79 is now confirmed as a genuine
+   intra-protein H-bond, not a modelling artefact.
+4. **Our benchmark is harder than Leonard's by construction.** They start from a
+   weak hit; we start from the ligand. Any comparison must say so.

@@ -1,0 +1,402 @@
+1 
+Supporting Information for: 
+ 
+Rationalizing diverse binding mechanisms to the same protein fold: 
+insights for ligand recognition and biosensor design 
+ 
+Alison C. Leonard1, Anika J. Friedman1, Rachel Chayer1, Brian Petersen1, Janty Woojuh2,3,4, 
+Zenan Xing2,3,4, Sean R. Cutler2,3,4, Joel L. Kaar1, Michael R. Shirts1, Timothy A. Whitehead1,* 
+ 
+1Department of Chemical and Biological Engineering, University of Colorado Boulder, Boulder, CO, 
+80305, USA 
+2Department of Botany and Plant Sciences, University of California, Riverside, USA 
+3Institute for Integrative Genome Biology, University of California, Riverside, Riverside, CA, 
+USA 
+4Center for Plant Cell Biology, University of California, Riverside, Riverside, CA, USA 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+2 
+Supplementary Figures 
+ 
+ 
+ 
+Figure S1 . Cytograms demonstrating cell sorting procedure for deep mutational scanning 
+analysis, showing PYR1WIN replicate A as replicate cytograms. Gates have been redrawn in FlowJo 
+software, consult the supplemental data spreadsheet for precise gating statistics for each sensor 
+replicate. 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+3 
+ 
+Figure S2. (A & B) Dose-response curves for PYR1MANDI, PYR1WIN, and the mutants shown. 
+Reactions were conducted in quadruplicate using 10 nM PP2C (ΔN-HAB1), 40 nM receptors, 
+and 1 mM 4-methylumbelliferyl phosphate substrate; PP2C activity is calculated relative to no 
+ligand control reactions (C & D) IC50 values for panels A and B inferred from fits of the dose-
+response data to a 4-parameter log-logistic using the drc package in R. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+4 
+ 
+ 
+Figure S 3: Numerous water -mediated interactions support ligand binding. These heat maps display the 
+relative occupancy of water-mediated vs direct non-bonded interactions between each protein residue and the ligand. 
+A value of R ≃ 0 would mean that either a non-bonded interaction is not frequently formed between this residue and 
+the ligand or that the interaction is formed equally as a direct and water-mediated interaction. A value of R ≃ -1 would 
+mean that there is a water -mediated interaction formed for close to 100% of all trajectories and that there is no 
+significant period of the trajectory for which a bonded interaction is formed between this same residue and the ligand. 
+(A) There are numerous residues in the receptor for whic h R<-0.7 in both mandipropamid and WIN. For PYR1mandi 
+these residues ar e 81, 108, 116, 122, 141, and 164. For PYR1 WIN these residues are 81, 108, 122, and 141. For 
+PYR1WIN, residue W385 has an R value of -0.45 which is lower than the threshold established, but this residue was 
+still included for further analysis of the water -mediated h-bond was present for >95% of trajectories and this was 
+previously established to be an important water-mediated interaction. It is important to note that no other residues had 
+an R score between 0.45 and 0.7 and also formed water mediated interactions for >95% of trajectories. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+5 
+ 
+Figure S4: Representative strong and stable h-bonds establishes thresholds for water-mediated h-bonds. 
+We have included control residues with the same residue identity as each residue determined to have a primarily water-
+mediated h-bond with the ligand (defined as the “reference residue”). The solvent-exposed control is a residue as the 
+same type as the reference residue but located in a solvent exposed position on the receptor. The pocket control residue 
+is a residue the same type as the reference and located within the binding pocket, but with a combined <10% contact 
+with the ligand from either direct or water -mediated interactions. (A) The control residues from PYR1 mandi have a 
+combined mean H–acceptor distance of 1.81 Å and 93% of the control bonds have a mean distance < 2.5 Å. Also, 
+80% of these residues have a standard deviation < 0.45 Å. (B) The control residues for PYR1 WIN have a combined 
+mean H–acceptor distance of 2.42 Å and 89% of the control bonds have a mean distance < 2.5 Å. Also, 89% of these 
+residues have a standard deviation < 0.45 Å. This da ta allows increased confidence in the thresholds established for 
+use dividing the water mediated h-bonds into those which are strong and stable and those which are not. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+6 
+ 
+ 
+Figure S 5. Comparison of ΔΔG calculated through MD simulations to experimentally -
+determined 𝑙𝑜𝑔(
+𝐾𝑑,𝑒𝑓𝑓,𝑖
+𝐾𝑑,𝑒𝑓𝑓,𝑊𝑇
+) for five chosen mutations to the PYR1mandi sensor. MD ΔΔG calculated 
+from relative free energy calculations performed with Hamiltonian replica exchange simulations, 
+in units of kcal/mol. The calculated 𝑙𝑜𝑔(
+𝐾𝑑,𝑒𝑓𝑓,𝑖
+𝐾𝑑,𝑒𝑓𝑓,𝑊𝑇
+) for each mutation is reported in main text figure 
+3, with exact values available in the supplemental data file. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+7 
+ 
+Figure S6: Salt bridge formation is significantly impacted by mutation. We plot the mean occupancy of 
+three salt-bridges which form across the binding pocket as well as the h -bond which forms between R59 and 
+the ligand of both the WT and E141Y variants. There is an inverse relationship between the formation of the 
+R59—E94 salt -bridge and the R59 —E/Y141 salt bridge in the WT complex. The formation of a salt bridge 
+between R59 and the ligand appears to be central to the stabilization of the ligand within the binding pocket prior to 
+HAB1 secondary binding. The R59–ligand salt bridge is disrupted by the E141Y mutation to PYR1mandi. The absence 
+of the R59–ligand salt bridge is strongly correlated to the absence of the R59 -E/Y141 salt bridge which is disrupted 
+directly by the E141Y mutation. In the absence of a salt-bridge between R59-E/Y141 R59 instead forms a salt-bridge 
+with E94 which is also consistent with the salt-bridge structure found in Apo PYR1mandi. 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+8 
+ 
+Figure S7. E141Y Mutation Maintains a Stable Binding Complex. 
+Here we plot the heavy atom RMSD relative to the centroid of each trajectory to compare the relative protein 
+stability. We observe that the WT protein becomes more flexible with the removal of HAB1 from the complex, 
+while the opposite effect is observed in the E141Y mutant variant. With the E141Y mutation, mandipropamid binds 
+to a distinct location compared to binding in WT PYR1. This new binding location is not conducive to the further 
+binding of HAB1. Thus, if we initialize the mutant PYR1 bound to HAB1 the ligand is trapped and forces the 
+protein to reorganize around the ligand in a non-physical manner, which results in an unstable protein structure. For 
+this reason, the insights into the conformational ensemble of mutant bound complex were taken from simulations 
+which did not include HAB1. 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+9 
+ 
+ 
+Figure S8: E141Y mutation leads the ligand to adopt a significantly different conformation. We examine 
+additional ligand – protein non-bonded interactions to quantify the difference between the ligand binding location 
+PYR1mandi/E141Y vs PYR1 mandi. (A) We plot the non -bonded interactions which form in >90% of trajectories for the 
+PYR1mandi complex. We observe that all these interactions are significantly disrupted for PYR1mandi/E141Y in the absence 
+of HAB1. (B) Additionally, we observe new distinct non -bonded interactions forming with the protein in its new 
+binding location. (C ) Regardless of whether PYR1 mandi/E141Y is in complex with HAB1, the ligand is significantly 
+destabilized as observed by the significant increase in center of mass (COM) RMSD. 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+10 
+ 
+ 
+Figure S9: E141Y mutation leads to minor distortion of the receptor. Here we compare heavy atom RMSD 
+for all variants relative to the centroid structure for WT PYR1 in complex with HAB1. Significantly increased RMSD 
+values suggest that the structure is either significantly more flexible or exhibits a distinct protein conformation. The 
+only variant which consistently exhibits a distinct conformation is PYR1 mandi/E141Y in complex with HAB1 likely 
+because the protein–protein binding interface prevented the ligand from reorienting to a more energetically favorable 
+conformation thus forcing the ligand to distort the protein structure to reach a metastable conformation. 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+11 
+ 
+Figure S 10. Biological replicate yeast surface display titration for PYR1 mandi, PYR1 mandi 
+R59Q/E141Q, and PYR1 mandi R59E/E141R. Yeast surface display titrations of PYR1 mandi, PYR1 mandi R59Q/E141Q, and 
+PYR1mandi R59E/E141R. Relative fluorescence intensity (RFI) is determined by secondary labeling using streptavidin -
+phycoerythrin after initial labeling with indicated ligand concentration and 100 nM biotinylated HAB1 T+. Error bars 
+represent 1 s.d. In relative fluorescence for n = 2 replicates. Inset cytograms show binding of HAB1T+ versus display 
+of PYR1 variant on the surface of yeast. The cytogram for PYR1 mandi R59Q/E141Q shows the positive result of binding 
+and the cytogram of PYR1mandi R59E/E141R shows the lack of binding for that variant. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+12 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure S11: Charge Neutral Mutations Disrupt Ligand Binding. 
+(A) The 59 – 141 salt-bridge is formed in both the WT (blue) and R59E/E141R (green) variants as observed in MD, 
+but not the R59Q/E141Q (peach) charge reversal variant (zoomed-in view in B). The formation of this charge 
+reversed salt-bridge does not guarantee the formation of a stable h-bond with either residue 59 or 141, unlike the 
+wild type (C). In the zoomed-in view one can see more clearly that while the R59E/E141R variant does not result in 
+a complete reorientation of residue 59 like the R59Q/E141Q variant, the h-bond is shifted by ~3A relative to the 
+acceptor on the ligand. A 3A reorientation of the ligand would significantly change the other non-bonded contacts 
+the ligand is able the form. This suggests that while this mutation significantly disrupts binding for Mandi that may 
+not be the case for a different ligand. The complete destruction of the salt-bridge in the R59Q/E141Q variant 
+suggests that to rescue ligand binding the ligand would need to be chemically more similar to WIN which is able to 
+rescue binding through the formation of water-mediated h-bonds. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+13 
+ 
+Figure S12: The Apo structure of the binding pocket in the absence of HAB1 (pink) is defined by 
+stable salt bridges R59 – E94 and R79 – E94 as well as the h -bond R79 – F52 formed with the 
+backbone of F52. When the ligand binds allowing complex formation with HAB1 (yellow) the 
+R59—E94 salt bridge is replaced by the R59—E141 salt bridge making space to accommodate the 
+ligand within the binding pocket. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+14 
+ 
+ 
+ 
+ 
+Figure S1 3. Cytograms of PYR1 R79 -mutant binding to either 100μM mandipropamid or 
+WIN55,212-2, as indicated, and 200nM HAB1 T+. Each cytogram shows a single experimental 
+replicate, experiments run on different days are separated by vertical lines and grouped with the 
+corresponding control. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+15 
+ 
+ 
+Figure S14: Mutational additivity or non -additivity indicate conformer selection in engineered biosensors. 
+A) Structures of PYR1 mandi A108T/L159F (left) and PYR1 mandi A160I/G122M (right). The PYR1 backbone is shown as a teal 
+ribbon. Ligands and mutated residues are shown as sticks. B) Yeast surface display titrations of multi -mutant 
+biosensors compared with original sensor. PE fluorescence is determined by secondary labeling using streptavidin-
+phycoerythrin after initial labeling with indicated ligand concentration and 100 nM biotinylated HAB1 T+. Error bars 
+represent 1 s.d. in relative PE fluorescence for n=4 (two technical replicates for two biological replicates). C) Predicted 
+additive improvement of mutations in binding affinity compared to experimentally observed relative binding affinity. 
+Error bars represent the summation of mean absolute error for each mutation (grey) or mean absolute error for titrations 
+(colored). 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+16 
+ 
+ 
+ 
+ 
+Figure S15. replicate of PYR1WIN, PYR1K59Q/S92V/F159A, and PYR1K59Q//F159A titration curves plus 
+other variants Yeast surface display titrations of computationally designed PYR1 biosensors binding WIN55,212-
+2, compared wild-type control PYR1WIN sensor shown in black. PE fluorescence is determined by secondary labeling 
+using streptavidin-phycoerythrin after initial labeling with indicated ligand concentration and 100 nM biotinylated 
+HAB1T+. Error bars represent 1 s.d. in relative PE fluorescence for n=2 (two technical replicates for one biological 
+replicate). 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026
+
+17 
+ 
+Figure S1 6: We examined the diversity in structures within the defined ligand clusters for 
+Mandipropamid (A) and WIN (B) and we found that the clusters have much lower structural 
+diversity than the non-clustered structures with a mean RMSD of 1 -1.5Å compared to 3.75Å and 
+2.5Å without clustering for Mandipropamid and WIN respectively. 
+ 
+ 
+ 
+Downloaded from pubs.​acs.​org/​acbcct/​article-supplement/​88210/​pdf/​cb4c00243_si_001/​ by UNIV OF CALIFORNIA RIVERSIDE user on 19 August 2026

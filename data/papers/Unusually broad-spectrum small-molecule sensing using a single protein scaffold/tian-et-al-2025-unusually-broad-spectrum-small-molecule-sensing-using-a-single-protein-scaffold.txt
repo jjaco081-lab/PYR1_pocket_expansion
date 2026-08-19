@@ -1,0 +1,514 @@
+PNAS  2025  Vol. 122  No. 51 e2519924122 https://doi.org/10.1073/pnas.2519924122 1 of 7
+RESEARCH ARTICLE | 
+Significance
+ Small-molecule biosensors are 
+critical tools for monitoring 
+environments, controlling cellular 
+behavior, and enabling new 
+biotechnologies; yet, they remain 
+challenging to design. The plant 
+hormone receptor Pyrabactin 
+Resistance 1 (PYR1) has emerged 
+as a new scaffold for creating 
+small-molecule sensors. To 
+define the chemical scope 
+accessible with PYR1 and 
+empower sensor development, 
+we screened libraries of PYR1 
+variants against thousands of 
+compounds. We identified 
+several hundred new sensors for 
+diverse targets, including drugs, 
+plant metabolites, explosives, 
+and persistent “forever” per- and 
+polyfluoroalkyl substances 
+(PFAS). The ease, scale, and 
+breadth of sensed molecules 
+position PYR1 as a privileged 
+scaffold for creating customizable 
+biosensors with antibody-like 
+simplicity.
+Reviewers: S.R., University of Wisconsin - Madison; and 
+N.Z., University of Washington.
+Competing interest statement: Sean Cutler and Ian 
+Wheeldon are co- founders of Living Sensors, Inc. The 
+University of California has filed a provisional patent 
+application on the work described in this manuscript.
+Copyright © 2025 the Author(s). Published by PNAS. 
+This open access article is distributed under Creative 
+Commons Attribution - NonCommercial- NoDerivatives 
+License 4.0 (CC BY- NC- ND).
+1H.T. and J.B. contributed equally to this work.
+2Present address: Department of Plant and Soil Sciences, 
+University of Delaware, Newark, DE 19713.
+3To whom correspondence may be addressed. Email: 
+wheeldon@ucr.edu or cutler@ucr.edu.
+This article contains supporting information online at 
+https://www.pnas.org/lookup/suppl/doi:10.1073/pnas. 
+2519924122/- /DCSupplemental.
+Published December 15, 2025.
+BIOCHEMISTRY
+Unusually broad- spectrum small- molecule sensing using a single 
+protein scaffold
+Hao Tiana,1 , Jesús Beltrána,1,2, Wesley Georgea , Chase Lenert- Mondoub, Norman Sederc, Zoe I. Davisd, Samuel D. Swiftd, Thomas Girkea, 
+Timothy A. Whiteheadd, Ian Wheeldone,f,g,3, and Sean R. Cutlera,f,3
+Affiliations are included on p. 7.
+Contributed by Sean Cutler; received July 23, 2025; accepted November 4, 2025; reviewed by Srivatsan Raman and Ning Zheng
+Small- molecule sensing in plants is dominated by chemical- induced dimerization mod-
+ules. In the abscisic acid (ABA) system, allosteric receptors recruit phosphatase effectors 
+and achieve nM in vivo responses from µM receptor–ligand interactions. This sensitivity 
+amplification could enable ABA receptors to serve as generic scaffolds for designing 
+small- molecule sensors. T o test this, we screened collections of mutant ABA- receptors 
+against 2,726 drugs and other ligands and identified 553 sensors for 6.6% of these 
+ligands. The mutational patterns indicate strong selection for ligand- specific binding 
+pockets. We used these data to develop a sensor design pipeline and isolated sensors for 
+multiple plant natural products, 2,4,6- trinitrotoluene (TNT), and “forever” per- and 
+polyfluoroalkyl substances (PFAS). Thus, the ABA sensor system enables design and iso-
+lation of small- molecule sensors with broad chemical scope and antibody- like simplicity.
+biosensors | plant hormone receptors | chemical induced dimerization | synthetic biology | PFAS
+ The ability to create protein binders through antibodies and designed proteins has trans-
+formed biotechnology research by making essentially any protein a targetable entity ( 1 ). 
+The success of this strategy is partly due to the simplicity of using a single protein domain 
+and engineering pipelines for isolating binders. Developing protein scaffolds that can be 
+programmed to recognize small molecules as easily as antibodies can recognize antigens 
+would empower many biotechnology and synthetic biology applications. In principle, 
+numerous biological parts can be reprogrammed to develop small-molecule sensors, includ-
+ing ligand-induced transcription factors (for example, lacI ) ( 2 , 3 ), cell surface receptors 
+(for example, GPCRs and DREADDs) ( 4 ), and chemical-induced dimerization (CID) 
+systems (for example, rapamycin/FKBP/FRB) ( 5 ). Of these, CID systems are attractive 
+because they enable facile control of many outputs via induced proximity mecha-
+nisms ( 5 – 9 ).
+ Genetic dissection of phytohormone signaling in land plants has uncovered many 
+naturally occurring CID modules that could potentially be harnessed to engineer new 
+sense–response capacities ( 10 – 16 ). We recently introduced the plant ABA receptor PYR1 
+(Pyrabactin resistance 1 ) as an engineerable scaffold for sensor design and demonstrated 
+the ability to reprogram binding for several cannabinoid and pesticide ligands ( 17 – 20 ). 
+Part of the success of the PYR1 receptor as a scaffold is due to the separation of 
+ligand-recognition and binding from its coreceptor, HAB1 (Homolog of ABA Insensitive 
+1 ). This simplifies engineering efforts by restricting designs to a single molecular recogni-
+tion surface. PYR1 also benefits from intrinsic sensitivity amplification. The native ligand, 
+ABA, binds to the receptor with micromolar affinity, but the activated receptor conformer 
+binds with nanomolar affinity to HAB1 in an orientation that blocks ligand dissociation, 
+leading to an up to 100-fold increase in affinity to the ligand ( 21 ), which facilitates the 
+identification of low-affinity binders ( 22 ). Moreover, its components are soluble and 
+function in diverse prokaryotic and eukaryotic hosts ( 13 , 17 , 19 , 23 ). These features 
+coalesce to make the PYR1 CID module an effective sensor scaffold and a candidate for 
+designing small-molecule binders akin to antibodies for protein antigens.
+ Here, we set out to define the chemical scope of the PYR1 binding pocket and its 
+potential as an antibody-like scaffold for sensing small molecules. T o do this, we established 
+a miniaturized sensor-isolation pipeline that capitalizes on ligand-induced growth triggered 
+by the physical interaction between PYR1 and HAB1 using yeast growth-based selections 
+( Fig. 1 ). Using this approach in thousands of parallelized assays, we screened receptor 
+variants against a collection of 2,726 small molecules. T ogether, these yielded sensors for 
+181 molecules, 6.6% of the ligands screened. We show that this large dataset of ligand–
+receptor interactions can be harnessed to isolate high-affinity sensors in a single step with 
+antibody-like simplicity. 
+OPEN ACCESS
+Downloaded from https://www.pnas.org by UC Riverside on August 19, 2026 from IP address 169.235.95.201.
+
+2 of 7   https://doi.org/10.1073/pnas.2519924122 pnas.org
+ T o profile the binding scope of PYR1, we assembled a collection 
+of diverse small molecules from a commercially available collection 
+of FDA-approved drugs and natural products, and a curated set 
+of agrochemicals and other research ligands (Dataset S1 ). Since 
+commercial screening libraries often contain redundancy—for 
+example, the same parent molecule present as different salts—we 
+used ChemmineR ( 24 , 25 ) to define the nonredundant set of 
+molecules screened. We mapped them to the ChEMBL database 
+( 26 ) to identify redundancies and extract molecular properties 
+and approval statuses. These analyses showed that the screening 
+collection contains 2,726 small molecules. This collection was 
+screened in duplicate against previously and newly designed PYR1 
+variant libraries harboring double and triple mutations localized 
+to 19 ligand-contacting residues (see Materials and Methods and 
+ SI Appendix, Fig. S1 for details) ( 17 ). Candidate sensor strains for 
+a given molecule were screened in duplicate at 100 µ M and 
+retested at multiple concentrations of target molecules to eliminate 
+false positives and profile strain sensitivity; retest dose–response 
+image data are provided in Dataset S2 . T ogether, these screens 
+yielded 553 distinct sensor sequences and strains that respond to 
+181 small molecules (Dataset S3 ), including 81 FDA- approved 
+ligands, 30 plant natural products, 17 agrochemicals, and 53 
+research molecules, representing an overall success rate of 6.6% 
+of the ligands screened ( Fig. 2A ). 
+ Chemical clustering of the hit ligands based on their pairwise 
+Tanimoto distances, calculated using atom-pair fingerprints, reveals 
+a broad distribution of structurally dissimilar hits, with several 
+small clusters of similar molecules ( Fig. 2 B and C ). Thus, there is 
+broad structural diversity among the collection of sensed ligands. 
+Several important pharmacological agents and agrochemicals 
+are sensed by the collection, including steroids, nonsteroidal 
+anti-inflammatory drugs (NSAIDs), dihydropyridine calcium 
+channel antagonists, T ransient Receptor Potential Vanilloid 1 
+(TRPV1) receptor agonists, and antifungal strobilurins ( Fig. 2C ). 
+The physicochemical properties of the 181 ligands sensed are 
+drug-like, as 173 (96%) comply with Lipinski’s rule of 5, compared 
+to 76% for the library. Moreover, they score highly on the quan-
+titative estimate of drug-likeness (QED) metric, a unitless measure 
+of drug-likeness (med. QED hits = 0.69, QED nonhits = 0.55) 
+( 27 ). Compared to the nonhit members of the collection screened, 
+the ligands sensed are enriched for higher cLogP (computed 
+log10 octanol/water partition coefficient) and lower tPSA (topolog-
+ical polar surface area; Fig. 2D ). These trends are likely driven partly 
+by the cell- based nature of our sensor isolation method, which 
+enriches for molecules with good membrane permeability and 
+bioavailability. The size of ligands sensed is relatively smaller than 
+that of the nonhit collection (median MWhits = 276 Da; MWnon-hits 
+= 324 Da) but includes molecules as small as 90 Da and as large 
+as 748 Da ( Fig. 2D ). We note that the two largest ligands sensed 
+are the poly-iodinated thyroxins tetrac (MW 748) and lyothyro-
+nine (MW 651). Blotz 2 ( 28 ) docking of these ligands suggests 
+that they can adopt binding conformations in PYR1TETRAC – and 
+PYR1LYOTHYRONINE –HAB1 complexes that enable HAB1’s T rp385 
+lock residue to insert into the 4’ pore of the closed- conformer 
+receptors, a critical interaction for stabilizing the receptor complex 
+(SI Appendix, Fig. S2 ). Collectively, these data demonstrate that 
+the chemical space accessible with PYR1-derived sensors is struc-
+turally diverse and drug-like, which defines PYR1 as an unusually 
+versatile and malleable scaffold for developing sensors for drugs 
+and other bioactive ligands.
+ The screen identified an average of 4 distinct receptor-binding 
+pocket sequences per hit ligand, providing a rich dataset with 
+which to probe sequence–ligand relationships. Analysis of the 
+binding pocket dataset reveals that only 26 receptors (~5%) were 
+AB
+C D
+Fig. 1. Large- scale sensor isolation to enable data- driven sensor design. (A) The PYR1 sensor isolation pipeline. PYR1 binds to its effector protein HAB1 in 
+response to ABA, its native ligand. This interaction can be measured in yeast growth assays by activating a genetic circuit that rescues uracil auxotrophy. Mutant 
+PYR1 variants that recognize new ligands are identified from receptor library pools using selection experiments (responders grow in the absence of uracil). (B) 
+A high- throughput version of the receptor isolation approach was developed. In this, we plate ~150,000 cells onto media containing a test chemical and select 
+colonies from the wells for retesting and subsequent sequencing. These efforts identified 553 receptors that recognize 181 unique molecules. (C) Chemoinformatic 
+analysis of the data is used to build maps of sequence–ligand interactions. (D) The sequence–ligand maps developed can be used to drive the design of sensors. 
+Libraries of receptors targeted to specific molecule classes are constructed using sequence profiles to design oligonucleotide pools that can be assembled using 
+Golden Gate cloning; subsequent growth- based screens enable one- step isolation of high- affinity sensors.
+Downloaded from https://www.pnas.org by UC Riverside on August 19, 2026 from IP address 169.235.95.201.
+
+PNAS  2025  Vol. 122  No. 51 e2519924122 https://doi.org/10.1073/pnas.2519924122 3 of 7
+isolated in three or more screens, suggesting that a small number 
+of promiscuous binders did not dominate the screening outcomes 
+( Fig. 3A ). Consistent with this observation, the mutations 
+obtained are distributed broadly across the ligand-binding pocket 
+( Fig. 3B ). However, F159, which resides at the top of the pocket 
+and contacts both the ligand and HAB1, was preferentially 
+mutated and may be important for stabilizing PYR1–HAB1 inter-
+actions. The mutational patterns obtained also suggest strong 
+selection for specific ligand–receptor interactions ( Fig. 3C and 
+ Dataset S3 ). For example, we isolated six sensors for the anticon-
+vulsant valproic acid, and all harbor the mutation I110R, 
+suggesting our screens selected for a stabilizing salt bridge between 
+valproic acid’s carboxylate and the mutant receptors’ basic arginine 
+side chains. Similarly, 11 receptors were identified for the 
+amine-containing ligand cinacalcet, used to treat hyperthyroidism, 
+and 10 of these harbored K59D/E, suggesting selection for a sta-
+bilizing salt bridge. These PYR1 sensors suggest a strong selection 
+bias toward distinct binding-pocket mutations ( Fig. 3B ). 
+ T o quantify positional mutational patterns, we computed 
+Shannon diversity across pocket positions for each ligand, using 
+a shuffled dataset as a null comparator. This null dataset preserved 
+the overall mutation frequency at each pocket position but 
+A
+B
+D
+C
+Fig. 2. The PYR1 binding pocket can be mutated to sense small molecules of broad chemical scope. (A) Summary of ligands sensed by receptors isolated from a 
+2,726- member small molecule library screen. The hits obtained include FDA- approved molecules, natural products, agrochemicals, and a collection of research 
+ligands (see Dataset S1 for the ligands screened). (B) The molecules sensed by PYR1- derived sensors are structurally diverse. The heatmap shows hierarchical 
+clustering based on the pairwise chemical similarities of the 181 hit molecules. Pairwise ligand - similarity, measured using Tanimoto scores calculated from 
+atom- pair descriptors in ChemmineR (21), is shown by the heatmap (blue = identical). Selected clusters of similar ligands are highlighted. (C). Selected chemical 
+ligands from each cluster identified in part B. (D) PYR1- derived receptors sense drug- like molecules. Comparisons of the physicochemical properties of ligand 
+hits (n = 181) and the nonhits (n = 2,545). Molecular weight (MW), computationally calculated octanol–water partition coefficient (cLogP), topological polar surface 
+area, and a quantitative estimate of drug- likeness (24) values were extracted from ChEMBL (23). The median for each population is shown, along with the p- value 
+from a two- sided Wilcoxon rank- sum test. R code is available at https://github.com/cutlersr/PYR1_sensor_screen.
+Downloaded from https://www.pnas.org by UC Riverside on August 19, 2026 from IP address 169.235.95.201.
+
+4 of 7   https://doi.org/10.1073/pnas.2519924122 pnas.org
+randomized receptor–ligand pairings, thereby disrupting ligand- 
+specific positional structure. We limited our analysis to the 60 
+ligands for which four or more receptors were isolated (502 total 
+ligand–receptor combinations). Shannon diversity values ( Fig. 3D ) 
+were significantly lower in the sensors dataset than in the shuffled 
+null set (Wilcoxon rank-sum, P < 6.4 × 10-13 ), indicating that a 
+ligand’s binding pocket mutations tend to cluster in specific resi-
+dues, rather than being randomly distributed. Finally, we con-
+ducted yeast surface display assays to probe direct ligand–receptor 
+interactions and observed nM to µM limits of detection for a subset 
+of receptors that functioned well in the YSD assay (SI Appendix, 
+Fig. S3 ). These experiments demonstrate direct physical interac-
+tions without a cell-based growth assay. Collectively, these analyses 
+show strong global selection for ligand-specific mutational 
+ patterns, with mutations broadly distributed across the bind-
+ing pocket.
+ Our large dataset of ligand–receptor interactions provides maps 
+of binding-pocket residues that, in principle, could be harnessed 
+to improve receptors. We took two complementary approaches to 
+test this. First, we mined our data for the coumarin scaffold—the 
+largest cluster of plant-derived natural products in our screening 
+library (selected examples shown in Fig. 4A ). Of the 14 coumarins 
+in the library, we isolated sensors for eight, which harbored muta-
+tions at 11 of the 19 binding-pocket sites mutagenized. We derived 
+a coumarin-binder sequence profile from these data and encoded 
+combinations of up to nine of the most frequent coumarin-associated 
+mutations ( Fig. 4B and Dataset S4 ). The library contained 77,327 
+members and was constructed by the combinatorial assembly of 
+218 oligonucleotides (Dataset S4 ). It was then transformed into 
+ S. cerevisiae and screened against 12 coumarins (Dataset S5 ). This 
+yielded sensors for three ligands not identified in the original 
+screens (5 , 6 , and 5,7-dihydroxy-4-methylcoumarin) and between 
+10- and 400-fold sensitivity gains for the eight positive coumarin 
+hits, including (1 –3 ) ( Fig. 4C and SI Appendix, Fig. S4 and 
+ Dataset S7 ). As a second approach, we asked whether profiles 
+derived from receptors that recognize single-ring phenyl deriva-
+tives (6 –9 ) could guide the discovery of sensors for the chemically 
+similar molecules, TNT ( 11 ) and three of its degradation products 
+A
+B
+D
+C
+Fig. 3. Mutant PYR1 receptor–ligand interactions can be mapped using large- scale sensor screens. (A) Screening outcomes: ligand hits per receptor sequence, 
+number of receptors identified per hit ligand, and the minimum dose–response of receptor hits during validation (each sensor strain was tested for ligand - 
+dependent growth on 1, 10, 100 µM ligand). (B) Sensor mutations are broadly distributed throughout the PYR1 binding pocket; the top panel shows mutations per 
+binding pocket residue, and the bottom panel maps the frequency of specific mutations per residue for the 553 receptors isolated. (C) Selected binding- pocket 
+sequences for ligands that yielded ≥ 4 receptor hits. WT residues are shown at the top; colored boxes denote basic (blue), hydrophobic (green), polar (orange), 
+and aromatic (gray) substitutions. (D) Sensor- binding- pocket mutations are tailored to their target ligands. Selection for mutational bias in each sensor–ligand 
+set was quantified by calculating the Shannon diversity of mutation counts per position across receptors, with lower values indicating more positionally clustered 
+mutational patterns (i.e., sensors for a ligand tend to have mutations in the same binding pocket locations). The analysis was performed for the 66 ligands 
+with four or more sensors isolated (n = 502 receptor–ligand interactions). The null model shows Shannon diversity values calculated from randomly permuted 
+receptor–ligand assignments (P < 6.4 × 10−13; two- sided Wilcoxon rank- sum test). R code is available at https://github.com/cutlersr/PYR1_sensor_screen.
+Downloaded from https://www.pnas.org by UC Riverside on August 19, 2026 from IP address 169.235.95.201.
+
+PNAS  2025  Vol. 122  No. 51 e2519924122 https://doi.org/10.1073/pnas.2519924122 5 of 7
+(12 , 13 , and 4-amino-2,6-dinitrotoluene) ( Fig. 4D and SI Appendix, 
+Fig. S5 ); none of these were present in the screening collection 
+and DSM/TSM library screens did not yield hits for TNT . A 
+506,229-member receptor library built using a sequence profile 
+derived from receptors activated by (6 –9 ) yielded initial sensors 
+for the four targets (Dataset S4 ). Sequence profiles derived from 
+the first-round sensors were used to design a second-round library, 
+which ultimately yielded sensors for TNT and three degradation 
+products, DNT , 2ADNT , and 4ADNT , with low µM EC50 ligand 
+responsiveness, as measured using reporter and growth assays 
+( Fig. 4F and SI Appendix, Fig. S5 and Dataset S8 ). T ogether, these 
+data demonstrate that our large dataset of ligand–PYR1 interac-
+tions can be harnessed to yield receptors with improved affinity 
+and target recognition. 
+ Our data establish a simple approach for creating new sensors 
+for small molecules: 1) screen receptor libraries with relatively few 
+binding pocket mutations to identify initial sensors, 2) use the 
+data generated to derive sequence profiles, and then 3) design and 
+screen affinity maturation libraries to yield high-affinity sensors. 
+T o test this pipeline on a class of molecules dissimilar to members 
+of our initial screening library, we focused on “forever” PFAS 
+molecules, which are critical biosensing targets due to their per-
+sistence, bioaccumulation, and associated health and environmen-
+tal risks ( 29 ). T o do this, we constructed and screened an improved 
+double-site mutant library designed to enhance coverage in HTS 
+assays by reducing autoactivating and wild-type receptors from 
+the original DSM library (DSM-Hao; see Materials and Methods ). 
+We screened this against a panel of 103 different PFAS (Dataset S6 ), 
+A
+B E
+CF
+D
+Fig. 4. Ligand–receptor interaction maps and sequence profile- guided design enable the isolation of high- affinity sensors. (A) Selected chemical structures of 
+coumarin hits used to generate the sequence profile of the coumarin- target library: osthole (1), imperatorin (2), and angelicin (3). Receptors for 4- methylumbelliferone 
+(4) and 7- methoxycoumarin (5) were not identified in the initial screen; sensors for these compounds were isolated from the coumarin- target library. (B) Sequence 
+profile of the coumarin targeted library and binding pocket mutations of PYR1 receptors activated by compounds (1–5). (C) Yeast- hybrid β- galactosidase colony 
+assays comparing PYR1 sensor response of the initial sensor and high- affinity sensors isolated from the coumarin- targeted library. The targeted library yielded 
+PYR1 receptors for (4 and 5), which were not identified in the initial data generation screen. The minimum dose–responses are shown in comparison to the 
+mock condition. SI Appendix, Fig. S2 shows additional growth and reporter dose–response assays for the coumarin sensors. (D) Chemical structures of selected 
+ligands used to design the sequence profile of a TNT target library: 2,4- dinitrophenol (6), chloroxylenol (7), 2,4,6- trihydroxybenzoic acid (8), 2,6- dihydroxybenzoic 
+acid (9). Hits for trinitrotoluene (TNT; 10), dinitrotoluene (DNT; 11), and 2- amino- dinitrotoluene (2ADNT; 12) were not identified using the screening libraries. 
+Sensors for these were isolated from the TNT target library. (E) Sequence profile of the TNT target library (TNTv2) and binding pocket mutations for TNT, DNT, 
+and 2ADNT receptors isolated from the library. The sequence profile used for library construction additionally includes 117L/W and 160A/V (Dataset S4). (F) 
+Yeast- hybrid β- galactosidase colony and cell- based titration assays for PYR1 TNT, PYR1DNT, and PYR1 2ADNT for their on- target ligands. Triplicate data points are 
+shown. The inset data indicate the EC50 and range.
+Downloaded from https://www.pnas.org by UC Riverside on August 19, 2026 from IP address 169.235.95.201.
+
+6 of 7   https://doi.org/10.1073/pnas.2519924122 pnas.org
+including six of major concern that targeted for regulation in 
+drinking water by the EPA: perfluorononanoic acid (PFNA; 13 ), 
+perfluorooctanesulfonic acid (PFOS; 14 ), perfluorooctanoic acid 
+(PFOA; 15 ), perfluorohexanesulfonic acid (PFHxS; 16 ), hex-
+afluoropropylene oxide dimer acid (HFPO-DA), and perfluoro-
+butanesulfonic acid (PFBS) ( Fig. 5A ). The initial library screens 
+yielded 86 sensors targeting 18 targets, providing a dataset for 
+creating a PFAS-targeted library to isolate high-affinity sensors 
+( Fig. 5B ; and Dataset S9 ). Screens using this targeted library 
+expanded the scope of PFAS sensing, increasing the total number 
+of PFAS molecules sensed to 25, and yielded sensors with improved 
+on-target sensitivity. PYR1PFAS , isolated in a screen against PFOA 
+(13 ), shows a strong response to low µM concentrations of four 
+of the six molecules targeted for regulation ( Fig. 5D and 
+ SI Appendix, Fig. S6 ) and provides a new sensor for the most prob-
+lematic environmental “forever” molecules. These experiments 
+further validate the data-driven sensor approach and its ability to 
+develop new sensors. 
+Discussion
+ The ligand-binding pocket of PYR1 is unusually malleable; it can 
+be reshaped to recognize a surprising number of structurally unre-
+lated ligands. We isolated and validated sensors for 6.6% of the 
+nearly 3,000 molecules screened and isolated and validated over 
+a dozen more using data-driven, targeted libraries. The majority 
+of the ligands sensed are recognized by independently isolated 
+sequence variants. Sequence analyses of the receptors demonstrate 
+binding pocket mutational patterns tailored to each ligand, muta-
+tions distributed broadly across the binding pocket, and a small 
+frequency of promiscuous receptors. Collectively, these trends 
+indicate a robust pipeline for sensor isolation.
+ It has been estimated that drug-like space encompasses approx-
+imately 1033 molecules ( 30 ). Even without improvements in hit 
+rates, which should be possible, our system provides access to a large 
+chemical space that can be harnessed to build new biochemical, 
+cellular, and whole-organism control systems. Our sensors recognize 
+drugs and drug- like molecules, opening many possibilities. For 
+example, NSAID-controlled switches, of which we isolated several, 
+could be valuable in clinical applications. Our sensors can also be 
+orthogonalized for deployment in plants using the PYR1*–HAB1* 
+module, which enables two-channel control systems and control of 
+plant phenotypes without perturbing native ABA signaling ( 19 ). 
+Thus, PYR1’s extreme malleability, ease of sensor design, and 
+induced dimerization mechanism converge to make PYR1 a priv-
+ileged scaffold for sensor design across biological kingdoms.
+ Why is PYR1 imbued with such unusual malleability? PYR1 
+belongs to the ligand-binding START superfamily. These are char-
+acterized by a helix-grip motif, which consists of a seven‐ stranded 
+antiparallel β‐ sheet that wraps around a C-terminal α‐ helix to create 
+a central ligand-binding pocket. START proteins are present in all 
+domains of life and, like our PYR1 variants, bind structurally diverse 
+molecules – from hydrophobic steroids to polar flavonoid-glucosides 
+( 31 – 33 ). This domain is frequently involved in transport and catal-
+ysis. However, PYR1 and its relatives link ligand recognition to effec-
+tor binding to control signaling. PYR1, therefore, couples an 
+evolutionarily malleable binding pocket with a biochemical mecha-
+nism well-suited for engineering signaling systems. Given the success 
+of computational design for CID sensors ( 9 , 34 ) and the new meth-
+ods developed for PYR1 ( 35 ), we anticipate that PYR1’s properties 
+can be broadly harnessed to design sense–response systems controlled 
+by user-specified molecules with antibody-like simplicity.
+ Plant hormone signaling employs a suite of sensor modules 
+that, like PYR1, involve hormone-mediated stabilization of pro-
+tein–protein interactions ( 14 , 16 , 36 – 38 ). For example, the gib-
+berellic acid receptor is a member of the large GDSL lipase family 
+and, like the ABA system, its module employs induced dimeriza-
+tion with an effector that greatly stabilizes the activated receptor 
+complex ( 39 – 41 ). GID1 and other plant hormone sensors should 
+provide a suite of scaffolds for building new sensor systems with 
+the antibody-like simplicity and scope of the PYR1 system. 
+Data, Materials, and Software Availability. All study data are included in the 
+article and/or supporting information.
+AB
+D
+C
+Fig. 5. Data- driven engineering of PYR1 receptors for PFAS detection. (A) Chemical structures of selected PFAS molecules targeted for sensor design. PFNA 
+(13), PFOS (14), PFOA (15), and PFHxS (16) are four of six PFAS molecules regulated by the US Environmental Protection Agency in drinking water. (B) PFAS- 
+library sequence profile and binding pocket mutations in PYR1 PFAS, a pan- PFAS receptor strongly activated by any of (13–16). The library was screened against 
+103 unique PFAS molecules (Dataset S5). (C) Yeast- hybrid β- galactosidase colony assays show that PFNA, PFOS, PFOA, and PFHxS strongly activate PYR1PFAS. (D) 
+Dose- dependent response of PYR1PFAS to four on- target PFAS molecules in cell- based β- galactosidase assays. Triplicate data points are shown. EC50 values and 
+range are shown as insets.
+Downloaded from https://www.pnas.org by UC Riverside on August 19, 2026 from IP address 169.235.95.201.
+
+PNAS  2025  Vol. 122  No. 51 e2519924122 https://doi.org/10.1073/pnas.2519924122 7 of 7
+ACKNOWLEDGMENTS. We thank David Nelson for comments and sugges-
+tions on the manuscript. We also thank Jinyong Liu and Yujie Men for provid-
+ing the PFAS molecule library. Defense Advanced Research Projects Agency 
+CERES- D24AC0001 (S.R.C., I.W., and T.A.W.). NIH Grant R01- GM151616 (S.R.C., 
+I.W., and T.A.W.). NSF Grant 2128016 (I.W. and S.R.C.). NSF Grant 2128287 
+(T.A.W.). NSF Grant 1922642 (S.R.C. and I.W.). NSF Grant 2218329 (S.R.C. and 
+I.W.). NIH U19AG023122 (T.G.). NSF MRI- 2215705 (T.G.). DOE GAANN Awards 
+# P200A210136 and P200A240099 (C.L.- M.).
+Author affiliations: aBotany and Plant Sciences, University of California, Riverside, CA 
+92521; bBiochemistry and Molecular Biology, University of California, Riverside, CA 92521; 
+cBioengineering, University of California, Riverside, CA 92521; dChemical and Biological 
+Engineering, University of Colorado, Boulder, CO 80305; eChemical and Environmental 
+Engineering, University of California, Riverside, CA 92507; fInstitute of Integrative 
+Genome Biology, University of California, Riverside, CA 92521; and gCenter for Industrial 
+Biotechnology, University of California, Riverside, CA 92521
+Author contributions: H.T., J.B., W.G., C.L.- M., T.G., T.A.W., I.W., and S.R.C. designed 
+research; H.T., J.B., W.G., C.L.- M., N.S., Z.I.D., S.D.S., and T.G. performed research; H.T., J.B., 
+W.G., C.L.- M., Z.I.D., S.D.S., T.G., T.A.W., I.W., and S.R.C. analyzed data; and H.T., J.B., W.G., 
+C.L.- M., T.G., T.A.W., I.W., and S.R.C. wrote the paper.
+1. P . J. Carter, Potent antibody therapeutics by design. Nat. Rev. Immunol. 6, 343–357 (2006).
+2. N. D. Taylor et al., Engineering an allosteric transcription factor to respond to new ligands. 
+Nat. Methods 13, 177–183 (2016).
+3. K. K. Nishikawa et al., Highly multiplexed design of an allosteric transcription factor to sense new 
+ligands. Nat. Commun. 15, 10001 (2024), https://doi.org/10.1038/s41467-024-54260-8.
+4. S. Dong, S. C. Rogan, B. L. Roth, Directed molecular evolution of DREADDs: A generic approach to 
+creating next- generation RASSLs. Nat. Protoc. 5, 561–573 (2010).
+5. B. Z. Stanton, E. J. Chory, G. R. Crabtree, Chemically induced proximity in biology and medicine. 
+Science 359, eaao5902 (2018).
+6. S. L. Schreiber, The rise of molecular glues. Cell 184, 3–9 (2021).
+7. L. A. Banaszynski, L.- C. Chen, L. A. Maynard- Smith, A. G. L. Ooi, T. J. Wandless, A rapid, reversible, and 
+tunable method to regulate protein function in living cells using synthetic small molecules. Cell 
+126, 995–1004 (2006).
+8. M. Putyrski, C. Schultz, Protein translocation as a tool: The current rapamycin story. FEBS Lett. 586, 
+2097–2105 (2012).
+9. A. A. Glasgow et al., Computational design of a modular protein sense- response system. Science 
+366, 1024–1028 (2019).
+10. S. Lumba, S. Cutler, P . McCourt, Plant nuclear hormone receptors: A role for small molecules in 
+protein- protein interactions. Annu. Rev. Cell Dev. Biol. 26, 445–469 (2010).
+11. M. Y. Huang, M. J. Nalley, P . Hecht, H. D. Madhani, An auxin- inducible degron system for conditional 
+mutation in the fungal meningitis pathogen Cryptococcus neoformans. G3 (Bethesda) 15, jkaf071 
+(2025), 10.1093/g3journal/jkaf071.
+12. T. Miyamoto et al., Rapid and orthogonal logic gating with a gibberellin- induced dimerization 
+system. Nat. Chem. Biol. 8, 465 (2012).
+13. F.- S. Liang, W. Q. Ho, G. R. Crabtree, Engineering the ABA plant stress pathway for regulation of 
+induced proximity. Sci. Signal. 4, rs2 (2011).
+14. X. Tan et al., Mechanism of auxin perception by the TIR1 ubiquitin ligase. Nature 446, 640–645 (2007).
+15. N. Shabek et al., Structural plasticity of D3–D14 ubiquitin ligase in strigolactone signalling. Nature 
+563, 652–656 (2018).
+16. W. Wang et al., Structural basis of salicylic acid perception by Arabidopsis NPR proteins. Nature 586, 
+311–316 (2020).
+17. J. Beltrán et al., Rapid biosensor development using plant hormone receptors as reprogrammable 
+scaffolds. Nat. Biotechnol. 40, 1855–1861 (2022), 10.1038/s41587-022-01364-5.
+18. S.- Y. Park et al., Agrochemical control of plant water use using engineered abscisic acid receptors. 
+Nature 520, 545–548 (2015).
+19. S.- Y. Park et al., An orthogonalized PYR1- based CID module with reprogrammable ligand- binding 
+specificity. Nat. Chem. Biol. 20, 103–110 (2024).
+20. G. Zimran, E. Feuer, O. Pri- Tal, M. Shpilman, A. Mosquna, Directed evolution of herbicide biosensors 
+in a fluorescence- activated cell- sorting- compatible yeast two- hybrid platform. ACS Synth. Biol. 11, 
+2880–2888 (2022).
+21. Y. Ma et al., Regulators of PP2C phosphatase activity function as abscisic acid sensors. Science 324, 
+1064–1068 (2009).
+22. P . J. Steiner et al., A closed form model for molecular ratchet- type chemically induced dimerization 
+modules. Biochemistry 62, 281–291 (2022).
+23. J. Pu, J. Zinkus- Boltz, B. C. Dickinson, Evolution of a split RNA polymerase as a versatile biosensor 
+platform. Nat. Chem. Biol. 13, 432–438 (2017).
+24. Y. Cao, A. Charisi, L.- C. Cheng, T. Jiang, T. Girke, ChemmineR: A compound mining framework for R. 
+Bioinformatics 24, 1733–1734 (2008).
+25. T. W. H. Backman, Y. Cao, T. Girke, Chemmine tools: An online service for analyzing and clustering 
+small molecules. Nucleic Acids Res. 39, W486–W491 (2011).
+26. A. Gaulton et al., ChEMBL: A large- scale bioactivity database for drug discovery. Nucleic Acids Res. 
+40, D1100–D1107 (2012).
+27. G. R. Bickerton, G. V. Paolini, J. Besnard, S. Muresan, A. L. Hopkins, Quantifying the chemical beauty 
+of drugs. Nat. Chem. 4, 90–98 (2012).
+28. S. Passaro et al., Boltz- 2: Towards accurate and efficient binding affinity prediction. bioXriv [Preprint] 
+(2025), 10.1101/2025.06.14.659707. Accessed 22 July 2025.
+29. H. Brunn et al., PFAS: Forever chemicals—persistent, bioaccumulative and mobile. Reviewing the 
+status and the need for their phase out and remediation of contaminated sites. Environ. Sci. Eur. 35, 
+20 (2023).
+30. P . G. Polishchuk, T. I. Madzhidov, A. Varnek, Estimation of the size of drug- like chemical space based 
+on GDB- 17 data. J. Comput. Aided Mol. Des. 27, 675–679 (2013).
+31. J. S. Morris, K. M. P . Caldo, S. Liang, P . J. Facchini, PR10/Bet v1- like proteins as novel contributors to 
+plant biochemical diversity. Chembiochem 22, 264–287 (2021).
+32. C. Radauer, P . Lackner, H. Breiteneder, The bet v 1 fold: An ancient, versatile scaffold for binding of 
+large, hydrophobic ligands. BMC Evol. Biol. 8, 286 (2008).
+33. L. M. Iyer, E. V. Koonin, L. Aravind, Adaptations of the helix- grip fold for ligand binding and 
+catalysis in the START domain superfamily. Proteins Struct. Funct. Bioinf. 43, 134–144 
+(2001).
+34. L. An et al., Binding and sensing diverse small molecules using shape- complementary 
+pseudocycles. Science 385, 276–282 (2024).
+35. A. C. Leonard et al., Computational design of dynamic biosensors for emerging synthetic opioids. 
+bioXriv [Preprint] (2025), https://doi.org/10.1101/2025.05.15.654300. Accessed 22 July 2025.
+36. K. Melcher et al., A gate–latch–lock mechanism for hormone signalling by abscisic acid receptors. 
+Nature 462, 602–608 (2009).
+37. L. B. Sheard et al., Jasmonate perception by inositol- phosphate- potentiated COI1- JAZ co- receptor. 
+Nature 468, 400–405 (2010).
+38. R. Yao et al., DWARF14 is a non- canonical hormone receptor for strigolactone. Nature 536, 469–473 
+(2016).
+39. K. Murase, Y. Hirano, T.- P . Sun, T. Hakoshima, Gibberellin- induced DELLA recognition by the 
+gibberellin receptor GID1. Nature 456, 459–463 (2008).
+40. M. Ueguchi- Tanaka et al., GIBBERELLIN INSENSITIVE DWARF1 encodes a soluble receptor for 
+gibberellin. Nature 437, 693–698 (2005).
+41. H. Xiang, H. Okamura, Y. Kezuka, E. Katoh, Physical and thermodynamic characterization of the rice 
+gibberellin receptor/gibberellin/DELLA protein complex. Sci. Rep. 8, 1–10 (2018).
+Downloaded from https://www.pnas.org by UC Riverside on August 19, 2026 from IP address 169.235.95.201.

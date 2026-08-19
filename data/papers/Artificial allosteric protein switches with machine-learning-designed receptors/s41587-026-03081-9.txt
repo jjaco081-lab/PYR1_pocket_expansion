@@ -1,0 +1,1494 @@
+Nature Biotechnology
+nature biotechnology
+https://doi.org/10.1038/s41587-026-03081-9
+Article
+Artificial allosteric protein switches with 
+machine-learning-designed receptors
+ 
+Zhong Guo   1,2,3, Oleh Smutok   4, Gyu Rie Lee   5,6,7,15, Zhenling Cui1,2,3,8, 
+Haocheng Qianzhu   9, Monika Kish   10, Cagla Ergun Ayva   1,2,3, Kejia Wu   5,6,7, 
+Roxane Mutschler   1,2,3, Colin J. Jackson   1,9,11, Maria M. Fiorito   1,2,3, 
+Andrew C. Warden   12, Oliver B. Smith   1,9, Alfredo Quijano-Rubio13, 
+Thomas Huber9, Jonathan J. Phillips   10,14, Gottfried Otting11, Evgeny Katz4, 
+David Baker   5,6,7 & Kirill Alexandrov   1,2,3 
+Protein allostery underlies most information and energy processing 
+in biology and the development of artificial allosteric proteins is a 
+key objective of synthetic biology and biotechnology. We show that 
+machine-learning-engineered minimal ligand-binding domains act as efficient 
+receptors in single-component allosteric switches, despite lacking global 
+conformational change. Such colorimetric, luminescent and electrochemical 
+biosensors of small molecules, peptides and proteins can be compiled into 
+intramolecular YES and AND logic gates. Furthermore, we report fully synthetic 
+allosteric switches composed of artificial receptor and reporter domains. 
+Hydrogen/deuterium exchange mass spectrometry and 19F nuclear magnetic 
+resonance analyses suggest that ligand binding reduces the conformation 
+entropy of the system, increasing the catalytic activity of the reporter domain. 
+The potential practical utility of this approach is demonstrated by engineering 
+Escherichia coli cells with steroid-dependent antibiotic resistance and by 
+developing bioelectronic devices capable of quantifying steroid hormones.
+Almost all real-time biological information and energy processing 
+occurs within protein networks composed of protein switches. These 
+networks are governed by protein allostery, whereby a local input gener-
+ates a response at a distant functional site1. Therefore, construction of 
+artificial allosteric protein systems with inputs and outputs of choice 
+is a central objective of protein engineering and synthetic biology. 
+Artificial fluorescent protein switches (biosensors) have transformed 
+cell and neurobiology by revealing real-time concentration changes in 
+calcium, neurotransmitters and other small molecules in cells and organ-
+isms2. Such switches are typically composed of a ligand-binding domain 
+inserted into a fluorescent protein reporter. Ligand-binding domains 
+have traditionally been chosen on the basis of ligand specificity, affinity 
+and a ligand-induced macromolecular conformation change. Similar 
+approaches have been used to develop chimeras between ligand-binding 
+domains and enzymatic reporters such as proteases, carbohydrate 
+dehydrogenases, β-lactamases and luciferases3–8.
+Received: 30 September 2025
+Accepted: 9 March 2026
+Published online: xx xx xxxx
+ Check for updates
+1ARC Centre of Excellence in Synthetic Biology, Brisbane, Queensland, Australia. 2Centre for Agriculture and the Bioeconomy, Queensland University 
+of Technology, Brisbane, Queensland, Australia. 3School of Biology and Environmental Science, Queensland University of Technology, Brisbane, 
+Queensland, Australia. 4Department of Chemistry and Biochemistry, Clarkson University, Potsdam, NY, USA. 5Department of Biochemistry, University of 
+Washington, Seattle, WA, USA. 6Institute for Protein Design, University of Washington, Seattle, WA, USA. 7Howard Hughes Medical Institute, University of 
+Washington, Seattle, WA, USA. 8Advanced Engineering Biology Future Science Platform, CSIRO Dutton Park, Brisbane, Queensland, Australia. 9Research 
+School of Chemistry, Australian National University, Canberra, Australian Capital Territory, Australia. 10Living Systems Institute, University of Exeter, Exeter, 
+UK. 11ARC Centre of Excellence for Innovations in Peptide & Protein Science, Brisbane, Australia. 12Environment Research Unit, Advanced Engineering 
+Biology Future Science Platform, CSIRO Black Mountain Laboratories, Canberra, Australian Capital Territory, Australia. 13Monod Bio, Seattle, WA, USA. 
+14Department of Biosciences, University of Exeter, Exeter, UK. 15Present address: Department of Biological Sciences, Korea Advanced Institute of Science 
+and Technology, Daejeon, South Korea.  e-mail: kirill.alexandrov@qut.edu.au
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+steroid selectivity demonstrated it to be similar to that of the parental 
+ligand-binding domains but could be improved by binding-site rand-
+omization and mRNA-based selection (Supplementary Figs. 2c,e and 
+3 and Supplementary T ext 1).
+We tested whether ML-designed binders of other ligand types 
+could act as receptors in chimeric protein biosensors. We chose a set 
+of ML-designed minibinders of peptides that have been exhaustively 
+characterized both biophysically and structurally 18–20. Applying the 
+same workflow, we were able to generate biosensors of BCL-11 and 
+C-peptides that displayed low-micromolar affinity for their targets 
+(Fig. 1f and Supplementary Fig. 4a–d).
+We also generated focused libraries of β-lactamase chimeras with 
+circular permutated minibinders of the VirB8-like and MDM2 proteins15 
+(Fig. 2g and Supplementary Fig. 4e,f). In both cases, we were able to 
+obtain chimeras with ligand-controlled enzymatic activity (Fig. 1g and 
+Supplementary Fig. 4g). These results suggest that synthetic allostery 
+can emerge in artificial binders of most ligands.
+Diversifying biosensor architecture
+Our findings indicate that artificial receptors can be generated from a 
+range of structurally unrelated ligand-binding domains that undergo 
+no obvious global conformation transitions. The developed switches 
+ranged widely in their properties such as latency, affinity, catalytic 
+activity and dynamic range (Supplementary Tables 1 and 2). These 
+properties most likely cannot be optimized simultaneously because 
+of thermodynamical coupling8. However, we previously demonstrated 
+that receptor duplication can result in formation of an intramolecu-
+lar YES-gate that increases its dynamic range while having a modest 
+adverse effect on the latency and the catalytic constant (kcat) of the 
+system21. As these experiments were performed using natural recep-
+tors, we wanted to test whether synthetic receptors are suitable for 
+the construction of intramolecular YES gates22 (Fig. 2a). T o this end, we 
+inserted the circularly permutated 17-OHP binder cpOHPFA1952-31 at 
+positions 41 and 197 of β-lactamase that resulted in >20-fold dynamic 
+range increase (Fig. 2b,c).
+Next, we tested whether the artificial receptor domains with 
+orthogonal specificities could be used to construct intramolecular AND 
+gates. We constructed a β-lactamase chimera, where the 17-OHP recep-
+tor cpOHPFA1952-31 was introduced at position 41 and the C-peptide 
+receptor cpCPH02-52 at position 197. The resulting chimeric protein 
+displayed a minimal increase in activity in the presence of the individual 
+ligands but its activity increased fivefold in the presence of both ligands 
+(Fig. 2d and Supplementary Fig. 5f).
+Protein switches with alternative reporter domains
+During this study, we repeatedly used the β-lactamase reporter domain, 
+prompting a question of whether the synthetic receptors are reporter 
+specific and whether the approach is generalizable. T o test this, we con-
+structed chimeras between a circular permutated 17-OHP binder and 
+two alternative reporter enzymes such as PQQ-glucose dehydrogenase 
+(PQQ-GDH) and NanoLuciferase23,24. In both cases, we were able to identify 
+steroid-responsive chimeras (Fig. 2e,f and Supplementary Fig. 5e,g–i). 
+These experiments confirm that the developed artificial receptors are 
+autonomous and can be combined with different reporter domains.
+Fully synthetic protein switches
+Our results show that allostery can spontaneously emerge in fully 
+artificial ligand-binding domains and regulate natural enzymes. T o 
+test whether this extends to artificial reporters, we used the artificial 
+intelligence (AI)-designed luciferase LuxSit Pro25,26. We first assessed 
+whether LuxSit Pro can act as an allosteric reporter when combined 
+with natural receptors. T o this end, we generated a series of chime-
+ras between LuxSit Pro and calmodulin, a well-established receptor 
+for Ca2+ and calmodulin-binding peptides (CaM-BPs)27,28. The recom-
+binant chimeras were analyzed for CaM-BP-dependent activity and 
+A commonly cited obstacle in protein switch construction is the 
+paucity of natural domains that undergo a global conformation change 
+upon ligand binding, which is presumed to be required for output con-
+trol9. However, it has long been argued that allosteric regulation is pos-
+sible in the absence of conformational change10. The thermal motion of 
+protein atoms drives the fluctuation among conformations that make 
+up their native state and the changes in fast internal dynamics (confor-
+mational entropy) can regulate interaction with other molecules and 
+catalytic efficiency11. As almost all artificial protein switches have been 
+constructed using receptor domains with the global conformation, the 
+potential of conformational entropy as an allosteric mediator remains 
+unclear12. In this study, we show that ligand-binding domains of diverse 
+ligand classes devoid of global conformation changes, designed by 
+generative machine learning (ML) models, can be converted into effi-
+cient biosensor receptors.
+Results
+Construction of β-lactamase chimeras with natural 
+ligand-binding domains
+At the start of this study, we searched Protein Data Bank (PDB) for com-
+plexes of single-domain proteins with small-molecule ligands that do 
+not undergo global conformation changes upon ligand binding. We 
+selected the anticalin–colchicine complex, where ligand binding results 
+in loop 2 rearrangement and a smaller movement of loops 3 and 4 away 
+from the ligand-binding site13,14. We constructed a range of chimeras 
+between TEM-1 β-lactamase and circular permutated anticalin variants 
+(Supplementary Tables 1 and 2). Activity analysis of the resulting recom-
+binant chimeras identified a variant that displayed a dose-dependent 
+response to colchicine with a dissociation constant (Kd) value of 33 μM 
+(Fig. 1c). In this chimera the polypeptide segments linking the receptor 
+to the reporter are located opposite the ligand-binding cavity and away 
+from the conformationally flexible loops surrounding it (Fig. 1b). This 
+suggests that circularly permuted ligand-binding domains can function 
+as artificial receptors in chimeric protein switches independently of 
+ligand-induced global conformational changes.
+Protein switches with artificial ligand-binding domains
+One limitation of using naturally evolved proteins is the potential pres-
+ence of alternative conformations not captured by structural analy-
+sis that may underlie the observed activity changes. T o address this, 
+we tested whether fully artificial ligand-binding domains, which are 
+strongly biased toward biophysically stable single-state proteins, can 
+function as protein switch receptors15,16. With this in mind, we tested 
+two small NTF2-family steroid-binding domains designed using ML 
+algorithms17. The HCY129.1 domain was reported to display 65 nM affin-
+ity for cortisol, while the OHPFA1952 domain has a reported Kd value of 
+17 nM for 17α-hydroxyprogesterone (17-OHP)17 (Supplementary Figs. 1a 
+and 2a). These domains were used to generate focused libraries of circu-
+larly permuted variants, which were inserted into TEM-1 β-lactamase at 
+position 253 (Fig. 1d). Analysis of the resulting focused libraries identi-
+fied four cortisol-responsive and three 17-OHP-responsive constructs 
+(Supplementary Tables 1 and 2). The best-performing cortisol chimera 
+displayed a dynamic range of nearly 400-fold and a Kd value of 0.9 μM 
+(Fig. 1e and Supplementary Figs. 1a–d).
+The most sensitive 17-OHP biosensor displayed a smaller dynamic 
+range but a much higher affinity for its ligand (Supplementary 
+Fig. 2b–e,i–k). Latency (time required to reach maximal catalytic activ-
+ity after exposure to saturating concentrations of ligand) of the cortisol 
+biosensor was twice as long as that of the 17-OHP biosensor, which is 
+in line with the notion of thermodynamic coupling of dynamic ranges 
+and response times 8 (Supplementary Figs. 1e and 2g,m). Chimeric 
+proteins, where the binding domains were inserted in their native 
+topology, did not display ligand-dependent activation, suggesting 
+that circular permutation was essential for the emergence of synthetic 
+allostery (Supplementary Figs. 1f and 2h). Analysis of the biosensor’s 
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+several ON switches with dynamic ranges of 2–4-fold were identified 
+(Supplementary Fig. 6a–c). We then combined CaM insertions at posi-
+tions 32, 61 and 88 in LuxSit Pro to generate a dual-receptor chimera 
+with a 171–182-fold dynamic range (Supplementary Fig. 6d–f). These 
+observations revealed that efficient allostery is present in both syn-
+thetic receptors and synthetic reporters, suggesting that fully synthetic 
+switches may be possible. Activity analysis of chimeras between LuxSit 
+Pro and a circular permutated 17-OHP binder revealed three chimeras 
+with 17-OHP-dependent activity (Fig. 2g and Supplementary Figs. 6g–i). 
+While the catalytic activity of the chimeras was high, they displayed 
+modest (2–3-fold) dynamic ranges. Therefore, we tested whether con-
+struction of intermolecular YES gates would improve performance of 
+the system. LuxSit Pro chimeras with two 17-OHP receptors displayed 
+a fivefold increase in dynamic range, confirming that both natural and 
+synthetic chimeras respond in similar ways to receptor duplication 
+(Fig. 2h and Supplementary Figs. 6k–n).
+Functional mechanism of the developed biosensors
+Our results demonstrate that it is possible to construct efficient protein 
+switches using ligand-binding domains that do not undergo global con-
+formation transitions. One possible explanation is that such chimeras 
+are misfolded and the presence of the ligand induces a refolding process 
+that ultimately leads to restoration of the reporter’s activity. Therefore, 
+we tested whether the introduction of chaotropic agents into the bio-
+sensor assay would lower the thermodynamic barrier between OFF 
+and ON states and increase the rate of cpHCY129.135-BLA-253 chimera 
+activation by 17-OHP. Addition of urea to the reaction mixture had no 
+effect on the rate of activation but suppressed the catalytic activity 
+a
+d
+gf
+Colchicine–anticalin
+Anticalin
+Linker
+Linker
+Colchicine
+Cortisol-
+binding
+porotein Cortisol
+β-lactamase
+β-lactamase
+Anticalin
+b
+12
+0.30
+0.25
+0.20
+0.15
+0.10
+0.05
+0
+0 5 10 15 20 25 30
+0 nM
+kobs (10 –2 min –1 )
+Kd = 33 ± 4 µM
+1 µM
+2.5 mM
+DR = 12
+Time (min)
+Colchicine (µM)
+Cortisol (mM)
+VirB8-LP (µM)
+Absorbance
+10
+8
+6
+4
+2
+0
+0 0.5 1.0 1.5 2.0 2.5
+c
+e
+0.08
+0.06
+0.04
+0.02
+0
+0 2 4 6 8 10
+kobs (min –1 )
+Time (min)
+Absorbance
+0 5 10 15 20 25 30
+0.7
+0.6
+0.5
+0.4
+0.3
+0.2
+0.1
+0
+Kd = 0.9 ± 0.1 µM
+Kd = 155 ± 53 µMKd = 2.6 ± 0.1 µM
+0
+100 µM
+DR = 400
+0.5
+0.4
+0.3
+0.2
+0.1
+0
+0 10 20 30 40 50 60
+Time (min)
+Absorbance
+0.4
+0.2
+0
+0 10 20 30 40
+Time (min)
+Absorbance
+0
+DR = 16
+2.5 µM
+0
+DR = 73
+2.5 µM
+12
+10
+8
+6
+4
+2
+0
+0 0.5 1.0 1.5 2.0 2.5
+BLC-LP (µM)
+0
+0.005
+0.010
+0.015
+0.020
+0.025
+0.030
+0.035
+0 5 10 15 20 25
+kobs (min –1 )
+kobs (min –1 )
+Fig. 1 | Construction of protein switches with receptor domains devoid of 
+global conformation changes. a, Superimposition of the anticalin structure 
+in the apo (PDB 6Z6Z; blue) and colchicine-bound (PDB 5NKN; red) states. 
+Colchicine is displayed as molecular surface rendered in atomic colors. The 
+root-mean-square deviation of the superimposed structures is 1.3 Å (0.9 Å 
+without binding-site loops). b, Structural model of cpAnticalin-116-BLA-253 
+chimera with anticalin colored in gray and TEM-1 β-lactamase in gold. The linker 
+connecting the native N and C termini of anticalin is colored red. The active site of 
+β-lactamase is marked by the blue inhibitor molecule imported from PDB 6C79. 
+c, Activity analysis of 50 μM chromogenic β-lactamase substrate UW154 following 
+its hydrolysis by 100 nM cpAnticalin-116-BLA-253 chimera in the presence of 
+increasing concentrations of colchicine (inset). The Kd value was calculated 
+by plotting the initial reaction velocities against the ligand concentration and 
+fitting them to a quadratic equation, leading to an apparent Kd value of 33 μM. 
+The dynamic range (DR) is indicated. The methods for estimating s.d. in this and 
+subsequent figures are described in the Methods. d, Structural model of a chimera 
+between the NTF2 cortisol-binding domain HCY129.1 and β-lactamase displayed 
+as in b. e, Enzymatic activity of 50 nM solutions of cpHCY129.1-35-BLA-253 chimera 
+at different concentrations of cortisol. Inset, time-resolved absorbance changes 
+of reactions at increasing concentrations of cortisol. The experiment was 
+performed as in c. Fit of the data resulted in a Kd value of 900 nM. f, Activity 
+of a 100 nM solution of chimera between the ML-designed BCL-11 peptide-
+binding protein (PDB 8GJG) and β-lactamase (cpBCL-91-BLA-253) at different 
+concentrations of the ligand peptide. The data were analyzed as in c. g, Activity 
+analysis of 100 nM cpVirB8-LP-46-BLA-253 chimera in the presence of increasing 
+concentrations of VirB8-LP protein. The data were analyzed as in c.
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+in a dose-dependent fashion (Supplementary Fig. 7a). These results 
+suggest that ligand-induced activity changes of the chimera are not 
+linked to protein folding.
+T o examine the extent of ligand-induced structural changes in 
+the developed chimeras, we recorded the circular dichroism (CD) 
+spectra of 17-OHP and cortisol binders in their native and circular 
+permutated topology with and without ligand. Figure 3a,b shows that 
+ligands had little effect on the secondary structure of the native and 
+circular permutated 17-OHP binder. In the case of cortisol, we observed 
+slight changes in the spectrum but they were more pronounced in the 
+native protein than in the circularly permutated variant. We repeated 
+these experiments using the native or circular permutated version 
+of 17-OHP and cortisol-binding domain inserted into β-lactamase 
+(Supplementary Fig. 7b–d). Again, the spectra did not reveal notable 
+structure changes.
+T o gain more insight into changes of chimera structure and dynam-
+ics in response to ligand binding, we turned to 19F-nuclear magnetic res-
+onance (19F-NMR) spectroscopy. We used in vivo codon reassignment 
+to install p-(O)CF3-tyrosine at positions 105, 229, 230, 256, 389 and 437 
+of the cpOHPFA1952-20-BLA-253 chimera29 (Fig. 3d). The sites 256 and 
+389 are located at the beginning and end of the receptor domain and 
+next to the linker sequences connecting it to the β-lactamase. Positions 
+229 and 230 are located on the loop connecting β-strand 4 with α-helix 
+7 of β-lactamase and are adjacent to the N-terminal linker connecting 
+it to the receptor. Residue 105 is located next to the β-lactamase active 
+site while position 437 corresponds to the last C-terminal residue of 
+β-lactamase located far from both the linkers and the active site.
+The 19F-NMR spectra demonstrated that, at every position 
+probed, the addition of saturating concentrations of 17-OHP to the 
+sample resulted in changes in peak height and line shape. The largest 
+change in line width was observed at position 389, which is located at 
+the junction between the last α-helix of the receptor and the linker 
+(Fig. 3d,e). At this site, the binding of the ligand to the binding pocket 
+of the receptor results in either a more homogeneous environment 
+of the fluorine probe or faster averaging between different confor -
+mations. In either case, the nonsymmetric line shape of the signal 
+indicates that some conformational heterogeneity persists. Hetero -
+geneity is not unexpected as the last α-helix of the receptor forms 
+the bottom of the ligand-binding pocket and the circular permuta -
+tion is expected to increase its entropy compared to the wild type 
+because of the introduction of a long unstructured loop preceding 
+it (Fig. 3d,e). The spectra collected with the protein containing the 
+label at position 256 also showed a change in peak position and line 
+shape. These changes were less pronounced than at position 389 
+but the line shape in the presence of ligand was still nonsymmet -
+ric. The probes at positions 229 and 230 reported nearly identical 
+ligand-induced changes, resolving two main components of similar 
+intensity. The probe installed at position 105 is located at the edge of 
+the β-lactamase active site. It is located far from the ligand-binding 
+domain, yet reports a small but notable change in signal intensity 
+and the appearance of a small shoulder in the ligand-bound state, 
+demonstrating the reach of the allosteric effect (Fig. 3f ). The probe 
+at position 437 was chosen as a reference peripheral to the allosteric 
+path of signal transmission. Nonetheless it also displayed distinct 
+Dynamic range
+Dynamic range
+0
+50
+100
+150
+200
+250
+17-OHP
+receptors 1 2
+0
+2
+4
+6
+8
+10
+12
+14
+1 2
+17-OHP
+receptor
+hg
+Ligand
+Inactive Active
+0 0.5 1.0 1.5 2.0 2.5
+0
+0.02
+0.04
+0.06
+0.08
+0 5 10 15 20 25 30
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+Absorbance
+Time (min)
+17-OHP (µM)
+b c
+e
+0 1 2 3 4 5
+0.2
+0.4
+0.6
+0.8
+0 1 2 3 4 5
+–1.0
+–0.8
+–0.6
+–0.4
+–0.2
+0
+Absorbance
+Time (min.)
+0
+f
+0.6
+5
+0.8
+1.0
+1.2
+1.4
+1.6
+a
+GDH NanoLuc LuxSit Pro
+0
+1
+2
+3
+4
+5
+DMSO 17-OHP 17-OHP
+/C-peptide
+C-peptide
+d
+0 0.5 1.0 1.5 2.0 2.5
+0.4
+0.6
+0.8
+1.0
+Rel. luminescence
+Rel. luminescence
+DR = 2.5
+17-OHP (µM)
+0 0.5 1.0 1.5 2.0 2.5
+17-OHP (µM)
+Kd = 88 ± 12 nM 2.5 µM
+0
+DR = 203
+kobs (min –1 )
+Relative kobs
+17-OHP (µM)
+kobs (min –1 )
+Kd = 55 ± 10 nM
+Kd = 5.4 ± 0.9 nM
+DR = 2.3
+Kd = 21 ± 1.8 nM
+DR = 29
+5 µM
+Fig. 2 | Diversification of biosensor architecture and reporter chemistry. 
+a, Schematic representation of the intermolecular YES-gate protein switch, 
+showing how chimeras with a single receptor domain are compiled into a single 
+chimera containing two receptors. b, Activity analysis of a 100 nM YES-gate 
+2cpOHPFA1952-20-BLA-41-197 chimera titrated with increasing concentrations of 
+17-OHP. Inset, time traces of the titration reaction used to calculate the kobs values 
+shown in the main plot. c, Switch dynamic ranges for constructs containing either 
+one or two 17-OHP receptors (1: cpOHPFA1952-20-BLA-197; 2: 2cpOHPFA1952-
+20-BLA-41-197). Error bars were calculated using values obtained from three 
+independent reactions. Data are presented as the mean values ± s.d. 
+d, Catalytic activity of 100 nM cpOHPFA1952-20-cp-CPH02-52-BLA-41-197 
+chimera in the presence or absence of 2 μM 17-OHP and 10 μM C-peptide. 
+Error bars were calculated as in c. e, Activity analysis of a 10 nM solution of 
+cpOHPFA1952-20-GDH-404 in the presence of increasing 17-OHP concentrations. 
+Inset, time traces used for the calculation of kobs values depicted in the main 
+plot. f, Relative luminescence values obtained by titrating a 20 nM solution of 
+cpOHPFA1952-20-NanoLuc-157 with increasing concentrations of 17-OHP. The 
+Kd value and dynamic range were calculated by fitting the data to a quadratic 
+equation. g, Relative luminescence values obtained by titrating 10 nM chimera 
+of the artificial luciferase LuxSit Pro and a cpOHPFA1952-20 receptor in the 
+presence of LuxSit Pro substrate and increasing concentrations of 17-OHP. 
+ h, Dynamic ranges of 17-OHP-LuxSit Pro biosensors constructed with one or two 
+17-OHP receptors (1: cpOHPFA1952-20-LuxSit Pro-61; 2: cpOHPFA1952-20-LuxSit 
+Pro-32-61). The experiment recorded luminescence of 25 nM solutions of each 
+chimera in the presence or absence of 2 μM 17-OHP and these data were used to 
+calculate the chimera’s dynamic range. Error bars were calculated as in c.
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+spectral changes. All protein mutants containing p -(O)CF3-tyrosine 
+displayed catalytic activity and switchability, suggesting that the 
+changes sensed by the fluorine probes reflect conformational vari -
+ability intrinsic to the biosensor (Supplementary Fig. 8e).
+T o put the observed changes in the environment of individual 
+residues into a global context, we performed hydrogen/deuterium 
+exchange mass spectrometry (HDX–MS) and molecular dynam -
+ics (MD) simulations of cpOHPFA1952-20-BLA-253 and wild-type 
+OHPFA1952-20-BLA-253 in the presence and absence of saturating 
+concentrations of 17-OHP. While results of the MD simulations were 
+inconclusive (Supplementary Figs. 9 and 10 and Supplementary T ext 
+2), the HDX–MS experiments generated interpretable data. Amide 
+HDX rates directly relate to local structural dynamics and can be rou-
+tinely determined in large protein systems, with millisecond-time and 
+single-amino-acid resolution 30. Equilibrium exchange experiments 
+with EX2 kinetics as observed here reflect local stability throughout 
+the protein chimera31. The pattern of stability changes in both proteins 
+upon 17-OHP binding showed some similarity but the magnitude of 
+changes was approximately tenfold larger in the circularly permuted 
+chimera than with the wild-type receptor. This large difference encom-
+passes 17-OHP-induced stabilization of the cpOHPFA domain and 
+stabilization of the β-lactamase core including its active site (Fig. 3d 
+and Supplementary Fig. 11a–d).
+The analysis of NMR and HDX–MS data points to a potentially 
+important role of the linker sequences connecting the receptor and 
+reporter domains. We tested the sensitivity of our system to the linker 
+structure by introducing additional glycine residues into the linker con-
+necting the last α-helix of the receptor and β-strand 8 of β-lactamase. 
+Increase of the linker length by introducing glycine residues stepwise 
+reduced the dynamic range but increased the maximal catalytic rate. 
+Rigidification of the longer linkers through introduction of serine 
+residues reverted the effect (Supplementary Fig. 11e).
+T o understand the effect of circular permutation on ligand-binding 
+domains, we performed competitive titrations, where either the 
+wild-type or circular permutated OHPFA1952-20 binder was titrated 
+into a mixture of 2cpOHPFA1952-20-BLA-41-197 and 17-OHP. The result-
+ing data were fitted to a competitive titration model, yielding an esti-
+mate of the Kd values of the binding of 17-OHP to either binder. Circular 
+permutation resulted in a ~4-fold decrease in the receptor affinity for 
+its ligand (Fig. 3g,h). The affinity determined is very close to that of the 
+cpOHPFA1952-20-BLA-253 biosensor for 17-OHP. The difference in affin-
+ity was corroborated by isothermal titration calorimetry (ITC) experi-
+ments (Supplementary Fig. 12h,k). We repeated these experiments using 
+cortisol binder HCY129.1 and its permutated version cpHCY129.1-35. 
+Within the uncertainty of the fit, the apparent KDd was fourfold lower 
+for the permutated cortisol binder (Supplementary Fig. 12a,b).
+17-OHP
+cpLinker
+D389
+E256
+W229
+Y105
+W437
+–25
+–15
+–5
+5
+15
+25
+35
+195 205 215 225 235 245 255
+Wavelength (nm)
+Ellipticity (deg cm 2 dmol –1 )
+Ellipticity (deg cm 2 dmol –1 )
+Ellipticity (deg cm 2 dmol –1 )
+OHPFA1952
+OHPFA1952
++ 17-OHP
+–20
+–15
+–10
+–5
+0
+5
+10
+15
+20
+25
+195 205 215 225 235 245 255 195 205 215 225 235 245 255
+Wavelength (nm) Wavelength (nm)
+cpOHPFA1952
+cpOHPFA1952
++ 17-OHP
+–8
+–6
+–4
+–2
+0
+2
+4
+6
+8
+10
+12
+cpOHPFA1952-BLA
+a b c d
+–60–59–58–57–56–55
+–17-OHP
++17-OHP
+–60–55
+e f
+Residue 389 Residue 105
+0 1 2 3 4
+log[cpOHPFA1952 (nM)]
+0 1 2 3 4
+0
+0.004
+0.008
+0.012
+0.016
+0
+0.004
+0.008
+0.012
+0.016
+log[OHPFA1952 (nM)]
+g h
+cpOHPFA1952-BLA
++ 17-OHP
+δ( 19 F)/ppm δ( 19 F)/ppm
+–59–56 –58–57
+kobs (min –1 )
+kobs (min –1 )
+Kd = 5.2 ± 2.2 nM
+Kd = 18.3 ± 2.7 nM
+–17-OHP
++17-OHP
+Fig. 3 | Functional mechanism of the developed allosteric chimeras. a, Far-UV 
+CD spectra of 6.7 μM 17-OHP-binding domain OHPFA1952 in the absence (blue 
+line) and presence (red line) of 20 μM 17-OHP. b, As in a but using 6.4 μM circularly 
+permutated OHPFA1952. c, As in a but using 2.2 μM cpOHPFA1952-20-BLA-253 
+chimera. d, Structural model of cpOHFPA_1952-20-BLA-253 bound to 17-OHP 
+(gray molecular surface) colored according to the relative stability difference 
+between apo and holo forms from HDX analysis. Large changes in exchange rates 
+are also represented by thicker ribbons. The Cα atoms of the amino acids that 
+were replaced with p-(O)CF3-tyrosine are displayed as gray balls and labeled. The 
+active site of β-lactamase is marked by the active-site inhibitor imported from 
+PDB 6C79 displayed as molecular surface colored in green. e, 19F-NMR spectra 
+of 0.6 mM cpOHPFA1952-20-BLA-253 labeled with p-(O)CF3-tyrosine at position 
+389 in the absence (black line) and presence of 1.5 mM 17-OHP. f, As in e but 
+using cpOHPFA1952-20-BLA-253 labeled at position 105. g, Activity analysis of 
+reactions containing 100 nM cpOHPFA1952-20-BLA-253, 50 nM 17-OHP, 50 μM 
+UW154 and indicated concentrations of OHPFA1952. The titration data were 
+fitted to a competitive equation to determine the Kd value of 17-OHP:OHPFA1952 
+interaction. h, As in g but titrating with cpOHPFA1952-20.
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+T o gain insight into the kinetics of the receptor–ligand interac-
+tion, we performed biolayer interferometry experiments using 
+17-OHP-PEG-biotin conjugate immobilized on a streptavidin chip. The 
+association rate constant (kon) of the wild-type HCY129.1 domain was 
+approximately twice as fast as that of the cpHCY129.1-35 while the dissoci-
+ation rate was approximately 2.5 times slower (Supplementary Fig. 12f,g). 
+These rates are consistent with fivefold affinity differences between 
+wild-type and circular permutated receptor. We note that these val-
+ues are approximate, as the PEG linker and streptavidin affected the 
+17-OHP–receptor interactions (Supplementary Fig. 12c–e).
+These observations support the idea that the increased conforma-
+tional entropy of the circularly permutated ligand-binding domains 
+negatively impacts the kinetics of the interaction and, therefore, the 
+overall affinity of the ligand–binder complex. We hypothesized that this 
+entropic penalty could be offset by introducing an additional specific 
+ligand-binding domain that would increase the local concentration of 
+the ligand. This would increase its association rate and, through coop-
+erative action with allosteric receptor, reduce the dissociation rate and 
+increase the overall affinity of the system (Fig. 4a). T o test this idea, we 
+took advantage of the FN3con binding domains B9 and B41 selected 
+against cardiac failure biomarker Galactin-3 (Gal-3). The K d value of 
+the FN3Con-B9 interaction with Gal-3 was 2.2 nM while FN3Con-B41 
+bound to the complex of Gal-3:FN3Con B9 with a Kd of 1 nM (ref. 32). The 
+cpFN3conB9-62-BLA-253 chimera displayed a dynamic range of 111-fold 
+(Fig. 4b). However, the affinity of the system for Gal-3 was markedly 
+reduced to ~0.9 μM, which is in line with the previous observations 33 
+(Fig. 4b). We then fused the B41 binding domain by a flexible linker to 
+the C terminus of the chimera and tested the response of the resulting 
+protein to Gal-3. This system displayed a sevenfold increase in affinity, 
+confirming that the circular-permutation-mediated affinity reduction 
+can be at least partially offset by auxiliary binding domains.
+Construction of Escherichia coli strains controlled by 
+β-lactamase switches with synthetic receptors
+Gram-negative bacteria expressing β-lactamase in their periplasm 
+gain resistance to β-lactam antibiotics. This led us to explore whether 
+expression of the developed biosensors in E. coli cells would make 
+them ‘addicted’ to their cognate ligands. T o this end, we constructed 
+recombinant E. coli strains that expressed cortisol and 17-OHP biosen-
+sors in the periplasm under the control of a constitutive promoter. The 
+resulting strain was able to grow on both liquid and solid media sup-
+plemented with ampicillin only in the presence of the cognate ligands 
+(Fig. 5a,b and Supplementary Fig. 13a,b).
+Sensory bioelectrodes based on protein switches with artificial 
+receptors
+Enzyme-based assays are unmatched in their simplicity, speed and 
+cost-effectiveness, as exemplified by both endpoint and continuous 
+glucose monitoring34. It has long been hoped that artificial protein 
+biosensors will deliver diagnostic tests of similar efficiency for a wide 
+range of biomarkers. The biosensors developed in the present work, 
+with their single-component architecture, large dynamic range, high 
+catalytic activity and compatibility with an electrochemical readout, 
+are promising candidates for novel sensing applications. Therefore, we 
+tested whether our PQQ-GDH-based protein switches, which produce 
+electrons as a byproduct of glucose oxidation, can be used to construct 
+electrochemical sensory bioelectrodes. We covalently attached the 
+cpOHPFA1952-20G-GDH-404 chimera to the graphene nanosheets 
+on the surface of carbon electrodes (Supplementary Fig. 13d). The 
+electrodes were analyzed by cyclic voltammetry in the presence or 
+absence of saturating concentrations of glucose and 17-OHP (Fig. 5d,e). 
+At saturating concentrations of glucose, the electrode produced cur-
+rent in proportion to 17-OHP concentration. These data could be fit-
+ted to a Kd value of 34 nM, which is close to that determined using the 
+solution-based assay (Fig. 2e). The electrode activity could be reset to 
+baseline by washing off 17-OHP, thereby allowing for multiple cycles 
+of activation and deactivation (Fig. 5e).
+Discussion
+Single-component protein biosensors offer several advantages over 
+multicomponent systems6. However, their construction is predicated 
+on the availability of receptor domains with suitable specificity, affinity, 
+size and topology for functional coupling to a reporter domain.
+We evaluated the suitability of ML-designed ligand-binding 
+domains as biosensor receptors. This approach tends to produce 
+highly stable proteins with reduced conformational dynamics 16. We 
+combined circularly permutated variants of ML-designed domains 
+with TEM-1 β-lactamase to obtain 47 protein switches activated 
+by different ligand classes. These switches exhibited substantial 
+variation in affinity, dynamic range, response time and catalytic 
+activity. The chimeras consistently showed reduced ligand affinity 
+compared to their parental domains, with decreases ranging from 
+severalfold to orders of magnitude. Response times also varied, from 
+minutes to tens of minutes. This reveals a rugged fitness landscape, 
+indicating substantial scope for optimization across multiple per -
+formance parameters. We demonstrated a combination of switches 
+with modest (2–5-fold) dynamic ranges into two receptor YES-gate 
+chimeras with dynamic ranges > 200-fold 21. This offers a practical 
+alternative to the multiple rounds of mutagenesis and linker opti -
+mization traditionally used to enhance single-component biosensor 
+performance 35,36. The small size of ML-generated ligand-binding 
+domains makes this approach particularly attractive 16. We assessed 
+the autonomy of the synthetic receptors by transplanting them into 
+alternative reporter domains, including the luminescent NanoLu -
+ciferase, redox enzyme PQQ-GDH and, ultimately, ML-designed 
+luminescent protein LuxSit Pro.
+Biophysical analyses using CD, 19F-NMR and HDX–MS showed that 
+ligand binding does not induce refolding or global conformational 
+ActiveInactive
+a b
+Galectin-3 (µM) Galectin-3 (µM)
+0 1 2 3 4 5 6
+0.01
+0.03
+0.05
+0.07
+Ligand
+DR = 111
+0 1 2 3 4 5 6
+0.01
+0.02
+0.03
+DR = 25
+c
+Kd = 898 ± 93 nM Kd = 127 ± 21 nM
+kobs (min –1 )
+kobs (min –1 )
+Fig. 4 | Protein switches with intramolecular dimerization system. 
+ a, Schematic of a switch with intramolecular dimerization system that offsets the 
+entropic penalty of circular permutation of the receptor. A second binder present 
+in cis increases both the association rate and decreases the dissociation rate, 
+offsetting the entropic penalty created by circular permutation of the receptor 
+domain. b, Activity analysis obtained by titrating a 25 nM solution cpFN3conB9-62-
+BLA-253 with an increasing concentration of Gal-3. c, As in b but using cpFN3conB9-
+62-BLA-253-FN3con-B41, which contains an additional Gal-3-binding domain.
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+changes in the chimeras. Instead, their behavior is consistent with 
+circular permutation reducing receptor cooperativity, increasing 
+conformational entropy and thereby suppressing reporter catalytic 
+activity (Fig. 5f–i). The reduced ligand affinity of the chimeras rela -
+tive to the native binders is consistent with increased conformational 
+entropy that is not fully offset by binding enthalpy. Although this rep-
+resents a potential limitation, we show that auxiliary binding domains 
+can mitigate the entropic penalty.
+The small size of ML-generated binding domains markedly 
+reduces circular permutation library complexity (fewer than ten 
+variants in our case), enabling rapid and cost-effective identification 
+of input-responsive switches. However, thermodynamic coupling 
+across performance parameters may necessitate advanced optimi -
+zation strategies8. Both directed evolution and ML approaches have 
+proven effective for tuning allosteric proteins37,38. The ability of design 
+switches with input and output parameters of choice will support the 
+development of switch-based circuits with signal amplification, noise 
+suppression and logic capabilities, paving the way for applications in 
+diagnostics, analytics and biorthogonal real-time signal processing in 
+engineered organisms.
+Method
+Materials
+Cortisol, 17-OHP, 2,6-dichlorophenolindophenol (DCPIP), phenazine 
+methosulfate (PMS), pyrroloquinoline quinone (PQQ), 1-ethyl-3-(3
+-dimethylaminopropyl)carbodiimide (EDC), N-hydroxysuccinimide 
+(NHS) and polyethyleneimine (PEI) were purchased from Sigma-Aldrich. 
+Compound UW154 was commercially synthesized by o2h Discovery39. 
+NanoLuc substrate furimazine was purchased from Promega. Deuter-
+ated chemicals were purchased from Goss Scientific Instruments. The 
+LuxSit Pro assay kit was acquired from Monod Bio (LS0101). The lucif-
+erase assay plate OptiPlate-96 HS was purchased from PerkinElmer. 
+The synthetic peptides were purchased from Mimotopes. Biotinylated 
+17-OHP with a PEG linker and biotinylated cortisol with a PEG linker 
+were synthesized by SYNthesis med chem. Biotinylated progesterone 
+with a PEG linker was purchased from Cayman Chemical (9000645).
+Molecular cloning, expression and purification of 
+recombinant proteins
+The open reading frames of the constructs listed in Supplementary Table 1 
+were synthesized commercially (Gene Universal) and cloned into a 
+kanamycin-resistant pET-28a(+) vector.
+Competent E. coli BL21(DE3) cells (New England Biolabs) were 
+transformed with the resulting expression vectors and grown in Luria–
+Bertani (LB) broth with 50 μg ml−1 kanamycin (Everest) with shaking at 
+37 °C. Protein expression was induced by adding 0.3 mM IPTG (Sigma) 
+and the cultures were incubated overnight at 18 °C. Cells were harvested 
+at 4,000 rpm for 10 min and the cell pellet was lysed in buffer contain-
+ing 50 mM Na2HPO4 (pH 8.0), 300 mM NaCl, 20 mM imidazole, 1 mM 
+AEBSF and DNAse I (all Sigma). Following cell lysis and disruption at 
+27 kPsi using the CFII cell disrupter (Constant Systems), the superna-
+tant was collected and recombinant protein was further purified on 
+0 50 nM 500 nM
+5 µM 50 µM 500 µM
+0
+0.4
+0.8
+1.2
+1.6
+2.0
+2.4
+OD 600
+Cortisol (µM)
+0 0.1 1 10 100
+Cortisol
+a b
+0.2 0.4 0.60
+5
+10
+15
+20
+25
+17-OHP
+Steps
+1 2 3 4 5 6
+0
+5
+10
+15
+20
+25
+Current (µA)
+Current (µA)
+e
+–0.1 0 0.1 0.2 0.3 0.4 0.5
+–40
+0
+40
+80
+120 Buﬀer
++10 mM glucose
++10 mM glucose
++10 µM 17-OHP
+E (V)
+d
+I (µA)
+c
+Active
+Ligand
+Reporter
+InactiveN C
+N
+C
+Circular
+permutation
+f g h i
+Functionalized
+surface
+Electronics
+connector
+Ligand-binding
+domain
+Kd = 34 ± 6 nM
+Fig. 5 | Applications of the developed biosensors. a, Agar plate containing 
+ampicillin and chloramphenicol antibiotics seeded with E. coli strain DH5α 
+expressing cpHCY129-35-BLA-253 chimera. After bacterial plating, 2 μl of 
+cortisol solution at the concentration indicated was spotted in the marked 
+positions and bacterial growth was allowed to proceed overnight. b, Density 
+plot of E. coli DH5α suspension cultures of cpHCY129-35-BLA-253 in LB liquid 
+medium in the presence of different concentrations of cortisol. Error bars were 
+calculated using values obtained from three independent bacterial cultures 
+derived from different clones of a single transformation. Data are presented as 
+the mean values ± s.d. OD600, optical density at 600 nm. c, Photograph of carbon/
+graphene electrode functionalized with 17-OHP-GDH biosensor. The section of 
+the electrode functionalized with the biosensor and the electronic connector are 
+framed and labeled. d, Typical cyclic voltammograms for a bioelectrode based 
+on cpOHPFA1952-20G-GDH-404. Black line: 25 mM HEPES pH 7.2, 100 mM Na2SO4 
+and 3 mM calcium acetate; blue line: 10 mM glucose added; red line: 10 mM 
+glucose and 5 μM 17-OHP added. The electrode was scanned at a rate of 
+5 mV s−1 versus reference electrode (Ag/AgCl/3 M KCl) at room temperature. 
+e, Increase in the electric current on the 17-OHP-GDH bioelectrode shown in 
+c,d following its exposure to increased concentrations of 17-OHP. Inset, electrode 
+current following repeated addition and removal of 17-OH. Error bars were 
+calculated using values obtained from three independent scans of the same 
+electrode under the corresponding conditions. Data are presented as the mean 
+values ± s.d. f–h, Proposed functional mechanism of protein switches with 
+artificial circular permutated receptor domains (f), where circular permutation 
+increases the conformation entropy of the receptor domain (g) that propagates 
+to the reporter domain suppressing its activity (h). i, Binding of a ligand reduces 
+the conformation entropy of the system and increases the catalytic activity of the 
+reporter domain.
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+the Ni-NTA HisTrap FF crude column driven by ÄKTA Express purifier 
+(Cytiva) system in buffer containing 50 mM Na 2HPO4, 300 mM NaCl 
+and 20 mM imidazole and a gradient of 500 mM imidazole for elution 
+at pH 8.0. Finally, the protein was dialyzed against 20 mM Tris-HCl (pH 
+7.0) and 100 mM NaCl; protein aliquots were frozen in liquid nitrogen 
+and stored at −80 °C.
+Design of chimeric proteins
+T o design the protein chimeras, a arbitrary residue located within a loop 
+region was chosen as the permutation site to generate the circularly 
+permuted binder. This amino acid was removed to establish novel N 
+and C termini. The native N and C termini of the binder were joined by a 
+flexible glycine–serine linker of sufficient length. This permuted binder 
+was inserted at position 253 of β-lactamase TEM-1, with a single glycine 
+residue used as a linker between TEM-1 and the binder. The structural 
+models of the chimeras were generated using WinCoot 0.9.8.1 and 
+the structures of the receptor and reporter domains as inputs. The 
+structure of TEM-1 β-lactamase (PDB 3GMW) was manually connected 
+to the structure of the circularly permuted binders and the linker join-
+ing the native N and C termini of the binder was manually constructed. 
+The structures of proteins and protein chimeras were visualized using 
+ICM 3.9-4 (Molsoft).
+Expression and purification of protein containing NMR probe
+For the site-specific incorporation of the unnatural amino acid p-(O)
+CF3-tyrosine, E. coli B-95.ΔAΔ fabR cells 40 (Addgene, 197934) were 
+cotransformed with pRSF-G1-pCNPRS (Addgene, 174719) and the 
+pCDF plasmids (Gene Universal) carrying the gene of the target with 
+amber codon placed at the desired position. The cells were grown in 
+LB medium (Sigma) supplemented with 25 mg L−1 kanamycin (Everest) 
+and 25 mg L−1 spectinomycin at 37 °C until reaching an optical density 
+of 0.4–0.6, followed by the addition of p-(O)CF3-tyrosine (Ambeed) to 
+the final concentration of 2 mM. After 30 min of continuous shaking, 
+IPTG (Sigma) was added to a final concentration of 0.5 mM to induce 
+protein expression and the culture was grown overnight at 18 °C. The 
+recombinant protein was purified by Ni-NTA chromatography using 
+a HisTrap FF crude column driven by an ÄKTA Pure Purifier (Cytiva) 
+system as described above.
+19F-NMR spectroscopy
+19F-NMR spectra were recorded using protein samples at 0.40–0.85 mM 
+concentration dissolved in 90% H2O/10% D2O, 20 mM Tris-HCl pH 7.2 
+and 100 mM NaCl and placed in 5-mm NMR tubes. The ligand 17-OHP 
+was added from a 100 mM stock solution in DMSO at a final concen-
+tration of 1.5 mM. 19F-NMR spectra were recorded at 25 °C without 1H 
+decoupling on a Bruker 400-MHz NMR spectrometer equipped with 
+a broadband probe. The following parameters were used: acquisition 
+time, 180 ms; recovery delay, 1 s; exponential window multiplication 
+with line broadening by 15–40 Hz (depending on the natural line width) 
+before Fourier transformation. The total recording times of the NMR 
+spectra ranged between 0.5 and 1 h. Inversion–recovery experiments 
+determined T1 relaxation times of about 0.6 s.
+Design of small-molecule-binding proteins
+De novo proteins binding cortisol and 17-OHP were designed as 
+previously described17. Protein backbone scaffolds were generated 
+using a hallucination method based on trRosetta to generate diverse 
+structures with NTF2-like topology. Cortisol and 17-OHP were docked 
+onto these scaffolds using RIFdock and protein sequences were sub-
+sequently designed with either using Rosetta or LigandMPNN41. The 
+resulting ligand–protein complexes were evaluated using Rosetta 
+scoring functions and AlphaFold2 predictions. Selected subsets of 
+sequences were experimentally tested for binding characterization 
+and representative binders were then chosen for the construction of 
+chimeric sensor proteins.
+Design and construction of C-peptide binding domain
+CPH02 was optimized from the construct CPS_1b2 in the previous 
+work42. Here, full length C-peptide was remodeled with the designed 
+binder instead of a short middle region. The ProteinMPNN-fastrelax43 
+cycle was carried out twice to refine the interface toward the new 
+dock, with arginine and lysine downweighted by −0.15. T en new 
+sequences were generated and the top design with the best Alpha -
+Fold2 metrics42 was selected, characterized biophysically and used 
+for biosensor design.
+ELISA assay
+T o achieve streptavidin (Sigma, S4762) immobilization on a Maxisorp 
+plate (Thermo Fisher Scientific, 442404), the latter was incubated with 
+10 μg ml−1 streptavidin in PBS solution overnight at room temperature. 
+The plate was washed three times with PBS, incubated with 2 μM bioti-
+nylated steroids for 1 h and then blocked with 2% casein in PBS for 1 h. 
+Purified binding proteins were serially diluted in 2% casein in PBS buffer. 
+After a 1-h incubation, the plate was washed three times with PBST 
+(PBS with Tween-20) and incubated for 1 h with 100 μl of anti-FLAG–
+HRP (1:5,000; Sigma, A8592). Following PBST washes, TMB substrate 
+(Thermo Fisher, 34028) was added and the reaction was quenched with 
+1 M sulfuric acid when the color developed sufficiently. Absorbance at 
+450 nm was recorded using a Neo2 plate reader. The titration data were 
+fitted in GraphPad Prism using its four-parameter IC50 equation and the 
+resulting values were used as the apparent affinity estimate.
+Spectrophotometric analysis of β-lactamase enzymatic 
+activity
+The enzymatic assays were performed in the assay buffer containing 
+20 mM Tris-HCl pH 7.2 and 100 mM NaCl at 25 °C by monitoring the 
+increase in absorbance of UW154 (ref. 39) at 520 nm using a Cary 60 
+ultraviolet (UV)–visible light (Vis) absorbance spectrometer operated 
+by Cary WinUV Software.
+Spectrophotometric analysis of GDH enzymatic activity
+The GDH chimera protein was reconstituted with PQQ in 1:1.5 ratio. 
+The enzymatic assays were performed in the assay buffer containing 
+20 mM Tris-HCl pH 7.2, 1 mM CaCl2 and 100 mM NaCl in the presence of 
+60 μM electron-accepting dye DCPIP, 0.6 mM electron mediator MPS 
+and 20 mM glucose at 25 °C by monitoring the decrease in absorbance 
+at 600 nm using a Cary 60 UV–Vis absorbance spectrometer operated 
+by Cary WinUV Software.
+Analysis of NanoLuc enzymatic activity
+The assay was performed in 96-well plates (OptiPlate-96 HS, Perki-
+nElmer). The luminescence was recorded at 445–470 nm by a TECAN 
+plater reader after mixing 200 μl of a solution containing 20 mM 
+Tris-HCl pH 7.2, 100 mM NaCl and 0.25 μl of the NanoLuc substrate 
+and NanoLuc chimera protein.
+Analysis of NanoLuc and LuxSit Pro enzymatic activity
+The enzymatic assay of NanoLuc and LuxSit were performed in 200 μl 
+of buffer containing 20 mM Tris-HCl pH 7.2 and 100 mM NaCl or the 
+supplied assay buffer from LuxSit Pro luciferase assay system, respec-
+tively. The protein sensors were first incubated at 25 °C for 30 min with 
+corresponding ligands. Upon addition of 0.2 μl of substrate (NanoLuc, 
+Promega) or 2 μl of substrate (LuxSit Pro substrate, Monod Bio), the 
+change in luminescence signal at 445–470 or 475–500 nm, respectively, 
+was monitored with a TECAN plater reader (SPARK).
+Activity analysis of β-lactamase calmodulin chimera library in 
+the presence of different CaM-BPs
+A set of 17 genes encoding β-lactamase–CaM chimeras were synthe-
+sized and named on the basis of the residue in β-lactamase where the 
+CaM domain was inserted (Supplementary Table 1). The chimeras were 
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+recombinantly produced in E. coli and their activity was tested in the 
+presence of 29 CaM-BPs to evaluate the effects of both insertion site 
+and ligand peptide on biosensor function using a 96-well plate assay 
+format. The purified β-lactamase–CaM proteins were prepared at a final 
+concentration of 10 nM in a reaction buffer containing 20 mM Tris-HCl 
+pH 7.2 and 100 mM NaCl. Enzymatic activity was assessed for each vari-
+ant in both the presence and the absence of 1 μM CaM-BPs. Following 
+peptide addition, the biosensor–peptide mixtures were incubated 
+at room temperature for 20 min. T o ensure simultaneous reaction 
+initiation, 50 μM nitrocefin was added to each well of the 96-well plate 
+using the Rainin Liquidator 96 manual pipetting system. Absorbance 
+of the solution at 486 nm was continuously recorded every 10–20 s 
+at 25 °C using a Synergy Neo2 microplate reader (BioT ek) until the 
+signal stabilized.
+Quantification of biosensor performance parameters and data 
+plotting
+T o determine the dynamic range of the individual switches, we used 
+ligand titration experiments to establish the Kd value for the ligand. We 
+then performed the assay either at zero or saturating concentration 
+of the ligand (typically 20-fold greater than the Kd value) and recorded 
+the absorbance change trace. The linear phase of the trace was fitted 
+to the linear function defined as the observed rate constant (kobs). The 
+dynamic range was calculated by dividing the kobs of the background 
+signal in the absence of the ligand by the kobs recorded at saturating 
+ligand concentration.
+T o determine the biosensor’s latency, the switches were incubated 
+with their cognate ligands for the time period indicated and assayed for 
+enzymatic activity. The initial rates were determined and the activation 
+rate was calculated by fitting the data to a single exponential.
+T o determine the affinity of the biosensors for their targets, the 
+linear phase of the curves recorded at different concentrations of the 
+ligand was fitted as a linear function to obtain kobs. The mean kobs was 
+obtained by averaging three independent experimental data. T o obtain 
+the Kd for the interaction of biosensors with their ligand, the kobs data 
+were plotted against the concentration of the ligand and the data were 
+fitted to the explicit solution of equation 1 describing the E + S < > ES 
+binding equilibrium, where Kd is defined as Kd = [E] × [S]/[EL]. [E0] and 
+[L0] refer to the total enzyme and ligand concentration (free and bound) 
+in the cuvette. Under these conditions, kobs can be expressed as follows:
+kobs = kobs(min) +( kobs(max) − kobs(min))× (([E0]+[ L0]+K d)/2
+−([E0]+[ L0]+K d)
+2
+/4 −[ E0]× [ L0])
+1/2
+/[L0]
+(1)
+where kobs represents the measured rate, and kobs(min) and kobs(max) refer to 
+the minimal and maximal rates observed, respectively. A least-squares 
+fit of the data to equation 1 using the software package Grafit 5.04 
+(Erithacus software) was used to extract the Kd value and its s.d.
+In competitive titrations aimed at determination of the K d val-
+ues for 17-OHP interaction with OHPFA1952 or cpOHPFA1952-20, the 
+mean kobs values from three independent experiments were fitted 
+to a competitive model using GraphPad Prism 10.4.1. In this process, 
+we used the one-site fit inhibition constant ( Ki) model and fixed the 
+Kd of cpOHPFA1952-20-BLA-253 interaction with 17-OHP to the value 
+obtained in direct titration of cpOHPFA1952-20-BLA-253 with 17-OHP.
+The bars in the bar graphs shown in Figs. 3 and 4 represent values 
+of an average of three independent measurements performed as a 
+part of the same experimental set. The error bars denote positive and 
+negative boundaries of the s.e.m.
+Construction of expression vectors for in vivo activity analysis 
+of β-lactamase and bacterial survival assays
+The constructs carrying β-lactamase chimeras with a constitutive pro-
+motor based on a modified pACYCDuet-1 vector were created. The 
+inducible T7 promotor in the original pACYCDuet-1 vector was replaced 
+by the constitutive AmpR promotor (Supplementary Table 1).
+Thermostability analysis of the β-lactamase-based biosensor
+We incubated the β-lactamase-based switches in triplicates at differ-
+ent temperatures before the activity assay. The incubation times and 
+temperatures were as follows: 4 °C for 3 h, 25 °C for 3 h, 37 °C for 1 h, 
+50 °C for 30 min, 50 °C for 10 min and 80 °C for 10 min.
+CD spectrum recording
+CD spectra were measured using a J-1500 Spectropolarimeter ( Jasco) 
+within the wavelength range of 194–260 nm. Data were collected at 
+0.1-nm intervals with a path length of 1 mm and a scanning speed of 
+50 nm min−1. The experiments were conducted in triplicate using pro-
+tein samples prepared in a buffer containing 10 mM Tris-H2SO4 pH 7.2 
+and 20 mM NaCl with or without the ligand. The concentrations of 
+both the protein and the ligand used in the assays are detailed in the 
+respective figure legends.
+Biolayer interferometry
+Binding kinetics were measured on an Octet RED968 system (ForteBio) 
+at 25 °C using streptavidin biosensors. Sensors were preequilibrated in 
+assay buffer (PBS, 0.05% Tween-80 and 0.1% BSA) before ligand loading. 
+A biotinylated 17-OHP derivative (200 nM) was immobilized to a loading 
+response of ~0.35 nm, followed by baseline stabilization in assay buffer.
+Association was measured by dipping sensors into wells contain-
+ing wild-type OHPFA1952 17-OHP-binding domain or the circularly 
+permuted variant cpOHPFA1952-20 at 400, 200, 100 and 0 nM. After 
+300 s of association, sensors were transferred into buffer-only wells 
+to monitor dissociation for 300 s. Reference sensors (ligand-loaded, 
+buffer only) were included to subtract background.
+Data were reference-subtracted, aligned and globally fitted to a 1:1 
+binding model using ForteBio Data Analysis 9.0 to obtain association 
+(kon) and dissociation ( koff) rate constants, as well as the equilibrium 
+dissociation constant (Kd).
+ITC
+ITC experiments were performed on a MicroCal PEAQ-ITC (Malvern) at 
+25 °C. Proteins were dialyzed extensively against assay buffer (20 mM 
+Tris-HCl pH 7.2 and 100 mM NaCl). Protein concentrations were deter-
+mined spectrophotometrically using calculated extinction coefficients. 
+17-OHP was dissolved in DMSO (20 mM) and diluted to 50 μM in the 
+same buffer.
+The sample cell (200 μl) was loaded with 50 μM 17-OHP and the 
+syringe (40 μ l) contained 500  μM wild-type OHPFA1952 or 
+cpOHPFA1952-20. Each titration consisted of an initial 0.4-μl injec-
+tion followed by 19 sequential 2-μl injections, with a reference power of 
+10 μcal s−1 and stirring at 750 rpm. Control titrations of protein into buffer 
+were performed to correct for dilution heats.
+Raw thermograms were integrated, corrected for heats of dilution 
+and fitted to a one-site binding model using the MicroCal PEAQ-ITC 
+analysis software. Thermodynamic parameters including Kd, enthalpy 
+(ΔH), entropy contribution (– TΔS) and Gibbs free energy (Δ G) were 
+derived from the fits.
+Preparation of bioelectrodes functionalized with 17-OHP-GDH 
+biosensor
+Carbon paper composed of carbon fibers (SpectracarbTM 2050 L-1050, 
+Fuel Cell Store) was used as the core electrode material. T o increase the 
+sensitivity of the bioelectrode, the carbon fibers were decorated with 
+graphene nanosheets using four cycles of cyclic voltammetry in the 
+range of −0.5 to +3.0 V, with a potential scan rate of 50 mV s−1 for four 
+successive cycles in 25 mM phosphate buffer pH 6.9 while stirring at 
+400 rpm. The electrodes were treated in chronoamperometric mode 
+at +1.0 V for 120 s in the same solution and conditions44. 17-OHP-GDH 
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+was immobilized on the graphene nanosheets modified surface by 
+first treating the electrode surface with PEI water solution (20 mg ml−1) 
+for 1.5 h while moderately shaking. The PEI-functionalized electrodes 
+were rigorously washed twice with 25 mM HEPES pH 7.6. Subsequently, 
+the electrodes were incubated for 2 h with slow shaking in the dark in 
+a solution of 50 mM EDC, 50 mM NHS, 1 μM 17-OHP-GDH and 25 mM 
+HEPES, pH 7.6. The formed bioelectrodes were washed out twice with 
+25 mM HEPES pH 7.6 before usage. The bioelectrodes were analyzed by 
+cyclic voltammetry scanned at a rate of 5 mV s−1 versus the Ag/AgCl/3 M 
+KCl reference.
+Electrode characterization
+The constructed bioelectrodes were shown to provide the maximal 
+output at saturating substrate concentration (Imax) of 22.5 ± 0.01 μA 
+with a limit of detection (3σ) below 0.5 nM. We determined the appar-
+ent Michaelis–Menten constant for 17-OHP (Km
+app) as 34.5 ± 0.01 nM. 
+The biosensor sensitivity was determined as 4583 μA mM−1 cm−2 cal-
+culated from the slope taken of the linear phase of the binding curve 
+(330 ± 40 μA mM−1) divided by electrode working surface area (6 × 6 mm 
+(both sides) = 0.072 cm2).
+Scanning electron microscopy of electrodes
+The scanning electron microscopy (SEM) imaging of bioelectrode 
+surfaces was conducted using a JSM 7900F field-emission SEM instru-
+ment ( JEOL). Before SEM analysis, the electrode was treated with liquid 
+nitrogen and freeze-dried overnight. The freeze-dried electrode surface 
+was then fixed by a Butvar solution B-98 (Sigma) in 1.5% chloroform. 
+The applied accelerator voltage was 5.0 kV with magnification ranges 
+from ×3,000 to ×10,000.
+HDX–MS of biosensor proteins
+HDX was performed using fully automated, millisecond HDX labeling 
+and automated online quench-flow fast HDX instrument, ms2min 
+(Applied Photophysics, part of Nicoya Lifesciences), connected to 
+an HDX manager (Waters) directly coupled to a Synapt G2-si mass 
+spectrometer (Waters). Next, 10 μl of apo protein (10 μM) or protein 
+equilibrated with 20 μM 17-OHP (1:2 molar ratio) in formulation buffer 
+(20 mM Tris-HCl and 100 mM NaCl, pH 7.20) was mixed with deuter-
+ated labeling buffer (20 mM Tris-HCl, 100 mM NaCl, pHread 6.79, pD 
+7.20) in a 1:20 ratio at 23 °C to initiate HDX, incubated for mixing times 
+of 100–100 000 ms, then mixed with quench buffer (1 M glycine and 
+3 M urea, pH 2.45) in a 1:1 ratio at 0 °C and automatically injected into 
+the two-dimensional liquid chromatography–MS system. The sample 
+was digested with an Enzymate pepsin column (Waters), the derived 
+peptides trapped on a VanGuard ACQUITY BEH C18 column (2.1 × 5 mm; 
+Waters) for 3 min at 125 μl min−1 and separated on an ACQUITY BEH 
+1.7-μm C18 column (1 × 100 mm; Waters) with a 7-min linear gradient 
+of acetonitrile (5–40%) supplemented with 0.1% formic acid. Mass 
+spectra were acquired in positive ion resolution mode with ion mobility 
+from 300 to 2,000 m/z. The ProteinLynx Global Server 2.5.1 (Waters) 
+was used for spectral assignment of MS E reference data to identify 
+peptides. DynamX 3.0 (Waters) was used to process and assign isotopic 
+distributions of raw data files for HDX experiments. All HDX–MS experi-
+ments were performed in triplicate (technical replicates). Statistical 
+analysis was performed by calculating hybrid significance with global 
+significance thresholding and Welch’s t-test, essentially as previously 
+described45. Structural models were made using ICM 3.9-4 (Molsoft).
+MD simulations
+Amber22 was used for all MD simulations46. Construction of chimera’s 
+structures for the simulations is described above. Hydrogens were 
+added to 17-OHP in the holo structure and 17-OPH was deleted to provide 
+the apo structure for molecule dynamics. 17-OHP was parameterized 
+with the GAFF2 force field with Mulliken charges using the Antecham-
+ber module of Amber22 (ref. 47). All simulations were performed in 
+triplicate using the Generalized Born (GB-Neck2) implicit solvent model 
+(igb = 5). Initial energy minimizations entailed 25,000 steps of steep-
+est descent and 25,000 of conjugate gradient with default gradient 
+cutoffs, using random seeds and no positional restraints. These were 
+followed by 2.2 μs of MD simulation collected in batches of 100 ns for 
+each replicate at 300 K using 2-fs timesteps and SHAKE constraints. 
+Frames were collected every 5,000 timesteps and the first 100 ns of 
+each trajectory was discarded, providing production trajectories of 
+210,000 frames (2.1 μs) for each replicate.
+Use of AI manuscript writing
+Generative AI was used at the final stages of manuscript preparation 
+for editing parts of the manuscripts for length and clarity. All changes 
+were verified by the corresponding author.
+Online content
+Any methods, additional references, Nature Portfolio reporting sum-
+maries, source data, extended data, supplementary information, 
+acknowledgements, peer review information; details of author contri-
+butions and competing interests; and statements of data and code avail-
+ability are available at https://doi.org/10.1038/s41587-026-03081-9.
+References
+1. Fenton, A. W. Allostery: an illustrated definition for the ‘second 
+secret of life’. Trends Biochem. Sci. 33, 420–425 (2008).
+2. Chai, F., Cheng, D., Nasu, Y., Terai, T. & Campbell, R. E. Maximizing 
+the performance of protein-based fluorescent biosensors. 
+Biochem. Soc. Trans. 51, 1585–1595 (2023).
+3. Jackson, C., Anderson, A. & Alexandrov, K. The present and the 
+future of protein biosensor engineering. Curr. Opin. Struct. Biol. 
+75, 102424 (2022).
+4. Alberstein, R. G., Guo, A. B. & Kortemme, T. Design principles 
+of protein switches. Curr. Opin. Struct. Biol. 72, 71–78 
+(2022).
+5. Chen, Z. et al. A synthetic protein-level neural network in 
+mammalian cells. Science 386, 1243–1250 (2024).
+6. Campbell, E. et al. Chimeric protein switch biosensors. 
+Adv. Biochem. Eng. Biotechnol. 187, 1–35 (2024).
+7. Tsao, K. K. et al. The best of both worlds: chemigenetic 
+fluorescent sensors for biological imaging. Cell Chem. Biol. 31, 
+1652–1664 (2024).
+8. Ergun Ayva, C. et al. Exploring performance parameters of 
+artificial allosteric protein switches. J. Mol. Biol. 434, 167678 
+(2022).
+9. Clark, J. J., Benson, M. L., Smith, R. D. & Carlson, H. A. Inherent 
+versus induced protein flexibility: comparisons within and 
+between apo and holo structures. PLoS Comput. Biol. 15, 
+1–21 (2019).
+10. Cooper, A. & Dryden, D. T. F. Allostery without conformational 
+change. Eur. Biophys. J. 11, 103–109 (1984).
+11. Wankowicz, S. A. & Fraser, J. S. Advances in uncovering the 
+mechanisms of macromolecular conformational entropy. 
+Nat. Chem. Biol. 21, 623–634 (2025).
+12. Choi, J. H., Laurent, A. H., Hilser, V. J. & Ostermeier, M. Design of 
+protein switches based on an ensemble model of allostery. 
+Nat. Commun. 6, 6968 (2015).
+13. Barkovskiy, M., Ilyukhina, E., Dauner, M., Eichinger, A. & Skerra, A. 
+An engineered lipocalin that tightly complexes the plant poison 
+colchicine for use as antidote and in bioanalytical applications. 
+Biol. Chem. 400, 351–366 (2019).
+14. Jerschke, E., Eichinger, A. & Skerra, A. Drastic alterations in the 
+loop structure around colchicine upon complex formation with 
+an engineered lipocalin indicate a conformational selection 
+mechanism. Acta Crystallogr. F Struct. Biol. Commun. 79, 
+231–239 (2023).
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+15. Watson, J. L. et al. De novo design of protein structure and 
+function with RFdiffusion. Nature 620, 1089–1100 (2023).
+16. Listov, D., Goverde, C. A., Correia, B. E. & Fleishman, S. J. 
+Opportunities and challenges in design and optimization of 
+protein function. Nat. Rev. Mol. Cell Biol. 25, 639–653 (2024).
+17. Lee, G. R. et al. Small-molecule binding and sensing with a 
+designed protein family. Nat. Commun. https://doi.org/10.1038/
+s41467-026-70953-8 (2026).
+18. Wu, K. et al. Design of intrinsically disordered region binding 
+proteins. Science 389, eadr8063 (2025).
+19. Liu, C. et al. Diffusing protein binders to intrinsically disordered 
+proteins. Nature 644, 809–817 (2025).
+20. Vázquez Torres, S. et al. De novo design of high-affinity binders of 
+bioactive helical peptides. Nature 626, 435–442 (2024).
+21. Guo, Z. et al. Development of epistatic YES and AND protein 
+logic gates and their assembly into signalling cascades. Nat. 
+Nanotechnol. 18, 1327–1334 (2023).
+22. Guo, Z. et al. Lanthanide-controlled protein switches: 
+development and in vitro and in vivo applications. 
+Angew. Chem. Int. Ed. Engl. 64, e202411584 (2025).
+23. Oubrie, A. Structure and mechanism of soluble glucose 
+dehydrogenase and other PQQ-dependent enzymes. 
+Biochim. Biophys. Acta 1647, 143–151 (2003).
+24. Hall, M. P. et al. Engineered luciferase reporter from a deep sea 
+shrimp utilizing a novel imidazopyrazinone substrate. ACS Chem. 
+Biol. 7, 1848–1857 (2012).
+25. Yeh, A. H.-W. et al. De novo design of luciferases using deep 
+learning. Nature 614, 774–780 (2023).
+26. Vergara, R. et al. LuxSit Pro and sPro: next-generation 
+designed luciferases for bioluminescent reporting and 
+complementation-based detection. Preprint at bioRxiv 
+https://doi.org/10.1101/2025.07.21.665742 (2025).
+27. Meister, G. E. & Joshi, N. S. An engineered calmodulin-based 
+allosteric switch for peptide biosensing. ChemBioChem 14, 
+1460–1467 (2013).
+28. Guo, Z. et al. Generalizable protein biosensors based on synthetic 
+switch modules. J. Am. Chem. Soc. 141, 8128–8135 (2019).
+29. Orton, H. W. et al. Through-space scalar 19F–19F couplings 
+between fluorinated noncanonical amino acids for the 
+detection of specific contacts in proteins. J. Am. Chem. Soc. 143, 
+19587–19598 (2021).
+30. Kish, M., Ivory, D. P. & Phillips, J. J. Transient structural dynamics 
+of glycogen phosphorylase from nonequilibrium hydrogen/
+deuterium-exchange mass spectrometry. J. Am. Chem. Soc. 146, 
+298–307 (2024).
+31. Smit, J. H. et al. Probing universal protein dynamics using 
+hydrogen–deuterium exchange mass spectrometry-derived 
+residue-level Gibbs free energy. Anal. Chem. 93, 12840–12847 
+(2021).
+32. Mutschler, R. et al. Cooperative binding domains enhance 
+sensitivity and over-come the hook effect in two-component 
+protein biosensors. ACS Sens. https://doi.org/10.1021/
+acssensors.6c00488 (2026).
+33. Nicholes, N. et al. Modular protein switches derived from 
+antibody mimetic proteins. Protein Eng. Des. Sel. 29, 77–85 
+(2016).
+34. Zou, Y. et al. Minimally invasive electrochemical continuous 
+glucose monitoring sensors: recent progress and perspective. 
+Biosens. Bioelectron. 225, 115103 (2023).
+35. Nasu, Y., Shen, Y., Kramer, L. & Campbell, R. E. Structure- and 
+mechanism-guided design of single fluorescent protein-based 
+biosensors. Nat. Chem. Biol. 17, 509–518 (2021).
+36. Guntas, G., Mansell, T. J., Kim, J. R. & Ostermeier, M. Directed 
+evolution of protein switches and their application to the creation 
+of ligand-binding proteins. Proc. Natl Acad. Sci. USA 102, 
+11224–11229 (2005).
+37. Buller, A. R. et al. Directed evolution mimics allosteric activation 
+by stepwise tuning of the conformational ensemble. J. Am. Chem. 
+Soc. 140, 7256–7266 (2018).
+38. Wait, S. J. et al. Machine learning-guided engineering of 
+genetically encoded fluorescent calcium indicators. Nat. Comput. 
+Sci. 4, 224–236 (2024).
+39. Ghavami, A. et al. Assay for drug discovery: synthesis and testing 
+of nitrocefin analogues for use as β-lactamase substrates. 
+Anal. Biochem. 486, 75–77 (2015).
+40. Mukai, T. et al. Highly reproductive Escherichia coli cells with no 
+specific assignment to the UAG codon. Sci. Rep. 5, 9699 (2015).
+41. Dauparas, J. et al. Atomic context-conditioned protein sequence 
+design using LigandMPNN. Nat. Methods 22, 717–723 (2025).
+42. Wu, K. et al. Design of intrinsically disordered region binding 
+proteins. 389, eadr8063 (2025).
+43. Dauparas, J. et al. Robust deep learning-based protein sequence 
+design using ProteinMPNN. Science 378, 49–56 (2022).
+44. Gamella, M., Guo, Z., Alexandrov, K. & Katz, E. Bioelectrocatalytic 
+electrodes modified with PQQ-glucose dehydrogenase–
+calmodulin chimera switchable by peptide signals: pathway to 
+generic bioelectronic systems controlled by biomolecular inputs. 
+ChemElectroChem 6, 638–645 (2019).
+45. Seetaloo, N., Kish, M. & Phillips, J. J. Software for flexible high 
+structural resolution of hydrogen/deuterium-exchange mass 
+spectrometry data. Anal. Chem. 94, 4557–4564 (2022).
+46. Case, D. A. et al. AmberTools. J. Chem. Inf. Model. 63, 6183–6191 
+(2023).
+47. He, X., Man, V. H., Yang, W., Lee, T.-S. & Wang, J. A fast and 
+high-quality charge model for the next generation general AMBER 
+force field. J. Chem. Phys. 153, 114502 (2020).
+48. Qianzhu, H. 19F-NMR spectra of artificial 17-OPH biosensor 
+(cpOHPFA_1952-20-BLA-253) in apo and holo states. Zenodo 
+https://doi.org/10.5281/zenodo.18383997 (2026).
+Publisher’s note Springer Nature remains neutral with regard to 
+jurisdictional claims in published maps and institutional affiliations.
+Open Access This article is licensed under a Creative Commons 
+Attribution 4.0 International License, which permits use, sharing, 
+adaptation, distribution and reproduction in any medium or format, 
+as long as you give appropriate credit to the original author(s) and the 
+source, provide a link to the Creative Commons licence, and indicate 
+if changes were made. The images or other third party material in this 
+article are included in the article’s Creative Commons licence, unless 
+indicated otherwise in a credit line to the material. If material is not 
+included in the article’s Creative Commons licence and your intended 
+use is not permitted by statutory regulation or exceeds the permitted 
+use, you will need to obtain permission directly from the copyright 
+holder. To view a copy of this licence, visit http://creativecommons.
+org/licenses/by/4.0/.
+© The Author(s) 2026, modified publication 2026
+Nature Biotechnology
+Article https://doi.org/10.1038/s41587-026-03081-9
+Reporting summary
+Further information on research design is available in the Nature Port-
+folio Reporting Summary linked to this article.
+Data availability
+The HDX–MS data were deposited to the ProteomeXchange 
+Consortium through the PRIDE partner repository with the dataset 
+identifier PXD073666. The 19F-NMR spectra were deposited to Zenodo 
+(https://doi.org/10.5281/zenodo.18383997)48. The data supporting the 
+findings of this study are available in the paper and its Supplementary 
+Information. Source data are provided with this paper.
+Acknowledgements
+This work was supported by Australian Research Council grants 
+DP160100973, LP200200916 and CE200100029 to K.A., CE200100012 
+to C.J.J. and G.O., and DP230100079 and DP240100273 to T.H. and G.O. 
+The work was also supported by National Health and Medical Research 
+Council grant APP 2033951 to K.A. K.A. and Z.C. were supported by 
+CSIRO SybBio and Advanced Engineering Biology Future Science 
+Platform. M.K. and J.J.P. were supported by UK Research Institute Future 
+Leaders fellowship MR/T02223X/1 and MR/Z000157. E.K. and O.S. were 
+supported by the National Science Foundation grant CBET-2235349 
+including IMPRESS-U supplement and NSF-BSF CBET-2422672. G.R.L., 
+D.B. and K.W. acknowledge funding from Open Philanthropy Project 
+Improving Protein Design Fund Innovation Fellows Program and 
+Howard Hughes Medical Institute. K.A. acknowledges support from 
+the QUT Centre for Agriculture and the Bioeconomy. We thank Monod 
+Bio, Inc. for providing reagents for the LuxSit Pro assays, and we thank 
+S. Fleishman, A. Skerra and I. Berezovsky for insightful discussions and 
+suggestions on the manuscript and R. Abagyan for expert advice on 
+data visualization.
+Author contributions
+Z.G., O.S., M.K., J.J.P., G.R.L. and H.Q. designed and performed 
+the experiments, analyzed the data and wrote the manuscript. 
+C.J.J., G.O., M.M.F., O.S., A.Q.R., E.K., A.C.W. and T.H. designed the 
+experiments, analyzed the data and wrote the manuscript. R.M. 
+designed and performed the experiments. D.B. and K.W. designed the 
+experiments and analyzed the data. K.A. secured funding, managed 
+the project, designed the experiments, analyzed the data and wrote 
+the manuscript.
+Competing interests
+Z.G. and K.A. are named inventors on patent applications covering 
+YES-gate biosensor technology and biosensors with auxiliary binding 
+domains either used or described in this study. K.A. holds shares 
+in CIDER Biotech that holds a license for these technologies. 
+The remaining authors declare no competing interests.
+Additional information
+Supplementary information The online version 
+contains supplementary material available at 
+https://doi.org/10.1038/s41587-026-03081-9.
+Correspondence and requests for materials should be addressed to 
+Kirill Alexandrov.
+Peer review information Nature Biotechnology thanks Sahika Inal and 
+the other, anonymous, reviewer(s) for their contribution to the peer 
+review of this work. Peer reviewer reports are available.
+Reprints and permissions information is available at 
+www.nature.com/reprints.
+
