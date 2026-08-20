@@ -34,8 +34,13 @@ Stages
   --stage fetch    download structures (network; light on memory, and compute
                    nodes may lack outbound access, so run this on the login
                    node -- curl fits well under the 1 GB cap)
-  --stage compute  measure cavities and test the per-position signature
-                   (heavy; must run under SLURM)
+  --stage compute  measure cavities and test the per-position signature.
+                   ⚠ The "must run under SLURM" note here was WRONG and cost a
+                   needless queue wait. Measured 2026-08-20: peak RSS is **135 MB**
+                   and it runs fine on an interactive node, or even under the login
+                   node's 1 GB cap. ~30 s per structure, so ~2 h for 266.
+                   The 1.15 GB memory warning belongs to the FOLDSEEK search in
+                   script 05 and to convert2pdb in the fetch stage - not here.
 
 Cavity method: the same lib_cavity criterion used in Arms 1 and 2, but seeded
 UNBIASEDLY -- the largest enclosed component anywhere in the domain, rather
@@ -321,6 +326,7 @@ def largest_cavity(xyz, elem, spacing=0.6, probe=1.4, bur_cut=0.88,
 
 
 rows = []
+_stream = [None, None]   # (handle, DictWriter): stream results as they are made
 for n, h in enumerate(hits, 1):
     ats = domain_atoms(h)
     if not ats or len(ats) < 200:
@@ -337,14 +343,28 @@ for n, h in enumerate(hits, 1):
     r = dict(h); r["cavity_A3"] = round(vol, 1); r["n_atoms"] = len(ats)
     r["n_res"] = len({a[0] for a in ats})
     rows.append(r)
+    # Stream to disk immediately. The original wrote the CSV only after the whole
+    # loop, so a run killed at 50 of 266 -- by a walltime, a preemption, or an
+    # interactive session ending -- lost every measurement it had already made.
+    if _stream[0] is None:
+        _stream[0] = open(os.path.join(OUT, "homolog_cavities_partial.csv"),
+                          "w", newline="")
+        _stream[1] = csv.DictWriter(_stream[0], fieldnames=list(r.keys()))
+        _stream[1].writeheader()
+    _stream[1].writerow(r)
+    _stream[0].flush()
+    os.fsync(_stream[0].fileno())
     print(f"  [{n}/{len(hits)}] {h['target']:<34} {r['n_res']:>4} res  "
           f"cavity={vol:7.1f} A3   "
           + " ".join(f"{p}:{h['aa'+str(p)]}" for p in POSITIONS), flush=True)
 
+if _stream[0] is not None:
+    _stream[0].close()
+
 if not rows:
     print("no domains measured"); sys.exit(1)
 
-csvout = os.path.join(OUT, "homolog_cavities.csv")
+csvout = os.path.join(OUT, "homolog_cavities_full.csv")
 with open(csvout, "w", newline="") as fh:
     w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
     w.writeheader(); w.writerows(rows)
