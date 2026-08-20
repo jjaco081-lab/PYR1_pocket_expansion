@@ -94,8 +94,14 @@ def het_residues(path):
             name = f[cols.get("auth_comp_id", cols["label_comp_id"])].strip().upper()
             if name in (".", "?"):
                 name = f[cols["label_comp_id"]].strip().upper()
+            # ⚠ altLoc MUST be part of the copy key. Keying on (chain, resid) alone
+            # merges alternate conformations of ONE molecule into a single phantom
+            # with twice the atoms: 5NON's 93H is a 21-heavy-atom ligand modelled in
+            # two conformations in each of three chains, and came out as "42 heavy".
+            alt = f[cols["label_alt_id"]]
             copy = (f[cols.get("auth_asym_id", cols["label_asym_id"])],
-                    f[cols.get("auth_seq_id", cols["label_seq_id"])])
+                    f[cols.get("auth_seq_id", cols["label_seq_id"])],
+                    "" if alt in (".", "?") else alt)
             out[name][copy] += 1
         elif in_loop and t.startswith("#"):
             in_loop = False
