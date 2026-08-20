@@ -2566,6 +2566,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 35 | 08-19 | Leonard et al.'s protocol is a general computational route to new PYR1 specificity | read from their Methods: the pose comes from **"dock to sequence"**, in which the WT sequence is first **mutated to match a known low-affinity binder found by Y2H screening**. It also hard-filters on an H-bond to the latch water, which §23a measured mandipropamid to miss by **5.07–5.19 Å** | the method **improves a known weak hit**; it cannot start from a ligand alone, and applied to mandipropamid it would reject the correct pose. Our benchmark is strictly harder and comparisons must say so (§34a) |
 | 36 | 08-19 | the hydrogen-bond-as-clash bug explained §31e's R79/V83/H115 control failures | with the exemption applied those three fail at the **same** overlaps (0.65/0.69/1.12). The crystal R79 is now clash-free (0.306 → 0.000 Å) but no library **rotamer** reproduces it | §31e's original diagnosis — wrong chi basin — was right and my §33c speculation was wrong. The fix is still correct and matters at hard-sphere tolerance (WT-ok 12 → 16 of 26 at tol 0), but §31's and §32's verdicts are unchanged (§35) |
 | 37 | 08-19 | the K59R miss might be a sampling limit that backbone flexibility would fix | **coupled moves** — the method Kortemme built for exactly this benchmark, sampling sequence + side chains + backbone + ligand pose — recovers F108A at **+0.74** but retains K59 in **0 % of 50 trajectories in the ABA arm**, where the cognate ligand makes K59 unambiguously correct. Identical to fixed-backbone FastDesign | **scoring, confirmed by a second independent sampler.** Adding flexibility cannot recover K59R; any method using ref2015's desolvation on buried charge inherits it. Coupled moves still helps everywhere else — WT retention 29 % → 42 % (§36a) |
+| 38 | 08-19 | no scoring function available to us can make the K59 flip | **MM-GBSA can.** With mandipropamid, R at 59 beats Q and N (−1.53 vs +0.04, +2.53); with ABA, wild-type Lys beats every substitution (R least-badly at +7.06). Generalised Born instead of Lazaridis–Karplus, over 100-frame MD ensembles | the §23j desolvation diagnosis was not just correct but **actionable** — changing the solvation model does what no sampler could. ⚠ Ensembles are only 50 ps, the ligand-swap difference is dominated by damage to the ABA complex, and F108A comes out NULL because relaxation absorbs the clash it exists to relieve (§37a–b) |
 
 ### Bugs caught before they cost anything
 
@@ -4887,3 +4888,75 @@ design stage: the limit there is the energy function, not the search.
 ligand moves — will not recover K59R. Any method that scores buried charge with
 ref2015's desolvation term inherits the same failure. That is a constraint on every
 future stage of this pipeline, and it is now measured twice rather than argued once.
+
+---
+
+## 37. MM-GBSA rescoring: the K59 flip, at last (2026-08-19)
+
+§36 established with two independent samplers that K59R fails for a reason inside
+ref2015 — the +10.1 REU desolvation penalty for burying the ammonium. So the
+solvation model was replaced: generalised Born instead of the pairwise
+Lazaridis–Karplus approximation. `scripts/75_mmgbsa_build.py`, `75b`, `75c`, `75e`.
+
+Rosetta builds the structures and **never scores them**; every energy below is Amber
+(ff14SB + GAFF2/AM1-BCC, igb=8, 0.15 M salt).
+
+### 37a. The pre-registered criterion is met
+
+ddG relative to WT within each arm, so receptor, ligand and force field all cancel:
+
+| variant | ddG mandi | ddG ABA | difference | reading |
+|---|---|---|---|---|
+| **K59R** * | **−1.53** | **+7.06** | **−8.58** | **prefers mandipropamid** |
+| K59Q | +0.04 | +13.73 | −13.69 | prefers mandipropamid |
+| K59N | +2.53 | +8.93 | −6.40 | prefers mandipropamid |
+| V81I * | −0.19 | +5.84 | −6.03 | prefers mandipropamid |
+| F108A * | −1.69 | +2.23 | −3.92 | NULL, within the spread |
+| F159L * | −1.19 | +6.96 | −8.15 | prefers mandipropamid |
+
+\* a real 4WVO mutation. n = 100 frames per arm; per-frame sd 2.2–3.4 kcal/mol,
+propagated in quadrature and **not** divided by √n, because 100 frames from one
+50 ps run are strongly correlated.
+
+**Within position 59 the ordering is right in both directions**, which is the whole
+test and the thing no previous method managed:
+
+* with **mandipropamid**: R (−1.53) is better than Q (+0.04) and N (+2.53) — 4WVO is
+  K59R.
+* with **ABA**: wild-type Lys beats every substitution, R least-badly (+7.06) and Q
+  worst (+13.73) — the cognate receptor should prefer its own residue.
+
+ref2015 could not produce that flip at any favour-native weight, and coupled moves
+retained K59 in 0 % of trajectories. Changing the solvation model did it.
+
+### 37b. Three caveats that must travel with the number
+
+1. **The ensembles are 50 ps.** GBn2 runs at ~380 steps/min on one core for this
+   2,900-atom system — measured, and pmemd is no faster — so a converged run was not
+   affordable. 50 ps is enough to give frames that genuinely differ; it is **not**
+   enough to call the averages converged.
+2. **The `difference` column is dominated by the ABA arm.** Mutations are near-neutral
+   for mandipropamid (−1.69 to +2.53) and strongly unfavourable for ABA (+2.23 to
+   +13.73). The ligand-swap rule is therefore mostly detecting *damage to the cognate
+   complex*, which is a real and expected signal but not the same as demonstrated
+   complementarity for the new ligand.
+3. **F108A comes out NULL**, though it relieves the largest clash (2.78 Å, §32a). The
+   explanation is mechanical: minimisation and MD relieve that clash in the WT complex
+   too, so by the time an energy is computed the strain the mutation exists to remove
+   has already been absorbed. Structure-relaxed rescoring is blind to it — the same
+   shape of error as §32b's additive objective hiding compensation.
+
+### 37c. ⚠ The first attempt's error bars were fabricated by my own design
+
+The first run built 8 structures per variant by repacking with 8 different Rosetta
+seeds and reported the spread as the uncertainty. **All 8 mandipropamid repacks came
+out byte-identical**, and the ABA arm collapsed to 2 distinct structures after
+minimisation. A 7-residue packing problem has one optimum and annealing finds it
+every time, so the seeds sampled nothing and every `sd = 0.00` was an artefact of
+zero diversity rather than a measure of precision. The verdicts read off that table
+were meaningless and are discarded; 75e replaces them with real MD ensembles, and
+75c now refuses to report a row whose sd is exactly zero with n > 1.
+
+Two smaller traps, both fixed in place: `igb=8` requires **mbondi3** radii or sander
+will not start at all, and `ante-MMPBSA.py` writes no complex topology when its input
+is already unsolvated — the complex prmtop is the input itself.
