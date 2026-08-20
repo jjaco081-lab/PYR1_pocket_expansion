@@ -1,0 +1,9 @@
+source leaprc.protein.ff14SB
+source leaprc.gaff2
+set default PBRadii mbondi3
+loadamberparams /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/mmgbsa/params/3UZ.frcmod
+LIG = loadmol2 /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/mmgbsa/params/3UZ.mol2
+prot = loadpdb s0_clean.pdb
+com = combine { prot LIG }
+saveamberparm com s0.prmtop s0.inpcrd
+quit

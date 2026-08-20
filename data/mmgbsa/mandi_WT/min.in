@@ -1,6 +1,4 @@
 minimise in implicit solvent
  &cntrl
-  imin=1, maxcyc=2000, ncyc=1000,
-  ntb=0, igb=8, saltcon=0.15, cut=999.0,
-  ntpr=200,
+  imin=1, maxcyc=2000, ncyc=1000, ntb=0, igb=8, saltcon=0.15, cut=999.0, ntpr=500,
  /

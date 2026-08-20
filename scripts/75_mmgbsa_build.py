@@ -61,20 +61,56 @@ ARMS = {
               os.path.join(ROOT, "data", "stage1", "params", "A8S_anion.params")),
 }
 
-#: WT plus the ground truth, plus the two neutral substitutions Beltran's WIN
-#: sensors actually use at 59 (K59Q in 4 sensors, K59N in 4). Those are the
-#: substitutions ref2015 SHOULD find easy -- no buried charge -- so they are the
-#: internal check that the comparison is working at all.
-VARIANTS = {
-    "WT":    {},
-    "K59R":  {59: "ARG"},
-    "K59Q":  {59: "GLN"},
-    "K59N":  {59: "ASN"},
-    "V81I":  {81: "ILE"},
-    "F108A": {108: "ALA"},
-    "F159L": {159: "LEU"},
-}
-N_SEED = 8
+#: The candidate set is READ, not hardcoded, so the pairwise screen and the
+#: rescoring cannot drift apart. It is the STRATIFIED top of the README 32 ranking:
+#: the best pair per distinct POSITION PAIR, not the global top-N, because position
+#: 108 relieves the largest clash and saturates the raw ranking - all 24 of the
+#: global top pairs contain it. Stratifying gives 14 distinct positions instead of 5.
+#: The four mandipropamid ground-truth singles and the two neutral 59 controls
+#: (K59Q/K59N, which Beltran's WIN sensors actually use) are included so the known
+#: answers sit inside a larger pool rather than being scored on their own.
+ONE = {"ALA": "A", "CYS": "C", "ASP": "D", "GLU": "E", "PHE": "F", "GLY": "G",
+       "HIS": "H", "ILE": "I", "LYS": "K", "LEU": "L", "MET": "M", "ASN": "N",
+       "PRO": "P", "GLN": "Q", "ARG": "R", "SER": "S", "THR": "T", "VAL": "V",
+       "TRP": "W", "TYR": "Y"}
+
+
+def load_variants():
+    import json
+    import re
+    path = os.path.join(ROOT, "data", "pairwise", "top_candidates.json")
+    out = {"WT": {}}
+    for muts in json.load(open(path)):
+        d, name = {}, []
+        for m in muts:
+            g = re.match(r"(\d+)([A-Z]{3})$", m)
+            pos, aa = int(g.group(1)), g.group(2)
+            d[pos] = aa
+            name.append(f"{pos}{ONE[aa]}")
+        out["_".join(name)] = d
+    return out
+
+
+VARIANTS = load_variants()
+
+
+def write_variant_list():
+    """One ordered list on disk, read by both this script and 77.
+
+    The shell used to rebuild these names inline with an f-string containing a
+    regex; Python 3.10 rejects a backslash inside an f-string expression and every
+    array task died before it started. A file is the single source of truth.
+    """
+    path = os.path.join(OUT, "variants.txt")
+    open(path, "w").write("\n".join(VARIANTS) + "\n")
+    return path
+#: ONE structure per variant, not eight. The first design built 8 by repacking with
+#: 8 different Rosetta seeds and treated the spread as an error bar; they came out
+#: BYTE-IDENTICAL (README 37c), because a small packing problem has one optimum and
+#: annealing finds it every time. The ensemble now comes from MD, so the extra seven
+#: builds were pure cost. Kept as a parameter rather than deleted, so the reason is
+#: visible and it can be raised if the starting structure ever needs to vary.
+N_SEED = 1
 SHELL = 6.0
 
 
@@ -106,6 +142,8 @@ def build(arm, variant, seeds=N_SEED):
         for num, want in ((59, "LYS"), (81, "VAL"), (108, "PHE"), (159, "PHE")):
             got = pose.residue(idx[num]).name3().strip()
             assert got == want, f"{arm}: residue {num} is {got}, expected {want}"
+        # checked BEFORE mutating, so a variant that targets one of these positions
+        # does not trip its own control
         for num, aa in muts.items():
             MutateResidue(idx[num], aa).apply(pose)
 
@@ -144,6 +182,7 @@ def main():
             made.append(f"{arm}_{v}")
     json.dump(dict(arms=list(ARMS), variants=VARIANTS, n_seed=N_SEED, built=made),
               open(os.path.join(OUT, "build_manifest.json"), "w"), indent=1)
+    log(f"wrote {write_variant_list()}")
     log(f"\nbuilt {len(made)} variant/arm combinations x {N_SEED} seeds")
 
 

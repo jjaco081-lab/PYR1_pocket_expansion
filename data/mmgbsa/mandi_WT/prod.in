@@ -1,8 +1,6 @@
-50 ps production, snapshot every 0.5 ps -> 100 frames
+250 ps, snapshot every 2.5 ps -> 100 less-correlated frames
  &cntrl
-  imin=0, irest=1, ntx=5, nstlim=25000, dt=0.002,
-  ntb=0, igb=8, saltcon=0.15, cut=16.0,
-  ntc=2, ntf=2, ntt=3, gamma_ln=2.0, ig=-1,
-  temp0=300.0,
-  ntpr=2500, ntwx=250, ntwr=5000,
+  imin=0, irest=1, ntx=5, nstlim=125000, dt=0.002, ntb=0, igb=8, saltcon=0.15,
+  cut=16.0, ntc=2, ntf=2, ntt=3, gamma_ln=2.0, ig=-1, temp0=300.0,
+  ntpr=12500, ntwx=1250, ntwr=25000,
  /

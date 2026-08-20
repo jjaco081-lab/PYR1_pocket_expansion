@@ -1,18 +1,8 @@
 
- NSTEP =    25000   TIME(PS) =      60.000  TEMP(K) =   294.24  PRESS =     0.0
- Etot   =     -3244.9766  EKtot   =      2112.8842  EPtot      =     -5357.8609
- BOND   =       580.8195  ANGLE   =      1567.1027  DIHED      =      2274.0731
- 1-4 NB =       603.9943  1-4 EEL =      5775.1739  VDWAALS    =     -1333.4299
- EELEC  =    -10999.7093  EGB     =     -3825.8851  RESTRAINT  =         0.0000
 
-| Final Performance Info:
-| -----------------------------------------------------
-| Average timings for last    2500 steps:
-|     Elapsed(s) =     612.85 Per Step(ms) =     245.14
-|         ns/day =       0.70   seconds/ns =  122570.03
-|
-| Average timings for all steps:
-|     Elapsed(s) =    6095.97 Per Step(ms) =     243.84
-|         ns/day =       0.71   seconds/ns =  121919.50
-| -----------------------------------------------------
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+    500      -7.3456E+03     4.3064E-01     1.6379E+01     C1       2850
 
+ BOND    =      109.5919  ANGLE   =      410.1652  DIHED      =     2045.4483
+ VDWAALS =    -1540.6252  EEL     =   -11759.0778  EGB        =    -3075.6824
+ 1-4 VDW =      561.4781  1-4 EEL =     5903.1345  RESTRAINT  =        0.0000
