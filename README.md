@@ -4960,3 +4960,67 @@ were meaningless and are discarded; 75e replaces them with real MD ensembles, an
 Two smaller traps, both fixed in place: `igb=8` requires **mbondi3** radii or sander
 will not start at all, and `ante-MMPBSA.py` writes no complex topology when its input
 is already unsolvated — the complex prmtop is the input itself.
+
+---
+
+## 38. PRE-REGISTRATION: WIN 55,212-2 as a held-out test (2026-08-19)
+
+Written **before** the extended MM-GBSA run, and before anything about WIN has been
+computed, so that WIN remains a genuine held-out test rather than a third training
+set. Every choice below is fixed here; if any of them changes later, the change and
+its reason get recorded and the test is reported as no longer blind.
+
+### 38a. Why WIN, and why now
+
+Everything in §31–§37 was developed against **two** ligands: ABA (cognate) and
+mandipropamid (non-cognate). Each round of method-fixing used those two to decide
+what to change. That is exactly the setup in which a method quietly overfits, and
+the user raised it before the extension was run rather than after.
+
+WIN 55,212-2 is the right third case because it is **the same positions with
+different answers**:
+
+| position | mandipropamid (4WVO) | WIN (Beltrán PYR1^WIN) |
+|---|---|---|
+| 59 | **R** | **Q** |
+| 159 | **L** | **A** |
+| 160 | — | **I** |
+| 81 | I | — |
+| 108 | A | — |
+
+So a method that has learned "position 59 wants Arg" fails; one that has learned to
+read the ligand should say Arg for mandipropamid and Gln for WIN. K59Q is also
+neutral, so the buried-charge pathology that dominated §23j is absent — a different
+part of the scoring function is being tested.
+
+All four high-sensitivity WIN sensors agree on the pocket set (**K59Q, F159A,
+A160I**; the best adds only surface mutations E4G/Y23H/D26G), so the ground truth is
+unambiguous.
+
+### 38b. What will be run, fixed now
+
+1. **Protocol frozen at whatever §39 settles on for ABA/mandipropamid.** No
+   WIN-specific tuning of ensemble length, force field, solvation model, candidate
+   set or scoring rule. If WIN needs a different setting to work, that is a finding
+   about the method, not a setting to adopt.
+2. **The null is a ligand swap, as always**: WIN vs ABA, scored as
+   `ddG(WIN) − ddG(ABA)`.
+3. **Receptor**: PYR1. If a WIN-bound pose is needed it comes from **7MWN**, which is
+   **PYL2**, not PYR1 — 88 % identity over the 25 ABA-proximal positions, globally
+   alignable to 0.55 Å. ⚠ Beltrán transposed mutations PYR1→PYL2 to get that crystal,
+   so using it means transposing **back**, and the numbering must be re-derived by
+   residue identity, never assumed.
+4. **Success**: at position 59, Q ranks above R **and** above wild-type Lys for WIN,
+   while for mandipropamid R still ranks above Q. Both directions, or it is not a
+   demonstration of ligand-reading.
+5. **Partial**: the right positions (59, 159, 160) surface without the right
+   identities. That is §25's positions-are-easy result again and is reported as such.
+6. **Failure**: the method gives WIN the same answer it gives mandipropamid. That is
+   overfitting to the two-ligand training pair, and it retires the approach as a
+   ligand-discriminating method regardless of how well it does on ABA/mandipropamid.
+
+### 38c. One thing that would invalidate the test
+
+If the WIN pose has to be built by a procedure that used mandipropamid or ABA
+information to place it, the test is contaminated. The pose must come from 7MWN
+directly, or from a poly-glycine dock that never sees the other two ligands.
