@@ -1,0 +1,44 @@
+{
+ "arms": [
+  "mandi",
+  "aba"
+ ],
+ "variants": {
+  "WT": {},
+  "K59R": {
+   "59": "ARG"
+  },
+  "K59Q": {
+   "59": "GLN"
+  },
+  "K59N": {
+   "59": "ASN"
+  },
+  "V81I": {
+   "81": "ILE"
+  },
+  "F108A": {
+   "108": "ALA"
+  },
+  "F159L": {
+   "159": "LEU"
+  }
+ },
+ "n_seed": 8,
+ "built": [
+  "mandi_WT",
+  "mandi_K59R",
+  "mandi_K59Q",
+  "mandi_K59N",
+  "mandi_V81I",
+  "mandi_F108A",
+  "mandi_F159L",
+  "aba_WT",
+  "aba_K59R",
+  "aba_K59Q",
+  "aba_K59N",
+  "aba_V81I",
+  "aba_F108A",
+  "aba_F159L"
+ ]
+}

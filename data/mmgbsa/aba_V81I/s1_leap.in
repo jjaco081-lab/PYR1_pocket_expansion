@@ -1,0 +1,14 @@
+source leaprc.protein.ff14SB
+source leaprc.gaff2
+# igb=8 (and 7) require mbondi3 radii. tleap's default assigns hydrogens 0.8 A,
+# outside the 1.0-2.0 A range those models accept, and sander refuses to start:
+#   "Atom 38 has radius 0.8 outside of allowed range ... Regenerate prmtop with
+#    bondi radii." Set here rather than after the fact, because the radii are baked
+# into the prmtop and MMPBSA reads the same ones.
+set default PBRadii mbondi3
+loadamberparams /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/mmgbsa/params/A8S.frcmod
+LIG = loadmol2 /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/mmgbsa/params/A8S.mol2
+prot = loadpdb s1_clean.pdb
+com = combine { prot LIG }
+saveamberparm com s1.prmtop s1.inpcrd
+quit

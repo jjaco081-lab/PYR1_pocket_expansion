@@ -1,0 +1,12 @@
+parm s0.prmtop
+trajin s0_min.rst7
+trajin s1_min.rst7
+trajin s2_min.rst7
+trajin s3_min.rst7
+trajin s4_min.rst7
+trajin s5_min.rst7
+trajin s6_min.rst7
+trajin s7_min.rst7
+trajout ensemble.nc netcdf
+run
+quit

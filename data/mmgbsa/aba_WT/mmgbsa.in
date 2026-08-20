@@ -1,0 +1,7 @@
+MM-GBSA over independently repacked, minimised structures
+ &general
+  startframe=1, endframe=8, interval=1, verbose=2, keep_files=0,
+ /
+ &gb
+  igb=8, saltcon=0.15,
+ /

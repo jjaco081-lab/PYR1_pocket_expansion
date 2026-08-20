@@ -1,0 +1,7 @@
+MM-GBSA over a short implicit-solvent MD ensemble
+ &general
+  startframe=1, endframe=9999, interval=1, verbose=2, keep_files=0,
+ /
+ &gb
+  igb=8, saltcon=0.15,
+ /
