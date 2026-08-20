@@ -1,8 +1,21 @@
 
-
-   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
-    500      -7.3456E+03     4.3064E-01     1.6379E+01     C1       2850
-
- BOND    =      109.5919  ANGLE   =      410.1652  DIHED      =     2045.4483
- VDWAALS =    -1540.6252  EEL     =   -11759.0778  EGB        =    -3075.6824
- 1-4 VDW =      561.4781  1-4 EEL =     5903.1345  RESTRAINT  =        0.0000
+ NSTEP =    25000   TIME(PS) =      60.000  TEMP(K) =   295.86  PRESS =     0.0
+ Etot   =     -3167.6198  EKtot   =      2124.4817  EPtot      =     -5292.1015
+ BOND   =       589.6115  ANGLE   =      1574.5706  DIHED      =      2280.0234
+ 1-4 NB =       616.4396  1-4 EEL =      5805.5227  VDWAALS    =     -1316.7263
+ EELEC  =    -11147.7587  EGB     =     -3693.7843  RESTRAINT  =         0.0000
+ ------------------------------------------------------------------------------
+| Current Timing Info
+| -------------------
+| Total steps:    125000 | Completed:     25000 ( 20.0%) | Remaining:    100000
+|
+| Average timings for last   12500 steps:
+|     Elapsed(s) =    3233.14 Per Step(ms) =     258.65
+|         ns/day =       0.67   seconds/ns =  129325.66
+|
+| Average timings for all steps:
+|     Elapsed(s) =    6461.25 Per Step(ms) =     258.45
+|         ns/day =       0.67   seconds/ns =  129224.91
+|
+| Estimated time remaining:       7.2 hours.
+ ------------------------------------------------------------------------------
