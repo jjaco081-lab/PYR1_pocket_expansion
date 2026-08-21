@@ -1,0 +1,15 @@
+NVT heating 0 -> 300.0 K over 200 ps
+ &cntrl
+  imin=0, irest=0, ntx=1,
+  nstlim=100000, dt=0.002,
+  ntc=2, ntf=2, cut=10.0,
+  ntb=1, ntp=0,
+  ntt=3, gamma_ln=2.0, ig=-1,
+  tempi=0.0, temp0=300.0,
+  nmropt=1,
+  ntr=1, restraintmask='!:WAT,Na+,K+,Cl- & !@H=', restraint_wt=5.0,
+  ntpr=5000, ntwx=5000, ntwr=50000,
+ /
+ &wt type='TEMP0', istep1=0, istep2=80000, value1=0.0, value2=300.0 /
+ &wt type='TEMP0', istep1=80001, istep2=100000, value1=300.0, value2=300.0 /
+ &wt type='END' /

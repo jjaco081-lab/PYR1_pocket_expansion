@@ -1,0 +1,133 @@
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/prep to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd to search path.
+-f: Source tleap.in.
+
+Welcome to LEaP!
+(no leaprc in search path)
+Sourcing: ./tleap.in
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/parm19.dat
+Reading title:
+PARM99 + frcmod.ff99SB + frcmod.parmbsc0 + OL3 for RNA + ff19SB
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ff19SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff19SB AA-specific backbone CMAPs for protein 07/25/2019
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/amino19.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminoct12.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminont12.lib
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc done
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/atomic_ions.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/solvents.lib
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.opc
+Reading force field modification type file (frcmod)
+Reading title:
+Parameters for OPC water (JPCL, 2014, 5 (21), pp 3863-3871)
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ionslm_126_opc
+Reading force field modification type file (frcmod)
+Reading title:
+Li/Merz ion parameters of atomic ions for the OPC water model (12-6 set)
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2 done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/gaff2.dat
+Reading title:
+AMBER General Force Field for organic molecules (Version 2.11, May 2016)
+Loading parameters: /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/mmgbsa/params/3UZ.frcmod
+Reading force field modification type file (frcmod)
+Reading title:
+Remark line goes here
+Loading Mol2 file: /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/mmgbsa/params/3UZ.mol2
+Reading MOLECULE named LIG
+Loading PDB file: ./protein.pdb
+  Added missing heavy atom: .R<GLU 70>.A<CG 8>
+  Added missing heavy atom: .R<GLU 70>.A<CD 11>
+  Added missing heavy atom: .R<GLU 70>.A<OE1 12>
+  Added missing heavy atom: .R<GLU 70>.A<OE2 13>
+  Added missing heavy atom: .R<ARG 72>.A<CG 8>
+  Added missing heavy atom: .R<ARG 72>.A<CD 11>
+  Added missing heavy atom: .R<ARG 72>.A<NE 14>
+  Added missing heavy atom: .R<ARG 72>.A<CZ 16>
+  Added missing heavy atom: .R<ARG 72>.A<NH1 17>
+  Added missing heavy atom: .R<ARG 72>.A<NH2 20>
+  Added missing heavy atom: .R<ASN 131>.A<CG 8>
+  Added missing heavy atom: .R<ASN 131>.A<OD1 9>
+  Added missing heavy atom: .R<ASN 131>.A<ND2 10>
+  Added missing heavy atom: .R<ARG 178>.A<CG 8>
+  Added missing heavy atom: .R<ARG 178>.A<CD 11>
+  Added missing heavy atom: .R<ARG 178>.A<NE 14>
+  Added missing heavy atom: .R<ARG 178>.A<CZ 16>
+  Added missing heavy atom: .R<ARG 178>.A<NH1 17>
+  Added missing heavy atom: .R<ARG 178>.A<NH2 20>
+  Added missing heavy atom: .R<CASN 179>.A<OXT 15>
+  total atoms in file: 1414
+  Leap added 1435 missing atoms according to residue templates:
+       20 Heavy
+       1415 H / lone pairs
+Scaling up box by a factor of 1.326077 to meet diagonal cut criterion
+  Solute vdw bounding box:              44.914 41.045 58.588
+  Total bounding box for atom centers:  90.414 90.414 90.414
+      (box expansion for 'iso' is  46.2%)
+  Solvent unit box:                     18.865 18.478 19.006
+  Volume: 381951.143 A^3 (oct)
+  Total mass 206276.834 amu,  Density 0.897 g/cc
+  Added 10293 residues.
+5 K+ ions required to neutralize.
+Adding 5 counter ions to "sys" using 1A grid
+Grid extends from solute vdw + 1.70  to  7.68
+Resolution:      1.00 Angstrom.
+Solvent present: replacing closest with ion
+	 when steric overlaps occur
+Calculating grid charges
+(Replacing solvent molecule)
+Placed K+ in sys at (-0.39, 21.92, -4.22).
+(Replacing solvent molecule)
+Placed K+ in sys at (4.85, -24.39, 6.71).
+(Replacing solvent molecule)
+Placed K+ in sys at (-6.81, 18.95, -12.74).
+(No solvent overlap)
+Placed K+ in sys at (13.92, 9.11, 12.89).
+(Replacing solvent molecule)
+Placed K+ in sys at (-11.76, -10.93, 15.61).
+
+Done adding ions.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+addIons: 1st Ion & target unit have charges of the same sign:
+     unit charge = -0.002999; ion1 charge = -1;
+     can't neutralize.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Fatal Error!
+addIonsRand: '0' is not allowed as the value for the second ion.
+
+
+    addIonsRand unit ion1 #ion1 [ion2 #ion2] [separation]
+
+        UNIT      _unit_
+        UNIT      _ion1_
+        NUMBER    _#ion1_
+        UNIT      _ion2_
+        NUMBER    _#ion2_
+        NUMBER    _separation_
+
+Adds counterions in a shell around _unit_ by replacing random solvent
+molecules. If _#ion1_ is 0, the _unit_ is neutralized (_ion1_ must be
+opposite in charge to _unit_, and _ion2_ cannot be specified). Otherwise,
+the specified numbers of _ion1_ [_ion2_] are added [in alternating order].
+If _separation_ is specified, ions will be guaranteed to be more than that
+distance apart in Angstroms.
+
+Ions must be monoatomic. This procedure is much faster than addIons, as
+it does not calculate charges. Solvent must be present. It must be possible
+to position the requested number of ions with the given separation in the
+solvent.
+
+
+
+
+Exiting LEaP: Errors = 1; Warnings = 1; Notes = 0.
