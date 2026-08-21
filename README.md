@@ -2421,7 +2421,7 @@ ordering blocks, because the repo now runs to script 70:
 
 ---
 
-## 21. Current status (2026-08-10) — supersedes §7b and §8
+## 21. Current status (2026-08-10) — ⚠ SUPERSEDED BY §39; kept for the record
 
 ### Complete
 
@@ -2524,6 +2524,21 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-11 13:05 | A100 nodes DRAINING; S4 moved to `preempt_gpu` (27386629) | SLURM submit |
 | 2026-08-11 13:10 | LigandMPNN bias test submitted (27386657) | SLURM submit |
 | 2026-08-11 13:5x | floppy-ligand PDB burial survey launched (§23d) | mtime `44_` |
+| 2026-08-12 | stage-1 **LigandMPNN** arm complete (27412775): F108A/F159L recovered, K59R/V81I missed, V81I inverted | SLURM end |
+| 2026-08-13 | stage-1 **Rosetta FastDesign** arm (27421344); null arm fails its own control at 29 % WT, K59 0 % | SLURM end |
+| 2026-08-13 | favour-native sweep (27438220) fails at every weight; per-residue decomposition (27438909) finds **+10.1 REU** desolvation | SLURM end |
+| 2026-08-13 | Sanger: 4/4 colonies are design 804_1 | wet lab |
+| 2026-08-14 | **coumarin benchmark** reframes the task — positions saturated, substitutions carry the ligand information (§25) | mtime `62_` |
+| 2026-08-14 | loop dynamics analysed over S1/S2/S4 (§24); canonical MD settings fixed; S6–S9 built, not submitted | mtime `58_`–`66_` |
+| 2026-08-17 | **PYR1 rebuilt on the full 191-residue sequence** (§28); FastRelax packer trap found | commits `38583c3`, `1372987` |
+| 2026-08-18 | **3K3K exposed as a MIXED dimer**; loop dynamics re-run over all 12 trajectories (27545237), apo-closed cell filled by accident (§29) | SLURM end |
+| 2026-08-18 | conformation × occupancy **factorial built and launched** (27547457); the open+ABA cell had never existed (§30) | SLURM submit |
+| 2026-08-18 | per-position admissibility fails (§31); **pairwise enumeration** gets 3 of 4 into the top 150 of 13,457 (§32); electrostatic screen (§33) | mtime `71_`–`73_` |
+| 2026-08-19 | six papers read from their **Methods** (§34); Leonard's protocol needs a known weak hit before it can place a pose | file mtime |
+| 2026-08-19 | hydrogen-bond-as-clash fix (§35); **coupled moves** (27560390) — sampling is not the limit (§36) | SLURM end |
+| 2026-08-19 | **MM-GBSA makes the K59 flip** (27561665 / 27568930 / 27569546, §37); WIN pre-registered as held-out (§38) | SLURM end |
+| 2026-08-20 | MM-GBSA **extended** to the stratified candidate set, 46 tasks, 250 ps ensembles (27676964) | SLURM submit |
+| 2026-08-20 | homolog fetch completed (all 66 solved domains); **graft-direction** screen; cavity measurement for all 266 (27684153) | SLURM submit |
 
 ### Reversals and corrections
 
@@ -2567,6 +2582,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 36 | 08-19 | the hydrogen-bond-as-clash bug explained §31e's R79/V83/H115 control failures | with the exemption applied those three fail at the **same** overlaps (0.65/0.69/1.12). The crystal R79 is now clash-free (0.306 → 0.000 Å) but no library **rotamer** reproduces it | §31e's original diagnosis — wrong chi basin — was right and my §33c speculation was wrong. The fix is still correct and matters at hard-sphere tolerance (WT-ok 12 → 16 of 26 at tol 0), but §31's and §32's verdicts are unchanged (§35) |
 | 37 | 08-19 | the K59R miss might be a sampling limit that backbone flexibility would fix | **coupled moves** — the method Kortemme built for exactly this benchmark, sampling sequence + side chains + backbone + ligand pose — recovers F108A at **+0.74** but retains K59 in **0 % of 50 trajectories in the ABA arm**, where the cognate ligand makes K59 unambiguously correct. Identical to fixed-backbone FastDesign | **scoring, confirmed by a second independent sampler.** Adding flexibility cannot recover K59R; any method using ref2015's desolvation on buried charge inherits it. Coupled moves still helps everywhere else — WT retention 29 % → 42 % (§36a) |
 | 38 | 08-19 | no scoring function available to us can make the K59 flip | **MM-GBSA can.** With mandipropamid, R at 59 beats Q and N (−1.53 vs +0.04, +2.53); with ABA, wild-type Lys beats every substitution (R least-badly at +7.06). Generalised Born instead of Lazaridis–Karplus, over 100-frame MD ensembles | the §23j desolvation diagnosis was not just correct but **actionable** — changing the solvation model does what no sampler could. ⚠ Ensembles are only 50 ps, the ligand-swap difference is dominated by damage to the ABA complex, and F108A comes out NULL because relaxation absorbs the clash it exists to relieve (§37a–b) |
+| 39 | 08-20 | the MM-GBSA result at position 59 was enough to call it a method | it was a **3-way within-position** comparison among K/Q/N, on 4 mutations we already knew the answers to. Whether it RANKS correctly inside a 23-variant pool is untested, and the raw pairwise top-24 all contain position 108, so a naive extension would have tested 'which partner goes with F108X' | extended to the **stratified** candidate set (best pair per distinct position pair, 14 positions instead of 5) with 5x longer ensembles, job 27676964. A within-position win is a signal; a ranking inside a pool is a method (§39b) |
 
 ### Bugs caught before they cost anything
 
@@ -5024,3 +5040,82 @@ unambiguous.
 If the WIN pose has to be built by a procedure that used mandipropamid or ABA
 information to place it, the test is contaminated. The pose must come from 7MWN
 directly, or from a poly-glycine dock that never sees the other two ligands.
+
+---
+
+## 39. Current status (2026-08-20) — supersedes §21
+
+§21 was written on 2026-08-10 and still listed the first MD campaign as running.
+This replaces it. **Written before compaction so the state is recoverable without
+the conversation.**
+
+### 39a. Running right now
+
+| job | what | state at 2026-08-20 | ETA |
+|---|---|---|---|
+| **27676964** | MM-GBSA extended — 23 variants × 2 arms, 250 ps ensembles, 46 tasks, `cutlerlab` | 37,500 / 125,000 steps; 0/46 scored | overnight |
+| **27684153** | cavity measurement, all 266 helix-grip hits, `cutlerlab` | 63 / 266 streamed to disk | ~1 h |
+| **27547457** | conformation × occupancy factorial MD, GPU | **5 / 12** replicates complete | ~1.5 days |
+
+Every one is a SLURM **batch** job, deliberately — an interactive allocation kills
+its processes on exit, `nohup` included.
+
+### 39b. What each is for, and what to do when it lands
+
+**MM-GBSA extended** is the test that separates a method from a signal. §37 showed
+MM-GBSA wins a 3-way *within-position* comparison at residue 59 — which we half
+expected. The open question is whether the four known mutations rank highly inside a
+**23-variant pool**. Candidates are the **stratified** top of §32's pairwise ranking:
+the best pair per distinct *position pair*, because the raw top-24 all contain
+position 108 and would have made the test "which partner goes with F108X". The
+ground-truth pairs sit at ranks 18 / 25 / 49 of the full list.
+→ aggregate with `scripts/75c_mmgbsa_aggregate.py`.
+
+**Cavity measurement** adds the **21 solved domains that were never measured** — Arm 3
+used a stricter alnTM cut and stopped at 147. Results stream to
+`homolog_cavities_partial.csv` and land in `homolog_cavities_full.csv`, deliberately
+*not* the original 147-row file.
+→ then re-run `scripts/79_graft_geometry.py` over the full set; **3H3Q** (CERT START
+domain + ceramide) and **4QDC** (a steroid) finally get volumes.
+
+**Factorial MD** fills the 2×2 that §19b set up and only ever ran on the diagonal.
+→ analyse with scripts 58–60 pointed at `data/md191`.
+⚠ `preempt_gpu` caps this account at **1 concurrent GPU**; `gpu` allows 4. Moving
+pending tasks across cut the estimate from 6.4 days to ~1.5. Do it again if they
+pile up: `scontrol update jobid=<id> partition=gpu account=cutlerlab`.
+
+### 39c. The next scientific step is already fixed
+
+**§38: WIN 55,212-2 as a held-out test.** Written *before* the extension so it stays
+blind. Same positions, different answers — 59 wants **Q** not R, 159 wants **A** not
+L, and 160I is a position never scored. No WIN-specific tuning; success requires
+**both** directions.
+
+### 39d. Parked, with reasons
+
+- **Graft direction** (`METHODS_REVIEW.md` appendix) — lower priority by decision,
+  because the literature success rate is poor. Best candidate **2BK0**, the celery
+  allergen Api g 1, but core RMSD is 3.4–4.0 Å at 10–17 % identity: a rebuild with a
+  template, not a transplant.
+- **Pose-sensitivity sweep** — perturb the mandipropamid pose, re-run the pairwise
+  screen, plot top-150 recall against pose RMSD. Decides whether a pose-search
+  programme is worth building at all.
+- **S6–S8 non-cognate MD** and the **ABA-enantiomer / phaseic-acid ladder** — built or
+  specified, not run.
+
+### 39e. Where the project actually stands
+
+The K59R problem has been missed by five methods for four distinct reasons, and only
+the fifth solved it. That progression is the substance of §23–§37:
+
+| method | why it missed K59R |
+|---|---|
+| LigandMPNN | learned prior; no mass on a non-clashing substitution |
+| Rosetta FastDesign | **scoring** — buried-charge desolvation, +10.1 REU |
+| steric pairwise | **category** — K59 does not clash at all |
+| electrostatic screen | **sampling** — the crystal Arg is non-rotameric, χ3 ≈ 100° |
+| coupled moves | **scoring, confirmed** — better sampling, same 0 % retention |
+| **MM-GBSA** | **solved it** — generalised Born instead of Lazaridis–Karplus |
+
+What is *not* yet established is whether that generalises. Two things test it: the
+extended pool now running, and the WIN held-out set.
