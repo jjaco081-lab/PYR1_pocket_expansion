@@ -21,8 +21,24 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D = os.path.join(ROOT, "data", "mmgbsa")
 ARMS = ["mandi", "aba"]
-VARIANTS = ["WT", "K59R", "K59Q", "K59N", "V81I", "F108A", "F159L"]
-GROUND_TRUTH = {"K59R", "V81I", "F108A", "F159L"}
+
+#: Read the variant list from the file 77_mmgbsa_extended.sh actually looped over,
+#: so the table can never silently disagree with what was run. The old hard-coded
+#: list also used a different naming convention ("K59R" vs "59R") than the
+#: directories on disk, which would have shown every row as incomplete.
+def _variants():
+    f = os.path.join(D, "variants.txt")
+    if os.path.exists(f):
+        return [l.strip() for l in open(f) if l.strip()]
+    return sorted({d.split("_", 1)[1] for d in os.listdir(D)
+                   if d.startswith("aba_")})
+
+VARIANTS = _variants()
+
+#: The four substitutions that appear in the 4WVO mandipropamid sensor. These are
+#: the positive controls: the question for the extended pool is whether they rank
+#: highly among 22 candidates, not merely whether each beats WT on its own.
+GROUND_TRUTH = {"59R", "81I", "108A", "159L"}
 
 
 #: Prefer the MD ensemble when it exists. The repack-seed ensemble it replaces was
@@ -78,12 +94,32 @@ def dat_mean(arm, var):
     return None, None
 
 
-def stats(v):
-    if not v:
-        return None, None
+def _sd(v):
+    if len(v) < 2:
+        return 0.0
     mu = sum(v) / len(v)
-    sd = math.sqrt(sum((x - mu) ** 2 for x in v) / (len(v) - 1)) if len(v) > 1 else 0.0
-    return mu, sd
+    return math.sqrt(sum((x - mu) ** 2 for x in v) / (len(v) - 1))
+
+
+def stats(v, nblocks=10):
+    """Mean, and a BLOCK-AVERAGED standard error.
+
+    The frames come from one continuous 250 ps trajectory, so they are not
+    independent draws: sd/sqrt(100) would understate the true uncertainty by
+    whatever the correlation time is. Splitting the trajectory into contiguous
+    blocks and taking the spread of the block means costs statistical power but
+    does not pretend to have samples it lacks. Both numbers are reported so the
+    inflation factor is visible rather than buried.
+    """
+    if not v:
+        return None, None, None
+    mu = sum(v) / len(v)
+    naive_se = _sd(v) / math.sqrt(len(v)) if len(v) > 1 else 0.0
+    b = max(1, len(v) // nblocks)
+    means = [sum(v[i:i + b]) / len(v[i:i + b])
+             for i in range(0, len(v) - b + 1, b)]
+    block_se = _sd(means) / math.sqrt(len(means)) if len(means) > 1 else naive_se
+    return mu, block_se, naive_se
 
 
 def main():
@@ -91,62 +127,107 @@ def main():
     for arm in ARMS:
         for var in VARIANTS:
             v = per_frame(arm, var)
-            mu, sd = stats(v)
+            mu, se, naive = stats(v)
             if mu is None:
                 mu, sd = dat_mean(arm, var)
-            G[(arm, var)] = (mu, sd, len(v))
-    print("=" * 76)
-    print("MM-GBSA  DELTA G bind (kcal/mol), mean +/- sd over independent repack seeds")
-    print("=" * 76)
-    print(f"  {'variant':<8}{'mandipropamid':>22}{'ABA':>22}")
+                se = naive = sd
+            G[(arm, var)] = (mu, se, naive, len(v))
+
+    print("=" * 78)
+    print("MM-GBSA  DELTA G bind (kcal/mol), mean +/- BLOCK standard error")
+    print("  250 ps GB ensemble, 100 frames, 10 contiguous blocks")
+    print("=" * 78)
+    print(f"  {'variant':<12}{'mandipropamid':>24}{'ABA':>24}")
     for var in VARIANTS:
         cells = []
         for arm in ARMS:
-            mu, sd, n = G[(arm, var)]
-            cells.append(f"{mu:8.2f} +/- {sd:5.2f} (n={n})" if mu is not None else f"{'--':>22}")
-        print(f"  {var:<8}{cells[0]:>22}{cells[1]:>22}")
+            mu, se, naive, n = G[(arm, var)]
+            cells.append(f"{mu:8.2f} +/- {se:5.2f} (n={n})" if mu is not None
+                         else f"{'--':>24}")
+        print(f"  {var:<12}{cells[0]:>24}{cells[1]:>24}")
 
-    print("\n" + "=" * 76)
+    # how badly would sd/sqrt(n) have flattered us?
+    infl = [G[k][1] / G[k][2] for k in G
+            if G[k][1] is not None and G[k][2] not in (None, 0.0)]
+    if infl:
+        print(f"\n  block SE / naive SE: median {sorted(infl)[len(infl)//2]:.2f}x"
+              "  (>1 means the frames are correlated, as expected)")
+
+    print("\n" + "=" * 78)
     print("ddG vs WT within each arm  (negative = the mutation helps binding)")
-    print("=" * 76)
-    print(f"  {'variant':<8}{'ddG mandi':>12}{'ddG ABA':>12}{'difference':>12}   reading")
-    ok = True
-    for var in VARIANTS[1:]:
-        row = {}
-        for arm in ARMS:
-            mu, sd, _ = G[(arm, var)]
-            w, wsd, _ = G[(arm, "WT")]
-            if mu is None or w is None:
-                ok = False
-                row[arm] = (None, None)
-                continue
-            # errors add in quadrature; both are means over the same seed count
-            row[arm] = (mu - w, math.sqrt(sd ** 2 + wsd ** 2))
-        if row["mandi"][0] is None or row["aba"][0] is None:
-            print(f"  {var:<8}{'incomplete':>12}")
+    print("SELECTIVITY = ddG(mandi) - ddG(ABA); negative = shifts toward mandipropamid")
+    print("=" * 78)
+    rows = []
+    for var in VARIANTS:
+        if var == "WT":
             continue
-        dm, em = row["mandi"]
-        da, ea = row["aba"]
-        diff = dm - da
-        err = math.sqrt(em ** 2 + ea ** 2)
-        if abs(diff) < err:
-            verdict = "NULL (within the seed spread)"
-        elif diff < 0:
-            verdict = "prefers mandipropamid"
-        else:
-            verdict = "prefers ABA"
+        vals = {}
+        bad = False
+        for arm in ARMS:
+            mu, se, _, _ = G[(arm, var)]
+            w, wse, _, _ = G[(arm, "WT")]
+            if mu is None or w is None:
+                bad = True
+                break
+            vals[arm] = (mu - w, math.sqrt(se ** 2 + wse ** 2))
+        if bad:
+            print(f"  {var:<12} incomplete")
+            continue
+        dm, em = vals["mandi"]
+        da, ea = vals["aba"]
+        rows.append((dm - da, math.sqrt(em ** 2 + ea ** 2), var, dm, da))
+
+    rows.sort()
+    print(f"  {'rank':>4}  {'variant':<12}{'ddG mandi':>11}{'ddG ABA':>11}"
+          f"{'select.':>10}{'+/-':>8}   ")
+    for r, (sel, err, var, dm, da) in enumerate(rows, 1):
         star = " *" if var in GROUND_TRUTH else "  "
-        print(f"  {var:<8}{dm:>12.2f}{da:>12.2f}{diff:>12.2f}{star} {verdict}")
-    print("\n  * = a real 4WVO mandipropamid mutation. The pre-registered success")
-    print("    criterion is K59R showing 'prefers mandipropamid' beyond the spread.")
+        flag = "" if abs(sel) > err else "  (within error)"
+        print(f"  {r:>4}  {var:<12}{dm:>11.2f}{da:>11.2f}{sel:>10.2f}"
+              f"{err:>8.2f}{star}{flag}")
+
+    print("\n  * = a substitution in the 4WVO mandipropamid sensor (positive control)")
+
+    # THE TEST: do the known-good mutations concentrate at the selective end?
+    n = len(rows)
+    ranks = [(r, v) for r, (_, _, v, _, _) in enumerate(rows, 1) if v in GROUND_TRUTH]
+    if ranks:
+        print("\n" + "=" * 78)
+        print("ENRICHMENT OF THE KNOWN SENSOR MUTATIONS")
+        print("=" * 78)
+        for r, v in ranks:
+            print(f"  {v:<12} rank {r:>3} of {n}   (top {100.0 * r / n:.0f}%)")
+        rr = [r for r, _ in ranks]
+        obs = sum(rr) / len(rr)
+        exp = (n + 1) / 2.0
+        print(f"\n  mean rank {obs:.1f}  vs  {exp:.1f} expected if the ranking were random")
+        # exact one-sided permutation p over all C(n,k) rank subsets, via DP
+        k = len(rr)
+        tgt = sum(rr)
+        # count subsets of size k from 1..n with sum <= tgt
+        dp = [[0] * (tgt + 1) for _ in range(k + 1)]
+        dp[0][0] = 1
+        for val in range(1, n + 1):
+            for kk in range(k, 0, -1):
+                for s in range(tgt, val - 1, -1):
+                    dp[kk][s] += dp[kk - 1][s - val]
+        import math as _m
+        favourable = sum(dp[k])
+        total = _m.comb(n, k)
+        print(f"  one-sided permutation p = {favourable}/{total} = "
+              f"{favourable / total:.4f}")
+        if favourable / total < 0.05:
+            print("  -> the known mutations sit significantly toward the "
+                  "mandipropamid-selective end")
+        else:
+            print("  -> NOT significant: this pool does not separate the known "
+                  "mutations from the rest")
+
     ident = [f"{a}_{v}" for a in ARMS for v in VARIANTS
-             if G[(a, v)][1] == 0.0 and G[(a, v)][2] > 1]
+             if G[(a, v)][1] == 0.0 and G[(a, v)][3] > 1]
     if ident:
-        print(f"\n  !! sd is EXACTLY 0.00 with n>1 for: {', '.join(ident)}")
-        print("     That is not precision, it is an ensemble with no diversity in it.")
-        print("     Do not read a verdict off those rows.")
-    if not ok:
-        print("\n  !! some runs are incomplete -- the table above is partial")
+        print(f"\n  !! SE is EXACTLY 0.00 with n>1 for: {', '.join(ident)}")
+        print("     That is not precision, it is an ensemble with no diversity.")
 
 
 if __name__ == "__main__":

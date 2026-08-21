@@ -1,0 +1,58 @@
+==============================================================================
+(1) BETWEEN RUNS: 50 ps -> 250 ps
+==============================================================================
+  variant arm         50ps    250ps    shift
+  WT      mandi     -36.33   -38.00    -1.67
+  WT      aba       -32.74   -25.00     7.75
+  K59R    mandi     -37.85   -38.39    -0.54
+  K59R    aba       -25.69   -26.71    -1.02
+  K59Q    mandi     -36.29   -35.18     1.11
+  K59Q    aba       -19.01   -24.14    -5.13
+  K59N    mandi     -33.80   -37.95    -4.15
+  K59N    aba       -23.81   -26.77    -2.95
+  V81I    mandi     -36.52   -37.00    -0.48
+  V81I    aba       -26.90   -25.36     1.54
+  F108A   mandi     -38.02   -35.54     2.48
+  F108A   aba       -30.51   -30.59    -0.08
+  F159L   mandi     -37.51   -38.69    -1.18
+  F159L   aba       -25.78   -25.70     0.09
+
+  The pre-registered K59R selectivity test, computed both ways:
+    50 ps   ddG_mandi   -1.53  ddG_ABA   +7.06  selectivity   -8.58  PASS (prefers mandipropamid)
+    250 ps  ddG_mandi   -0.40  ddG_ABA   -1.71  selectivity   +1.31  FAIL (prefers ABA)
+
+  largest single shift: aba_WT +7.75 kcal/mol -- and because it is a WT, it is the reference
+  every other ddG in that arm is measured against.
+
+==============================================================================
+(2) WITHIN A RUN: first 125 ps vs last 125 ps
+==============================================================================
+  variant     arm          1st      2nd    drift
+  108A_110H   aba       -24.34   -29.55    -5.21
+  89I_159E    aba       -23.74   -28.15    -4.41
+  59N         mandi     -35.79   -40.10    -4.30
+  89S_115G    aba       -28.35   -24.69     3.66
+  115G_163D   mandi     -29.89   -32.88    -3.00
+  59R         mandi     -39.81   -36.97     2.83
+  115G_160H   mandi     -35.73   -32.91     2.82
+  59Q         aba       -22.77   -25.51    -2.74
+
+  median |drift| 1.05 kcal/mol; 23/46 runs drift more than 1.0 kcal/mol
+  WT aba    drift +2.62
+  WT mandi  drift +0.26
+
+==============================================================================
+VERDICT
+==============================================================================
+  The 250 ps ensemble is NOT converged. The WT-ABA reference moved +7.75
+  kcal/mol between 50 and 250 ps and is still moving +2.62 within the 250 ps
+  window, in the same direction. It has not settled, it is still climbing.
+
+  Consequences, kept separate because they are not equally damaged:
+    SIGN-based conclusions are void. The 50 ps 'K59 flip' was produced by
+      an unconverged WT-ABA reference, not by the K59R substitution. At
+      250 ps the same test gives the opposite answer.
+    RANK-based conclusions survive a uniform reference error, since a
+      constant added to every ddG in an arm cannot reorder them. They are
+      still limited by the per-variant drift, which at a median 1.05
+      kcal/mol is the same size as the spacing at the top of the ranking.

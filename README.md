@@ -2539,6 +2539,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-19 | **MM-GBSA makes the K59 flip** (27561665 / 27568930 / 27569546, §37); WIN pre-registered as held-out (§38) | SLURM end |
 | 2026-08-20 | MM-GBSA **extended** to the stratified candidate set, 46 tasks, 250 ps ensembles (27676964) | SLURM submit |
 | 2026-08-20 | homolog fetch completed (all 66 solved domains); **graft-direction** screen; cavity measurement for all 266 (27684153) | SLURM submit |
+| 2026-08-21 | MM-GBSA extended run **completed** (46/46, ~9.6 h each); aggregated with the pool ranking and a convergence audit (75c, 75d) | `sacct` 27676964, `results/mmgbsa/` |
+| 2026-08-21 | cavity measurement completed, **261/266** rows (27684153, 1 h 23 m) | `results/homolog_cavities/homolog_cavities_full.csv` |
 
 ### Reversals and corrections
 
@@ -2583,6 +2585,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 37 | 08-19 | the K59R miss might be a sampling limit that backbone flexibility would fix | **coupled moves** — the method Kortemme built for exactly this benchmark, sampling sequence + side chains + backbone + ligand pose — recovers F108A at **+0.74** but retains K59 in **0 % of 50 trajectories in the ABA arm**, where the cognate ligand makes K59 unambiguously correct. Identical to fixed-backbone FastDesign | **scoring, confirmed by a second independent sampler.** Adding flexibility cannot recover K59R; any method using ref2015's desolvation on buried charge inherits it. Coupled moves still helps everywhere else — WT retention 29 % → 42 % (§36a) |
 | 38 | 08-19 | no scoring function available to us can make the K59 flip | **MM-GBSA can.** With mandipropamid, R at 59 beats Q and N (−1.53 vs +0.04, +2.53); with ABA, wild-type Lys beats every substitution (R least-badly at +7.06). Generalised Born instead of Lazaridis–Karplus, over 100-frame MD ensembles | the §23j desolvation diagnosis was not just correct but **actionable** — changing the solvation model does what no sampler could. ⚠ Ensembles are only 50 ps, the ligand-swap difference is dominated by damage to the ABA complex, and F108A comes out NULL because relaxation absorbs the clash it exists to relieve (§37a–b) |
 | 39 | 08-20 | the MM-GBSA result at position 59 was enough to call it a method | it was a **3-way within-position** comparison among K/Q/N, on 4 mutations we already knew the answers to. Whether it RANKS correctly inside a 23-variant pool is untested, and the raw pairwise top-24 all contain position 108, so a naive extension would have tested 'which partner goes with F108X' | extended to the **stratified** candidate set (best pair per distinct position pair, 14 positions instead of 5) with 5x longer ensembles, job 27676964. A within-position win is a signal; a ranking inside a pool is a method (§39b) |
+| 40 | 08-21 | MM-GBSA made the K59 flip (belief 38) | the flip was an artefact of an **unconverged reference**. The WT–ABA complex scores −32.74 at 50 ps and −25.00 at 250 ps — a **+7.75 kcal/mol** move, the largest of any run — and it is *still* drifting +2.62 within the 250 ps window. Every ddG in the ABA arm is measured against it. Recomputed at 250 ps the pre-registered test gives the **opposite** answer: selectivity −8.58 (PASS) → **+1.31 (FAIL)** | **belief 38 is retracted.** Sign-based MM-GBSA verdicts are void at these lengths. Rank-based ones survive (a constant shift cannot reorder an arm) and the four known mutations do land at ranks 1/3/4/18 of 22, p = 0.049 — but that is marginal, post-hoc, and bounded by a median per-variant drift of 1.05 kcal/mol, the same size as the spacing it is ranking on. **WIN stays sealed** (§40) |
 
 ### Bugs caught before they cost anything
 
@@ -4907,7 +4910,12 @@ future stage of this pipeline, and it is now measured twice rather than argued o
 
 ---
 
-## 37. MM-GBSA rescoring: the K59 flip, at last (2026-08-19)
+## 37. MM-GBSA rescoring: the K59 flip, at last (2026-08-19) — ⚠ RETRACTED BY §40
+
+> **⚠ The headline result in this section did not replicate.** The 50 ps
+> ensembles used here scored the WT–ABA reference ~7.75 kcal/mol too favourably;
+> at 250 ps the pre-registered test gives the opposite answer. See **§40**.
+> Kept unedited for the record — the reasoning was sound, the ensemble was not.
 
 §36 established with two independent samplers that K59R fails for a reason inside
 ref2015 — the +10.1 REU desolvation penalty for burying the ammonium. So the
@@ -4981,6 +4989,10 @@ is already unsolvated — the complex prmtop is the input itself.
 
 ## 38. PRE-REGISTRATION: WIN 55,212-2 as a held-out test (2026-08-19)
 
+> **Status 2026-08-21: still sealed, NOT run.** Its gating condition — MM-GBSA
+> recovering the known ABA/mandipropamid answers — was not met (§40d). Protocol
+> below is unchanged and has received no WIN-specific tuning.
+
 Written **before** the extended MM-GBSA run, and before anything about WIN has been
 computed, so that WIN remains a genuine held-out test rather than a third training
 set. Every choice below is fixed here; if any of them changes later, the change and
@@ -5043,7 +5055,7 @@ directly, or from a poly-glycine dock that never sees the other two ligands.
 
 ---
 
-## 39. Current status (2026-08-20) — supersedes §21
+## 39. Current status (2026-08-20) — ⚠ superseded by §40 for the MM-GBSA arm
 
 §21 was written on 2026-08-10 and still listed the first MD campaign as running.
 This replaces it. **Written before compaction so the state is recoverable without
@@ -5119,3 +5131,129 @@ the fifth solved it. That progression is the substance of §23–§37:
 
 What is *not* yet established is whether that generalises. Two things test it: the
 extended pool now running, and the WIN held-out set.
+
+---
+
+## 40. The extended MM-GBSA run refutes §37 (2026-08-21)
+
+Job 27676964 finished 46/46 tasks clean (~9.6 h each, 250 ps GB ensembles,
+100 frames). It was built to answer one question — *does MM-GBSA rank the four
+known mandipropamid mutations highly inside a 23-variant pool, or was §37 a
+3-way within-position win on mutations we already knew the answer to?*
+
+It answered a different and more important question first.
+
+### 40a. The 50 ps result does not replicate
+
+The same seven variants exist at both lengths. Six of the fourteen numbers moved
+by less than 1.7 kcal/mol. One moved by **+7.75**:
+
+| variant | arm | 50 ps | 250 ps | shift |
+|---|---|---|---|---|
+| **WT** | **ABA** | **−32.74** | **−25.00** | **+7.75** |
+| WT | mandi | −36.33 | −38.00 | −1.67 |
+| K59R | ABA | −25.69 | −26.71 | −1.02 |
+| K59R | mandi | −37.85 | −38.39 | −0.54 |
+
+The one that moved is the **reference**. Every ddG in the ABA arm subtracts
+WT–ABA, so a 7.75 kcal/mol error in that single number propagates into all of
+them at full strength. Recomputing the pre-registered §38 test:
+
+| | ddG mandi | ddG ABA | selectivity | verdict |
+|---|---|---|---|---|
+| 50 ps | −1.53 | **+7.06** | **−8.58** | PASS — prefers mandipropamid |
+| 250 ps | −0.40 | **−1.71** | **+1.31** | **FAIL — prefers ABA** |
+
+The entire §37 "K59 flip" was the WT–ABA complex being scored before it had
+relaxed. At 50 ps it still sat near its minimised starting structure, which
+flattered it by ~8 kcal/mol; the mutant complexes, already perturbed, had no
+such advantage. The apparent selectivity was the reference falling away from the
+mutants, not K59R moving toward mandipropamid.
+
+**This is exactly the failure the run was designed to expose**, and it is the
+third time on this project that a result has turned out to be a property of the
+protocol rather than the protein (cf. §31 params-never-loaded, §37's own
+byte-identical "ensembles"). The pattern is consistent enough to be a standing
+rule: *a number that has never been recomputed at a different setting is not yet
+a measurement.*
+
+### 40b. 250 ps is not converged either
+
+Splitting each ensemble into halves (`scripts/75d_mmgbsa_convergence.py`):
+
+- median |drift| **1.05 kcal/mol**; **23 of 46** runs drift more than 1.0
+- WT–ABA drifts **+2.62**, in the *same direction* as its 50→250 ps move
+
+So WT–ABA has not settled at 250 ps — it is still climbing. Extending to 1 ns
+would very likely move it again.
+
+Note what the block standard errors in §40c do *not* say. They are within-run
+scatter about the current mean, so they stay near 0.3–1.3 kcal/mol while that
+mean marches. **An error bar cannot see a drift it is centred on.** Only the
+half-split can.
+
+### 40c. What survives: ranks, not signs
+
+The two conclusions are not equally damaged, and separating them is the whole
+value of the run.
+
+A uniform reference error adds the same constant to every ddG in an arm. That
+**flips sign-based verdicts** — which is what killed §37 — but **cannot reorder
+them**. Rank-based conclusions are therefore invariant to the specific failure
+above. On selectivity rank (`results/mmgbsa/ranking.txt`):
+
+| rank | variant | ddG mandi | ddG ABA | selectivity |
+|---|---|---|---|---|
+| 1 | **F159L** * | −0.69 | −0.70 | +0.01 |
+| 3 | **K59R** * | −0.40 | −1.71 | +1.31 |
+| 4 | **V81I** * | +1.00 | −0.36 | +1.36 |
+| … | | | | |
+| 18 | **F108A** * | +2.46 | −5.59 | +8.05 |
+
+\* = a substitution in the 4WVO mandipropamid sensor
+
+Three of four land at ranks 1, 3, 4 of 22; mean rank 6.5 against 11.5 expected
+by chance, exact one-sided permutation **p = 0.049**.
+
+That is a real signal and it is *not* nothing — but it is one point below the
+conventional threshold, on n = 4, chosen post hoc after the pre-registered test
+had already failed. It is also bounded by §40b: the spacing between ranks 1–5 is
+0.01–1.8 kcal/mol, and the median per-variant drift is 1.05. **The method is
+ranking on differences the same size as its own irreproducibility.**
+
+F108A at rank 18 is the same NULL as §37b, now worse, and for the known reason —
+relaxation absorbs the clash the mutation exists to relieve.
+
+### 40d. WIN stays sealed
+
+The §38 pre-registration gates the WIN 55,212-2 held-out test on MM-GBSA first
+recovering the known ABA/mandipropamid answers. **It did not.** The pre-registered
+test fails outright at 250 ps, and the surviving rank-based signal is marginal and
+post-hoc.
+
+Running WIN now would spend the one genuinely held-out ligand on a method whose
+own positive controls are unresolved — and whichever way it came out, the result
+would be uninterpretable: a hit would be unattributable, a miss unattributable.
+**Held out means held out.** §38 is unchanged and no WIN-specific tuning has been
+applied to anything.
+
+### 40e. What would actually settle it
+
+In priority order, cheapest first:
+
+1. **Longer ensembles on the reference alone.** WT–ABA and WT–mandi at 1–2 ns,
+   nothing else. If WT–ABA stops moving, the arm becomes usable; 2 tasks, not 46.
+2. **Independent replicates, not longer single runs.** 3 × 250 ps from different
+   velocity seeds gives a between-run error bar, which is the honest one for a
+   quantity this drifty. Within-run block SE has now twice been the thing that
+   hid a problem.
+3. **Test the rank claim where it is cheap.** The ranking is the part that
+   survived; it can be checked against Beltrán's cannabinoid sensors — real
+   substitutions, already in hand (§30), never used for tuning — without touching
+   WIN.
+
+Until (1) or (2) lands, MM-GBSA is a **ranking heuristic under audit**, not the
+scoring solution §37 claimed. §37's headline is retracted; its diagnosis of
+ref2015 desolvation (§23j, §36) is untouched — that rested on Rosetta numbers,
+not these.
+
