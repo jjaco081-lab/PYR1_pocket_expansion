@@ -140,3 +140,16 @@ data/mmgbsa_explicit/**/_MMPBSA_*
 # that depends on remembering to extend it is not a rule.
 reference.frc
 **/reference.frc
+
+# TI alchemical systems (README 43), ~10 GB. Regenerate with 85 -> 86 -> 87.
+# The per-window dvdl.txt, masks.txt and merge.log ARE tracked: they are the
+# measurement and the record of which atoms were perturbed.
+data/ti/**/*.prmtop
+data/ti/**/*.inpcrd
+data/ti/**/*.rst7
+data/ti/**/*.nc
+data/ti/**/*.mdinfo
+data/ti/**/*.out
+data/ti/**/*.pdb
+data/ti/**/*.in
+data/ti/**/tleap.log
