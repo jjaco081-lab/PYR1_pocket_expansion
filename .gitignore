@@ -153,3 +153,27 @@ data/ti/**/*.out
 data/ti/**/*.pdb
 data/ti/**/*.in
 data/ti/**/tleap.log
+
+# ---------------------------------------------------------------------------
+# GLOBAL simulation-artefact rules (added 2026-08-22).
+# The four blocks above were each written per-directory (data/mmgbsa/,
+# data/mmgbsa_50ps/, data/mmgbsa_explicit/, data/ti/) and every new system
+# re-introduced the same failure: `git add -A` hanging on a multi-GB binary.
+# The non-cognate runs then landed in data/md/*/pose*/ rather than */rep*/, so
+# the data/md/ block missed them and left a 7.9 GB prod.nc untracked.
+# Match by EXTENSION anywhere in the tree so the next system is covered on
+# arrival instead of after the next hang.
+# (Files already committed stay tracked -- .gitignore does not untrack.)
+# ---------------------------------------------------------------------------
+**/*.nc
+**/*.rst7
+**/*.mdinfo
+**/reference.frc
+data/md/*/pose*/*.prmtop
+data/md/*/pose*/*.inpcrd
+data/md/*/pose*/*.out
+data/md/*/pose*/*.in
+data/md/*/pose*/*.info
+data/md/*/pose*/*.log
+data/md/*/pose*/*.pdb
+data/md/*/pose*/*_renum.txt

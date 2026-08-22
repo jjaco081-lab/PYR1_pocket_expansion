@@ -1,0 +1,54 @@
+==============================================================================
+1. RESIDUE IDENTITY  (native 81 and native 83 are both VAL -- the
+   identity assertion in 85 cannot tell them apart, so anchor on contacts)
+==============================================================================
+  sequential  79 -> native  81 VAL   (expected native 81)  OK   min dist to ABA 4.85 A
+  sequential  81 -> native  83 VAL   (expected native 83)  OK   min dist to ABA 2.99 A
+  sequential  59 -> native  59 LYS   (expected native 59)  OK   min dist to ABA 2.85 A
+  -> the TI used sequential 79 = native 81, which is 4.85 A from ABA
+     (second shell). Native 83 at 2.99 A is the one in direct contact.
+
+==============================================================================
+2. LIGAND IDENTITY PER LEG
+==============================================================================
+  V81I_aba     LIG atoms  38 (expect  38)  q -1.001 (expect -1.0)  OK   {'K+': 11, 'Cl-': 0}
+  V81I_mandi   LIG atoms  51 (expect  51)  q -0.003 (expect +0.0)  OK   {'K+': 10, 'Cl-': 0}
+  V81I_apo     LIG atoms   0 (expect   0)  q +0.000 (expect +0.0)  OK   {'K+': 10, 'Cl-': 0}
+  K59R_aba     LIG atoms  38 (expect  38)  q -1.001 (expect -1.0)  OK   {'K+': 11, 'Cl-': 0}
+  K59R_mandi   LIG atoms  51 (expect  51)  q -0.003 (expect +0.0)  OK   {'K+': 10, 'Cl-': 0}
+  K59R_apo     LIG atoms   0 (expect   0)  q +0.000 (expect +0.0)  OK   {'K+': 10, 'Cl-': 0}
+  NOTE: Cl- = 0 everywhere. These systems were NEUTRALISED only; they do
+  NOT carry the project-canonical 0.15 M KCl. Largely cancels in the
+  selectivity difference, but it is a deviation and is recorded as one.
+
+==============================================================================
+3. STARTING STERICS  and  4. FINAL POSE (ligand RMSD after CA superposition)
+==============================================================================
+  V81I_aba:  START min prot-lig heavy = 2.85 A   contacts <2.0 A = 0   <2.5 A = 0
+      lam00  CA RMSD 1.21   ligand RMSD  2.42   contacts <4 A   47
+      lam02  CA RMSD 1.39   ligand RMSD  1.97   contacts <4 A   43
+      lam04  CA RMSD 1.14   ligand RMSD  4.87   contacts <4 A   52
+      lam06  CA RMSD 1.14   ligand RMSD  2.10   contacts <4 A   49
+      lam08  CA RMSD 1.05   ligand RMSD  1.00   contacts <4 A   48
+      lam10  CA RMSD 1.03   ligand RMSD  1.01   contacts <4 A   56
+  V81I_mandi:  START min prot-lig heavy = 0.62 A   contacts <2.0 A = 8   <2.5 A = 15
+      lam00  CA RMSD 1.36   ligand RMSD  1.74   contacts <4 A   58
+      lam02  CA RMSD 1.29   ligand RMSD  1.98   contacts <4 A   66
+      lam04  CA RMSD 1.18   ligand RMSD  1.26   contacts <4 A   90
+      lam06  CA RMSD 1.28   ligand RMSD  1.12   contacts <4 A   71
+      lam08  CA RMSD 1.31   ligand RMSD  1.19   contacts <4 A   63
+      lam10  CA RMSD 1.37   ligand RMSD  3.87   contacts <4 A   96
+  K59R_aba:  START min prot-lig heavy = 1.52 A   contacts <2.0 A = 2   <2.5 A = 5
+      lam00  CA RMSD 1.13   ligand RMSD  2.39   contacts <4 A   34
+      lam02  CA RMSD 1.16   ligand RMSD  1.92   contacts <4 A   65
+      lam04  CA RMSD 0.92   ligand RMSD  2.75   contacts <4 A   44
+      lam06  CA RMSD 1.25   ligand RMSD  2.01   contacts <4 A   57
+      lam08  CA RMSD 1.08   ligand RMSD  1.10   contacts <4 A   46
+      lam10  CA RMSD 1.37   ligand RMSD  2.10   contacts <4 A   77
+  K59R_mandi:  START min prot-lig heavy = 0.62 A   contacts <2.0 A = 18   <2.5 A = 32
+      lam00  CA RMSD 1.54   ligand RMSD  2.46   contacts <4 A   66
+      lam02  CA RMSD 1.28   ligand RMSD  1.40   contacts <4 A  101
+      lam04  CA RMSD 1.51   ligand RMSD  3.80   contacts <4 A   96
+      lam06  CA RMSD 1.34   ligand RMSD  1.56   contacts <4 A   76
+      lam08  CA RMSD 1.26   ligand RMSD  2.77   contacts <4 A   78
+      lam10  CA RMSD 1.29   ligand RMSD  2.01   contacts <4 A   95

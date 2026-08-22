@@ -2545,6 +2545,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-21 | **explicit-solvent rebuild** of both references, ff19SB/OPC/KCl, 10 ns x 3 seeds (27693167) + MM-GBSA rescore (27697744) | `data/mmgbsa_explicit/`, §42 |
 | 2026-08-21 | MM-GBSA **retired** as the ranking method (kept as an option); non-cognate MD relaunched at 150 ns without the redundant S9 legs (27697950) | §43a |
 | 2026-08-21 | **TI pilot built and launched**: V81I + K59R x {ABA, mandi, apo} x 12 lambda = 72 windows (27698144, 27698165) | `data/ti/`, §43b |
+| 2026-08-22 | TI pilot **returns 72/72**; error bar found to be ~20x too small, §43d premise withdrawn, mandi legs found to start from a 0.62 A clash | `results/ti/`, §44 |
+| 2026-08-22 | `.gitignore` given **global** extension rules after the 4th per-directory miss left a 7.9 GB `prod.nc` untracked | `.gitignore` |
 
 ### Reversals and corrections
 
@@ -2593,6 +2595,9 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 41 | 08-21 | the 250 ps implicit numbers were the better-converged ones, so the ABA arm just needed longer runs | explicit solvent puts WT-ABA at **−32.46 ± 2.72**, which matches the **50 ps** value (−32.74), not the 250 ps one (−25.00). The 250 ps "convergence" was the ligand sliding 4 A out of a pose only explicit water can hold — drift AWAY from the answer, not toward it | **§40's verdict stands but its reasoning was wrong.** Implicit solvent is unreliable for this anion at *every* length tested; length was never the variable. Neither implicit number should be quoted |
 | 42 | 08-21 | fixing the solvent would make MM-GBSA usable for ranking | explicit solvent fixes the **pose** (ABA max RMSD 4.88 → 2.5-3.5 A) but not the **precision**: between-seed sd is **2.72** kcal/mol for ABA, and one seed drifts **+10.09** within its own 10 ns. A ddG carries ±3.85 from one replicate each | the ranking must resolve 0.01-1.8 kcal/mol. Reaching ±0.5 needs **n=60 per variant** = 2760 runs = **1748 GPU-h (18 days on the 4-GPU cap)**. Pose was never the binding constraint — variance is (§42d) |
 | 43 | 08-21 | the way to rescue a noisy ddG is a better solvent model or more replicates | the variance is a property of **subtracting two separately-computed absolute energies**. TI computes the same ddG as a *difference along a path*, so the ~43,000 unchanged atoms cancel by construction rather than being subtracted — and for SELECTIVITY the apo leg cancels exactly, leaving two legs instead of four | switched to TI at ~40 ns/leg vs MM-GBSA's ~1200 ns/variant. Not a precision upgrade bought with compute — a different estimator with a smaller variance by construction (§43b) |
+| 44 | 08-22 | TI's tight error bar meant TI was precise | the bar was `sd/sqrt(n)` with **n=4004**, and n was wrong twice: pmemd prints every frame **twice** (bit-identical DV/DL, 0 of 2000 steps disagree) and the trailing AVERAGES / RMS banners were parsed as samples. Real n = **2000**, correlated to **tau = 75**, so `n_eff` falls to **13** in the worst K59R windows | the +/-0.06 on V81I was ~20x too small. 88 now reports **stat / conv / quad** separately (89_ti_reparse.py); quadrature is clean (0.00-0.01), V81I is converged, **K59R is not** and its second-half estimate moves further positive, not toward zero (§44a) |
+| 45 | 08-22 | both V81I and K59R should individually shift selectivity toward mandipropamid, because both appear in 4WVO (the §43d premise) | **PYR1^MANDI is a FOUR-mutation set** (K59R/V81I/F108A/F159L) selected together; nothing requires a member to work alone in a WT background. Measured here, native V81 is **4.85 A from ABA** -- second shell, no contact (native V83, also a valine, is the one at 2.99 A). LigandMPNN had independently scored V81I at **-0.841**, anti-correlated with mandipropamid (S23h) | **§43d is withdrawn as a test of the method.** A converged TI, a sequence model and the structure all agree V81I *alone* is not mandi-favouring. The premise was mine and should have been challenged when written, not after it returned an unwelcome answer (§44b) |
+| 46 | 08-22 | the TI mandipropamid legs represented a bound complex | 85 loads `3UZ.mol2` into the **WT** pocket with F108/F159 present and **no pose relaxation**: F108-ligand **0.62 A** heavy-atom, F159 1.38 A, V81 1.40 A, with 8 (V81I) and **18** (K59R) contacts under 2.0 A. Minimisation relieved it and nothing dissociates (ligand RMSD 1.1-3.9 A after CA superposition), but the resulting pose is validated against nothing | **every selectivity number rests on that leg.** The decisive run is the one §13e already requires and TI never had: the **quadruple** K59R/V81I/F108A/F159L, ABA vs mandipropamid, built from **4WVO's own coordinates** -- 24 windows, ~2.5 h (§44c, §44e) |
 
 ### Bugs caught before they cost anything
 
@@ -5462,7 +5467,7 @@ precision. TI is **cheaper and rigorous**; the real cost is setup, not compute.
 Measured throughput: **271 ns/day under TI** vs 465 plain (~40% alchemical
 overhead), ~24 min per window, ~7.2 h for all 72 at the 4-GPU cap.
 
-### 43d. The pre-registered test
+### 43d. The pre-registered test — ⚠ WITHDRAWN BY §44b
 
 **V81I and K59R are both substitutions in the 4WVO mandipropamid sensor, so both
 selectivities should come out negative.** MM-GBSA put them at **+1.36** and
@@ -5476,3 +5481,132 @@ is why an error bar there misled twice (§40b, §42c).
 Aggregate with `python3 scripts/88_ti_aggregate.py`; it tolerates partial data and
 reports N/12 per leg.
 
+
+---
+
+## 44. The TI pilot returns, and the pre-registered test does not apply (2026-08-22)
+
+All 72 windows COMPLETED (27698144, 27698165), 12/12 in every leg, no empty
+outputs. The headline is easy to state and misleading to stop at:
+
+| | selectivity = ddG(mandi) − ddG(ABA) | verdict |
+|---|---|---|
+| **V81I** | **+4.20 ± 0.64** | prefers ABA |
+| **K59R** | **+3.34 ± 1.77** | prefers ABA |
+
+Both positive — the same sign MM-GBSA got (§40c: +1.36, +1.31), now with error
+bars ~6× tighter. Read naively this says TI failed the §43d test exactly as
+MM-GBSA did, only more confidently. That reading is wrong on two counts, and
+both were found by checking the setup before accepting the number.
+
+### 44a. The first error bar was wrong by ~20×
+
+`88_ti_aggregate.py` originally reported ±0.06 on the V81I selectivity. It
+computed `sd/sqrt(n)` with `n = 4004`, and **both halves of that were wrong**:
+
+- pmemd prints every timestep **twice** — one energy block per TI region — with a
+  bit-identical `DV/DL` in each (checked: 0 of 2000 steps disagree). The regex in
+  87 collected both copies.
+- It also swept up the trailing `A V E R A G E S` and `R M S  F L U C T U A T I O N S`
+  banners, whose `DV/DL` fields are a mean and a standard deviation, not samples.
+  Those are the 4 extras in `4004 = 2000×2 + 4`.
+
+So the real frame count is **2000**, and those frames are heavily correlated:
+integrated autocorrelation times reach **τ = 75**, driving `n_eff` as low as
+**13** in the worst K59R windows. This is the *third* time in this project a
+tight within-run error bar has sat on a mean that was still moving (§40b, §42c).
+`scripts/89_ti_reparse.py` now re-extracts from `prod.out` with de-duplication
+and correlation correction, and 88 reports three error terms separately —
+**stat**, **conv** (first-half vs second-half drift), **quad** — because folding
+a drift into a statistical error is precisely how the previous two misreads
+happened.
+
+Quadrature is **not** the problem: spline-vs-Gauss-Legendre disagreement is
+0.00–0.01 kcal/mol in every leg. 12 nodes resolve this integrand fine.
+
+Convergence is only a problem for K59R. V81I legs drift 0.04–0.60 kcal/mol;
+K59R legs drift 0.27–1.45 with `n_eff` 13–25, and the second-half-only estimate
+moves K59R **further** positive (+3.34 → +4.20), not toward zero. **K59R is not
+converged enough to call. V81I is — and it is confidently the "wrong" sign.**
+
+### 44b. The pre-registered test does not constrain single mutants
+
+§43d asserted: *"V81I and K59R are both substitutions in the 4WVO mandipropamid
+sensor, so both selectivities should come out negative."* That inference does
+not hold. **PYR1^MANDI = K59R / V81I / F108A / F159L** — a *four*-mutation set
+selected together. Nothing about it requires each member, alone in a WT
+background, to shift selectivity toward mandipropamid; epistasis is the norm in
+evolved multi-mutant receptors.
+
+Two independent pieces of evidence already in this repo point the same way:
+
+- **V81 is second shell.** Measured here: native V81 is **4.85 Å** from ABA and
+  makes no direct contact. Native V83 — also a valine — is at **2.99 Å**. §23f
+  had already noted V81I "barely clashes."
+- **LigandMPNN independently called V81I inverted** at **−0.841** (§23h),
+  i.e. actively anti-correlated with mandipropamid, by a completely different
+  method.
+
+So a well-converged TI, a sequence model, and the structure all agree that V81I
+*alone* is not mandipropamid-favouring. That is evidence the **premise** was
+wrong, not the estimator. I wrote that premise, and it should have been
+challenged when it was written rather than after it returned an inconvenient
+answer.
+
+### 44c. The mandipropamid legs start from a physically impossible pose
+
+The more serious defect. `85_ti_build.sh` builds the mandi legs by loading
+`3UZ.mol2` into the **WT** protein — F108 and F159 still present — with no pose
+relaxation. Measured against the unmutated copy:
+
+| contact | distance |
+|---|---|
+| **F108 – mandipropamid** | **0.62 Å** |
+| F159 – mandipropamid | 1.38 Å |
+| V81 – mandipropamid | 1.40 Å |
+| heavy-atom contacts < 2.0 Å | 8 (V81I) / **18** (K59R) |
+
+A 0.62 Å heavy-atom separation is two atoms essentially superimposed.
+Minimisation relieved it — final poses are ligand-RMSD 1.1–3.9 Å from start and
+stay bound (58–101 contacts within 4 Å) — but "relaxed into whatever local
+minimum the WT pocket allowed" is not a validated pose, and **every selectivity
+number depends entirely on that leg**.
+
+*(Correction to my own first pass: I initially measured ligand displacement in
+the raw frame and read 6–18 Å, i.e. dissociation. That was whole-box drift — the
+same no-superposition mistake §24 already logged for gate/latch RMSD. After CA
+superposition nothing dissociates in any leg.)*
+
+### 44d. What the pilot did and did not establish
+
+**Established.** The machinery works end to end: 72/72 windows, correct residues
+(sequential 79 = native 81, confirmed against ligand contacts rather than by the
+"is it a VAL" assertion in 85, which native 83 would also pass), correct ligands
+(38 atoms/−1.001 ABA, 51/−0.003 mandipropamid), ligands stay bound, quadrature
+adequate, ~21 min per window. Cost is ~40 ns per leg against MM-GBSA's ~1200 ns
+per variant, and the apo leg cancels exactly in selectivity.
+
+**Not established.** Whether TI can rank selectivity — because the test it was
+given cannot answer that, and the arm it depended on started from a 0.62 Å clash.
+
+Recorded deviation: these systems were **neutralised only** (10–11 K⁺, 0 Cl⁻),
+not the canonical 0.15 M KCl of §27. It largely cancels in a difference, but it
+is a deviation.
+
+### 44e. The test that would actually decide it
+
+§13e already specifies the right calibration and it has never been run for TI:
+**PYR1^MANDI + mandipropamid must rank above WT + mandipropamid.** Run the
+*quadruple* K59R/V81I/F108A/F159L, ABA vs mandipropamid — 2 legs × 12 windows =
+**24 windows, ~2.5 h at 4 concurrent**, since the apo leg cancels for
+selectivity. Critically, build the mandipropamid end from **4WVO's own
+coordinates**, protein and ligand together, so the bound state is a real
+crystallographic pose rather than a ligand dropped into a pocket that cannot
+hold it.
+
+- If the quadruple comes out **negative**: TI works, and §43d was simply the
+  wrong test.
+- If the quadruple also comes out **positive**: TI fails the project's own
+  calibration anchor and is disqualified for ranking, exactly as MM-GBSA was.
+
+Either way it is decisive, which §43d was not.

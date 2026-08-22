@@ -1,0 +1,32 @@
+==============================================================================
+THERMODYNAMIC INTEGRATION -- dG of mutation in each leg  (kcal/mol)
+==============================================================================
+  leg                dG   stat   conv   quad  dG(2nd half)  tau_max  n_eff_min
+  V81I_aba         1.81   0.17   0.04   0.00          1.79      8.7      108.7
+  V81I_mandi       6.02   0.14   0.60   0.00          5.72     52.3       18.9
+  V81I_apo         1.50   0.16   0.29   0.00          1.36     10.6       90.1
+  K59R_aba        -3.62   0.74   0.27   0.01         -3.76     75.1       13.2
+  K59R_mandi      -0.28   0.64   1.45   0.00          0.45     60.4       16.4
+  K59R_apo         0.29   0.51   0.81   0.00         -0.12     39.5       25.0
+
+==============================================================================
+ddG_bind  (negative = the mutation IMPROVES binding of that ligand)
+==============================================================================
+  V81I aba    ddG_bind =    0.31  +/-  0.37 total   (stat 0.24 | conv 0.29 | quad 0.00)
+  V81I mandi  ddG_bind =    4.51  +/-  0.70 total   (stat 0.21 | conv 0.66 | quad 0.00)
+  K59R aba    ddG_bind =   -3.91  +/-  1.24 total   (stat 0.90 | conv 0.86 | quad 0.01)
+  K59R mandi  ddG_bind =   -0.56  +/-  1.86 total   (stat 0.82 | conv 1.67 | quad 0.00)
+
+==============================================================================
+SELECTIVITY = ddG(mandi) - ddG(ABA)   [the apo leg cancels exactly]
+negative = the mutation shifts preference TOWARD mandipropamid
+==============================================================================
+  V81I:    4.20 +/-  0.64   prefers ABA
+        (stat 0.22 | conv 0.60 | quad 0.00)   second-half-only:    3.92
+  K59R:    3.34 +/-  1.77   prefers ABA
+        (stat 0.97 | conv 1.48 | quad 0.01)   second-half-only:    4.20
+
+  Ground truth: both V81I and K59R are substitutions in the 4WVO
+  mandipropamid sensor, so both SHOULD come out negative. MM-GBSA
+  (README 40c) put them at +1.36 and +1.31 -- both the wrong sign,
+  with a +/-3.85 uncertainty that could not resolve either.
