@@ -114,3 +114,29 @@ results/homolog_cavities/raw/
 results/homolog_cavities/domains/
 results/homolog_cavities/ca_traces/
 results/homolog_cavities/subdb*
+
+# Explicit-solvent reference systems (README 42), ~4.5 GB. Same rule as data/md191/:
+# trajectories, topologies and per-stage Amber output are regenerable from
+# 80_explicit_build.sh -> 81_explicit_run.sh -> 83_explicit_mmgbsa.sh. The files that
+# record what was actually built and what was measured -- build_settings.txt,
+# his_states.txt, ligand.txt, seeds.txt, the MM-GBSA .dat/.csv and the cpptraj
+# time series -- ARE tracked, because they are the evidence, not the bulk.
+data/mmgbsa_explicit/**/*.nc
+data/mmgbsa_explicit/**/*.prmtop
+data/mmgbsa_explicit/**/*.inpcrd
+data/mmgbsa_explicit/**/*.rst7
+data/mmgbsa_explicit/**/*.mdinfo
+data/mmgbsa_explicit/**/*.out
+data/mmgbsa_explicit/**/*.log
+data/mmgbsa_explicit/**/*.pdb
+data/mmgbsa_explicit/**/*.in
+data/mmgbsa_explicit/**/tleap.in.template
+data/mmgbsa_explicit/**/_MMPBSA_*
+
+# reference.frc is a ~63 MB sander artefact written into EVERY MM-GBSA run dir.
+# It has now had to be un-staged three times because the rule was written
+# per-directory (data/mmgbsa/, then data/mmgbsa_50ps/, then here), so each new
+# data directory silently re-opened the hole. Match it GLOBALLY instead -- a rule
+# that depends on remembering to extend it is not a rule.
+reference.frc
+**/reference.frc

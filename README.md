@@ -2541,6 +2541,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-20 | homolog fetch completed (all 66 solved domains); **graft-direction** screen; cavity measurement for all 266 (27684153) | SLURM submit |
 | 2026-08-21 | MM-GBSA extended run **completed** (46/46, ~9.6 h each); aggregated with the pool ranking and a convergence audit (75c, 75d) | `sacct` 27676964, `results/mmgbsa/` |
 | 2026-08-21 | cavity measurement completed, **261/266** rows (27684153, 1 h 23 m) | `results/homolog_cavities/homolog_cavities_full.csv` |
+| 2026-08-21 | measured WHY the implicit reference drifted: ABA slides 2-4 A, K59 salt bridge intact 100%, penalty is EGB not VDW (§41) | `scripts/82`, cpptraj |
+| 2026-08-21 | **explicit-solvent rebuild** of both references, ff19SB/OPC/KCl, 10 ns x 3 seeds (27693167) + MM-GBSA rescore (27697744) | `data/mmgbsa_explicit/`, §42 |
 
 ### Reversals and corrections
 
@@ -2586,6 +2588,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 38 | 08-19 | no scoring function available to us can make the K59 flip | **MM-GBSA can.** With mandipropamid, R at 59 beats Q and N (−1.53 vs +0.04, +2.53); with ABA, wild-type Lys beats every substitution (R least-badly at +7.06). Generalised Born instead of Lazaridis–Karplus, over 100-frame MD ensembles | the §23j desolvation diagnosis was not just correct but **actionable** — changing the solvation model does what no sampler could. ⚠ Ensembles are only 50 ps, the ligand-swap difference is dominated by damage to the ABA complex, and F108A comes out NULL because relaxation absorbs the clash it exists to relieve (§37a–b) |
 | 39 | 08-20 | the MM-GBSA result at position 59 was enough to call it a method | it was a **3-way within-position** comparison among K/Q/N, on 4 mutations we already knew the answers to. Whether it RANKS correctly inside a 23-variant pool is untested, and the raw pairwise top-24 all contain position 108, so a naive extension would have tested 'which partner goes with F108X' | extended to the **stratified** candidate set (best pair per distinct position pair, 14 positions instead of 5) with 5x longer ensembles, job 27676964. A within-position win is a signal; a ranking inside a pool is a method (§39b) |
 | 40 | 08-21 | MM-GBSA made the K59 flip (belief 38) | the flip was an artefact of an **unconverged reference**. The WT–ABA complex scores −32.74 at 50 ps and −25.00 at 250 ps — a **+7.75 kcal/mol** move, the largest of any run — and it is *still* drifting +2.62 within the 250 ps window. Every ddG in the ABA arm is measured against it. Recomputed at 250 ps the pre-registered test gives the **opposite** answer: selectivity −8.58 (PASS) → **+1.31 (FAIL)** | **belief 38 is retracted.** Sign-based MM-GBSA verdicts are void at these lengths. Rank-based ones survive (a constant shift cannot reorder an arm) and the four known mutations do land at ranks 1/3/4/18 of 22, p = 0.049 — but that is marginal, post-hoc, and bounded by a median per-variant drift of 1.05 kcal/mol, the same size as the spacing it is ranking on. **WIN stays sealed** (§40) |
+| 41 | 08-21 | the 250 ps implicit numbers were the better-converged ones, so the ABA arm just needed longer runs | explicit solvent puts WT-ABA at **−32.46 ± 2.72**, which matches the **50 ps** value (−32.74), not the 250 ps one (−25.00). The 250 ps "convergence" was the ligand sliding 4 A out of a pose only explicit water can hold — drift AWAY from the answer, not toward it | **§40's verdict stands but its reasoning was wrong.** Implicit solvent is unreliable for this anion at *every* length tested; length was never the variable. Neither implicit number should be quoted |
+| 42 | 08-21 | fixing the solvent would make MM-GBSA usable for ranking | explicit solvent fixes the **pose** (ABA max RMSD 4.88 → 2.5-3.5 A) but not the **precision**: between-seed sd is **2.72** kcal/mol for ABA, and one seed drifts **+10.09** within its own 10 ns. A ddG carries ±3.85 from one replicate each | the ranking must resolve 0.01-1.8 kcal/mol. Reaching ±0.5 needs **n=60 per variant** = 2760 runs = **1748 GPU-h (18 days on the 4-GPU cap)**. Pose was never the binding constraint — variance is (§42d) |
 
 ### Bugs caught before they cost anything
 
@@ -5256,4 +5260,123 @@ Until (1) or (2) lands, MM-GBSA is a **ranking heuristic under audit**, not the
 scoring solution §37 claimed. §37's headline is retracted; its diagnosis of
 ref2015 desolvation (§23j, §36) is untouched — that rested on Rosetta numbers,
 not these.
+
+---
+
+## 41. Why the implicit reference drifted — measured, not assumed (2026-08-21)
+
+§40 established *that* WT–ABA moved 7.75 kcal/mol. This is *why*.
+
+**The energy decomposition localises it.** Of the +7.75, **EGB (polar solvation)
+contributes +7.65**; VDWAALS contributes +1.51 and ESURF +0.15. Mandipropamid's
+EGB moved only +1.60.
+
+**But the ligand did move**, and an inference I drew from the decomposition alone
+was wrong. Measured (protein-fitted, `scripts/82`):
+
+| | 1st half | 2nd half | max | final |
+|---|---|---|---|---|
+| ABA, implicit | 1.09 Å | **3.18 Å** | 4.88 Å | 4.13 Å |
+| mandipropamid, implicit | 1.45 Å | 1.70 Å | 2.45 Å | 1.72 Å |
+
+**The salt bridge never breaks.** K59 NZ ↔ nearest carboxylate oxygen: 2.77 Å at
+frame 1, 2.83/2.81 Å by half, **100% intact** below 4 Å throughout. The lysine
+side chain *tracks* the ligand — ABA, K59 and the gate migrate together as a unit.
+This is a coordinated relaxation of the whole site, not a release event.
+
+**Mechanism.** The build contained **zero explicit waters** (verified: the input
+PDB had none and `leap` did no solvation). ABA's crystallographic pose is held
+partly by ordered bridging waters; GB replaces each with a featureless continuum,
+and a continuum cannot donate a directional hydrogen bond. So the crystal pose is
+a minimum of *reality* but not of *the Hamiltonian we integrated*, and the system
+slid to the model's own minimum ~2 Å away.
+
+That inverts the intuition: **WT–ABA had the furthest to fall precisely because it
+was the only system positioned by real physics.** Every other run — 44 mutants and
+WT/mandi — started from a repacked or docked pose the model already liked.
+
+**Why EGB and not VDW.** VDW measures *contact*, which a 2 Å slide inside an
+enclosing pocket preserves. EGB measures *burial depth of charge* and goes as
+q²/R_eff. ABA carries a localised formal −1 (`A8S.mol2` = −1.001); mandipropamid
+is neutral (`3UZ.mol2` = −0.003) with its EGB spread over many small dipoles.
+**Both effects compound: ABA moves more, and its energy is more sensitive to
+moving.**
+
+---
+
+## 42. Explicit solvent: the pose is fixed, the precision is not (2026-08-21)
+
+Both references rebuilt with `lib_solvate.sh` (ff19SB/OPC, truncated octahedron,
+12 Å buffer, 0.15 M **KCl**), 10 ns × 3 velocity seeds, scored with the *same*
+igb=8 settings on water-stripped frames. Exactly one variable moved.
+
+**No crystallographic waters, deliberately** (user, 2026-08-21). Placing ABA's
+ordered waters while mandipropamid and any future test ligand got only bulk
+solvent would hand the cognate ligand a structural advantage no test ligand can
+have — rebuilding the very asymmetry §41 diagnosed.
+
+### 42a. The pose holds
+
+| system | lig 1st | lig 2nd | lig max | K59 salt bridge |
+|---|---|---|---|---|
+| aba_WT_s0 | 1.01 | 1.31 | 2.49 | 89% |
+| aba_WT_s1 | 1.76 | 2.79 | 3.52 | 100% |
+| aba_WT_s2 | 1.90 | 1.93 | 3.18 | 60% |
+| *aba, implicit* | *1.09* | *3.18* | *4.88* | *100%* |
+
+Max excursion drops from 4.88 Å to 2.5–3.5 Å. Note the salt bridge is now
+sometimes **water-mediated** (60–100%) rather than permanently direct — implicit
+solvent had over-stabilised the direct contact, exactly as the missing-water
+diagnosis predicts.
+
+### 42b. It reverses §40's reasoning, not its verdict
+
+| arm | 50 ps | 250 ps | **explicit** | closer to |
+|---|---|---|---|---|
+| ABA | −32.74 | −25.00 | **−32.46 ± 2.72** | **50 ps** |
+| mandi | −36.33 | −38.00 | **−46.66 ± 1.29** | 250 ps |
+
+§40 assumed the 250 ps number was the better-converged one. **It was not.** The
+250 ps "convergence" was the ligand drifting 4 Å out of a pose only explicit water
+can hold — motion *away* from the answer. Length was never the variable; implicit
+solvent is unreliable for this anion at every length tested.
+
+**The retraction still stands.** Not because 250 ps was right, but because no
+implicit number here is quotable, and the *mutants* have not been re-run in
+explicit solvent. Nothing licenses reinstating the K59 flip.
+
+### 42c. The score still does not converge
+
+| system | 1st half | 2nd half | drift |
+|---|---|---|---|
+| aba_WT_s0 | −35.33 | −33.06 | +2.27 |
+| **aba_WT_s1** | −38.92 | −28.83 | **+10.09** |
+| aba_WT_s2 | −27.54 | −31.11 | −3.57 |
+| mandi_WT_s0/1/2 | | | +0.52, −2.63, +0.01 |
+
+Mandipropamid is stable. ABA is not — one seed moves 10 kcal/mol inside its own
+10 ns, and the drifts now point in *inconsistent directions*, which is scatter
+rather than the systematic march seen implicitly.
+
+**Between-seed sd: ABA 2.72, mandipropamid 1.29 kcal/mol.** This is the honest
+error bar, and the first one this project has had — neither the 8 byte-identical
+repacks (sd 0.00) nor the 250 ps block SE (0.3–1.3) could have produced it.
+
+### 42d. What it would cost to make this work
+
+A ddG needs two means, so one replicate each carries **±3.85 kcal/mol**. The
+ranking must resolve **0.01–1.8**.
+
+| target precision on a ddG | replicates per variant |
+|---|---|
+| ±1.0 kcal/mol | 15 |
+| **±0.5 kcal/mol** | **60** |
+| ±0.25 kcal/mol | 238 |
+
+At n=60: 2760 runs × 38 min = **1748 GPU-hours ≈ 18 days** on the 4-GPU cap, for
+one ligand pair.
+
+**The pose was never the binding constraint — the variance is.** Explicit solvent
+fixed the thing §41 diagnosed and the method is still not precise enough, which is
+a cleaner negative result than either implicit run could have given.
 
