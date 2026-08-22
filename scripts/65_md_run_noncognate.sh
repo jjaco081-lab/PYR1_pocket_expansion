@@ -31,7 +31,15 @@
 #   three seeds of one pose -- registered in §27c so pose sensitivity is measured
 #   instead of assumed.
 #
-# WHY S9_apo_closed IS IN EVERY JOB
+# S9_apo_closed WAS REMOVED FROM THESE JOBS (2026-08-21)
+#   It has since been run to completion as THREE 300 ns replicates in the md191
+#   tree, and §29 reports the result: apo-closed does not open, and has the most
+#   rigid gate of the 15 units measured. Re-running it here would also have used
+#   the OLD data/md build (NaCl, 178 residues), so it would not have been
+#   comparable to the md191 answer anyway. The original rationale is kept below
+#   because it explains why the cell mattered.
+#
+# (historical) WHY S9_apo_closed WAS IN EVERY JOB
 #   It is the missing cell of §19b. S1 is apo AND open, S2 is holo AND closed, so
 #   "closed is rigid" and "ABA rigidifies" are confounded (§24e). S9 separates them
 #   and thereby makes the six replicates we ALREADY have interpretable. Spreading
@@ -54,7 +62,15 @@ module load amber/22_mpi_cuda >/dev/null 2>&1
 
 P=/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion
 MD=$P/data/md
-PROD_NS=300
+# 150 ns, revised down from 300 (2026-08-21). The original length was sized to
+# catch GATE OPENING, but §24 and §29 have since shown open and closed are BOTH
+# kinetically trapped at 300 ns and that apo-closed does not open either -- so
+# opening is not observable on this timescale for ANY ligand, and buying more of it
+# buys nothing. The readout that IS ligand-discriminating is LIGAND POSE STABILITY,
+# validated today in §41/§42 where ABA and mandipropamid separated cleanly within
+# 10 ns (max excursion 4.88 vs 2.45 A implicit). 150 ns is 15x that margin.
+# Resumable, so extending later costs only the extra nanoseconds.
+PROD_NS=150
 # EQUIL_PS comes from lib_mdinputs.sh (1700 = heat 200 + eq1 500 + eq2 1000)
 # NOTE: sourced by ABSOLUTE path, not "$(dirname $0)". SLURM copies the batch
 # script to /var/spool/slurmd/job<N>/slurm_script, so $0 points at the spool copy
@@ -69,16 +85,13 @@ TARGET_PS=$(( EQUIL_PS + PROD_NS * 1000 ))
 case $SLURM_ARRAY_TASK_ID in
   0) RUNS=( "$MD/S6_imperatorin/pose0|$MD/S6_imperatorin/pose0"
             "$MD/S6_imperatorin/pose1|$MD/S6_imperatorin/pose1"
-            "$MD/S6_imperatorin/pose2|$MD/S6_imperatorin/pose2"
-            "$MD/S9_apo_closed|$MD/S9_apo_closed/rep0" ) ;;
+            "$MD/S6_imperatorin/pose2|$MD/S6_imperatorin/pose2" ) ;;
   1) RUNS=( "$MD/S7_flutamide/pose0|$MD/S7_flutamide/pose0"
             "$MD/S7_flutamide/pose1|$MD/S7_flutamide/pose1"
-            "$MD/S7_flutamide/pose2|$MD/S7_flutamide/pose2"
-            "$MD/S9_apo_closed|$MD/S9_apo_closed/rep1" ) ;;
+            "$MD/S7_flutamide/pose2|$MD/S7_flutamide/pose2" ) ;;
   2) RUNS=( "$MD/S8_estradiol/pose0|$MD/S8_estradiol/pose0"
             "$MD/S8_estradiol/pose1|$MD/S8_estradiol/pose1"
-            "$MD/S8_estradiol/pose2|$MD/S8_estradiol/pose2"
-            "$MD/S9_apo_closed|$MD/S9_apo_closed/rep2" ) ;;
+            "$MD/S8_estradiol/pose2|$MD/S8_estradiol/pose2" ) ;;
   *) echo "bad array index"; exit 1 ;;
 esac
 
