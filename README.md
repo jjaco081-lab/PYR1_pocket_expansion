@@ -2543,6 +2543,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-21 | cavity measurement completed, **261/266** rows (27684153, 1 h 23 m) | `results/homolog_cavities/homolog_cavities_full.csv` |
 | 2026-08-21 | measured WHY the implicit reference drifted: ABA slides 2-4 A, K59 salt bridge intact 100%, penalty is EGB not VDW (§41) | `scripts/82`, cpptraj |
 | 2026-08-21 | **explicit-solvent rebuild** of both references, ff19SB/OPC/KCl, 10 ns x 3 seeds (27693167) + MM-GBSA rescore (27697744) | `data/mmgbsa_explicit/`, §42 |
+| 2026-08-21 | MM-GBSA **retired** as the ranking method (kept as an option); non-cognate MD relaunched at 150 ns without the redundant S9 legs (27697950) | §43a |
+| 2026-08-21 | **TI pilot built and launched**: V81I + K59R x {ABA, mandi, apo} x 12 lambda = 72 windows (27698144, 27698165) | `data/ti/`, §43b |
 
 ### Reversals and corrections
 
@@ -2590,6 +2592,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 40 | 08-21 | MM-GBSA made the K59 flip (belief 38) | the flip was an artefact of an **unconverged reference**. The WT–ABA complex scores −32.74 at 50 ps and −25.00 at 250 ps — a **+7.75 kcal/mol** move, the largest of any run — and it is *still* drifting +2.62 within the 250 ps window. Every ddG in the ABA arm is measured against it. Recomputed at 250 ps the pre-registered test gives the **opposite** answer: selectivity −8.58 (PASS) → **+1.31 (FAIL)** | **belief 38 is retracted.** Sign-based MM-GBSA verdicts are void at these lengths. Rank-based ones survive (a constant shift cannot reorder an arm) and the four known mutations do land at ranks 1/3/4/18 of 22, p = 0.049 — but that is marginal, post-hoc, and bounded by a median per-variant drift of 1.05 kcal/mol, the same size as the spacing it is ranking on. **WIN stays sealed** (§40) |
 | 41 | 08-21 | the 250 ps implicit numbers were the better-converged ones, so the ABA arm just needed longer runs | explicit solvent puts WT-ABA at **−32.46 ± 2.72**, which matches the **50 ps** value (−32.74), not the 250 ps one (−25.00). The 250 ps "convergence" was the ligand sliding 4 A out of a pose only explicit water can hold — drift AWAY from the answer, not toward it | **§40's verdict stands but its reasoning was wrong.** Implicit solvent is unreliable for this anion at *every* length tested; length was never the variable. Neither implicit number should be quoted |
 | 42 | 08-21 | fixing the solvent would make MM-GBSA usable for ranking | explicit solvent fixes the **pose** (ABA max RMSD 4.88 → 2.5-3.5 A) but not the **precision**: between-seed sd is **2.72** kcal/mol for ABA, and one seed drifts **+10.09** within its own 10 ns. A ddG carries ±3.85 from one replicate each | the ranking must resolve 0.01-1.8 kcal/mol. Reaching ±0.5 needs **n=60 per variant** = 2760 runs = **1748 GPU-h (18 days on the 4-GPU cap)**. Pose was never the binding constraint — variance is (§42d) |
+| 43 | 08-21 | the way to rescue a noisy ddG is a better solvent model or more replicates | the variance is a property of **subtracting two separately-computed absolute energies**. TI computes the same ddG as a *difference along a path*, so the ~43,000 unchanged atoms cancel by construction rather than being subtracted — and for SELECTIVITY the apo leg cancels exactly, leaving two legs instead of four | switched to TI at ~40 ns/leg vs MM-GBSA's ~1200 ns/variant. Not a precision upgrade bought with compute — a different estimator with a smaller variance by construction (§43b) |
 
 ### Bugs caught before they cost anything
 
@@ -5379,4 +5382,97 @@ one ligand pair.
 **The pose was never the binding constraint — the variance is.** Explicit solvent
 fixed the thing §41 diagnosed and the method is still not precise enough, which is
 a cleaner negative result than either implicit run could have given.
+
+---
+
+## 43. Retiring MM-GBSA, and what replaced it (2026-08-21)
+
+§42d priced MM-GBSA honestly: n=60 replicates per variant per ligand to reach
+±0.5 kcal/mol. For a screen of many substitutions × many ligands — which is the
+actual goal — that does not scale. **Retired as the ranking method, explicitly not
+ruled out**: its rank-based use survives (§40c) and it stays available as a coarse
+filter.
+
+### 43a. Non-cognate MD, relaunched (27697950)
+
+Nine systems already built and never run: Imperatorin, Flutamide, α-Estradiol —
+matched to ABA at 19–20 heavy atoms and MW 270–276, spanning furanocoumarin,
+nitroaromatic anilide and steroid — each from three independently docked poses.
+
+Two changes:
+
+- **Dropped the S9_apo_closed legs.** That cell has since been answered by three
+  300 ns replicates in the md191 tree (§29), and re-running it here would have
+  used the *older* `data/md` build (NaCl, 178 residues), so it would not have been
+  comparable to the answer already in hand.
+- **300 → 150 ns.** The original length was sized to catch **gate opening**, but
+  §24 and §29 showed open and closed are both kinetically trapped and apo-closed
+  does not open either — opening is not observable for *any* ligand on this
+  timescale. The ligand-discriminating readout is **pose stability**, which
+  separated ABA from mandipropamid within 10 ns in §41–42. 150 ns is 15× that.
+
+### 43b. TI: a different estimator, not a bigger one
+
+The instinct after §42 is "better solvent model, or more replicates." Both treat
+the variance as something to be overwhelmed. It isn't — it is a property of the
+estimator. MM-GBSA forms a ddG by subtracting **two separately-computed absolute
+energies**, so every error in the ~43,000 unchanged atoms enters twice and cancels
+only to the extent that two independent averages happen to agree. That is exactly
+how one unconverged WT–ABA reference poisoned all 22 ddGs (§40a).
+
+TI computes the same quantity as a **difference along a path**. The mutation is
+run in both legs of a thermodynamic cycle, so the unchanged atoms cancel *by
+construction*:
+
+```
+   WT·L  ──ΔG₁ (mutate in complex)──>  MUT·L
+    │                                    │
+ ΔG_bind(WT)                       ΔG_bind(MUT)
+    │                                    │
+   WT + L ──ΔG₂ (mutate in apo)───>  MUT + L
+
+   ΔΔG_bind = ΔG₁ − ΔG₂
+```
+
+And for **selectivity the apo leg cancels exactly**:
+
+```
+ΔΔG(mandi) − ΔΔG(ABA) = ΔG₁ᵐᵃⁿᵈⁱ − ΔG₁ᴬᴮᴬ
+```
+
+so ranking a mutation between two ligands needs **two legs, not four** — the
+selectivity is the more trustworthy number by four error sources.
+
+**Cost**, corrected from an earlier claim in this project that FEP was "far
+costlier": ~40 ns per leg, against MM-GBSA's ~1200 ns per variant at usable
+precision. TI is **cheaper and rigorous**; the real cost is setup, not compute.
+
+### 43c. Setup decisions, each measured rather than assumed
+
+| decision | why |
+|---|---|
+| **Full sidechain dual topology**, not a common core | 11 of the 15 atoms Val and Ile nominally share change partial charge, and their CG1 hydrogens do not sit at matching coordinates (methyl vs methylene). A common-core mask would have been quietly wrong |
+| **Identity asserted at build** | native 81 → seq **79**, 59 → seq 59. Sequential 81 is **also** a valine (native V83), two positions away |
+| **tiMerge tolerance set from a measurement** | It refused at its 0.01 Å default. Rather than raise it until it passed, `86` audits first: exactly **one rebuilt hydrogen at 0.024 Å, zero heavy atoms displaced**, in all six legs. Heavy-atom displacement is a hard failure |
+| **Masks read from tiMerge, never retyped**, then range-compressed with an atom-count assertion | Amber echoes mdin at fixed width; a long namelist string is an avoidable place for a mask to be clipped |
+| **`noshakemask` over the TI region** | Those bonds are being alchemically changed and must not be constrained to an endpoint geometry |
+| **12-point Gauss–Legendre** | Nodes never touch λ = 0 or 1, so the softcore endpoint singularity is avoided by construction rather than extrapolated away |
+| **One window tested before the other 71** | Caught that `ifsc=1` requires `ntmin=2` — an 8-second failure instead of 72 |
+
+Measured throughput: **271 ns/day under TI** vs 465 plain (~40% alchemical
+overhead), ~24 min per window, ~7.2 h for all 72 at the 4-GPU cap.
+
+### 43d. The pre-registered test
+
+**V81I and K59R are both substitutions in the 4WVO mandipropamid sensor, so both
+selectivities should come out negative.** MM-GBSA put them at **+1.36** and
+**+1.31** — both the wrong sign, at ±3.85.
+
+If TI recovers the sign, it replaces MM-GBSA for ranking and scales to the real
+screen. If it fails, **read the per-window drift the aggregator prints before
+blaming the method** — that diagnostic is precisely what MM-GBSA never had, and
+is why an error bar there misled twice (§40b, §42c).
+
+Aggregate with `python3 scripts/88_ti_aggregate.py`; it tolerates partial data and
+reports N/12 per leg.
 
