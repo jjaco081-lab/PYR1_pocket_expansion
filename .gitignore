@@ -177,3 +177,14 @@ data/md/*/pose*/*.info
 data/md/*/pose*/*.log
 data/md/*/pose*/*.pdb
 data/md/*/pose*/*_renum.txt
+
+# Quadruple TI systems (README 45). Extension rules above already catch the
+# heavy binaries; these are the remaining per-leg build artefacts.
+data/ti_quad/**/*.prmtop
+data/ti_quad/**/*.inpcrd
+data/ti_quad/**/*.out
+data/ti_quad/**/*.in
+data/ti_quad/**/*.log
+data/ti_quad/**/*.pdb
+data/ti_quad/**/*.parmed
+data/ti_quad/**/dual.*
