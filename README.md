@@ -2553,6 +2553,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | sensor-chemistry benchmark built; PFAS/TNT frozen as a held-out prospective test | §48, `scripts/106_sensor_benchmark.py` |
 | 2026-08-24 | charge identity shown ligand-dependent but pose-free; K59 retention test pre-registered on PFAS/TNT | §49 |
 | 2026-08-24 | lookup baseline run and killed; ligand-blind frequency null quantified as the bar | §50, `scripts/107_lookup_baseline.py` |
+| 2026-08-24 | ground truth reframed as positive-unlabeled; metric switched to hit-retention vs library size | §51 |
 
 ### Reversals and corrections
 
@@ -2610,6 +2611,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 50 | 08-24 | §32's 3-of-4 recall meant a steric library would be about 75 % complete | measured over 691 + 78 + 45 characterised sensors: **steric is only 37.5-50 % of distinct substitutions** in every set, CHARGE is 26-30 %, polar 20-35 %. Position 59 carries **8-11 % of all substitutions** in every set and is **89 % charge chemistry** (185 of 208) | a steric library is not 75 % complete, it is **blind to a category**. But covering it is cheap: **K59 alone is 44 % of all charge chemistry and seven positions are 90 %**, so a position-typed menu fixes it at a cost smaller than the libraries Tian already builds (§48a-b) |
 | 51 | 08-24 | choosing WHICH residue at a charge position needs the ligand's charged group located, hence a pose -- which §46b measured at 8.33 A error into a pocket that does not exist yet | holding the library fixed, 59-charge substitutions per clone run **0.05 (anionic ligands) -> 0.17 -> 0.31 -> 0.78 (cationic)**, a ~16x spread in the direction electrostatics demands, and acids relocate their charge chemistry to E94/V81/I110 instead. 17 of 19 acid ligands never touch 59 | **the circularity is binding for STERIC placement and largely absent for CHARGE** -- the discriminating feature is formal charge class, a 2D SMILES property needing no pose. Polar positions (120, 163) are NOT covered by this and plausibly do need geometry (§49a-b) |
 | 52 | 08-24 | a chemical-similarity lookup over 194 already-screened ligands might match anything we build, so it had to be ruled out first | leave-one-ligand-out over 89 ligands: similarity beats a **ligand-blind frequency menu** by **+0.010** recall@20 (23 win / 13 loss / **53 tie**), and copying the single nearest ligand is far WORSE (0.20 vs 0.35). It helps only where a close neighbour exists (+0.045 at Tanimoto>=0.5) and **only 0.4 % of ligand pairs reach 0.5** (median 0.110) | **lookup is dead** -- nothing to look up for a novel ligand. But the null it exposed is the real prize: **freq recall@20 = 0.35, @40 = 0.52**, ligand-blind and free, and the bar every method here has never been measured against. oracle@20 = 0.99 also scopes the task to a 20-40 substitution menu (§50) |
+| 53 | 08-24 | recall of observed substitutions was the right way to score a designed library | the hit sets are **positive-unlabeled**: the landscape is not fully tested, libraries are SAMPLED not enumerated, and selection removes variants for reasons unrelated to pocket binding (URA3 activity, constitutive interface binding, and non-uniform promiscuity filtering -- pan-PFAS cross-reactivity was a FEATURE there). 'Not observed' means unknown, not non-functional | **precision is unmeasurable, only recall**; the frequency baseline is **advantaged by construction** so failing to beat it is weak evidence; `oracle@20=0.99` was misread. Metric replaced by **fraction of ligands whose library contains >=1 hit, vs library SIZE** -- you need *a* sensor, not every sensor. New bar: **58 % at 10^5.9, 72 % at 10^7.3**, matching Tian's own focused-library sizes (§51) |
 
 ### Bugs caught before they cost anything
 
@@ -6123,7 +6125,7 @@ first genuinely prospective prediction this project has made (§47e).
 
 ---
 
-## 50. The lookup baseline: chemical similarity adds almost nothing, but frequency sets a real bar (2026-08-24)
+## 50. The lookup baseline: chemical similarity adds almost nothing, but frequency sets a real bar (2026-08-24) — ⚠ METRIC SUPERSEDED BY §51
 
 §49c argued this had to be run before anything structural, because no trivial
 baseline had ever been established here. `scripts/107_lookup_baseline.py`,
@@ -6192,3 +6194,96 @@ Two further things the baseline hands us:
 
 The top-20 ligand-blind menu, for reference: F159I/V/T/L/A/G, V81Y/L/R, Y120A/G,
 V163W, V83L, A160L/I/V/M, K59D, L87M, V164F.
+
+---
+
+## 51. The ground truth is positive-unlabeled, and the metric has to change (2026-08-24)
+
+A correction from Jannis, and it invalidates part of how §50 was framed.
+
+### 51a. What the hit sets actually are
+
+The characterised clones are **hits that were found**, not best sequences, for
+three separate reasons:
+
+1. **The landscape is not fully tested.** Each library randomises a subset of
+   positions with a subset of residues, so a substitution absent from the data may
+   simply never have been offered.
+2. **Not every combination reaches screening.** Libraries are *sampled*, sized so
+   that a hit is likely to be found if one exists — not enumerated. Absence from
+   the hit set does not mean the variant failed; it may never have been made.
+3. **Selection removes variants for reasons unrelated to pocket binding** —
+   constitutive activity (traditionally an interface effect, not a pocket one), a
+   mutation permitting URA3 activity, and sometimes promiscuity. Promiscuity
+   filtering is *not* uniform: the PFAS sensors are marketed as pan-PFAS, i.e.
+   cross-reactivity between congeners was a feature there, not a reject criterion.
+
+So "not observed" means **unknown**, never "non-functional". This is a
+positive-unlabeled sample.
+
+### 51b. Three consequences, two of which §50 got wrong
+
+- **Precision is not measurable.** Only recall. Any metric that penalises a
+  proposed substitution for being absent from the hit set is scoring the screen,
+  not the biology.
+- **The frequency baseline is advantaged by construction.** It reproduces what
+  people put into libraries and then found — drawn from the same design process
+  that generated the labels. **Beating it is therefore strong evidence; failing to
+  beat it is weak evidence of failure.** A structural method proposing something
+  never offered scores zero even if it is right.
+- **`oracle@20 = 0.99` was misread.** It means 20 substitutions cover the
+  *observed* hits, not that 20 suffice.
+
+### 51c. The metric that matches the actual goal
+
+Substitution-level recall quietly asks *did we find the best answer*. The real
+question is *can the library window be narrowed while still containing a hit*.
+So the primary metric is now:
+
+> **fraction of ligands for which the designed library contains ≥ 1 known hit
+> clone, as a function of library size** — where a clone counts only if *every*
+> one of its substitutions is in the menu.
+
+Ligand-blind frequency menu, 89 ligands with ≥3 hit clones, 550 clones:
+
+| K | library size | ligands with ≥1 hit | clone-level |
+|---|---|---|---|
+| 10 | 240 | 29 % | 8 % |
+| **20** | **13,440** | **51 %** | 16 % |
+| 30 | 737,280 | 58 % | 22 % |
+| **40** | **21.0 M** | **72 %** | 33 % |
+| 60 | 6.7 B | 88 % | 51 % |
+| 144 (all) | 3.2 × 10¹⁹ | 100 % | 100 % |
+
+Ligand-level is the right row to read, and clone-level is the wrong one, for
+exactly Jannis's reason: **you need *a* sensor, not every sensor.**
+
+### 51d. Grounded against the libraries actually built
+
+| library | positions | size |
+|---|---|---|
+| Coumarin | 11 | 138,240 |
+| TNTv2 | 14 | 1.24 M |
+| TNTv1 | 16 | 4.67 M |
+| PFAS | 13 | 49.5 M |
+| TSM | 18 | 7.7 × 10¹⁵ |
+| DSM-Hao | 18 | 3.8 × 10²¹ |
+
+The **focused** libraries sit at 10⁵–10⁷ — deliberately inside Y2H's ~10⁶–10⁷
+screening capacity. The general ones are astronomically larger and are sampled,
+not enumerated. Which is itself the argument for this metric: even the
+experimenters were never enumerating a landscape, they were sizing a window.
+
+### 51e. The revised bar
+
+> **A ligand-blind frequency library retains a known hit for 58 % of ligands at
+> 10⁵·⁹ variants, and 72 % at 10⁷·³ — the same size range as Tian's own focused
+> libraries.**
+
+A ligand-aware method has to beat that *at matched library size*, or reach the
+same retention in a smaller window. And because of §51b, all of these are
+**lower bounds** — a library may well contain a working sensor that was never
+found.
+
+The §50 numbers (recall@20 = 0.35) are not wrong, but they answer a question we
+no longer care about, and that section now carries a pointer here.
