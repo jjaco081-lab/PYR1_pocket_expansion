@@ -193,3 +193,10 @@ data/ti_quad/**/dual.*
 # The aggregate in results/noncognate/summary.txt is the deliverable.
 results/noncognate/**/*.dat
 results/noncognate/**/extract.log
+
+# Umbrella-sampling windows (62 x ~46k-atom systems)
+data/umbrella/**/*.rst7
+data/umbrella/**/*.out
+data/umbrella/**/*.in
+data/umbrella/**/*.mdinfo
+data/umbrella/**/*.rc

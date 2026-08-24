@@ -2562,6 +2562,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | donor ligands checked (2PCS = UNL, 3TFZ = buffer); five routes around library x library ranked | §57 |
 | 2026-08-24 | factorial found to be n=1 not n=3; core-mask atom mismatch found; under-filled pocket problem stated | §58 |
 | 2026-08-24 | partial-occupancy question answered from the clones; enhanced-sampling and parallel-evolution designs specified | §59 |
+| 2026-08-24 | umbrella-sampling calibration set up and seeded (62 windows, WT+ABA vs WT apo) | §60, `scripts/111-113` |
 
 ### Reversals and corrections
 
@@ -2629,6 +2630,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 60 | 08-24 | the §30 conformation x occupancy factorial was complete (4 cells x 3 reps x 300 ns) and merely unanalysed | I checked that `prod.nc` EXISTED, not how long it was. **5 of 12 reps reached 300 ns -- one per cell**; three array tasks failed outright and four more truncated at 6-65 ns. Separately the core superposition mask selected **656 atoms in the system vs 644 in the references** (both refs miss residues 2, 69-70, 182-191), so the fit silently did not happen and gate RMSDs came out at **39-41 A** for a five-residue loop | the 2x2 is **n=1 per cell** and cannot give the replicated S9-vs-S2 contrast it was built for. Same 'verify against the physics, not the file' failure as §44a's frame count. Corrected 161-residue common core written to `data/md191/core_mask.txt` (§58b) |
 | 61 | 08-24 | a weak hit collapses the chemical dimension, so expanded-pocket designs can be tested against it | **the gate closes ONTO the ligand.** A weak hit is for a ligand that fits the CURRENT envelope; enlarge the cavity and that ligand no longer reaches the gate, giving either no closure (no signal) or ligand-independent closure (constitutive, which the counter-selection removes) | expansion must be paired with a **LARGER** ligand -- the 28-50 heavy-atom band, i.e. the 229 documented failures, which are the matched test set. And §24's kinetic trapping means we can measure the stability of a starting state but **never the open/closed free-energy difference**, which is the quantity separating signal from constitutive. **The question is one this class of method cannot answer** -- it needs Y2H (§58) |
 | 62 | 08-24 | an enlarged cavity needs a larger ligand to fill it, or transduction breaks (§58) | measured over 691 clones: **94 release >=100 A^3 of side-chain volume, and 28 of those bind ligands of <=20 heavy atoms** -- ABA-sized. **Honokiol and Magnolol (isomers, 20 heavy) both give 1 uM sensors at -161 A^3**, close to doubling PYR1's 174 A^3 cavity; Carpropamid 1 uM at -144 | **the ligand does NOT have to fill the enlarged cavity.** Partial occupancy reaches the top potency class empirically, so the under-filling worry is materially weakened -- with the caveat that net side-chain volume is not cavity volume (the pocket may be RESHAPED rather than voided, and water fills the rest) (§59a) |
+| 63 | 08-24 | the open/closed free-energy difference is simply out of reach here (§24, §58a) | that is a property of UNBIASED MD. Umbrella sampling returns it, and a coordinate exists: **P88 CA - R116 CA**, picked by scoring every gate-latch CA pair against the two crystals and then checked against 5 x 300 ns -- **closed basin 6.06-6.08 A, open basin 16.3-16.9 A, no overlap**. S9 and S2 sit at the SAME value, so the closed state is geometrically identical with and without ligand -- exactly why stability cannot separate them | 62 windows seeded from real equilibrated frames (not a steered pull), 1.24 us. Run as a **CALIBRATION on a known answer first** (holo must favour CLOSED, apo OPEN); the reported quantity is the holo-apo DIFFERENCE so coordinate error cancels, and overlap/drift/hysteresis print beside every number (§60) |
 
 ### Bugs caught before they cost anything
 
@@ -6980,3 +6982,70 @@ Two design notes:
 Precedent supports the shape of it: Tian's round 2 evolves from round-1 profiles
 and rescued five ligands round 1 missed, and §54 found 4 of 11 round-2 sensors had
 no round-1 hit at all — so starting points help but are not required.
+
+---
+
+## 60. Enhanced-sampling calibration: WT+ABA vs WT apo (2026-08-24)
+
+§59b argued umbrella sampling is the way to reach the open↔closed free-energy
+difference that §24's kinetic trapping puts out of reach — and that it must
+reproduce a known answer before being trusted anywhere else. Set up, seeded, and
+ready to submit.
+
+### 60a. The reaction coordinate, chosen by measurement
+
+Every gate–latch Cα pair was scored on how far it moves between the open and
+closed crystal references. The winner is **P88 Cα – R116 Cα**, and it survives
+contact with the unbiased trajectories:
+
+| | P88–R116 (Å) |
+|---|---|
+| crystal closed / open | 7.64 / 17.52 |
+| S2 holo-closed (300 ns) | **6.06 ± 0.75** (5.1–10.3) |
+| S9 apo-closed (300 ns) | **6.08 ± 0.43** (5.0–9.4) |
+| S1 apo-open (300 ns) | **16.90 ± 1.13** (11.8–20.7) |
+| S10 holo-open (2 × 300 ns) | 16.3–16.6 (11.0–20.6) |
+
+**Complete separation, no overlap between basins over 5 × 300 ns.** Note that S9
+and S2 sit at the *same* value (6.08 vs 6.06) — the closed state is geometrically
+identical with and without ligand, which is precisely why a stability measurement
+cannot distinguish them and a free-energy one is required.
+
+A distance is used rather than an RMSD because Amber restrains distances natively
+through `&rst`; an RMSD coordinate needs a plugin and adds a failure mode.
+
+### 60b. Setup
+
+- **31 windows per arm**, 5.0–20.0 Å in 0.5 Å steps, k = 10 kcal/mol/Å². Thermal
+  width √(kT/k) = 0.24 Å, so neighbours overlap at ~2σ.
+- **62 windows seeded from real equilibrated frames**, not from a steered pull —
+  the existing factorial already samples nearly the whole range. Only 4 windows
+  (apo 10.0–11.5 Å) have seeds more than 0.25 Å off target, max 1.15 Å, which the
+  restraint closes during a 2 ns restrained equilibration.
+- **Atom indices asserted at runtime** in each arm's own topology (holo and apo use
+  different prmtops) — a silent index shift would bias the PMF invisibly.
+- 20 ns production per window ⇒ **1.24 µs total**.
+
+### 60c. What is being tested, and how it can fail
+
+> **PASS requires holo to favour CLOSED, apo to favour OPEN, and
+> ΔΔG = [G_open−G_closed]_holo − [...]_apo to be POSITIVE.**
+
+The headline is the **difference**, not either absolute PMF: systematic error from
+the coordinate largely cancels in it, the same reason TI *selectivity* was usable
+when its absolute ddG was not (§43b, §46a).
+
+**The coordinate is the risk and it is stated up front.** Gate closure is a loop
+rearrangement with orthogonal slow modes — latch, ligand pose, side-chain
+repacking — so a single distance can show hysteresis. Two mitigations are built
+in rather than hoped for:
+
+- windows are seeded from **both** basins, so the low and high arms approach the
+  barrier from opposite directions and disagreement in the overlap region is
+  visible rather than averaged away;
+- `113_us_pmf.py` prints **overlap, half-split drift and hysteresis** beside every
+  number, the §44a discipline after a tight error bar sat on a moving mean twice.
+
+If this calibration fails, the scheme is wrong and no designed-pocket PMF from it
+should be quoted — which is the entire point of running it on a case whose answer
+is already known.
