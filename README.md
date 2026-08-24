@@ -2551,6 +2551,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | **quadruple TI 48/48**: crystal arm -1.12 +/- 2.34 (no call); docked arm invalid, ligand collapses into ghost F108 | S46, `results/ti_quad/` |
 | 2026-08-24 | crystal arm **extension launched** (27725295, 24 windows to 120 ns); project-wide reflection written | §47 |
 | 2026-08-24 | sensor-chemistry benchmark built; PFAS/TNT frozen as a held-out prospective test | §48, `scripts/106_sensor_benchmark.py` |
+| 2026-08-24 | charge identity shown ligand-dependent but pose-free; K59 retention test pre-registered on PFAS/TNT | §49 |
 
 ### Reversals and corrections
 
@@ -2606,6 +2607,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 48 | 08-24 | the quadruple TI would settle whether TI can rank selectivity | the CRYSTAL arm gives **-1.12 +/- 2.34** -- the right sign, but the error is twice the effect, so **NO CALL** on the S13e test; second-half-only moves to -0.10. Quadrature is clean (0.01) and the apo leg's 4.61 drift cancels exactly out of selectivity, as designed | still undecided, and now COSTED: stat 0.5 needs ~121 ns/window = 2.9 us = ~8.3 GPU-days over 24 windows (S46a) |
 | 49 | 08-24 | a docked pose would just give a worse NUMBER than the crystal pose, letting us price "no structure" | the docked arm returned **-1381 kcal/mol** with the wrong CURVE SHAPE. Measured: the ligand collapses into the decoupled WT Phe108 ring -- **all 14 sub-2 A contacts at lambda=0.885 are F108 ring atoms**, min 1.22 A, while the crystal arm has zero in every window | it fails STRUCTURALLY, not noisily. The pose was docked into the F108A **cavity**, i.e. exactly the volume the transformation deletes, so **any TI from WT to a cavity-creating mutant with the ligand docked into that cavity is ill-conditioned in dual topology** -- which is the intended production workflow. The "cost of no structure" is not quantifiable this way (S46b) |
 | 50 | 08-24 | §32's 3-of-4 recall meant a steric library would be about 75 % complete | measured over 691 + 78 + 45 characterised sensors: **steric is only 37.5-50 % of distinct substitutions** in every set, CHARGE is 26-30 %, polar 20-35 %. Position 59 carries **8-11 % of all substitutions** in every set and is **89 % charge chemistry** (185 of 208) | a steric library is not 75 % complete, it is **blind to a category**. But covering it is cheap: **K59 alone is 44 % of all charge chemistry and seven positions are 90 %**, so a position-typed menu fixes it at a cost smaller than the libraries Tian already builds (§48a-b) |
+| 51 | 08-24 | choosing WHICH residue at a charge position needs the ligand's charged group located, hence a pose -- which §46b measured at 8.33 A error into a pocket that does not exist yet | holding the library fixed, 59-charge substitutions per clone run **0.05 (anionic ligands) -> 0.17 -> 0.31 -> 0.78 (cationic)**, a ~16x spread in the direction electrostatics demands, and acids relocate their charge chemistry to E94/V81/I110 instead. 17 of 19 acid ligands never touch 59 | **the circularity is binding for STERIC placement and largely absent for CHARGE** -- the discriminating feature is formal charge class, a 2D SMILES property needing no pose. Polar positions (120, 163) are NOT covered by this and plausibly do need geometry (§49a-b) |
 
 ### Bugs caught before they cost anything
 
@@ -6032,3 +6034,87 @@ sd08/sd09, and report library-menu size as the cost.
 
 If steric-only recall is already high on the holdout, §48b is wrong and the
 simpler method wins. That outcome is what the split exists to allow.
+
+---
+
+## 49. Charge identity is ligand-dependent — but predictable without a pose (2026-08-24)
+
+§48 showed *where* charge chemistry lives. The open question was whether the
+*identity* of the residue can be chosen, and the obvious worry was circularity:
+picking a charge at position 59 seems to need the ligand's charged group located,
+which needs a pose — and §46b measured docking at **8.33 Å** from the crystal
+pose, into a pocket that does not exist yet because it is what we are designing.
+
+### 49a. The measurement
+
+Holding the library **fixed** (mut_lib = tsm, identical allowed residues for every
+ligand), grouping the 194 screened ligands by 2D chemistry:
+
+| ligand chemistry | ligands | clones | 59-charge substitutions per clone |
+|---|---|---|---|
+| **acid (anionic)** | 19 | 38 | **0.05** |
+| neutral polar (HBD+HBA ≥ 4) | 66 | 211 | 0.17 |
+| neutral apolar | 43 | 127 | 0.31 |
+| **base (cationic)** | 11 | 27 | **0.78** |
+
+A **~16× spread**, in the direction physical chemistry demands: an anionic ligand
+benefits from K59's +1 (a salt bridge — precisely ABA's situation), a cationic
+ligand is repelled by it and must remove it. Acidic ligands also relocate their
+charge chemistry elsewhere entirely — E94 (8), V81 (5), I110 (4) — rather than to 59.
+
+Robust in both directions rather than driven by one ligand: **17 of 19 acid
+ligands never charge-mutate 59**, and the base effect spans 7 ligands (Riluzole
+6/6, Cinacalcet 6/6, Guanabenz 2/2). Weaknesses to keep in view: n is small for
+acid (38 clones) and base (27, of which Cinacalcet and Cinacalcet HCl are the same
+compound, leaving ~6 distinct bases), and formal-charge class is assigned from
+SMARTS, not from pKa at assay pH.
+
+### 49b. Why this dissolves the circularity — for charge
+
+The discriminating feature is the ligand's **formal charge class**, which is a
+2D property of the SMILES. It needs no pose, no docking, and no model of the
+designed pocket. **The circularity is binding for steric placement and largely
+absent for charge**, which is convenient, because charge is exactly where the
+steric methods were blind (§48a).
+
+This does not extend to the polar positions (120 at 76 % polar, 163 at 95 %).
+Hydrogen-bond geometry is directional and short-range, so those plausibly do need
+a pose. They are left open here rather than assumed away.
+
+### 49c. Options, rated
+
+| option | cost | potential | success chance | verdict |
+|---|---|---|---|---|
+| **E. chemical-similarity lookup** — nearest of 194 screened ligands, reuse its menu | very low | high in-domain | high in-domain, unknown out | **do first** |
+| **B. charge-class rule from 2D chemistry** (§49a) | low | high — sets identity, not just position | moderate–high | **do second** |
+| A. ligand-agnostic fixed charge menu at the 7 positions | ~zero | medium (90 % of charge chemistry) | high | fallback; discards the 16 × signal |
+| D. pose-*ensemble* consensus, P(position sees a polar atom) | moderate | moderate | unknown | only if B underperforms |
+| C. pose-derived electrostatic complementarity | high | high if it worked | **low** — 8.33 Å docking error, hypothetical pocket | **do not** |
+
+**E has never been done, and it gates the rest.** No trivial baseline has ever
+been established in this project. If "find the chemically nearest ligand already
+screened and copy its library" recalls as much as anything built from structure,
+then every physics result here is competing with a lookup table — and that has to
+be known before more effort is spent. It is the cheapest experiment available and
+it can invalidate a great deal.
+
+### 49d. PRE-REGISTRATION: the K59 charge-retention test on the holdout
+
+Written before reading sd08/sd09.
+
+**PFAS = perfluorooctanoic acid / PFOS — a strong acid, anionic at assay pH.**
+**TNT = 2,4,6-trinitrotoluene — neutral, electron-poor.**
+
+Both libraries randomise position 59, so *retention* is comparable even though the
+substitution menus differ (PFAS offers L/M/N, TNTv1-2 offer D/M/N/R/T).
+
+> **Prediction: the fraction of clones retaining a POSITIVE charge at position 59
+> — wild-type Lys, or a mutation to Arg/His — will be HIGHER for PFAS than for
+> TNT.**
+
+Dev-set anchors: acid ligands charge-mutate 59 in 5.3 % of clones (2/38), neutral
+ligands in 22.5 % (76/338). So the expectation is PFAS retention well above TNT's.
+
+This is falsifiable in the obvious way: if PFAS ≤ TNT, §49a does not transfer to
+new chemistry and the charge-class rule should not be built on it. It is also the
+first genuinely prospective prediction this project has made (§47e).
