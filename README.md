@@ -2554,6 +2554,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | charge identity shown ligand-dependent but pose-free; K59 retention test pre-registered on PFAS/TNT | §49 |
 | 2026-08-24 | lookup baseline run and killed; ligand-blind frequency null quantified as the bar | §50, `scripts/107_lookup_baseline.py` |
 | 2026-08-24 | ground truth reframed as positive-unlabeled; metric switched to hit-retention vs library size | §51 |
+| 2026-08-24 | incumbent corrected to the two-round process; potency bias found; target set at 17 % of 1 uM clones at ~80K members | §52 |
 
 ### Reversals and corrections
 
@@ -2612,6 +2613,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 51 | 08-24 | choosing WHICH residue at a charge position needs the ligand's charged group located, hence a pose -- which §46b measured at 8.33 A error into a pocket that does not exist yet | holding the library fixed, 59-charge substitutions per clone run **0.05 (anionic ligands) -> 0.17 -> 0.31 -> 0.78 (cationic)**, a ~16x spread in the direction electrostatics demands, and acids relocate their charge chemistry to E94/V81/I110 instead. 17 of 19 acid ligands never touch 59 | **the circularity is binding for STERIC placement and largely absent for CHARGE** -- the discriminating feature is formal charge class, a 2D SMILES property needing no pose. Polar positions (120, 163) are NOT covered by this and plausibly do need geometry (§49a-b) |
 | 52 | 08-24 | a chemical-similarity lookup over 194 already-screened ligands might match anything we build, so it had to be ruled out first | leave-one-ligand-out over 89 ligands: similarity beats a **ligand-blind frequency menu** by **+0.010** recall@20 (23 win / 13 loss / **53 tie**), and copying the single nearest ligand is far WORSE (0.20 vs 0.35). It helps only where a close neighbour exists (+0.045 at Tanimoto>=0.5) and **only 0.4 % of ligand pairs reach 0.5** (median 0.110) | **lookup is dead** -- nothing to look up for a novel ligand. But the null it exposed is the real prize: **freq recall@20 = 0.35, @40 = 0.52**, ligand-blind and free, and the bar every method here has never been measured against. oracle@20 = 0.99 also scopes the task to a 20-40 substitution menu (§50) |
 | 53 | 08-24 | recall of observed substitutions was the right way to score a designed library | the hit sets are **positive-unlabeled**: the landscape is not fully tested, libraries are SAMPLED not enumerated, and selection removes variants for reasons unrelated to pocket binding (URA3 activity, constitutive interface binding, and non-uniform promiscuity filtering -- pan-PFAS cross-reactivity was a FEATURE there). 'Not observed' means unknown, not non-functional | **precision is unmeasurable, only recall**; the frequency baseline is **advantaged by construction** so failing to beat it is weak evidence; `oracle@20=0.99` was misread. Metric replaced by **fraction of ligands whose library contains >=1 hit, vs library SIZE** -- you need *a* sensor, not every sensor. New bar: **58 % at 10^5.9, 72 % at 10^7.3**, matching Tian's own focused-library sizes (§51) |
+| 54 | 08-24 | hit retention vs library size was the metric that would show a designed library winning | every ground-truth hit came OUT of the existing libraries, so a designed menu is a SUBSET and can only lose hits -- ceiling 100 % at full size. And hit RATE is not recoverable at all: the data record characterised hits, not screening depth. The real incumbent is free (DSM glycerol stock) then a **focused ~1e5 round-2 library built from round-1 hit profiles** -- Tian coumarin **77,327**, TNT **506,229** -- which demonstrably works, rescuing 5 ligands round 1 missed | **retention can only measure shrinkage, never advantage.** The novel claim available is different and stronger: Tian's focused libraries NEED a round-1 screen, so designing one from chemistry alone **removes an experimental round**. Measurable headroom found: frequency ordering is biased to WEAK sensors -- at ~80,000 members it captures **17 % of 1 uM clones vs 24 % of 100 uM** (§52) |
 
 ### Bugs caught before they cost anything
 
@@ -6287,3 +6289,88 @@ found.
 
 The §50 numbers (recall@20 = 0.35) are not wrong, but they answer a question we
 no longer care about, and that section now carries a pointer here.
+
+---
+
+## 52. The right incumbent, and what "something novel" would actually mean (2026-08-24)
+
+Jannis: a designed library is only worth building if it delivers **≥10× size
+reduction at comparable hit rate**, or **the same size with more/better hits**.
+Otherwise use the DSM library already sitting in glycerol stocks, which is free.
+
+That is correct, and §51 was still benchmarking against the wrong thing.
+
+### 52a. A flaw in the metric, stated plainly
+
+Every ground-truth hit came **out of** the existing libraries. So any menu we
+design is a *subset* and can only lose hits, never gain them — the ceiling is
+100 % at full size. **The hit-retention metric can never show a designed library
+beating the incumbent.** It can only measure how far the window can be narrowed
+before hits are lost. That is worth knowing, but it is not evidence of advantage,
+and §51 came close to reading it as though it were.
+
+Related: **hit *rate* is not recoverable from this data at all.** The datasets
+record characterised hits, not screening depth, so density-per-transformant — the
+quantity that would actually decide the economics — cannot be computed here.
+
+### 52b. The incumbent is a two-round process, and round 2 is already focused
+
+| library | actual members |
+|---|---|
+| Tian coumarin (focused) | **77,327** |
+| Tian TNT (focused) | **506,229** |
+| Park 2023 | ~12,000 clones, ~400,000 colonies screened |
+
+The design *spaces* quoted in §51d (10¹⁵–10²¹) are not what gets built. The real
+process is:
+
+1. screen the existing DSM/TSM stock — free, already made;
+2. if that fails, build a **focused ~10⁵ library from sequence profiles of
+   round-1 hits**.
+
+And step 2 works: it isolated sensors for 4-methylumbelliferone,
+7-methoxycoumarin, TNT, DNT and 2ADNT, **all missed in round 1** (§34d).
+
+So the target is not "beat the DSM stock" — nothing beats free. It is round 2.
+
+### 52c. What would genuinely be novel
+
+**Tian's focused libraries require a round-1 screen to build the profile.** A
+method that designs an equally focused (~10⁵) library from ligand chemistry and
+structure alone — with no round-1 hits to learn from — **removes an entire
+experimental round per ligand.** That is a concrete, economically meaningful
+advance, and it is the honest framing of what computation can contribute here.
+It is also the one claim not undermined by §52a, because it is not a claim about
+beating the library; it is a claim about not needing the first screen.
+
+The second unambiguous target already exists: **the 229 documented failures**
+(§13, 28–50 heavy atoms, 15.3–22 Å, screened against all six libraries, zero
+hits). A hit on any of those is directly comparable to a published negative.
+
+### 52d. Option B is open, and now quantified
+
+Frequency ordering is **biased toward weak sensors**. At matched potency, the
+fraction of clones whose every substitution is in the menu:
+
+| K | library size | 1 µM | 10 µM | 100 µM |
+|---|---|---|---|---|
+| 20 | 13,824 | 13 % | 10 % | 21 % |
+| **25** | **82,944** ≈ Tian coumarin | **17 %** | 13 % | **24 %** |
+| 30 | 663,552 | 20 % | 17 % | 29 % |
+| 40 | 15.6 M | 33 % | 29 % | 38 % |
+
+Potent clones are captured **less** often than weak ones, and not because they
+are more complex — substitutions per clone is 2.53 / 2.57 / 2.44 across the three
+potency classes. Their substitutions are simply rarer, and a frequency menu fits
+the mode, which is weak hits (316 clones at 100 µM against 60 at 1 µM).
+
+**So there is real headroom for "same size, better hits":**
+
+> at ~80,000 members — the size Tian actually builds — a ligand-blind frequency
+> library captures **17 % of the potent (1 µM) clones**. Beat that at matched
+> size and the library is genuinely better tuned, not merely smaller.
+
+This is the first target in this project that is both measurable and, if met,
+clearly worth doing. It also has an obvious cheap baseline to clear first —
+potency-weighted frequency (weight each substitution by 1/min_conc) — which must
+be run before any structural method claims the credit.
