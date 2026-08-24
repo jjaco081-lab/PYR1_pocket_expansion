@@ -2555,6 +2555,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | lookup baseline run and killed; ligand-blind frequency null quantified as the bar | §50, `scripts/107_lookup_baseline.py` |
 | 2026-08-24 | ground truth reframed as positive-unlabeled; metric switched to hit-retention vs library size | §51 |
 | 2026-08-24 | incumbent corrected to the two-round process; potency bias found; target set at 17 % of 1 uM clones at ~80K members | §52 |
+| 2026-08-24 | library sizes corrected for substitution depth; round 2 reframed as narrow+deep, not smaller | §53 |
 
 ### Reversals and corrections
 
@@ -2614,6 +2615,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 52 | 08-24 | a chemical-similarity lookup over 194 already-screened ligands might match anything we build, so it had to be ruled out first | leave-one-ligand-out over 89 ligands: similarity beats a **ligand-blind frequency menu** by **+0.010** recall@20 (23 win / 13 loss / **53 tie**), and copying the single nearest ligand is far WORSE (0.20 vs 0.35). It helps only where a close neighbour exists (+0.045 at Tanimoto>=0.5) and **only 0.4 % of ligand pairs reach 0.5** (median 0.110) | **lookup is dead** -- nothing to look up for a novel ligand. But the null it exposed is the real prize: **freq recall@20 = 0.35, @40 = 0.52**, ligand-blind and free, and the bar every method here has never been measured against. oracle@20 = 0.99 also scopes the task to a 20-40 substitution menu (§50) |
 | 53 | 08-24 | recall of observed substitutions was the right way to score a designed library | the hit sets are **positive-unlabeled**: the landscape is not fully tested, libraries are SAMPLED not enumerated, and selection removes variants for reasons unrelated to pocket binding (URA3 activity, constitutive interface binding, and non-uniform promiscuity filtering -- pan-PFAS cross-reactivity was a FEATURE there). 'Not observed' means unknown, not non-functional | **precision is unmeasurable, only recall**; the frequency baseline is **advantaged by construction** so failing to beat it is weak evidence; `oracle@20=0.99` was misread. Metric replaced by **fraction of ligands whose library contains >=1 hit, vs library SIZE** -- you need *a* sensor, not every sensor. New bar: **58 % at 10^5.9, 72 % at 10^7.3**, matching Tian's own focused-library sizes (§51) |
 | 54 | 08-24 | hit retention vs library size was the metric that would show a designed library winning | every ground-truth hit came OUT of the existing libraries, so a designed menu is a SUBSET and can only lose hits -- ceiling 100 % at full size. And hit RATE is not recoverable at all: the data record characterised hits, not screening depth. The real incumbent is free (DSM glycerol stock) then a **focused ~1e5 round-2 library built from round-1 hit profiles** -- Tian coumarin **77,327**, TNT **506,229** -- which demonstrably works, rescuing 5 ligands round 1 missed | **retention can only measure shrinkage, never advantage.** The novel claim available is different and stronger: Tian's focused libraries NEED a round-1 screen, so designing one from chemistry alone **removes an experimental round**. Measurable headroom found: frequency ordering is biased to WEAK sensors -- at ~80,000 members it captures **17 % of 1 uM clones vs 24 % of 100 uM** (§52) |
+| 55 | 08-24 | library size = product over positions of (allowed residues + 1) | the primaries are **substitution-DEPTH limited**: DSM-Hao is a **double**-substitution library and TSM a **triple**, confirmed in the clones (dsm mode 2, 193/266; tsm mode 3, 346/403). True sizes are **DSM-Hao 36,140** and **TSM 332,863**, not 3.8e21 and 7.7e15 -- wrong by up to **16 orders of magnitude**. Every library is 1e4-1e7 and the PRIMARIES are the smallest | **round 2 is not smaller, it is differently SHAPED** -- broad+shallow (18 positions, 2-3 deep) becomes narrow+DEEP (11-14 positions, 7-8 deep), reaching combinations round 1 cannot express at any screening depth. '>=10x size reduction' is the wrong axis; the task is **which positions are worth combining deeply**. Retention percentages survive (set containment); only the size axis was wrong (§53) |
 
 ### Bugs caught before they cost anything
 
@@ -6199,7 +6201,7 @@ V163W, V83L, A160L/I/V/M, K59D, L87M, V164F.
 
 ---
 
-## 51. The ground truth is positive-unlabeled, and the metric has to change (2026-08-24)
+## 51. The ground truth is positive-unlabeled, and the metric has to change (2026-08-24) — ⚠ LIBRARY SIZES IN 51d ARE WRONG, SEE §53
 
 A correction from Jannis, and it invalidates part of how §50 was framed.
 
@@ -6292,7 +6294,7 @@ no longer care about, and that section now carries a pointer here.
 
 ---
 
-## 52. The right incumbent, and what "something novel" would actually mean (2026-08-24)
+## 52. The right incumbent, and what "something novel" would actually mean (2026-08-24) — ⚠ SIZE ARITHMETIC CORRECTED IN §53
 
 Jannis: a designed library is only worth building if it delivers **≥10× size
 reduction at comparable hit rate**, or **the same size with more/better hits**.
@@ -6374,3 +6376,97 @@ This is the first target in this project that is both measurable and, if met,
 clearly worth doing. It also has an obvious cheap baseline to clear first —
 potency-weighted frequency (weight each substitution by 1/min_conc) — which must
 be run before any structural method claims the credit.
+
+---
+
+## 53. Correction: the libraries are substitution-DEPTH limited, and round 2 is a change of shape (2026-08-24)
+
+Jannis: DSM-Hao is a **double-substitution** library — a limited number of total
+substitutions, combined two at a time. The secondary libraries *limit the total
+substitutions but allow more per binder*, so they reach combinations the primary
+library cannot express at all, despite offering fewer possibilities overall.
+
+That is correct, and the library sizes in §51d and §52b were badly wrong.
+
+### 53a. What I got wrong
+
+I computed library size as the product over positions of (allowed residues + 1),
+which assumes every position can vary simultaneously. The primaries are
+depth-limited, so that is not the space they span. Confirmed directly from the
+clone data:
+
+| library | substitutions per clone |
+|---|---|
+| **dsm** (primary) | mode **2** — 193 of 266 clones |
+| **tsm** (primary) | mode **3** — 346 of 403 |
+| sd07 coumarin (secondary) | mode **7**, range 3–10 |
+| sd08 TNT (secondary) | mode **7**, range 1–10 |
+
+Recomputing under the real constraint:
+
+| library | positions | depth | **true size** | what §51d claimed |
+|---|---|---|---|---|
+| **DSM-Hao** | 18 | **2** | **36,140** | 3.79 × 10²¹ |
+| **TSM** | 18 | **3** | **332,863** | 7.70 × 10¹⁵ |
+| Coumarin | 11 | all 11 | 138,240 | 138,240 |
+| TNTv2 | 14 | all 14 | 1,244,160 | — |
+| TNTv1 | 16 | all 16 | 4,665,600 | — |
+| PFAS | 13 | all 13 | 49,545,216 | — |
+
+Wrong by up to **16 orders of magnitude**. Every library is 10⁴–10⁷, and the
+**primaries are the smallest of them**.
+
+### 53b. What this changes
+
+**Round 2 is not smaller. It is differently shaped.**
+
+- round 1 — **broad and shallow**: 18 positions, 2–3 substitutions per variant
+- round 2 — **narrow and deep**: 11–14 positions, 7–8 substitutions per variant
+
+Round 1 asks *which positions and residues matter*. Round 2 asks *which of them
+combine*. The 7–8-deep combinations that make the secondary sensors work are
+**not reachable in the primary library at any screening depth**, because it
+cannot express them.
+
+So two earlier framings are now void:
+
+- **"≥10× library-size reduction" is the wrong axis** (§52). Round 2 is
+  the same size or larger than round 1. Size is not what round 2 buys.
+- **The design task is not "make it smaller"** — it is *which few positions and
+  residues are worth combining deeply*.
+
+What survives from §52 is the claim that matters: **Tian's round-2 libraries are
+built from round-1 hit profiles, so producing one without round 1 removes an
+experimental round.** And §52d's potency target survives untouched, since it is
+about which clones a menu captures, not about library size.
+
+Also unaffected: the **hit-retention percentages** in §51c are set containment
+and do not depend on library size. Only the size axis beside them was wrong.
+
+### 53c. The task, as actually posed
+
+> Build a pipeline that produces focused **secondary** libraries for a range of
+> molecules.
+
+Since every characterised hit so far comes from this limited context, continuing
+in it is legitimate. And a method that recovers the known substitutions well
+*and* proposes extra ones lets those extras be considered for the library too —
+the proposal set is not capped by what has been tried.
+
+**The retrospective form of the test**, which we can run now: take the DSM-Hao
+**round-1** hits for PFAS / TNT / coumarin, design a secondary library from them,
+and ask whether it recovers the known **round-2** hits — in a smaller library
+than the one actually built.
+
+⚠ **Bias control is the hard part here, not the method.** Round-1 and round-2 hits
+for the same ligand share chemistry by construction, so groups must be held out
+deliberately — by ligand and by chemical class — or the evaluation will report
+memorisation. §48d's frozen PFAS/TNT split is the starting point but is not
+sufficient on its own, because round-1 hits for those same ligands would leak.
+
+### 53d. Standing note on prospective targets
+
+Jannis has selected an initial target molecule and others with known weak initial
+hits, and is **deliberately withholding their identities to prevent unintentional
+biasing**. Do not ask for them, and do not attempt to infer them from the data.
+Any method must be specified and frozen before those identities are revealed.
