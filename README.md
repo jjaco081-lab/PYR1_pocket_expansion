@@ -2561,6 +2561,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | donor graft pockets measured (2PCS 27 lining side chains vs PYR1 19-20); switch still unsimulable | §56 |
 | 2026-08-24 | donor ligands checked (2PCS = UNL, 3TFZ = buffer); five routes around library x library ranked | §57 |
 | 2026-08-24 | factorial found to be n=1 not n=3; core-mask atom mismatch found; under-filled pocket problem stated | §58 |
+| 2026-08-24 | partial-occupancy question answered from the clones; enhanced-sampling and parallel-evolution designs specified | §59 |
 
 ### Reversals and corrections
 
@@ -2627,6 +2628,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 59 | 08-24 | grafting from a donor with a KNOWN ligand collapses the chemical dimension and avoids library x library | checked the het codes: **2PCS's ligand is literally `UNL`, "Unknown ligand"** (unmodelled density), 3TFZ's `CXS` is **CHES buffer**, and 2NS9/2BK0 are **apo**. Only **6AWV / (-)-epicatechin** has an identified physiological ligand -- and it is the weakest of the big four to graft (3.93 A coreRMSD, 9.8 % identity, **17/19** machinery coverage) | the premise holds for **one** candidate, which is also the hardest graft. And the product is a **DISCOVERY** cost that does not apply when a weak hit already exists -- then it is one library x one analyte, i.e. §54's vocabulary-subset problem. Grafting's remaining distinct use is as a **positive control that a big pocket can switch at all** (§57) |
 | 60 | 08-24 | the §30 conformation x occupancy factorial was complete (4 cells x 3 reps x 300 ns) and merely unanalysed | I checked that `prod.nc` EXISTED, not how long it was. **5 of 12 reps reached 300 ns -- one per cell**; three array tasks failed outright and four more truncated at 6-65 ns. Separately the core superposition mask selected **656 atoms in the system vs 644 in the references** (both refs miss residues 2, 69-70, 182-191), so the fit silently did not happen and gate RMSDs came out at **39-41 A** for a five-residue loop | the 2x2 is **n=1 per cell** and cannot give the replicated S9-vs-S2 contrast it was built for. Same 'verify against the physics, not the file' failure as §44a's frame count. Corrected 161-residue common core written to `data/md191/core_mask.txt` (§58b) |
 | 61 | 08-24 | a weak hit collapses the chemical dimension, so expanded-pocket designs can be tested against it | **the gate closes ONTO the ligand.** A weak hit is for a ligand that fits the CURRENT envelope; enlarge the cavity and that ligand no longer reaches the gate, giving either no closure (no signal) or ligand-independent closure (constitutive, which the counter-selection removes) | expansion must be paired with a **LARGER** ligand -- the 28-50 heavy-atom band, i.e. the 229 documented failures, which are the matched test set. And §24's kinetic trapping means we can measure the stability of a starting state but **never the open/closed free-energy difference**, which is the quantity separating signal from constitutive. **The question is one this class of method cannot answer** -- it needs Y2H (§58) |
+| 62 | 08-24 | an enlarged cavity needs a larger ligand to fill it, or transduction breaks (§58) | measured over 691 clones: **94 release >=100 A^3 of side-chain volume, and 28 of those bind ligands of <=20 heavy atoms** -- ABA-sized. **Honokiol and Magnolol (isomers, 20 heavy) both give 1 uM sensors at -161 A^3**, close to doubling PYR1's 174 A^3 cavity; Carpropamid 1 uM at -144 | **the ligand does NOT have to fill the enlarged cavity.** Partial occupancy reaches the top potency class empirically, so the under-filling worry is materially weakened -- with the caveat that net side-chain volume is not cavity volume (the pocket may be RESHAPED rather than voided, and water fills the rest) (§59a) |
 
 ### Bugs caught before they cost anything
 
@@ -6887,3 +6889,94 @@ So the expanded-pocket experiment is necessarily *expanded library × large-liga
 set*, with N bounded by the 229 rather than open-ended — and with the
 ligand-independent-activation control run alongside, because that is the failure
 mode computation cannot see.
+
+---
+
+## 59. Three follow-ups: enhanced sampling, partial occupancy, and parallel evolution (2026-08-24)
+
+### 59a. Can a ligand bind at the pocket edge and leave a void behind it? — YES, measured
+
+§58 raised the risk that an enlarged cavity with a same-sized ligand cannot
+transduce. The Tian clones answer it directly. Net side-chain volume change
+against ligand size, over 691 clones with SMILES:
+
+| ligand heavy atoms | n | median volume released |
+|---|---|---|
+| ≤18 | 222 | −4 Å³ |
+| 18–22 | 225 | +21 Å³ |
+| 22–26 | 149 | +26 Å³ |
+| ≥26 | 95 | +51 Å³ |
+
+Bigger ligands do get more hollowing (r = +0.25), as expected. **But the tail is
+the point: 94 clones release ≥ 100 Å³, and 28 of those bind ligands of ≤ 20 heavy
+atoms — the same size as ABA.** Several reach the best potency class:
+
+| clone ligand | heavy atoms | ΔV | subs | min_conc |
+|---|---|---|---|---|
+| **Honokiol** | 20 | **−161 Å³** | 3 | **1 µM** |
+| **Magnolol** | 20 | **−161 Å³** | 3 | **1 µM** |
+| **Carpropamid** | 20 | −144 Å³ | 4 | **1 µM** |
+| Carpropamid | 20 | −185 Å³ | 2 | 10 µM |
+| Monobenzone | 15 | −183 Å³ | 3 | 100 µM |
+
+PYR1's cavity is 174 Å³, so −161 Å³ of side-chain volume is close to doubling it —
+and Honokiol and Magnolol (isomers, so a consistent pair rather than a fluke)
+still give 1 µM sensors with a 20-heavy-atom ligand.
+
+**So the ligand does not have to fill the enlarged cavity.** Empirically, an
+ABA-sized ligand can occupy part of a substantially hollowed pocket and still
+produce a top-potency sensor. That materially weakens the under-filling worry —
+though note the caveat that net side-chain volume is not the same as cavity
+volume: the pocket may be *reshaped* rather than left as a void, and water can
+fill what remains. What the data establishes is that the **mechanism tolerates it**,
+not what the void does.
+
+### 59b. Enhanced sampling — yes, still available, with one specific design
+
+§24's limitation is a property of **unbiased** MD: the barrier is not crossed in
+300 ns. Umbrella sampling or metadynamics along a gate coordinate returns the PMF,
+which is exactly the open↔closed free-energy difference §58a said we cannot reach.
+
+The risk is the reaction coordinate. Gate closure is a loop rearrangement with
+orthogonal slow modes — latch, ligand pose, side-chain repacking — so a single
+RMSD coordinate will show hysteresis. That is the same failure class that broke
+the TI: a path-dependent estimator whose path is contested.
+
+Two things make it worth doing anyway:
+
+- **Take a difference, not an absolute.** The quantity that matters is not the PMF
+  of one pocket but ΔΔG between a **filled** and an **under-filled** cavity.
+  Systematic coordinate error largely cancels in that difference — the same logic
+  that made TI *selectivity* usable while absolute ddG was not (§43b, §46a).
+- **A calibration case already exists.** WT + ABA closes, WT apo is open. Any
+  scheme must reproduce that sign before being trusted on a designed pocket —
+  the §13e discipline applied to a new method.
+
+Cost is ~20–30 windows × 50–100 ns per system, so 1–3 µs — the same order as
+already spent on the factorial, and unlike the factorial it targets the quantity
+that decides the question.
+
+### 59c. Parallel directed evolution — feasible, and it tests what computation cannot
+
+Three ligands × five starting structures, selecting for responsiveness.
+
+This is workable, and its main argument is §58a: **the constitutive-versus-signal
+question is not answerable by any method in this project, and Y2H answers it
+directly** — growth without ligand is the readout for the exact failure mode no
+computational filter here can see.
+
+Two design notes:
+
+- **Do not build 15 libraries.** Five starting structures for one ligand will
+  share most positions, so one library per ligand spanning all five costs three
+  libraries rather than fifteen, and the lineages compete within a single
+  selection.
+- **Include a positive control.** If all lineages fail, "expansion does not work"
+  and "the five starting structures were badly chosen" are indistinguishable. A
+  ligand/pocket pair already known to work makes the negative interpretable —
+  the same lesson as the ABA null arm in §23j, which was never scored on its own
+  correct answer.
+
+Precedent supports the shape of it: Tian's round 2 evolves from round-1 profiles
+and rescued five ligands round 1 missed, and §54 found 4 of 11 round-2 sensors had
+no round-1 hit at all — so starting points help but are not required.
