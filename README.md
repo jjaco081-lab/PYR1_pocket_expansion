@@ -2559,6 +2559,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | round-1 -> round-2 carryover measured; design problem reframed as vocabulary subset selection | §54 |
 | 2026-08-24 | co-folding validation submitted (27727052, 4 runs incl. WT negative control); ML data audit | §55 |
 | 2026-08-24 | donor graft pockets measured (2PCS 27 lining side chains vs PYR1 19-20); switch still unsimulable | §56 |
+| 2026-08-24 | donor ligands checked (2PCS = UNL, 3TFZ = buffer); five routes around library x library ranked | §57 |
 
 ### Reversals and corrections
 
@@ -2622,6 +2623,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 56 | 08-24 | a secondary library is built by extrapolating from that ligand's own round-1 hit | measured on the 11 coumarin round-2 sensors: **own-ligand carryover is 0-64 %** (median ~23 %, and **4 of 11 had NO round-1 hit at all**), while **pooled round-1 across 194 ligands covers 75-100 %** (mostly 93-100). Round-1 explores 144 of 342 possible single substitutions and contains 75 % of all round-2 chemistry; the residual 8 sit at positions 65/71/74/109/124/134/178/184, OUTSIDE the original 18 | **an initial hit is neither necessary nor sufficient.** The design problem is **subset selection from a known ~144-substitution vocabulary plus a depth choice**, not extrapolation -- use the hit to WEIGHT the vocabulary, never to restrict it, since restricting would have failed for every ligand in the table (§54) |
 | 57 | 08-24 | ~1150 labelled clones might be enough to bias an ML tool from ligand SMILES to sequence | the effective sample size is the number of independent **LIGANDS (~208)**, not clones -- clones sharing a ligand are repeats under one input. 69 ligands have exactly 1 clone; only 47 have >=5; median pairwise Tanimoto **0.106** | **generative SMILES->sequence is 2-4 orders of magnitude short**, and LigandMPNN fine-tuning inherits the pose problem AND starts from a model that INVERTS V81I (-0.841, §23h). What IS supported: a ~10^2-parameter conditional model over position x residue-class (§49a generalised), and -- unused so far -- a **tractability classifier** on 208 positives + **229 documented negatives** = 437 ligand-level labels (§55b) |
 | 58 | 08-24 | the big-cavity graft donors offer PYR1's pocket with more room | measured for the first time from the DONOR side: cavity volume and lining side chains track at **r = +0.99**, so **2PCS lines its 570 A^3 cavity with 27 side chains against PYR1's 19-20** (~40 % more positions) at 9.8 % identity, and volume per lining residue rises from ~9-12 to 21 A^3 | they are **different architectures, not larger PYR1s**. The cavity/transplantability tension is **categorical, not gradual**: everything >300 A^3 sits at 3.45-4.03 A core RMSD and ~10 % identity, everything transplantable (<1.5 A) is PYR1-sized. Also **2NS9 and 2BK0 are APO**, so the previously-favoured 2BK0's 344 A^3 is a cavity-detection number being compared against a ligand-contact one (§56b-c) |
+| 59 | 08-24 | grafting from a donor with a KNOWN ligand collapses the chemical dimension and avoids library x library | checked the het codes: **2PCS's ligand is literally `UNL`, "Unknown ligand"** (unmodelled density), 3TFZ's `CXS` is **CHES buffer**, and 2NS9/2BK0 are **apo**. Only **6AWV / (-)-epicatechin** has an identified physiological ligand -- and it is the weakest of the big four to graft (3.93 A coreRMSD, 9.8 % identity, **17/19** machinery coverage) | the premise holds for **one** candidate, which is also the hardest graft. And the product is a **DISCOVERY** cost that does not apply when a weak hit already exists -- then it is one library x one analyte, i.e. §54's vocabulary-subset problem. Grafting's remaining distinct use is as a **positive control that a big pocket can switch at all** (§57) |
 
 ### Bugs caught before they cost anything
 
@@ -6711,3 +6713,90 @@ So a graft could be designed, folded, and shown stable, and none of that would
 distinguish a working switch from a dead one. Any serious graft attempt needs the
 switch assayed experimentally (Y2H reports exactly this), or an enhanced-sampling
 method this project has not built.
+
+---
+
+## 57. How to test expanded pockets without running library × library (2026-08-24)
+
+The concern: screening a pocket library against a chemical library is a product,
+and characterising interactions afterwards is worse. Grafting from a donor whose
+ligand is already known collapses one dimension — you know what to test.
+
+That reasoning is sound. The premise mostly fails on the donors we have.
+
+### 57a. The donors' "known ligands", checked
+
+| donor | cavity Å³ | het code | what it actually is |
+|---|---|---|---|
+| **2PCS** | **570** | UNL | **"Unknown ligand"** — unmodelled density |
+| 2NS9 | 455 | — | apo |
+| 2BK0 | 344 | — | apo |
+| **6AWV** | 319 | 28E | **(−)-epicatechin**, C15H14O6 — a real ligand |
+| 3TFZ | 207 | CXS | **CHES buffer** — a crystallisation additive |
+
+**Exactly one big-cavity donor has an identified physiological ligand.** The
+570 Å³ champion's ligand was never assigned; 3TFZ's is buffer; two are apo. And
+6AWV is the weakest of the big four on transplantability — core RMSD 3.93 Å,
+9.8 % identity, and **17/19** machinery coverage, the only one of the four that
+loses machinery residues.
+
+So grafting buys the known-ligand advantage in one case, and that case is the
+hardest graft.
+
+### 57b. The product only exists if you are doing discovery
+
+Library × library is a **discovery** cost — it applies when you are looking for
+*new* pocket/ligand pairs with no starting point. It is not incurred when a weak
+hit already exists for the target, because then the chemical dimension is already
+collapsed to one compound and the problem is **one library × one analyte**, which
+is exactly the round-2 optimisation of §54.
+
+Note also that the product is smaller than it looks even for discovery: Y2H
+selection is parallel over variants, so the unit is *one screen per compound*, not
+one assay per (variant, compound) pair. Tian ran ~194 compounds this way. The cost
+is N screens, and N is what wants reducing.
+
+### 57c. Five ways to avoid the product, ranked by what they cost
+
+1. **Start from a weak hit.** No chemical dimension at all. Available today for
+   targets that already have one, and §54 says the design problem there is subset
+   selection from a ~144-substitution vocabulary — the best-posed problem in this
+   project. *Cost: one library per target.*
+2. **Tractability triage** (§55b). 208 positives + 229 documented negatives = 437
+   ligand-level labels, enough for a classifier that predicts whether a compound
+   is worth screening at all. Cuts N before any bench work. *Cost: days of CPU,
+   never attempted.*
+3. **Pooled screening with deconvolution.** Screen against pools of 10–20
+   compounds, deconvolute the survivors. Cuts N by the pool size. The standard
+   risk is a promiscuous variant dominating the pool — worth noting that
+   promiscuity is not always a defect here, since the PFAS sensors are marketed as
+   pan-PFAS (§51a). *Cost: bench, standard practice.*
+4. **Probe-set screening.** A small chemically diverse set (~20–50 compounds) run
+   against the expanded pocket to answer *does this pocket bind anything and still
+   switch* before committing to a specific analyte. Separates "is the pocket
+   functional" from "does it bind X", which §56d says we cannot answer
+   computationally. *Cost: one screen against a fixed set, reusable across designs.*
+5. **Grafting.** Collapses the chemical dimension only where the donor ligand is
+   real — one candidate (6AWV/epicatechin), which is also the hardest graft. Plus
+   §56b (transplantable donors are PYR1-sized; big-cavity donors need a rebuild)
+   and §56d (the switch cannot be validated computationally, and a constitutively
+   closed graft passes every filter we have). *Cost: highest, and it carries the
+   one risk we have no assay for.*
+
+### 57d. What I would actually do
+
+**If the target already has a weak hit, grafting is solving a problem you do not
+have.** The chemical dimension is already collapsed; the remaining problem is
+library design for a known analyte, which is §54's vocabulary-subset problem and
+is testable retrospectively today on coumarin.
+
+Grafting keeps one distinct use: as a **positive control that a large pocket can
+be made switchable at all**. 6AWV/epicatechin is the only candidate where that
+control would have an identified ligand to report against. That is a real
+experiment, but it answers a feasibility question rather than producing a sensor,
+and it costs a rebuild.
+
+The step that removes the most future cost for the least effort is (2): a
+tractability classifier on 437 labelled ligands. It is the only item here that
+shrinks N *before* anything reaches the bench, and the data for it has been
+sitting unused since §31.
