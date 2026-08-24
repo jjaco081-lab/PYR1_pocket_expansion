@@ -2548,6 +2548,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-22 | TI pilot **returns 72/72**; error bar found to be ~20x too small, §43d premise withdrawn, mandi legs found to start from a 0.62 A clash | `results/ti/`, §44 |
 | 2026-08-22 | `.gitignore` given **global** extension rules after the 4th per-directory miss left a 7.9 GB `prod.nc` untracked | `.gitignore` |
 | 2026-08-23 | **non-cognate MD complete** (9 x 150 ns, 1.35 us); quadruple TI built and 40/48 windows run | §45, `results/noncognate/`, `data/ti_quad/` |
+| 2026-08-24 | **quadruple TI 48/48**: crystal arm -1.12 +/- 2.34 (no call); docked arm invalid, ligand collapses into ghost F108 | S46, `results/ti_quad/` |
 
 ### Reversals and corrections
 
@@ -2600,6 +2601,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 45 | 08-22 | both V81I and K59R should individually shift selectivity toward mandipropamid, because both appear in 4WVO (the §43d premise) | **PYR1^MANDI is a FOUR-mutation set** (K59R/V81I/F108A/F159L) selected together; nothing requires a member to work alone in a WT background. Measured here, native V81 is **4.85 A from ABA** -- second shell, no contact (native V83, also a valine, is the one at 2.99 A). LigandMPNN had independently scored V81I at **-0.841**, anti-correlated with mandipropamid (S23h) | **§43d is withdrawn as a test of the method.** A converged TI, a sequence model and the structure all agree V81I *alone* is not mandi-favouring. The premise was mine and should have been challenged when written, not after it returned an unwelcome answer (§44b) |
 | 46 | 08-22 | the TI mandipropamid legs represented a bound complex | 85 loads `3UZ.mol2` into the **WT** pocket with F108/F159 present and **no pose relaxation**: F108-ligand **0.62 A** heavy-atom, F159 1.38 A, V81 1.40 A, with 8 (V81I) and **18** (K59R) contacts under 2.0 A. Minimisation relieved it and nothing dissociates (ligand RMSD 1.1-3.9 A after CA superposition), but the resulting pose is validated against nothing | **every selectivity number rests on that leg.** The decisive run is the one §13e already requires and TI never had: the **quadruple** K59R/V81I/F108A/F159L, ABA vs mandipropamid, built from **4WVO's own coordinates** -- 24 windows, ~2.5 h (§44c, §44e) |
 | 47 | 08-23 | if closed PYR1 held its state around a ligand it was never built for, the §24b filter would be conformation-only and disqualified | it is **not** purely conformational: the gate moves ~1.0 A more around imperatorin (+1.02) and flutamide (+1.08) than around ABA, run-level ranges non-overlapping. But **alpha-estradiol is indistinguishable from the cognate ligand** on every observable (ligand RMSD 1.54 vs 1.67, gate 1.69 vs 1.79, exact p 0.90) despite needing three mutations to work as a sensor | the filter carries ligand information but **passes a true negative**, which is the dangerous direction for a design filter. And the design cannot be significant: n=3 vs n=3 has a two-sided p floor of **0.10**, exactly where both "separate" results sit (§45)
+| 48 | 08-24 | the quadruple TI would settle whether TI can rank selectivity | the CRYSTAL arm gives **-1.12 +/- 2.34** -- the right sign, but the error is twice the effect, so **NO CALL** on the S13e test; second-half-only moves to -0.10. Quadrature is clean (0.01) and the apo leg's 4.61 drift cancels exactly out of selectivity, as designed | still undecided, and now COSTED: stat 0.5 needs ~121 ns/window = 2.9 us = ~8.3 GPU-days over 24 windows (S46a) |
+| 49 | 08-24 | a docked pose would just give a worse NUMBER than the crystal pose, letting us price "no structure" | the docked arm returned **-1381 kcal/mol** with the wrong CURVE SHAPE. Measured: the ligand collapses into the decoupled WT Phe108 ring -- **all 14 sub-2 A contacts at lambda=0.885 are F108 ring atoms**, min 1.22 A, while the crystal arm has zero in every window | it fails STRUCTURALLY, not noisily. The pose was docked into the F108A **cavity**, i.e. exactly the volume the transformation deletes, so **any TI from WT to a cavity-creating mutant with the ligand docked into that cavity is ill-conditioned in dual topology** -- which is the intended production workflow. The "cost of no structure" is not quantifiable this way (S46b) |
 
 ### Bugs caught before they cost anything
 
@@ -5682,3 +5685,96 @@ the imperatorin and flutamide clones. If WT tolerance predicted evolvability tha
 would be directly useful for picking targets. On three ligands, one of which
 carries the entire signal, it is an anecdote. Recorded so it can be tested, not
 banked.
+
+---
+
+## 46. The quadruple TI: right sign, no call — and the docked arm fails structurally (2026-08-24)
+
+48/48 windows. The four low-λ windows of both mandi arms had to be rescued with a
+descending λ-ladder (§46c); everything else ran in parallel.
+
+### 46a. The crystal arm gives the right sign and cannot resolve it
+
+| leg | dG | stat | conv | quad | τ_max | n_eff min |
+|---|---|---|---|---|---|---|
+| aba | 14.88 | 1.37 | 1.46 | 0.01 | 175 | 14.2 |
+| mandi_xtal | 13.75 | 1.07 | 0.58 | 0.01 | 245 | 10.2 |
+| apo | 18.05 | 1.19 | **4.61** | 0.01 | 261 | 9.6 |
+| mandi_dock | **−1381.09** | 1.14 | 4.84 | 0.13 | 69 | 36.0 |
+
+> **selectivity, crystal pose = −1.12 ± 2.34** (stat 1.74 | conv 1.57)
+> second-half-only −0.10
+
+**Negative is the correct sign** — the quadruple is predicted to shift preference
+toward mandipropamid, which is what PYR1^MANDI does. But the error bar is twice
+the effect, so this is a **NO CALL** on the §13e test: not a pass, not a failure.
+The second-half-only value (−0.10) moves toward zero, which argues against
+reading the sign as meaningful on this much sampling.
+
+Two things worked as designed. Quadrature error is 0.01–0.02, so 12 nodes resolve
+even this integrand. And the **apo leg's 4.61 kcal/mol drift — the worst of the
+four — cancels exactly out of the selectivity**, which is why selectivity carries
+conv 1.57 while the absolute ddG_bind values carry ±5. That is the whole reason
+selectivity was chosen as the readout (§43b).
+
+Resolving it is affordable but not free: reaching stat = 0.5 needs ~12× more
+sampling, i.e. **121 ns/window, 2.9 µs over 24 windows, ~8.3 GPU-days**. Note
+that buys down `stat` only; `conv` shrinks only if the windows genuinely
+equilibrate.
+
+### 46b. The docked arm did not fail noisily — it failed structurally
+
+−1381 kcal/mol is not a measurement. Its ⟨∂V/∂λ⟩ curve has the wrong *shape*:
+where ABA, crystal and apo all rise to +200…+350 near λ ≈ 0.1 and cross zero
+around λ ≈ 0.6, the docked arm plunges to **−2675**.
+
+Measured cause, per window, ligand-to-WT-sidechain minimum heavy-atom distance:
+
+| window | crystal arm | docked arm |
+|---|---|---|
+| λ=0.32 | 3.59 Å, 0 contacts | 2.04 Å, 0 |
+| λ=0.56 | 3.22 Å, 0 | 1.72 Å, **11** |
+| λ=0.79 | 3.22 Å, 0 | 1.40 Å, **15** |
+| λ=0.88 | 3.44 Å, 0 | **1.22 Å, 14** |
+
+**Every one of those 14 contacts is with the WT Phe108 ring** — CZ, CE1, CE2,
+CD1, CD2, CG. The docked ligand has collapsed into the volume occupied by the
+decoupled WT phenylalanine. At high λ that sidechain is a ghost, so sitting
+inside it costs nothing; at intermediate λ the λ-derivative of that overlap is
+enormous, and the integral is meaningless.
+
+**This is not bad luck, and it is not really about docking quality.** The pose was
+docked into a model of the *quad* pocket, which carries F108A — a cavity. Docking
+fills cavities; that is what it is for. So the ligand is placed exactly in the
+volume that the alchemical transformation removes. **Any TI from WT to a
+cavity-creating mutant, with the ligand docked into that cavity, is
+ill-conditioned in dual topology.** The intended production workflow — design an
+enlarged pocket, dock a novel ligand into it, compute ΔΔG by TI — walks into this
+by construction.
+
+The crystal pose escapes it because real mandipropamid in 4WVO does not fill the
+F108 cavity that way.
+
+Consequence: **the "cost of not having a structure" cannot be quantified by this
+experiment.** The docked arm does not degrade gracefully into a worse number; it
+leaves the domain where the estimator is defined. The −1394 kcal/mol "gap"
+printed by the aggregator is an artefact and must not be quoted.
+
+### 46c. The λ-ladder, and what it did and did not fix
+
+The four low-λ windows of both mandi arms died in the parallel run: at λ ≈ 0 the
+WT sidechains are fully coupled and F108 sits 0.62 Å from the ligand, and
+minimisation cannot escape that — measured, E = 4.5×10⁸ kcal/mol and |F|max =
+8.4×10⁶, flat over 10,000 steps. Heating then died with `illegal memory access
+… kNLSkinTest`. A second, backbone-only minimisation stage was tried first and
+**was the wrong diagnosis**: there is no downhill path out of a 0.62 Å contact.
+
+Seeding each window from the equilibrated structure of the window above
+(lam04 → 03 → 02 → 01 → 00) fixed it for the crystal arm. It did **not** fix the
+docked arm, and could not have: its seed, lam04, was already contaminated, so
+windows 3 and 2 inherited the collapse (−1181, −294) and only by windows 1 and 0
+had the ligand relaxed back out (+27, +10).
+
+Also recorded: amber22 `pmemd.cuda` has no kernels for **h100 (gpu11)**, which
+fails in seconds with `invalid device symbol` — the same class as the known
+blackwell and k80 failures. Working set is a100 + ada6000 only.

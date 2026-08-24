@@ -1,0 +1,53 @@
+==================================================================================
+PYR1^MANDI QUADRUPLE (K59R/V81I/F108A/F159L) -- dG per leg, kcal/mol
+==================================================================================
+  leg                dG   stat   conv   quad  dG(2nd half)  tau_max  n_eff_min
+  aba             14.88   1.37   1.46   0.01         14.15    175.0       14.2
+  mandi_xtal      13.75   1.07   0.58   0.01         14.04    244.9       10.2
+  mandi_dock   -1381.09   1.14   4.84   0.13      -1378.67     68.9       36.0
+  apo             18.05   1.19   4.61   0.01         15.74    261.2        9.6
+
+==================================================================================
+ddG_bind   (negative = the quadruple IMPROVES binding of that ligand)
+==================================================================================
+  aba             -3.17  +/-  5.16 total   (stat 1.81 | conv 4.83 | quad 0.01)
+  mandi_xtal      -4.29  +/-  4.91 total   (stat 1.60 | conv 4.65 | quad 0.02)
+  mandi_dock   -1399.13  +/-  6.88 total   (stat 1.65 | conv 6.68 | quad 0.13)
+
+==================================================================================
+SELECTIVITY = ddG(mandi) - ddG(ABA)   [apo cancels exactly]
+negative = the quadruple shifts preference TOWARD mandipropamid
+==================================================================================
+  crystal pose      -1.12 +/-  2.34   WITHIN ERROR -- no call
+                 (stat 1.74 | conv 1.57 | quad 0.02)   second-half-only   -0.10
+  docked pose    -1395.96 +/-  5.36   prefers mandipropamid
+                 (stat 1.79 | conv 5.06 | quad 0.13)   second-half-only -1392.81
+
+  COST OF NOT HAVING A STRUCTURE: -1394.84 +/- 5.85 kcal/mol
+  (docked pose is 8.33 A heavy-atom RMSD from crystal; best of 9 = 4.90 A)
+
+  PRE-REGISTERED TEST (13e): the CRYSTAL arm must come out NEGATIVE.
+  Unlike 43d this is a real constraint -- PYR1^MANDI is the sequence
+  the ground truth is about. If it fails, read conv and the per-window
+  drift below BEFORE concluding anything about the method.
+
+==================================================================================
+PER-WINDOW <dV/dlambda>  (watch for a sharp jump: ligand-pose hysteresis
+between the WT-accommodated and quad-accommodated basins)
+==================================================================================
+       lam                aba        mandi_xtal        mandi_dock               apo
+   0.00922        11.56 -0.36       18.26 -0.90        9.52 +2.72       21.48 -0.15
+   0.04794       217.11 +5.71      183.04 -4.19       27.35-12.89      181.94+17.77
+   0.11505       313.51-24.10      346.55 -5.44     -293.70+16.21      302.89 -7.83
+   0.20634       195.53 -3.75      189.46 -4.44    -1180.60+12.69      189.73 +1.56
+   0.31608        84.54 -6.53       96.14 +6.69    -2163.15 -7.42       89.27 +0.86
+   0.43738        53.95 +2.49       35.92 -1.04    -2675.50 +5.06       47.49 -2.12
+   0.56262        22.39 +0.39        4.67 -9.77    -2403.75 +6.49       15.43 -9.04
+   0.68392       -61.51-12.04      -49.69+17.17    -1653.51-13.14      -59.26 -4.65
+   0.79366      -185.00+14.53     -180.57 +1.21     -985.25+14.25     -153.85 +1.31
+   0.88495      -270.89+10.17     -290.36+15.06     -605.06+24.64     -254.50-10.81
+   0.95206      -245.22 +0.70     -219.36-19.31     -221.54 +7.75     -197.53-45.39
+   0.99078       -24.22 +1.48      -26.03 -0.97      -28.34 +0.29      -20.56 -4.05
+   (each cell: <dV/dl> then first->second half drift)
+
+wrote /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/ti_quad/windows.csv
