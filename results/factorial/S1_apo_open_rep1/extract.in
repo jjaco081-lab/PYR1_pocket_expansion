@@ -1,0 +1,18 @@
+parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/system.prmtop
+parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_closed_A.pdb [pclosed]
+parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb [popen]
+reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_closed_A.pdb parm [pclosed] [closed]
+reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb parm [popen] [open]
+trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/rep1/prod.nc
+autoimage
+rms core :1-84,90-114,118-147,157-181@CA,C,N,O first mass out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep1/core_rmsd.dat
+rms fitC :1-84,90-114,118-147,157-181@CA,C,N,O ref [closed]
+rms g2c :85-89@CA,C,N,O ref [closed] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep1/gate_to_closed.dat
+rms l2c :115-117@CA,C,N,O ref [closed] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep1/latch_to_closed.dat
+rms fitO :1-84,90-114,118-147,157-181@CA,C,N,O ref [open]
+rms g2o :85-89@CA,C,N,O ref [open] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep1/gate_to_open.dat
+rms l2o :115-117@CA,C,N,O ref [open] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep1/latch_to_open.dat
+nativecontacts ":85-89&!@H=" ":115-117&!@H=" distance 4.0 first out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep1/gatelatch.dat
+atomicfluct out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep1/rmsf.dat :1-191@CA byres
+go
+quit

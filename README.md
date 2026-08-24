@@ -2560,6 +2560,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | co-folding validation submitted (27727052, 4 runs incl. WT negative control); ML data audit | §55 |
 | 2026-08-24 | donor graft pockets measured (2PCS 27 lining side chains vs PYR1 19-20); switch still unsimulable | §56 |
 | 2026-08-24 | donor ligands checked (2PCS = UNL, 3TFZ = buffer); five routes around library x library ranked | §57 |
+| 2026-08-24 | factorial found to be n=1 not n=3; core-mask atom mismatch found; under-filled pocket problem stated | §58 |
 
 ### Reversals and corrections
 
@@ -2624,6 +2625,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 57 | 08-24 | ~1150 labelled clones might be enough to bias an ML tool from ligand SMILES to sequence | the effective sample size is the number of independent **LIGANDS (~208)**, not clones -- clones sharing a ligand are repeats under one input. 69 ligands have exactly 1 clone; only 47 have >=5; median pairwise Tanimoto **0.106** | **generative SMILES->sequence is 2-4 orders of magnitude short**, and LigandMPNN fine-tuning inherits the pose problem AND starts from a model that INVERTS V81I (-0.841, §23h). What IS supported: a ~10^2-parameter conditional model over position x residue-class (§49a generalised), and -- unused so far -- a **tractability classifier** on 208 positives + **229 documented negatives** = 437 ligand-level labels (§55b) |
 | 58 | 08-24 | the big-cavity graft donors offer PYR1's pocket with more room | measured for the first time from the DONOR side: cavity volume and lining side chains track at **r = +0.99**, so **2PCS lines its 570 A^3 cavity with 27 side chains against PYR1's 19-20** (~40 % more positions) at 9.8 % identity, and volume per lining residue rises from ~9-12 to 21 A^3 | they are **different architectures, not larger PYR1s**. The cavity/transplantability tension is **categorical, not gradual**: everything >300 A^3 sits at 3.45-4.03 A core RMSD and ~10 % identity, everything transplantable (<1.5 A) is PYR1-sized. Also **2NS9 and 2BK0 are APO**, so the previously-favoured 2BK0's 344 A^3 is a cavity-detection number being compared against a ligand-contact one (§56b-c) |
 | 59 | 08-24 | grafting from a donor with a KNOWN ligand collapses the chemical dimension and avoids library x library | checked the het codes: **2PCS's ligand is literally `UNL`, "Unknown ligand"** (unmodelled density), 3TFZ's `CXS` is **CHES buffer**, and 2NS9/2BK0 are **apo**. Only **6AWV / (-)-epicatechin** has an identified physiological ligand -- and it is the weakest of the big four to graft (3.93 A coreRMSD, 9.8 % identity, **17/19** machinery coverage) | the premise holds for **one** candidate, which is also the hardest graft. And the product is a **DISCOVERY** cost that does not apply when a weak hit already exists -- then it is one library x one analyte, i.e. §54's vocabulary-subset problem. Grafting's remaining distinct use is as a **positive control that a big pocket can switch at all** (§57) |
+| 60 | 08-24 | the §30 conformation x occupancy factorial was complete (4 cells x 3 reps x 300 ns) and merely unanalysed | I checked that `prod.nc` EXISTED, not how long it was. **5 of 12 reps reached 300 ns -- one per cell**; three array tasks failed outright and four more truncated at 6-65 ns. Separately the core superposition mask selected **656 atoms in the system vs 644 in the references** (both refs miss residues 2, 69-70, 182-191), so the fit silently did not happen and gate RMSDs came out at **39-41 A** for a five-residue loop | the 2x2 is **n=1 per cell** and cannot give the replicated S9-vs-S2 contrast it was built for. Same 'verify against the physics, not the file' failure as §44a's frame count. Corrected 161-residue common core written to `data/md191/core_mask.txt` (§58b) |
+| 61 | 08-24 | a weak hit collapses the chemical dimension, so expanded-pocket designs can be tested against it | **the gate closes ONTO the ligand.** A weak hit is for a ligand that fits the CURRENT envelope; enlarge the cavity and that ligand no longer reaches the gate, giving either no closure (no signal) or ligand-independent closure (constitutive, which the counter-selection removes) | expansion must be paired with a **LARGER** ligand -- the 28-50 heavy-atom band, i.e. the 229 documented failures, which are the matched test set. And §24's kinetic trapping means we can measure the stability of a starting state but **never the open/closed free-energy difference**, which is the quantity separating signal from constitutive. **The question is one this class of method cannot answer** -- it needs Y2H (§58) |
 
 ### Bugs caught before they cost anything
 
@@ -6800,3 +6803,87 @@ The step that removes the most future cost for the least effort is (2): a
 tractability classifier on 437 labelled ligands. It is the only item here that
 shrinks N *before* anything reaches the bench, and the data for it has been
 sitting unused since §31.
+
+---
+
+## 58. The under-filled pocket problem, and a correction to §30's status (2026-08-24)
+
+Jannis raised the objection that is prior to every scoring question in this
+project:
+
+> a weak hit found *without* an expanded pocket cannot test an expanded pocket,
+> because expansion introduces residues the library never offered — and if the
+> cavity is enlarged while the ligand stays the same size, the ligand no longer
+> reaches the gate. Either the gate cannot close (no signal), or it closes
+> anyway (constitutive), unless the cavity can hold open without a large energy
+> cost.
+
+This is correct and it is mechanistic, not logistical. **The gate closes onto the
+ligand.** Enlarging the cavity without enlarging the ligand breaks the
+transduction step, in one of two directions, and both are failure modes —
+constitutive closure is precisely what the counter-selection removes.
+
+### 58a. What we already know, and why it does not settle it
+
+§29 measured exactly the relevant cell on the old tree at n = 3: **apo-closed
+PYR1 does not open in 3 × 300 ns, with zero crossings, and has the most rigid gate
+of the 15 units profiled.** So a *closed and empty* pocket is at least kinetically
+stable, which cuts both ways — permissive for signalling (closure does not
+require the cavity to be filled) and permissive for the constitutive failure too.
+
+And §24 is the reason it cannot be settled here: **open and closed are both
+kinetically trapped**, neither converting once in 1.8 µs of aggregate sampling. So
+the accessible observable is the stability of whichever state you start in, never
+the free-energy difference between them — and the free-energy difference is
+exactly the quantity that separates "signal" from "constitutive".
+
+**The question Jannis is asking is the one our methods are structurally unable to
+answer.** Not underpowered — unable, on this class of method.
+
+### 58b. Correction: the §30 factorial is n = 1, not n = 3
+
+I reported the conformation × occupancy factorial as complete. It is not. I
+checked that `prod.nc` existed, not how long it was:
+
+| cell | rep0 | rep1 | rep2 |
+|---|---|---|---|
+| S1 open/apo | 65 ns | **300 ns** | 41 ns |
+| S2 closed/+ABA | **300 ns** | 8 ns | 10 ns |
+| S9 closed/apo | **300 ns** | 6 ns | 8 ns |
+| S10 open/+ABA | **300 ns** | 6 ns | **300 ns** |
+
+**5 of 12 reps reached 300 ns — one per cell.** Three array tasks failed outright
+(§ timeline, 27547457_2/4/5) and four more were truncated. The 2 × 2 was designed
+at n = 3 specifically so the S9-vs-S2 contrast would have replication; at n = 1 it
+cannot deliver that, and its whole purpose was to remove the NaCl/KCl confound
+from the §29 comparison.
+
+A second defect, found while extracting: the core superposition mask selected
+**656 atoms in the system but 644 in the references**, because both reference PDBs
+are missing residues 2, 69–70 and 182–191. Mismatched counts meant the fit
+silently did not happen and the gate RMSDs came out at 39–41 Å — impossible for a
+five-residue loop. This is the trap script 58's own header documents ("restrict
+the CORE to residues present in EVERY unit *and* in the references") and I did not
+apply it. The corrected 161-residue common core is written to
+`data/md191/core_mask.txt`.
+
+### 58c. What actually follows for testing expanded pockets
+
+1. **An expanded pocket must be paired with a larger ligand.** The expansion is
+   not for the ligands that already fit — it is for the **28–50 heavy-atom band**
+   (§13), which is why the 229 documented failures were selected in that band in
+   the first place. They are the matched test set: same size range, published
+   negatives, already characterised.
+2. **The constitutive-activity risk has to be screened experimentally.** Y2H
+   reports it directly — growth without ligand — and no filter we have
+   distinguishes a switch from a constitutively closed protein (§45 passed
+   α-estradiol; §56d makes the same point for grafts).
+3. **A weak hit remains useful, but for a different purpose than I implied in
+   §57.** It collapses the chemical dimension only for ligands that fit the
+   current envelope. For an expanded-pocket test it does not transfer, exactly as
+   Jannis says.
+
+So the expanded-pocket experiment is necessarily *expanded library × large-ligand
+set*, with N bounded by the 229 rather than open-ended — and with the
+ligand-independent-activation control run alongside, because that is the failure
+mode computation cannot see.

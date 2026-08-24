@@ -1,0 +1,394 @@
+
+CPPTRAJ: Trajectory Analysis. V6.4.4 (AmberTools)
+    ___  ___  ___  ___
+     | \/ | \/ | \/ | 
+    _|_/\_|_/\_|_/\_|_
+
+| Date/time: 08/24/26 15:28:34
+| Available memory: 515.277 GB
+
+INPUT: Reading input from '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/extract.in'
+  [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.prmtop]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.prmtop' as Amber Topology
+	Radius Set: modified Bondi radii (mbondi)
+  [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_closed_A.pdb [pclosed]]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_closed_A.pdb' as PDB File
+	Reading bond info from CONECT records.
+	Not reading bond info from LINK records.
+	Determining bond info from distances.
+Warning: Determining bond length parameters from element types for 'pyr1_closed_A.pdb'.
+  [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb [popen]]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb' as PDB File
+	Reading bond info from CONECT records.
+	Not reading bond info from LINK records.
+Warning: Atom 10 CA in res SER 3 A has alternate location specifier A
+Warning: Atom 13 CB in res SER 3 A has alternate location specifier A
+Warning: Atom 14 OG in res SER 3 A has alternate location specifier A
+Warning: Atom 232 CA in res SER 31 A has alternate location specifier A
+Warning: Atom 235 CB in res SER 31 A has alternate location specifier A
+Warning: Atom 236 OG in res SER 31 A has alternate location specifier A
+Warning: Atom 238 CA in res SER 32 A has alternate location specifier A
+Warning: Atom 241 CB in res SER 32 A has alternate location specifier A
+Warning: Atom 242 OG in res SER 32 A has alternate location specifier A
+Warning: Atom 456 CA in res TYR 58 A has alternate location specifier A
+Warning: Atom 459 CB in res TYR 58 A has alternate location specifier A
+Warning: Atom 460 CG in res TYR 58 A has alternate location specifier A
+Warning: Atom 461 CD1 in res TYR 58 A has alternate location specifier A
+Warning: Atom 462 CD2 in res TYR 58 A has alternate location specifier A
+Warning: Atom 463 CE1 in res TYR 58 A has alternate location specifier A
+Warning: Atom 464 CE2 in res TYR 58 A has alternate location specifier A
+Warning: Atom 465 CZ in res TYR 58 A has alternate location specifier A
+Warning: Atom 466 OH in res TYR 58 A has alternate location specifier A
+Warning: Atom 728 CA in res ARG 95 A has alternate location specifier A
+Warning: Atom 731 CB in res ARG 95 A has alternate location specifier A
+Warning: Atom 732 CG in res ARG 95 A has alternate location specifier A
+Warning: Atom 733 CD in res ARG 95 A has alternate location specifier A
+Warning: Atom 734 NE in res ARG 95 A has alternate location specifier A
+Warning: Atom 735 CZ in res ARG 95 A has alternate location specifier A
+Warning: Atom 736 NH1 in res ARG 95 A has alternate location specifier A
+Warning: Atom 737 NH2 in res ARG 95 A has alternate location specifier A
+Warning: Atom 847 CA in res SER 109 A has alternate location specifier A
+Warning: Atom 850 CB in res SER 109 A has alternate location specifier A
+Warning: Atom 851 OG in res SER 109 A has alternate location specifier A
+Warning: Atom 896 CA in res ARG 116 A has alternate location specifier A
+Warning: Atom 899 CB in res ARG 116 A has alternate location specifier A
+Warning: Atom 900 CG in res ARG 116 A has alternate location specifier A
+Warning: Atom 901 CD in res ARG 116 A has alternate location specifier A
+Warning: Atom 902 NE in res ARG 116 A has alternate location specifier A
+Warning: Atom 903 CZ in res ARG 116 A has alternate location specifier A
+Warning: Atom 904 NH1 in res ARG 116 A has alternate location specifier A
+Warning: Atom 905 NH2 in res ARG 116 A has alternate location specifier A
+Warning: Atom 995 CA in res ARG 128 A has alternate location specifier A
+Warning: Atom 998 CB in res ARG 128 A has alternate location specifier A
+Warning: Atom 999 CG in res ARG 128 A has alternate location specifier A
+Warning: Atom 1000 CD in res ARG 128 A has alternate location specifier A
+Warning: Atom 1001 NE in res ARG 128 A has alternate location specifier A
+Warning: Atom 1002 CZ in res ARG 128 A has alternate location specifier A
+Warning: Atom 1003 NH1 in res ARG 128 A has alternate location specifier A
+Warning: Atom 1004 NH2 in res ARG 128 A has alternate location specifier A
+Warning: Atom 1141 CA in res VAL 144 A has alternate location specifier A
+Warning: Atom 1144 CB in res VAL 144 A has alternate location specifier A
+Warning: Atom 1145 CG1 in res VAL 144 A has alternate location specifier A
+Warning: Atom 1146 CG2 in res VAL 144 A has alternate location specifier A
+Warning: Atom 1287 CA in res VAL 163 A has alternate location specifier A
+Warning: Atom 1290 CB in res VAL 163 A has alternate location specifier A
+Warning: Atom 1291 CG1 in res VAL 163 A has alternate location specifier A
+Warning: Atom 1292 CG2 in res VAL 163 A has alternate location specifier A
+Warning: Atom 1301 CA in res LYS 165 A has alternate location specifier A
+Warning: Atom 1304 CB in res LYS 165 A has alternate location specifier A
+Warning: Atom 1305 CG in res LYS 165 A has alternate location specifier A
+Warning: Atom 1306 CD in res LYS 165 A has alternate location specifier A
+Warning: Atom 1307 CE in res LYS 165 A has alternate location specifier A
+Warning: Atom 1308 NZ in res LYS 165 A has alternate location specifier A
+	Determining bond info from distances.
+Warning: Determining bond length parameters from element types for 'pyr1_open_A.pdb'.
+  [reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_closed_A.pdb parm [pclosed] [closed]]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_closed_A.pdb' as PDB
+	Setting active reference for distance-based masks: 'pyr1_closed_A.pdb'
+Warning: Active reference has only 1409 atoms, parm 'system.prmtop' has 46570.
+Warning: Parm will only have reference coordinates for the first 1409 atoms (distance-based masks only).
+Warning: Active reference has only 1409 atoms, parm 'pyr1_open_A.pdb' has 1428.
+Warning: Parm will only have reference coordinates for the first 1409 atoms (distance-based masks only).
+  [reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb parm [popen] [open]]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb' as PDB
+Warning: PDB has 59 records wih alternate atom location IDs.
+  [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/rep2/prod.nc]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/rep2/prod.nc' as Amber NetCDF
+  [autoimage]
+    AUTOIMAGE: To box center based on center of mass, anchor is first molecule.
+  [rms core :1-84,90-114,118-147,157-181@CA,C,N,O first mass out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/core_rmsd.dat]
+    RMSD: (:1-84,90-114,118-147,157-181@CA,C,N,O), reference is first frame (:1-84,90-114,118-147,157-181@CA,C,N,O), mass-weighted.
+	Best-fit RMSD will be calculated, coords will be rotated and translated.
+  [rms fitC :1-84,90-114,118-147,157-181@CA,C,N,O ref [closed]]
+    RMSD: (:1-84,90-114,118-147,157-181@CA,C,N,O), reference is "[closed]:1" (:1-84,90-114,118-147,157-181@CA,C,N,O).
+	Best-fit RMSD will be calculated, coords will be rotated and translated.
+  [rms g2c :85-89@CA,C,N,O ref [closed] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gate_to_closed.dat]
+    RMSD: (:85-89@CA,C,N,O), reference is "[closed]:1" (:85-89@CA,C,N,O).
+	No fitting will be performed.
+  [rms l2c :115-117@CA,C,N,O ref [closed] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/latch_to_closed.dat]
+    RMSD: (:115-117@CA,C,N,O), reference is "[closed]:1" (:115-117@CA,C,N,O).
+	No fitting will be performed.
+  [rms fitO :1-84,90-114,118-147,157-181@CA,C,N,O ref [open]]
+    RMSD: (:1-84,90-114,118-147,157-181@CA,C,N,O), reference is "[open]:1" (:1-84,90-114,118-147,157-181@CA,C,N,O).
+	Best-fit RMSD will be calculated, coords will be rotated and translated.
+  [rms g2o :85-89@CA,C,N,O ref [open] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gate_to_open.dat]
+    RMSD: (:85-89@CA,C,N,O), reference is "[open]:1" (:85-89@CA,C,N,O).
+	No fitting will be performed.
+  [rms l2o :115-117@CA,C,N,O ref [open] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/latch_to_open.dat]
+    RMSD: (:115-117@CA,C,N,O), reference is "[open]:1" (:115-117@CA,C,N,O).
+	No fitting will be performed.
+  [nativecontacts ":85-89&!@H=" ":115-117&!@H=" distance 4.0 first out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gatelatch.dat]
+    NATIVECONTACTS: Mask1=':85-89&!@H*' Mask2=':115-117&!@H*', native contacts set up based on first frame.
+	Distance cutoff is 4 Angstroms, imaging is on.
+	Mask selection will not include solvent.
+	Data set name: Contacts_00012
+	Output to '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gatelatch.dat'
+	Contact stats will be written to 'STDOUT'
+	Contact res pairs will be written to 'STDOUT'
+  [rms fitL :1-84,90-114,118-147,157-181@CA,C,N,O first]
+    RMSD: (:1-84,90-114,118-147,157-181@CA,C,N,O), reference is first frame (:1-84,90-114,118-147,157-181@CA,C,N,O).
+	Best-fit RMSD will be calculated, coords will be rotated and translated.
+  [rms lig :A8S&!@H= first nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/lig_rmsd.dat]
+    RMSD: (:A8S&!@H*), reference is first frame (:A8S&!@H*).
+	No fitting will be performed.
+  [nativecontacts ":A8S&!@H=" ":1-191&!@H=" distance 4.0 first out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/lig_contacts.dat]
+    NATIVECONTACTS: Mask1=':A8S&!@H*' Mask2=':1-191&!@H*', native contacts set up based on first frame.
+	Distance cutoff is 4 Angstroms, imaging is on.
+	Mask selection will not include solvent.
+	Data set name: Contacts_00016
+	Output to '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/lig_contacts.dat'
+	Contact stats will be written to 'STDOUT'
+	Contact res pairs will be written to 'STDOUT'
+  [atomicfluct out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/rmsf.dat :1-191@CA byres]
+    ATOMICFLUCT: calculating atomic positional fluctuations over residues.
+	Output to file /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/rmsf.dat
+	Atom mask: [:1-191@CA]
+	Start: 1  Stop: Final frame
+  [go]
+---------- RUN BEGIN -------------------------------------------------
+
+PARAMETER FILES (3 total):
+ 0: system.prmtop, 46570 atoms, 11126 res, box: Truncated octahedron, 10936 mol, 10867 solvent
+ 1: [pclosed] pyr1_closed_A.pdb, 1409 atoms, 178 res, box: None, 3 mol
+ 2: [popen] pyr1_open_A.pdb, 1428 atoms, 178 res, box: None, 3 mol
+
+INPUT TRAJECTORIES (1 total):
+ 0: 'prod.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 1084 of 1084)
+  Coordinate processing will occur on 1084 frames.
+
+REFERENCE FRAMES (2 total):
+    0: [closed]:1
+    1: [open]:1
+	Active reference frame for distance-based masks is '[closed]:1'
+
+BEGIN TRAJECTORY PROCESSING:
+.....................................................
+ACTION SETUP FOR PARM 'system.prmtop' (13 actions):
+  0: [autoimage]
+	Original box is truncated octahedron, turning on 'familiar'.
+	Using first molecule as anchor.
+	1 molecules are fixed to anchor: 2
+	10934 molecules are mobile.
+  1: [rms core :1-84,90-114,118-147,157-181@CA,C,N,O first mass out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/core_rmsd.dat]
+	Target mask: [:1-84,90-114,118-147,157-181@CA,C,N,O](656)
+	Reference topology: system.prmtop
+	Reference mask: [:1-84,90-114,118-147,157-181@CA,C,N,O](656)
+  2: [rms fitC :1-84,90-114,118-147,157-181@CA,C,N,O ref [closed]]
+	Target mask: [:1-84,90-114,118-147,157-181@CA,C,N,O](656)
+	Reference topology: pyr1_closed_A.pdb
+	Reference mask: [:1-84,90-114,118-147,157-181@CA,C,N,O](644)
+Warning: Number of atoms in target mask (656) does not equal
+Warning:   number of atoms in reference mask (644).
+Warning: Setup incomplete for [rms]: Skipping
+  3: [rms g2c :85-89@CA,C,N,O ref [closed] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gate_to_closed.dat]
+	Target mask: [:85-89@CA,C,N,O](20)
+	Reference topology: pyr1_closed_A.pdb
+	Reference mask: [:85-89@CA,C,N,O](20)
+  4: [rms l2c :115-117@CA,C,N,O ref [closed] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/latch_to_closed.dat]
+	Target mask: [:115-117@CA,C,N,O](12)
+	Reference topology: pyr1_closed_A.pdb
+	Reference mask: [:115-117@CA,C,N,O](12)
+  5: [rms fitO :1-84,90-114,118-147,157-181@CA,C,N,O ref [open]]
+	Target mask: [:1-84,90-114,118-147,157-181@CA,C,N,O](656)
+	Reference topology: pyr1_open_A.pdb
+	Reference mask: [:1-84,90-114,118-147,157-181@CA,C,N,O](644)
+Warning: Number of atoms in target mask (656) does not equal
+Warning:   number of atoms in reference mask (644).
+Warning: Setup incomplete for [rms]: Skipping
+  6: [rms g2o :85-89@CA,C,N,O ref [open] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gate_to_open.dat]
+	Target mask: [:85-89@CA,C,N,O](20)
+	Reference topology: pyr1_open_A.pdb
+	Reference mask: [:85-89@CA,C,N,O](20)
+  7: [rms l2o :115-117@CA,C,N,O ref [open] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/latch_to_open.dat]
+	Target mask: [:115-117@CA,C,N,O](12)
+	Reference topology: pyr1_open_A.pdb
+	Reference mask: [:115-117@CA,C,N,O](12)
+  8: [nativecontacts ":85-89&!@H=" ":115-117&!@H=" distance 4.0 first out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gatelatch.dat]
+	Mask [:85-89&!@H*] corresponds to 30 atoms.
+	Mask [:115-117&!@H*] corresponds to 29 atoms.
+	30 potential contact sites for ':85-89&!@H*'
+	29 potential contact sites for ':115-117&!@H*'
+	Imaging enabled.
+  9: [rms fitL :1-84,90-114,118-147,157-181@CA,C,N,O first]
+	Target mask: [:1-84,90-114,118-147,157-181@CA,C,N,O](656)
+	Reference topology: system.prmtop
+	Reference mask: [:1-84,90-114,118-147,157-181@CA,C,N,O](656)
+  10: [rms lig :A8S&!@H= first nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/lig_rmsd.dat]
+	Target mask: [:A8S&!@H*](19)
+	Reference topology: system.prmtop
+	Reference mask: [:A8S&!@H*](19)
+  11: [nativecontacts ":A8S&!@H=" ":1-191&!@H=" distance 4.0 first out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/lig_contacts.dat]
+	Mask [:A8S&!@H*] corresponds to 19 atoms.
+	Mask [:1-191&!@H*] corresponds to 1514 atoms.
+	19 potential contact sites for ':A8S&!@H*'
+	1514 potential contact sites for ':1-191&!@H*'
+	Imaging enabled.
+  12: [atomicfluct out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/rmsf.dat :1-191@CA byres]
+	Mask [:1-191@CA] corresponds to 191 atoms.
+----- prod.nc (1-1084, 1) -----
+	Using first frame to determine native contacts.
+	Mask [:85-89&!@H*] corresponds to 30 atoms.
+	Mask [:115-117&!@H*] corresponds to 29 atoms.
+	Setup 1 native contacts:
+		Atom ':89@CB' to ':115@CB'
+	Using first frame to determine native contacts.
+	Mask [:A8S&!@H*] corresponds to 19 atoms.
+	Mask [:1-191&!@H*] corresponds to 1514 atoms.
+	Setup 39 native contacts:
+		Atom ':192@C1' to ':59@NZ'
+		Atom ':192@C1' to ':120@OH'
+		Atom ':192@C1' to ':163@CG1'
+		Atom ':192@C1' to ':167@ND2'
+		Atom ':192@C2' to ':120@CZ'
+		Atom ':192@C2' to ':120@OH'
+		Atom ':192@C2' to ':163@CG1'
+		Atom ':192@C3' to ':120@CE1'
+		Atom ':192@C3' to ':120@CZ'
+		Atom ':192@C3' to ':120@OH'
+		Atom ':192@C4' to ':120@OH'
+		Atom ':192@C5' to ':120@CZ'
+		Atom ':192@C5' to ':120@OH'
+		Atom ':192@C6' to ':120@CE1'
+		Atom ':192@C6' to ':159@CZ'
+		Atom ':192@C6' to ':160@CB'
+		Atom ':192@O1' to ':92@OG'
+		Atom ':192@C8' to ':83@CG1'
+		Atom ':192@C9' to ':61@CB'
+		Atom ':192@C9' to ':83@CG1'
+		Atom ':192@O3' to ':59@CD'
+		Atom ':192@O3' to ':59@NZ'
+		Atom ':192@O3' to ':120@OH'
+		Atom ':192@O4' to ':59@CD'
+		Atom ':192@O4' to ':59@CE'
+		Atom ':192@O4' to ':59@NZ'
+		Atom ':192@O4' to ':120@OH'
+		Atom ':192@O4' to ':141@OE1'
+		Atom ':192@O4' to ':163@CG1'
+		Atom ':192@O4' to ':164@CG2'
+		Atom ':192@O4' to ':167@CG'
+		Atom ':192@O4' to ':167@ND2'
+		Atom ':192@C13' to ':61@CB'
+		Atom ':192@C13' to ':62@CG1'
+		Atom ':192@C13' to ':62@CD1'
+		Atom ':192@C13' to ':83@CG1'
+		Atom ':192@C14' to ':92@CB'
+		Atom ':192@C14' to ':92@OG'
+		Atom ':192@C15' to ':117@CD1'
+ 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Complete.
+
+Read 1084 frames and processed 1084 frames.
+TIME: Avg. throughput= 265.3339 frames / second.
+
+ACTION OUTPUT:
+    CONTACTS: Contacts_00012
+#Res1       #Res2  TotalFrac   Contacts
+89            115   0.871771          1
+#                     Contact  Nframes    Frac.      Avg    Stdev
+       1       :89@CB_:115@CB      945    0.872     3.66    0.171
+    CONTACTS: Contacts_00016
+#Res1       #Res2  TotalFrac   Contacts
+192           120    6.68819         12
+192            59    4.60701          6
+192           167     1.9428          3
+192           163    1.39483          3
+192            92    0.97786          3
+192           141   0.871771          1
+192            61   0.860701          2
+192           164   0.718635          1
+192           160   0.643911          1
+192            83   0.438192          3
+192            62  0.0931734          2
+192           117  0.0212177          1
+192           159 0.00184502          1
+#                     Contact  Nframes    Frac.      Avg    Stdev
+       1       :192@O4_:59@NZ     1084        1     2.76    0.104
+       2       :192@C1_:59@NZ     1084        1      3.4    0.169
+       3      :192@C1_:120@OH     1079    0.995     3.38    0.224
+       4       :192@O3_:59@NZ     1016    0.937     3.25    0.286
+       5     :192@O4_:167@ND2     1011    0.933     3.23    0.315
+       6     :192@C1_:167@ND2     1010    0.932      3.5    0.253
+       7      :192@O3_:120@OH      987    0.911     3.31    0.468
+       8     :192@O4_:141@OE1      945    0.872     3.56     0.22
+       9      :192@C13_:61@CB      932     0.86     3.63    0.173
+      10       :192@O3_:59@CD      854    0.788     3.66    0.168
+      11     :192@C2_:163@CG1      838    0.773     3.67      0.2
+      12     :192@C3_:120@CE1      821    0.757     3.68    0.193
+      13      :192@C2_:120@OH      810    0.747     3.44    0.266
+      14      :192@C4_:120@OH      792    0.731      3.7    0.197
+      15       :192@O4_:59@CE      783    0.722     3.78     0.17
+      16     :192@O4_:164@CG2      779    0.719     3.65    0.211
+      17      :192@O4_:120@OH      742    0.685     3.56    0.305
+      18      :192@C6_:160@CB      698    0.644     3.76    0.153
+      19      :192@C3_:120@OH      669    0.617     3.62    0.218
+      20      :192@C14_:92@CB      618     0.57     3.75    0.164
+      21     :192@C1_:163@CG1      528    0.487     3.74    0.193
+      22      :192@C3_:120@CZ      483    0.446     3.81    0.139
+      23     :192@C6_:120@CE1      451    0.416     3.74     0.18
+      24      :192@C14_:92@OG      393    0.363     3.72    0.213
+      25      :192@C2_:120@CZ      336     0.31     3.84    0.123
+      26     :192@C13_:83@CG1      280    0.258     3.78    0.149
+      27       :192@O4_:59@CD      173     0.16     3.69    0.246
+      28     :192@O4_:163@CG1      146    0.135     3.71    0.188
+      29      :192@C9_:83@CG1      107   0.0987     3.78    0.172
+      30     :192@C13_:62@CG1       94   0.0867      3.8    0.167
+      31      :192@C8_:83@CG1       88   0.0812     3.86    0.124
+      32      :192@O4_:167@CG       85   0.0784     3.87   0.0894
+      33      :192@C5_:120@CZ       53   0.0489     3.76    0.146
+      34       :192@O1_:92@OG       49   0.0452     3.02    0.304
+      35      :192@C5_:120@OH       27   0.0249     3.81    0.148
+      36    :192@C15_:117@CD1       23   0.0212     3.81    0.105
+      37     :192@C13_:62@CD1        7  0.00646     3.79    0.139
+      38      :192@C6_:159@CZ        2  0.00185     3.89  0.00934
+      39       :192@C9_:61@CB        1 0.000923     3.93 4.21e-08
+    ATOMICFLUCT: Calculating fluctuations for 1084 sets.
+TIME: Analyses took 0.0000 seconds.
+
+DATASETS (14 total):
+	core "core" (double, rms), size is 1084 (8.672 kB)
+	fitC "fitC" (double, rms), size is 0
+	g2c "g2c" (double, rms), size is 1084 (8.672 kB)
+	l2c "l2c" (double, rms), size is 1084 (8.672 kB)
+	fitO "fitO" (double, rms), size is 0
+	g2o "g2o" (double, rms), size is 1084 (8.672 kB)
+	l2o "l2o" (double, rms), size is 1084 (8.672 kB)
+	Contacts_00012[native] "Contacts_00012[native]" (integer), size is 1084 (4.336 kB)
+	Contacts_00012[nonnative] "Contacts_00012[nonnative]" (integer), size is 1084 (4.336 kB)
+	fitL "fitL" (double, rms), size is 1084 (8.672 kB)
+	lig "lig" (double, rms), size is 1084 (8.672 kB)
+	Contacts_00016[native] "Contacts_00016[native]" (integer), size is 1084 (4.336 kB)
+	Contacts_00016[nonnative] "Contacts_00016[nonnative]" (integer), size is 1084 (4.336 kB)
+	Fluct_00018 "AtomicFlx" (X-Y mesh), size is 191 (3.056 kB)
+    Total data set memory usage is at least 81.104 kB
+
+DATAFILES (13 total):
+  core_rmsd.dat (Standard Data File):  core
+  gate_to_closed.dat (Standard Data File):  g2c
+  latch_to_closed.dat (Standard Data File):  l2c
+  gate_to_open.dat (Standard Data File):  g2o
+  latch_to_open.dat (Standard Data File):  l2o
+  gatelatch.dat (Standard Data File):  Contacts_00012[native] Contacts_00012[nonnative]
+  lig_rmsd.dat (Standard Data File):  lig
+  lig_contacts.dat (Standard Data File):  Contacts_00016[native] Contacts_00016[nonnative]
+  rmsf.dat (Standard Data File):  AtomicFlx
+  STDOUT (Native Contacts)
+  STDOUT (Contact Res Pairs)
+  STDOUT (Native Contacts)
+  STDOUT (Contact Res Pairs)
+
+RUN TIMING:
+TIME:		Init               : 0.0000 s (  0.00%)
+TIME:		Trajectory Process : 4.0854 s ( 99.72%)
+TIME:		Action Post        : 0.0001 s (  0.00%)
+TIME:		Analysis           : 0.0000 s (  0.00%)
+TIME:		Data File Write    : 0.0110 s (  0.27%)
+TIME:		Other              : 0.0005 s (  0.00%)
+TIME:	Run Total 4.0971 s
+---------- RUN END ---------------------------------------------------
+  [quit]
+TIME: Total execution time: 4.2133 seconds.
+--------------------------------------------------------------------------------
+To cite CPPTRAJ use:
+Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for
+  Processing and Analysis of Molecular Dynamics Trajectory Data". J. Chem.
+  Theory Comput., 2013, 9 (7), pp 3084-3095.
+

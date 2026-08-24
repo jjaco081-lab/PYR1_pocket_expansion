@@ -1,0 +1,21 @@
+parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/system.prmtop
+parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_closed_A.pdb [pclosed]
+parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb [popen]
+reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_closed_A.pdb parm [pclosed] [closed]
+reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb parm [popen] [open]
+trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S2_holo_closed/rep2/prod.nc
+autoimage
+rms core :1-84,90-114,118-147,157-181@CA,C,N,O first mass out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/core_rmsd.dat
+rms fitC :1-84,90-114,118-147,157-181@CA,C,N,O ref [closed]
+rms g2c :85-89@CA,C,N,O ref [closed] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gate_to_closed.dat
+rms l2c :115-117@CA,C,N,O ref [closed] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/latch_to_closed.dat
+rms fitO :1-84,90-114,118-147,157-181@CA,C,N,O ref [open]
+rms g2o :85-89@CA,C,N,O ref [open] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gate_to_open.dat
+rms l2o :115-117@CA,C,N,O ref [open] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/latch_to_open.dat
+nativecontacts ":85-89&!@H=" ":115-117&!@H=" distance 4.0 first out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/gatelatch.dat
+rms fitL :1-84,90-114,118-147,157-181@CA,C,N,O first
+rms lig :A8S&!@H= first nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/lig_rmsd.dat
+nativecontacts ":A8S&!@H=" ":1-191&!@H=" distance 4.0 first out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/lig_contacts.dat
+atomicfluct out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S2_holo_closed_rep2/rmsf.dat :1-191@CA byres
+go
+quit
