@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p short_gpu
 #SBATCH --gres=gpu:1
-#SBATCH --exclude=gpu01,gpu02,gpu03,gpu05,gpu13,gpu14
+#SBATCH --exclude=gpu01,gpu02,gpu03,gpu05,gpu11,gpu13,gpu14   # amber22 pmemd.cuda has no kernels for k80/p100/h100/blackwell
 #SBATCH -c 4
 #SBATCH --mem=24G
 #SBATCH -t 1:58:00
@@ -117,6 +117,29 @@ minimise at lambda $L
 $(ti_block)
  /
 IN
+# SECOND minimisation, BACKBONE restrained only.
+#
+# min.in restrains every non-water heavy atom (`!:WAT,K+,Cl- & !@H=`), the ligand
+# included. Measured, that is fine at mid lambda -- softcore weakens the clash
+# enough that the restrained minimiser still resolves it (lam06: 0.62 -> 2.34 A,
+# no contacts) -- but at lambda ~ 0 the WT sidechains are fully coupled and the
+# restraint pins the clash in place (lam00: 0.62 -> 0.62 A, 9 contacts under
+# 2 A). Heating then died with "illegal memory access ... kNLSkinTest" and a
+# dU/dl of ************ on all four low-lambda windows of BOTH mandi legs.
+#
+# Letting the ligand and sidechains move here is not a workaround, it is the
+# physics: at lambda ~ 0 the system IS wild-type PYR1, which cannot hold
+# mandipropamid in its 4WVO pose, so the ligand is supposed to shift. The
+# resulting lambda-dependence of the pose is the hysteresis to watch for in
+# 100_quad_aggregate.py's per-window table.
+cat > min2.in <<IN
+minimise, backbone restrained only, lambda $L
+ &cntrl
+  imin=1, maxcyc=10000, ncyc=5000, ntmin=2, ntb=1, cut=10.0, ntpr=1000,
+  ntr=1, restraintmask='@N,CA,C,O', restraint_wt=5.0,
+$(ti_block)
+ /
+IN
 cat > heat.in <<IN
 heat 0->300 K, 200 ps, lambda $L
  &cntrl
@@ -161,7 +184,8 @@ run () {   # name prev
 }
 
 run min  "$D/ti.inpcrd" || exit 2
-run heat min.rst7       || exit 2
+run min2 min.rst7       || exit 2
+run heat min2.rst7      || exit 2
 run eq   heat.rst7      || exit 2
 run prod eq.rst7        || exit 2
 

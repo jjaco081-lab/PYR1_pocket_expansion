@@ -1,0 +1,46 @@
+2. THE READOUT -- ligand pose stability (A, RMSD to its own start)
+   run-level means, with the range across the three runs
+====================================================================================
+  ligand                              mean         max reached       final 20 ns
+  ABA (S2, cognate)        1.67  [1.23-2.30]   2.91  [2.54-3.34] 1.84  [1.51-2.26]
+  Imperatorin (S6)         3.18  [2.23-4.09]   4.34  [3.59-5.30] 3.39  [2.86-4.20]
+  Flutamide (S7)           2.36  [1.58-3.16]   4.08  [2.76-6.05] 2.41  [1.84-3.18]
+  alpha-Estradiol (S8)     1.54  [1.23-2.00]   3.47  [2.83-4.11] 1.97  [1.13-2.67]
+
+  effect size vs ABA (difference of run-level means; n=3 vs n=3,
+  so this is an effect size and a range, NOT a p-value):
+    Imperatorin (S6)         delta +1.50 A   Cohen d +1.96   ranges OVERLAP   exact p 0.20 (floor 0.10)
+    Flutamide (S7)           delta +0.68 A   Cohen d +1.00   ranges OVERLAP   exact p 0.20 (floor 0.10)
+    alpha-Estradiol (S8)     delta -0.13 A   Cohen d -0.27   ranges OVERLAP   exact p 0.60 (floor 0.10)
+
+====================================================================================
+3. THE S24b FILTER -- does gate/latch stability differ BY LIGAND?
+   if it does not, the filter is conformation-reporting and cannot
+   rank ligands, which disqualifies it as a design filter
+====================================================================================
+  ligand                         gate RMSD        latch RMSD       Lb7-a5 RMSD
+  ABA (S2, cognate)        1.79  [1.48-2.21] 1.90  [1.26-2.97] 2.30  [1.93-2.61]
+  Imperatorin (S6)         2.81  [2.59-3.06] 2.17  [1.78-2.43] 3.65  [2.17-5.41]
+  Flutamide (S7)           2.86  [2.21-3.58] 3.10  [1.82-4.28] 2.16  [1.67-2.55]
+  alpha-Estradiol (S8)     1.69  [1.34-1.89] 2.96  [2.19-3.82] 2.04  [1.34-2.82]
+
+    Imperatorin (S6)         gate delta +1.02 A   ranges SEPARATE   exact p 0.10 (floor 0.10)
+    Flutamide (S7)           gate delta +1.08 A   ranges SEPARATE   exact p 0.10 (floor 0.10)
+    alpha-Estradiol (S8)     gate delta -0.10 A   ranges OVERLAP   exact p 0.90 (floor 0.10)
+
+====================================================================================
+4. IS THE ANSWER AN ARTEFACT OF THE DISCARD WINDOW?
+====================================================================================
+  discard                    ABA         Imperatorin           Flutamide     alpha-Estradiol
+    0 ns                   1.59                2.95                2.32                1.44
+   15 ns                   1.63                3.06                2.35                1.49
+   30 ns                   1.67                3.18                2.36                1.54
+   50 ns                   1.70                3.23                2.39                1.59
+   75 ns                   1.73                3.37                2.38                1.67
+  (ligand RMSD, run-level mean; the ordering should not move)
+
+  READ THIS WITH S27c IN MIND:
+   - a ligand that STAYS PUT has not been shown to bind; 150 ns cannot
+     sample unbinding. Only release, if seen, is informative.
+   - ABA's three runs are three SEEDS of one pose; each non-cognate's
+     are three DIFFERENT poses, so ABA's range is the optimistic one.

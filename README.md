@@ -2547,6 +2547,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-21 | **TI pilot built and launched**: V81I + K59R x {ABA, mandi, apo} x 12 lambda = 72 windows (27698144, 27698165) | `data/ti/`, §43b |
 | 2026-08-22 | TI pilot **returns 72/72**; error bar found to be ~20x too small, §43d premise withdrawn, mandi legs found to start from a 0.62 A clash | `results/ti/`, §44 |
 | 2026-08-22 | `.gitignore` given **global** extension rules after the 4th per-directory miss left a 7.9 GB `prod.nc` untracked | `.gitignore` |
+| 2026-08-23 | **non-cognate MD complete** (9 x 150 ns, 1.35 us); quadruple TI built and 40/48 windows run | §45, `results/noncognate/`, `data/ti_quad/` |
 
 ### Reversals and corrections
 
@@ -2598,6 +2599,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 44 | 08-22 | TI's tight error bar meant TI was precise | the bar was `sd/sqrt(n)` with **n=4004**, and n was wrong twice: pmemd prints every frame **twice** (bit-identical DV/DL, 0 of 2000 steps disagree) and the trailing AVERAGES / RMS banners were parsed as samples. Real n = **2000**, correlated to **tau = 75**, so `n_eff` falls to **13** in the worst K59R windows | the +/-0.06 on V81I was ~20x too small. 88 now reports **stat / conv / quad** separately (89_ti_reparse.py); quadrature is clean (0.00-0.01), V81I is converged, **K59R is not** and its second-half estimate moves further positive, not toward zero (§44a) |
 | 45 | 08-22 | both V81I and K59R should individually shift selectivity toward mandipropamid, because both appear in 4WVO (the §43d premise) | **PYR1^MANDI is a FOUR-mutation set** (K59R/V81I/F108A/F159L) selected together; nothing requires a member to work alone in a WT background. Measured here, native V81 is **4.85 A from ABA** -- second shell, no contact (native V83, also a valine, is the one at 2.99 A). LigandMPNN had independently scored V81I at **-0.841**, anti-correlated with mandipropamid (S23h) | **§43d is withdrawn as a test of the method.** A converged TI, a sequence model and the structure all agree V81I *alone* is not mandi-favouring. The premise was mine and should have been challenged when written, not after it returned an unwelcome answer (§44b) |
 | 46 | 08-22 | the TI mandipropamid legs represented a bound complex | 85 loads `3UZ.mol2` into the **WT** pocket with F108/F159 present and **no pose relaxation**: F108-ligand **0.62 A** heavy-atom, F159 1.38 A, V81 1.40 A, with 8 (V81I) and **18** (K59R) contacts under 2.0 A. Minimisation relieved it and nothing dissociates (ligand RMSD 1.1-3.9 A after CA superposition), but the resulting pose is validated against nothing | **every selectivity number rests on that leg.** The decisive run is the one §13e already requires and TI never had: the **quadruple** K59R/V81I/F108A/F159L, ABA vs mandipropamid, built from **4WVO's own coordinates** -- 24 windows, ~2.5 h (§44c, §44e) |
+| 47 | 08-23 | if closed PYR1 held its state around a ligand it was never built for, the §24b filter would be conformation-only and disqualified | it is **not** purely conformational: the gate moves ~1.0 A more around imperatorin (+1.02) and flutamide (+1.08) than around ABA, run-level ranges non-overlapping. But **alpha-estradiol is indistinguishable from the cognate ligand** on every observable (ligand RMSD 1.54 vs 1.67, gate 1.69 vs 1.79, exact p 0.90) despite needing three mutations to work as a sensor | the filter carries ligand information but **passes a true negative**, which is the dangerous direction for a design filter. And the design cannot be significant: n=3 vs n=3 has a two-sided p floor of **0.10**, exactly where both "separate" results sit (§45)
 
 ### Bugs caught before they cost anything
 
@@ -5610,3 +5612,73 @@ hold it.
   calibration anchor and is disqualified for ranking, exactly as MM-GBSA was.
 
 Either way it is decisive, which §43d was not.
+
+---
+
+## 45. Non-cognate MD: the closed-state filter is ligand-sensitive, and still lets a true negative through (2026-08-23)
+
+Nine 150 ns runs finished (27697950): Imperatorin, Flutamide, α-Estradiol —
+matched to ABA at 19–20 heavy atoms and MW 270–276, spanning furanocoumarin,
+nitroaromatic anilide and steroid — each from three **independently docked**
+poses, against S2 (ABA) as reference on a byte-identical receptor. 1.35 µs total.
+
+Numbering was verified by sequence in all twelve units before anything was
+measured: these are 178-residue systems, so native gate 85–89 is sequential
+**82–86** (`SGLPA`) and native latch 115–117 is **112–114** (`HRL`). Ligand RMSD
+is measured **after** superposing on the protein core — without that it reports
+whole-box tumbling, the mistake §24 and §44c each made once.
+
+### 45a. Pose stability separates two of three, but not the third
+
+Run-level means (Å), range across the three runs:
+
+| ligand | ligand RMSD | gate RMSD | verdict vs ABA |
+|---|---|---|---|
+| **ABA** (cognate) | 1.67 [1.23–2.30] | 1.79 [1.48–2.21] | — |
+| Imperatorin | 3.18 [2.23–4.09] | **2.81 [2.59–3.06]** | gate SEPARATE |
+| Flutamide | 2.36 [1.58–3.16] | **2.86 [2.21–3.58]** | gate SEPARATE |
+| **α-Estradiol** | **1.54 [1.23–2.00]** | **1.69 [1.34–1.89]** | **indistinguishable** |
+
+The ordering is unchanged at every discard window from 0 to 75 ns, so it is not
+an artefact of where equilibration was cut.
+
+### 45b. What this does and does not license
+
+**The filter is NOT purely conformation-reporting.** That was the disqualifying
+outcome §27 was built to detect, and it did not happen: the gate moves ~1.0 Å
+more around imperatorin and flutamide than around ABA, with non-overlapping
+run-level ranges. So closed-state stability does carry *some* ligand information.
+
+**But it passes α-estradiol**, which is a genuine non-cognate for WT PYR1 — it
+needs F159V/V163W/V164G to work as a sensor. On every observable α-estradiol is
+indistinguishable from the cognate ligand: ligand RMSD 1.54 vs 1.67, gate 1.69 vs
+1.79, exact p = 0.90. For a design filter that is the dangerous direction of
+error: it would wave a non-binder through.
+
+**The design cannot reach conventional significance, by construction.** With
+n=3 vs n=3 there are only C(6,3) = 20 splits, so the smallest attainable
+two-sided p is **2/20 = 0.10**. Both "SEPARATE" results sit exactly at that
+floor. "The ranges do not overlap" reads as strong and is p = 0.10 — worth
+stating plainly, because this project has mis-stated a discrimination statistic
+before (§15).
+
+**Effective sampling is far smaller than it looks.** 15,000 frames per run, but
+the integrated autocorrelation time of the ligand RMSD reaches **τ = 2059
+frames (20.6 ns)**, giving n_eff as low as **3** in one run and ≤ 68 in all
+twelve. Frame-pooled numbers are descriptive only.
+
+Both pre-registered asymmetries (§27c) still bind: **a ligand that stays put has
+not been shown to bind** — 150 ns cannot sample µs–ms unbinding, so only release
+is informative and none was seen; and ABA's three runs are three *seeds of one
+pose* while each non-cognate's are three *different poses*, so ABA's range is the
+optimistic one and the contrast is, if anything, conservative against the
+non-cognates.
+
+### 45c. One observation worth a hypothesis, not a claim
+
+α-Estradiol is both the ligand WT tolerates best here **and** the one with the
+best evolved sensor in the Tian set — clone 124_10 at **1 µM**, against 10 µM for
+the imperatorin and flutamide clones. If WT tolerance predicted evolvability that
+would be directly useful for picking targets. On three ligands, one of which
+carries the entire signal, it is an anecdote. Recorded so it can be tested, not
+banked.

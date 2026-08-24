@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p short_gpu
 #SBATCH --gres=gpu:1
-#SBATCH --exclude=gpu01,gpu02,gpu03,gpu05,gpu13,gpu14
+#SBATCH --exclude=gpu01,gpu02,gpu03,gpu05,gpu11,gpu13,gpu14   # amber22 pmemd.cuda has no kernels for k80/p100/h100/blackwell
 #SBATCH -c 4
 #SBATCH --mem=24G
 #SBATCH -t 1:58:00

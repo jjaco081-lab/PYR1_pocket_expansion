@@ -188,3 +188,8 @@ data/ti_quad/**/*.log
 data/ti_quad/**/*.pdb
 data/ti_quad/**/*.parmed
 data/ti_quad/**/dual.*
+
+# Non-cognate cpptraj extraction: per-frame .dat files (15,000 rows x 12 units).
+# The aggregate in results/noncognate/summary.txt is the deliverable.
+results/noncognate/**/*.dat
+results/noncognate/**/extract.log

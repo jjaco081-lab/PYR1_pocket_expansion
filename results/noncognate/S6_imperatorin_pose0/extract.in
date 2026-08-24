@@ -1,0 +1,29 @@
+parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md/S6_imperatorin/pose0/system.prmtop
+trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md/S6_imperatorin/pose0/prod.nc 1 15000 1
+autoimage
+
+# 1. VALIDITY + equilibration: core backbone must settle
+rms core :1-81,87-111,115-144,154-178@CA,C,N,O first mass out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/noncognate/S6_imperatorin_pose0/core_rmsd.dat
+
+# 2. THE READOUT: ligand heavy-atom RMSD to its own starting pose, measured in
+#    the core-superposed frame (the rms above already moved the coordinates)
+rms lig :IMP&!@H= first nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/noncognate/S6_imperatorin_pose0/lig_rmsd.dat
+
+# 3. is the ligand still engaged with the protein at all?
+nativecontacts :IMP&!@H= ":1-178&!@H=" distance 4.0 first     out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/noncognate/S6_imperatorin_pose0/lig_contacts.dat
+# centre-of-mass drift, same superposed frame
+vector ligcom center :IMP out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/noncognate/S6_imperatorin_pose0/lig_com.dat
+
+# 4. the S24b filter itself -- does it move differently per ligand?
+rms gate :82-86@CA,C,N,O first nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/noncognate/S6_imperatorin_pose0/gate_rmsd.dat
+rms latch :112-114@CA,C,N,O first nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/noncognate/S6_imperatorin_pose0/latch_rmsd.dat
+rms lb7a5 :145-153@CA,C,N,O first nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/noncognate/S6_imperatorin_pose0/lb7a5_rmsd.dat
+
+# 5. the gate-latch staple: minimum heavy-atom distance between the two loops
+nativecontacts ":82-86&!@H=" ":112-114&!@H=" distance 4.0 first     out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/noncognate/S6_imperatorin_pose0/gatelatch.dat
+
+# 6. per-residue fluctuation, for the loops
+atomicfluct out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/noncognate/S6_imperatorin_pose0/rmsf.dat :1-178@CA byres
+
+go
+quit
