@@ -5907,3 +5907,126 @@ narrowing. The negative results are worth having and were expensive to get
 honestly. But they say what will not work. The pairwise result is the only thing
 so far that says what will, and it has never been tested outside the one case it
 was built on. That test should come before any more GPU time.
+
+---
+
+## 48. What chemistry real sensors use, and why a steric library is not enough (2026-08-24)
+
+§47 proposed reframing the goal to library enrichment, with §32's pairwise steric
+method as the candidate engine. §32 recovers 3 of 4 of PYR1^MANDI, missing K59R.
+The objection that motivated this section: if a whole **category** of substitution
+is invisible to a steric objective, 75 % recall is not "good", it is blind to
+chemistry that may be required — and a library built that way would exclude it by
+construction.
+
+Measured across every characterised sensor set we hold.
+
+### 48a. Steric chemistry is a minority in every dataset
+
+Distinct substitutions, by category:
+
+| set | clones | distinct | steric | CHARGE | polar |
+|---|---|---|---|---|---|
+| sd03 (mixed screen) | 691 | 144 | 39.6 % | 25.7 % | 34.7 % |
+| sd07 (coumarin) | 78 | 32 | 37.5 % | 28.1 % | 34.4 % |
+| Beltran-45 (cannabinoid) | 45 | 40 | 50.0 % | 30.0 % | 20.0 % |
+
+**A purely steric objective addresses at most half of the chemistry real sensors
+use**, and the fraction is stable across three unrelated ligand classes. This is
+the same lesson as §31 in a different form: **volume tells you the position, not
+the residue.** At position 59 a volume objective can say "make it smaller"; it
+cannot choose among Q/N/S/T/A/M/L, and it cannot propose R at all, because R is
+*bigger*.
+
+K59R is not a PYR1^MANDI quirk. Position 59 carries **8–11 % of all
+substitutions in every set**, with 11 distinct residues in sd03 alone
+(A, D, E, L, M, N, Q, R, S, T, V).
+
+### 48b. Charge chemistry is concentrated, so covering it is cheap
+
+Charge-changing substitutions are 417 of 2426 occurrences (17 %) across the dev
+sets, and they are not spread evenly:
+
+| position | WT | n | steric | CHARGE | polar | charge share |
+|---|---|---|---|---|---|---|
+| 59 | K | 208 | 23 | **185** | 0 | **89 %** |
+| 122 | S | 131 | 50 | 46 | 35 | 35 % |
+| 167 | N | 117 | 46 | 38 | 33 | 32 % |
+| 159 | F | 364 | 240 | 5 | 119 | 1 % |
+| 160 | A | 245 | 236 | 0 | 9 | 0 % |
+| 120 | Y | 239 | 57 | 1 | 181 | 0 % |
+| 163 | V | 133 | 7 | 0 | 126 | 0 % |
+
+**K59 alone accounts for 44 % of all charge chemistry; seven positions account
+for 90 %** (59, 122, 167, 94, 141, 81, 164).
+
+So the pocket separates into position *types*:
+
+- **steric positions** (159, 160, 83, 87, 89) — a volume objective is the right tool
+- **charge positions** (59, 122, 167, 94, 141) — a volume objective is the wrong tool
+- **polar positions** (120 at 76 % polar, 163 at 95 %) — neither
+
+That argues for a **position-typed library**: run the steric method where steric
+chemistry dominates, and simply *enumerate the charge/polar classes* where they
+dominate. Covering ~90 % of the charge chemistry costs a full charge menu at
+seven positions — well inside what real designs already spend, since Tian's own
+TSM library offers 11 residues at position 59 and DSM-Hao offers 17.
+
+### 48c. The experimenters already do this, and it validates the rule
+
+Read from the library designs (sd04), position 59:
+
+| library | allowed at 59 | charge-preserving option? |
+|---|---|---|
+| TSM | A D E L M N Q R S T V | R |
+| DSM-Hao | 17 residues incl. H, R | H, R |
+| TNTv1 | D M N R | R |
+| TNTv2 | D M N R T | R |
+| Coumarin | A Q | **none** |
+| PFAS | L M N | **none** |
+
+The TNT libraries deliberately span the charge spectrum at 59 — **R** (preserve
++1) and **D** (reverse to −1) in the same menu. Human designers spend their
+positional budget exactly where a steric method is blind.
+
+**This also kills a test I was about to pre-register.** The obvious prospective
+test — "does PFAS, which carries a carboxylate, retain the K59 charge more than
+neutral TNT?" — is confounded: the PFAS library *offers no charge-preserving
+residue at 59 at all*, while TNTv1/v2 both offer R. The observed rates (sd07
+coumarin 0.372 vs Beltran 0.733) reflect what each library permitted, not what
+selection preferred. Any test at this position must condition on the library
+design.
+
+### 48d. PRE-REGISTRATION: the PFAS / TNT prospective test
+
+`scripts/106_sensor_benchmark.py` declares a frozen split in its header:
+
+- **DEV** — sd03, sd07, Beltran-45
+- **HELD OUT** — **sd08 (TNT, 96 clones)** and **sd09 (PFAS, 245 clones)**
+
+The holdout is split by **ligand chemistry**, not at random: it asks whether a
+rule fitted on cannabinoids and coumarins transfers to a nitroaromatic and a
+perfluorinated acid. That is the generalisation a design method must make, and
+nothing in this project has ever been tested prospectively (§47e).
+
+**Declared contamination.** Library *designs* (sd04) have been read, including the
+allowed sets at position 59 and the randomised-position lists for PFAS and TNT —
+they appear in the table above. The **recovered clones in sd08 and sd09 have not
+been read**, and the script refuses to read them without `--reveal-holdout`.
+
+**The test.** Build a per-position residue menu for TNT and for PFAS from the
+ligand structure and WT PYR1 only, by two methods:
+  1. **steric only** — §32's overlap-relief objective;
+  2. **steric + position-typed charge/polar enumeration** — §48b's rule.
+Then score **recall of the substitutions observed in functional sensors** in
+sd08/sd09, and report library-menu size as the cost.
+
+**Predicted, before looking:**
+- steric-only recall will fall well short of 1.0, and the misses will be
+  concentrated in the CHARGE and polar categories rather than spread evenly;
+- the position-typed rule will raise recall materially at a menu cost no larger
+  than the libraries Tian actually built;
+- position 59 will be the single largest source of steric-only misses.
+
+If steric-only recall is already high on the holdout, §48b is wrong and the
+simpler method wins. That outcome is what the split exists to allow.

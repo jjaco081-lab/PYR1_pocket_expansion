@@ -1,0 +1,54 @@
+FROZEN SPLIT (declared in this file's header, before any result)
+  DEV      : sd03, sd07, Beltran-45
+  HELD OUT : sd08 (TNT), sd09 (PFAS)   <- not to be inspected while
+             a method is being chosen; pass --reveal-holdout to see it
+
+==============================================================================
+sd03 (mixed screen): 691 clones, 1747 substitutions, 144 distinct
+==============================================================================
+  steric    57 distinct (39.6%)
+  CHARGE    37 distinct (25.7%)
+  polar     50 distinct (34.7%)
+
+  CHARGE change with |dVolume| < 25 A^3 -- near-isosteric, so a
+  volume/overlap objective has nothing to key on: 18 of 144 distinct (12.5%)
+    A89D(+22), E141T(-22), E141V(+2), E94H(+15), E94M(+24), E94Q(+5), F108K(-21), F108R(-16), F159K(-21), I110R(+7), K59L(-2), K59M(-6), K59Q(-25), L117K(+2), N167D(-3), N167E(+24), S122D(+22), V164E(-2)
+  weighted by occurrence: 119 of 1747 (6.8%) of all substitutions seen
+
+  position 59 (WT Lys, charged): 11 distinct -- K59A, K59D, K59E, K59L, K59M, K59N, K59Q, K59R, K59S, K59T, K59V
+    appears in 143 substitutions (8.2% of all)
+
+==============================================================================
+sd07 (coumarin): 78 clones, 528 substitutions, 32 distinct
+==============================================================================
+  steric    12 distinct (37.5%)
+  CHARGE     9 distinct (28.1%)
+  polar     11 distinct (34.4%)
+
+  CHARGE change with |dVolume| < 25 A^3 -- near-isosteric, so a
+  volume/overlap objective has nothing to key on: 4 of 32 distinct (12.5%)
+    K59Q(-25), N167D(-3), R134L(-7), V164E(-2)
+  weighted by occurrence: 60 of 528 (11.4%) of all substitutions seen
+
+  position 59 (WT Lys, charged): 2 distinct -- K59A, K59Q
+    appears in 49 substitutions (9.3% of all)
+
+==============================================================================
+Beltran-45 (cannabinoids): 45 clones, 151 substitutions, 40 distinct
+==============================================================================
+  steric    20 distinct (50.0%)
+  CHARGE    12 distinct (30.0%)
+  polar      8 distinct (20.0%)
+
+  CHARGE change with |dVolume| < 25 A^3 -- near-isosteric, so a
+  volume/overlap objective has nothing to key on: 2 of 40 distinct (5.0%)
+    E141M(+24), K59Q(-25)
+  weighted by occurrence: 6 of 151 (4.0%) of all substitutions seen
+
+  position 59 (WT Lys, charged): 6 distinct -- K59A, K59N, K59Q, K59R, K59S, K59T
+    appears in 16 substitutions (10.6% of all)
+
+
+##############################################################################
+# HELD OUT (sd08 TNT, sd09 PFAS) NOT READ -- 2 sets reserved for the prospective test
+##############################################################################
