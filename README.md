@@ -2552,6 +2552,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | crystal arm **extension launched** (27725295, 24 windows to 120 ns); project-wide reflection written | §47 |
 | 2026-08-24 | sensor-chemistry benchmark built; PFAS/TNT frozen as a held-out prospective test | §48, `scripts/106_sensor_benchmark.py` |
 | 2026-08-24 | charge identity shown ligand-dependent but pose-free; K59 retention test pre-registered on PFAS/TNT | §49 |
+| 2026-08-24 | lookup baseline run and killed; ligand-blind frequency null quantified as the bar | §50, `scripts/107_lookup_baseline.py` |
 
 ### Reversals and corrections
 
@@ -2608,6 +2609,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 49 | 08-24 | a docked pose would just give a worse NUMBER than the crystal pose, letting us price "no structure" | the docked arm returned **-1381 kcal/mol** with the wrong CURVE SHAPE. Measured: the ligand collapses into the decoupled WT Phe108 ring -- **all 14 sub-2 A contacts at lambda=0.885 are F108 ring atoms**, min 1.22 A, while the crystal arm has zero in every window | it fails STRUCTURALLY, not noisily. The pose was docked into the F108A **cavity**, i.e. exactly the volume the transformation deletes, so **any TI from WT to a cavity-creating mutant with the ligand docked into that cavity is ill-conditioned in dual topology** -- which is the intended production workflow. The "cost of no structure" is not quantifiable this way (S46b) |
 | 50 | 08-24 | §32's 3-of-4 recall meant a steric library would be about 75 % complete | measured over 691 + 78 + 45 characterised sensors: **steric is only 37.5-50 % of distinct substitutions** in every set, CHARGE is 26-30 %, polar 20-35 %. Position 59 carries **8-11 % of all substitutions** in every set and is **89 % charge chemistry** (185 of 208) | a steric library is not 75 % complete, it is **blind to a category**. But covering it is cheap: **K59 alone is 44 % of all charge chemistry and seven positions are 90 %**, so a position-typed menu fixes it at a cost smaller than the libraries Tian already builds (§48a-b) |
 | 51 | 08-24 | choosing WHICH residue at a charge position needs the ligand's charged group located, hence a pose -- which §46b measured at 8.33 A error into a pocket that does not exist yet | holding the library fixed, 59-charge substitutions per clone run **0.05 (anionic ligands) -> 0.17 -> 0.31 -> 0.78 (cationic)**, a ~16x spread in the direction electrostatics demands, and acids relocate their charge chemistry to E94/V81/I110 instead. 17 of 19 acid ligands never touch 59 | **the circularity is binding for STERIC placement and largely absent for CHARGE** -- the discriminating feature is formal charge class, a 2D SMILES property needing no pose. Polar positions (120, 163) are NOT covered by this and plausibly do need geometry (§49a-b) |
+| 52 | 08-24 | a chemical-similarity lookup over 194 already-screened ligands might match anything we build, so it had to be ruled out first | leave-one-ligand-out over 89 ligands: similarity beats a **ligand-blind frequency menu** by **+0.010** recall@20 (23 win / 13 loss / **53 tie**), and copying the single nearest ligand is far WORSE (0.20 vs 0.35). It helps only where a close neighbour exists (+0.045 at Tanimoto>=0.5) and **only 0.4 % of ligand pairs reach 0.5** (median 0.110) | **lookup is dead** -- nothing to look up for a novel ligand. But the null it exposed is the real prize: **freq recall@20 = 0.35, @40 = 0.52**, ligand-blind and free, and the bar every method here has never been measured against. oracle@20 = 0.99 also scopes the task to a 20-40 substitution menu (§50) |
 
 ### Bugs caught before they cost anything
 
@@ -6118,3 +6120,75 @@ ligands in 22.5 % (76/338). So the expectation is PFAS retention well above TNT'
 This is falsifiable in the obvious way: if PFAS ≤ TNT, §49a does not transfer to
 new chemistry and the charge-class rule should not be built on it. It is also the
 first genuinely prospective prediction this project has made (§47e).
+
+---
+
+## 50. The lookup baseline: chemical similarity adds almost nothing, but frequency sets a real bar (2026-08-24)
+
+§49c argued this had to be run before anything structural, because no trivial
+baseline had ever been established here. `scripts/107_lookup_baseline.py`,
+leave-one-ligand-out over the 89 sd03 ligands with ≥3 clones.
+
+The comparison that matters is not "does lookup work" but **does chemical
+similarity beat a menu that never looks at the ligand at all** — common
+substitutions are common, and a frequency menu will recall a lot for free.
+
+### 50a. Result
+
+Recall of a held-out ligand's observed substitutions, top-K menu:
+
+| scorer | @5 | @10 | @20 | @40 |
+|---|---|---|---|---|
+| **freq** (ligand-blind) | 0.148 | 0.236 | **0.348** | **0.517** |
+| **sim** (Tanimoto-weighted) | 0.152 | 0.233 | 0.358 | 0.554 |
+| 1nn (nearest ligand's menu) | 0.113 | 0.172 | 0.200 | 0.201 |
+| *oracle* (ceiling) | 0.567 | 0.855 | 0.991 | 1.000 |
+
+Per-library (target and neighbours sharing allowed residues) gives the same
+picture: tsm +0.023, dsm +0.024 at K=20.
+
+**Similarity beats frequency by +0.010 on average.** Head-to-head at K=20:
+23 wins, 13 losses, **53 ties** — the top-20 menus are mostly identical. And
+**1nn is far worse than frequency** (0.20 vs 0.35), so copying a single
+neighbour's library is actively bad.
+
+### 50b. Why it fails — the reference set is chemically sparse
+
+Similarity does help *when a close neighbour exists*:
+
+| | n | sim | freq | delta |
+|---|---|---|---|---|
+| close neighbour (Tanimoto ≥ 0.5) | 24 | 0.405 | 0.360 | **+0.045** |
+| far (< 0.5) | 65 | 0.340 | 0.343 | −0.003 |
+
+But over the 89 ligands, pairwise Tanimoto has **median 0.110**, 90th percentile
+0.186, and **only 0.4 % of pairs reach 0.5**. So the method is not wrong in
+principle — there is simply nothing to look up. For a genuinely novel ligand,
+which is the whole use case, a close neighbour will essentially never exist.
+
+**Option E (§49c) is dead.** Lookup is not a competitive method and should not be
+built on.
+
+### 50c. What this bought: the bar, quantified for the first time
+
+The frequency menu is ligand-blind, costs nothing, and is not weak:
+
+> **recall@20 = 0.35, recall@40 = 0.52**
+
+Any structural or rule-based method must beat that to be worth its compute. This
+project has run nine methods (§47a) and has never once measured one against a
+null. From here, nothing gets reported without it.
+
+Two further things the baseline hands us:
+
+- **The task is well-scoped.** oracle@20 = 0.99, so ~20 substitutions covers
+  essentially all of any single ligand's observed chemistry. A menu of 20–40 is
+  the right target size, not 200.
+- **The frequency menu is 13 steric / 5 polar / 2 charge**, against a true
+  population of roughly 40/35/26 (§48a). So the cheap baseline is *itself*
+  skewed toward steric chemistry and under-represents charge — which is exactly
+  the gap §48b and §49a propose to fill, and gives the position-typed rule a
+  specific, measurable thing to beat rather than a vague improvement.
+
+The top-20 ligand-blind menu, for reference: F159I/V/T/L/A/G, V81Y/L/R, Y120A/G,
+V163W, V83L, A160L/I/V/M, K59D, L87M, V164F.

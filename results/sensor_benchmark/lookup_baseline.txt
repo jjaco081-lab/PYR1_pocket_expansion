@@ -1,0 +1,40 @@
+sd03: 194 ligands, 194 with usable SMILES, 89 with >= 3 clones and >=1 substitution
+
+============================================================================
+POOLED across mut_lib (see header: this is the OPTIMISTIC reading)  (89 held-out ligands)
+============================================================================
+  nearest-neighbour Tanimoto: median 0.33, min 0.15, max 1.00
+  scorer        recall@5   recall@10   recall@20   recall@40
+  freq             0.148       0.236       0.348       0.517
+  sim              0.152       0.233       0.358       0.554
+  1nn              0.113       0.172       0.200       0.201
+  oracle           0.567       0.855       0.991       1.000
+
+  sim - freq at K=20: mean +0.010; similarity wins on 23/89 ligands (26%)
+
+============================================================================
+mut_lib = tsm only (target and neighbours share allowed residues)  (54 held-out ligands)
+============================================================================
+  nearest-neighbour Tanimoto: median 0.28, min 0.15, max 1.00
+  scorer        recall@5   recall@10   recall@20   recall@40
+  freq             0.108       0.191       0.329       0.507
+  sim              0.117       0.203       0.351       0.523
+  1nn              0.094       0.155       0.210       0.211
+  oracle           0.457       0.776       0.985       1.000
+
+  sim - freq at K=20: mean +0.023; similarity wins on 17/54 ligands (31%)
+
+============================================================================
+mut_lib = dsm only (target and neighbours share allowed residues)  (32 held-out ligands)
+============================================================================
+  nearest-neighbour Tanimoto: median 0.26, min 0.15, max 1.00
+  scorer        recall@5   recall@10   recall@20   recall@40
+  freq             0.159       0.237       0.342       0.507
+  sim              0.172       0.258       0.366       0.488
+  1nn              0.065       0.090       0.090       0.090
+  oracle           0.728       0.974       1.000       1.000
+
+  sim - freq at K=20: mean +0.024; similarity wins on 6/32 ligands (19%)
+
+  READ: 'sim' only earns its keep where it beats 'freq', which does not
+  look at the ligand at all. 'oracle' is the ceiling, not a method.
