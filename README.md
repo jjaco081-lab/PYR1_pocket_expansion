@@ -2558,6 +2558,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | library sizes corrected for substitution depth; round 2 reframed as narrow+deep, not smaller | §53 |
 | 2026-08-24 | round-1 -> round-2 carryover measured; design problem reframed as vocabulary subset selection | §54 |
 | 2026-08-24 | co-folding validation submitted (27727052, 4 runs incl. WT negative control); ML data audit | §55 |
+| 2026-08-24 | donor graft pockets measured (2PCS 27 lining side chains vs PYR1 19-20); switch still unsimulable | §56 |
 
 ### Reversals and corrections
 
@@ -2620,6 +2621,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 55 | 08-24 | library size = product over positions of (allowed residues + 1) | the primaries are **substitution-DEPTH limited**: DSM-Hao is a **double**-substitution library and TSM a **triple**, confirmed in the clones (dsm mode 2, 193/266; tsm mode 3, 346/403). True sizes are **DSM-Hao 36,140** and **TSM 332,863**, not 3.8e21 and 7.7e15 -- wrong by up to **16 orders of magnitude**. Every library is 1e4-1e7 and the PRIMARIES are the smallest | **round 2 is not smaller, it is differently SHAPED** -- broad+shallow (18 positions, 2-3 deep) becomes narrow+DEEP (11-14 positions, 7-8 deep), reaching combinations round 1 cannot express at any screening depth. '>=10x size reduction' is the wrong axis; the task is **which positions are worth combining deeply**. Retention percentages survive (set containment); only the size axis was wrong (§53) |
 | 56 | 08-24 | a secondary library is built by extrapolating from that ligand's own round-1 hit | measured on the 11 coumarin round-2 sensors: **own-ligand carryover is 0-64 %** (median ~23 %, and **4 of 11 had NO round-1 hit at all**), while **pooled round-1 across 194 ligands covers 75-100 %** (mostly 93-100). Round-1 explores 144 of 342 possible single substitutions and contains 75 % of all round-2 chemistry; the residual 8 sit at positions 65/71/74/109/124/134/178/184, OUTSIDE the original 18 | **an initial hit is neither necessary nor sufficient.** The design problem is **subset selection from a known ~144-substitution vocabulary plus a depth choice**, not extrapolation -- use the hit to WEIGHT the vocabulary, never to restrict it, since restricting would have failed for every ligand in the table (§54) |
 | 57 | 08-24 | ~1150 labelled clones might be enough to bias an ML tool from ligand SMILES to sequence | the effective sample size is the number of independent **LIGANDS (~208)**, not clones -- clones sharing a ligand are repeats under one input. 69 ligands have exactly 1 clone; only 47 have >=5; median pairwise Tanimoto **0.106** | **generative SMILES->sequence is 2-4 orders of magnitude short**, and LigandMPNN fine-tuning inherits the pose problem AND starts from a model that INVERTS V81I (-0.841, §23h). What IS supported: a ~10^2-parameter conditional model over position x residue-class (§49a generalised), and -- unused so far -- a **tractability classifier** on 208 positives + **229 documented negatives** = 437 ligand-level labels (§55b) |
+| 58 | 08-24 | the big-cavity graft donors offer PYR1's pocket with more room | measured for the first time from the DONOR side: cavity volume and lining side chains track at **r = +0.99**, so **2PCS lines its 570 A^3 cavity with 27 side chains against PYR1's 19-20** (~40 % more positions) at 9.8 % identity, and volume per lining residue rises from ~9-12 to 21 A^3 | they are **different architectures, not larger PYR1s**. The cavity/transplantability tension is **categorical, not gradual**: everything >300 A^3 sits at 3.45-4.03 A core RMSD and ~10 % identity, everything transplantable (<1.5 A) is PYR1-sized. Also **2NS9 and 2BK0 are APO**, so the previously-favoured 2BK0's 344 A^3 is a cavity-detection number being compared against a ligand-contact one (§56b-c) |
 
 ### Bugs caught before they cost anything
 
@@ -6568,11 +6570,17 @@ Four runs, and the controls carry the weight:
 | **WT + mandipropamid** | **negative control** |
 | **WT + ABA** | **positive control** (3QN1) |
 
-The ternary run matters because the gate–latch only closes on HAB1 binding, so a
-binary prediction may not reach the closed state at all. The negative control
-matters more: **WT is known not to bind mandipropamid** — that is why the
-quadruple was evolved — so if WT scores as confidently as the quadruple, the
-method has no discriminative power however good the quadruple's pose looks.
+⚠ **Corrected (Jannis).** An earlier draft said the gate–latch only closes on
+HAB1 binding. That is wrong: **ligand binding closes the gate; HAB1 then locks the
+closed form together.** So the *binary* run can reach the closed state on its own,
+which makes it the more informative of the two rather than a degraded version of
+the ternary one — and it is also the configuration a design pipeline would
+actually have.
+
+The negative control carries the most weight: **WT is known not to bind
+mandipropamid** — that is why the quadruple was evolved — so if WT scores as
+confidently as the quadruple, the method has no discriminative power however good
+the quadruple's pose looks.
 
 Gate: if 4WVO is reproduced, structure becomes usable for the steric positions
 (159/160/83/87/89) and the polar ones (120/163) that §49b left open. If not, the
@@ -6621,3 +6629,85 @@ for a modest classifier on ligand descriptors answering:
 That is target triage, not design, and it is the one place where the label count
 is adequate rather than marginal. It has never been attempted here, and it would
 directly inform which molecules are worth a library.
+
+---
+
+## 56. Graft status, and the donor pockets measured for the first time (2026-08-24)
+
+### 56a. Where the graft arm stands
+
+`79_graft_geometry.py` screened 19 candidates for whether PYR1's 19-residue
+machinery (four discontinuous segments, §9c) could be carried onto a large-cavity
+SRPBCC relative. **Geometry only — no design was attempted, and the arm has been
+parked at lower priority since.** Its conclusion stands: *rebuild, not transplant.*
+
+### 56b. The tension is categorical, not gradual
+
+Across all 19 candidates cavity vs core RMSD gives r = +0.10 — no trend. The
+structure is a clean split:
+
+| | cavity Å³ | core RMSD | fident |
+|---|---|---|---|
+| **big-cavity** (2PCS, 2NS9, 2BK0, 6AWV) | 319–570 | **3.45–4.03 Å** | **0.098–0.122** |
+| **transplantable** (4DSB, 3OQU) | **162–204** | **1.03–1.46 Å** | 0.457–0.511 |
+
+The transplantable ones are close PYR1 homologs (≈50 % identity) whose pockets are
+**the same size as PYR1's 174 Å³** — no gain. The big-cavity ones are distant
+relatives at ~10 % identity, and 3.5–4 Å of core RMSD is a rebuild. There is
+nothing in between in this candidate set.
+
+### 56c. The donor pockets, measured (`109_graft_pocket_landscape.py`)
+
+79 measured coverage *from PYR1's side* — how many of PYR1's 19 machinery
+residues have an equivalent position in the donor. It never asked what the
+**donor's own** pocket looks like. Measured now, by the same criterion used for
+PYR1 (side-chain heavy atom within 4.5 Å of the bound ligand):
+
+| PDB | cavity Å³ | ligand | pocket residues | **side-chain lining** | Å³ per lining residue |
+|---|---|---|---|---|---|
+| **2PCS** (CoxG) | 570 | UNL, 30 heavy | 30 | **27** | 21 |
+| 6AWV | 319 | 28E, 42 heavy | 26 | **21** | 15 |
+| 3TFZ | 207 | CXS, 28 | 18 | 17 | 12 |
+| 3OQU | 204 | ABA, 19 | 17 | 17 | 12 |
+| 4DSB | 162 | ABA, 19 | 17 | 17 | 10 |
+| **PYR1** | **174** | ABA, 19 | — | **19–20** | ~9 |
+| 2NS9 / 2BK0 / 3QRZ | 455 / 344 / 210 | **apo** | not measurable | — | — |
+
+**Cavity volume and the number of lining side chains track each other almost
+exactly: r = +0.99 (n = 5).** So the big donors are not "PYR1's pocket with more
+room" — they are pockets with **more positions**. 2PCS lines its cavity with **27
+side chains against PYR1's 19–20**, roughly 40 % more design positions, in a
+scaffold sharing 9.8 % sequence identity. Volume per lining residue also rises,
+from ~9–12 Å³ in the PYR1-like pockets to 21 Å³ in 2PCS, so it is a more open
+architecture as well as a larger one.
+
+⚠ **The second and third largest candidates are apo.** 2NS9 (455 Å³) and 2BK0
+(344 Å³) have no bound ligand, so their volumes come from cavity detection rather
+than ligand contact and are not strictly comparable to PYR1's 174 Å³, and their
+lining-residue counts cannot be obtained at all. **2BK0 was the candidate
+previously flagged as most promising** (19/19 covered, gate RMSD 2.20 Å); that
+recommendation rests on a cavity number of a different kind from the one it was
+being compared against.
+
+### 56d. No, we still cannot simulate the switch — and for grafts that is the binding constraint
+
+Confirmed, and 79's own header says so: it screens what is *geometrically*
+possible and "says nothing about whether the graft would still cycle between open
+and closed."
+
+§24 and §29 are why. Open and closed are **both kinetically trapped**: neither
+state converts even once in **1.8 µs of aggregate WT sampling**, and apo-closed
+holds for 3 × 300 ns with **zero crossings**. So the accessible observable is
+*stability of a state*, never *transition between states*.
+
+For the pocket-expansion arm that is a limitation. **For the graft arm it is
+disqualifying at the validation step**, because a graft's entire value
+proposition is that the transplanted machinery still cycles. What we can measure —
+does the closed state hold — is satisfied equally well by a **constitutively
+closed** protein, which is a failure mode, not a success. §45 sharpens this: the
+closed-state filter is ligand-sensitive but passed α-estradiol, a true negative.
+
+So a graft could be designed, folded, and shown stable, and none of that would
+distinguish a working switch from a dead one. Any serious graft attempt needs the
+switch assayed experimentally (Y2H reports exactly this), or an enhanced-sampling
+method this project has not built.
