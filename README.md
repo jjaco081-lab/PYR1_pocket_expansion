@@ -2631,6 +2631,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 61 | 08-24 | a weak hit collapses the chemical dimension, so expanded-pocket designs can be tested against it | **the gate closes ONTO the ligand.** A weak hit is for a ligand that fits the CURRENT envelope; enlarge the cavity and that ligand no longer reaches the gate, giving either no closure (no signal) or ligand-independent closure (constitutive, which the counter-selection removes) | expansion must be paired with a **LARGER** ligand -- the 28-50 heavy-atom band, i.e. the 229 documented failures, which are the matched test set. And §24's kinetic trapping means we can measure the stability of a starting state but **never the open/closed free-energy difference**, which is the quantity separating signal from constitutive. **The question is one this class of method cannot answer** -- it needs Y2H (§58) |
 | 62 | 08-24 | an enlarged cavity needs a larger ligand to fill it, or transduction breaks (§58) | measured over 691 clones: **94 release >=100 A^3 of side-chain volume, and 28 of those bind ligands of <=20 heavy atoms** -- ABA-sized. **Honokiol and Magnolol (isomers, 20 heavy) both give 1 uM sensors at -161 A^3**, close to doubling PYR1's 174 A^3 cavity; Carpropamid 1 uM at -144 | **the ligand does NOT have to fill the enlarged cavity.** Partial occupancy reaches the top potency class empirically, so the under-filling worry is materially weakened -- with the caveat that net side-chain volume is not cavity volume (the pocket may be RESHAPED rather than voided, and water fills the rest) (§59a) |
 | 63 | 08-24 | the open/closed free-energy difference is simply out of reach here (§24, §58a) | that is a property of UNBIASED MD. Umbrella sampling returns it, and a coordinate exists: **P88 CA - R116 CA**, picked by scoring every gate-latch CA pair against the two crystals and then checked against 5 x 300 ns -- **closed basin 6.06-6.08 A, open basin 16.3-16.9 A, no overlap**. S9 and S2 sit at the SAME value, so the closed state is geometrically identical with and without ligand -- exactly why stability cannot separate them | 62 windows seeded from real equilibrated frames (not a steered pull), 1.24 us. Run as a **CALIBRATION on a known answer first** (holo must favour CLOSED, apo OPEN); the reported quantity is the holo-apo DIFFERENCE so coordinate error cancels, and overlap/drift/hysteresis print beside every number (§60) |
+| 64 | 08-24 | the umbrella restraint atoms (P88 CA / R116 CA) are the same indices in every arm | **K59R adds atoms before residue 88**: the quad arms put them at **1408/1814**, the WT arms at **1403/1819**. 112 hardcoded the WT pair | a hardcoded pair would have restrained **the wrong atoms in every quad window, silently**. Indices are now derived per topology with the residue identity asserted. Also caught: transplanted rotamers appended AFTER residue 191 rather than in residue order (tleap `Atom .R<THR 191>.A<OXT 15> does not have a type`), and a 0-byte prmtop passing a `-f` guard that should have been `-s` (§60d) |
 
 ### Bugs caught before they cost anything
 
@@ -7049,3 +7050,49 @@ in rather than hoped for:
 If this calibration fails, the scheme is wrong and no designed-pocket PMF from it
 should be quoted — which is the entire point of running it on a case whose answer
 is already known.
+
+### 60d. Extended to a receptor × ligand cross-over (2026-08-24)
+
+Two arms test whether a gate can close. Four test whether the method can tell
+*which* ligand closes *which* receptor:
+
+| | WT PYR1 | PYR1^MANDI |
+|---|---|---|
+| apo | negative (open) | — |
+| **+ ABA** | **POSITIVE** (closed) | negative |
+| **+ mandipropamid** | negative | **POSITIVE** (closed) |
+
+**The diagonals have to flip.** That is a selectivity test, and it is far stronger
+than the two-arm version — a scheme that merely reports "a closed gate is stable"
+passes the two-arm test and fails this one.
+
+Built and verified (`114`/`115`), all at 0.15 M KCl on the md191 closed frame:
+
+| arm | res 59 | ligand | P88–R116 | min prot–lig | contacts < 2 Å |
+|---|---|---|---|---|---|
+| quad_mandi | ARG | 51 atoms | 6.77 Å | 1.88 Å | 2 |
+| quad_aba | ARG | 38 atoms | 6.77 Å | 2.15 Å | 0 |
+| **wt_mandi** | LYS | 51 atoms | 6.77 Å | **0.27 Å** | **8** |
+
+Two things the build surfaced:
+
+**The restraint atom indices are not shared.** The quad arms put P88 Cα / R116 Cα
+at **1408 / 1814**, the WT arms at **1403 / 1819** — K59R adds atoms before
+residue 88. `112` originally hardcoded the WT pair; it now derives them from each
+topology and asserts the residue identity, because a hardcoded pair would have
+restrained the wrong atoms in every quad window without any error.
+
+**wt_mandi starts at 0.27 Å.** That is the physically correct answer — WT cannot
+accommodate mandipropamid, which is the entire reason the quadruple was evolved —
+but it is also exactly the configuration whose minimisation §46c measured as
+inescapable (E = 4.5 × 10⁸, |F|max = 8.4 × 10⁶, flat over 10,000 steps). It must
+be relaxed with the backbone restrained and the ligand and side chains free, which
+is the fix that worked in `102`'s ladder. If a low-coordinate wt_mandi window
+still fails, the ladder remedy applies: seed it from the neighbouring window that
+succeeded rather than from the clashed start.
+
+Two build defects, both of the same family — a file that looks right and a parser
+that disagrees: the transplanted rotamer atoms were appended after residue 191
+instead of in residue order (tleap: `Atom .R<THR 191>.A<OXT 15> does not have a
+type`), and a 0-byte prmtop left behind by the failed run passed a `-f` guard that
+should have been `-s`.

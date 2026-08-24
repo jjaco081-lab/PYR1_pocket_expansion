@@ -26,11 +26,13 @@
 # number it later produces for a designed pocket means anything. Same discipline
 # as §13e, applied to a new method.
 #
-# COORDINATE: P88 CA (atom 1403) - R116 CA (atom 1819). Chosen by measuring every
-# gate-latch CA pair against the two crystal references and taking the largest
-# separation, then checked against 5 x 300 ns of unbiased MD:
+# COORDINATE: P88 CA - R116 CA. Chosen by measuring every gate-latch CA pair
+# against the two crystal references and taking the largest separation, then
+# checked against 5 x 300 ns of unbiased MD:
 #     closed basin  6.06-6.08 A       open basin  16.3-16.9 A     no overlap
-# Atom indices are identical in the holo and apo topologies (protein comes first).
+# The atom INDICES are computed per topology, never hardcoded: they are 1403/1819
+# in the WT arms, but K59R adds atoms before residue 88 so the PYR1^MANDI arms
+# shift, and a hardcoded pair would silently restrain the wrong atoms there.
 #
 # WINDOWS: 5.0-20.0 A in 0.5 A steps, 31 per arm. With k = 10 kcal/mol/A^2 the
 # thermal width is sqrt(kT/k) = 0.24 A, so neighbouring windows overlap at ~2 sigma.
@@ -51,8 +53,6 @@ module load amber/22_mpi_cuda >/dev/null 2>&1
 
 MD=$ROOT/data/md191
 US=$ROOT/data/umbrella
-IAT1=1403        # P88 CA
-IAT2=1819        # R116 CA
 K=10.0           # kcal/mol/A^2
 EQ_NS=${EQ_NS:-2}
 PROD_NS=${PROD_NS:-20}
@@ -66,18 +66,28 @@ D=$US/$TAG/w$W
 [[ -s $D/seed.rst7 ]] || { echo "no seed for $TAG w$W"; exit 1; }
 cd "$D" || exit 1
 
-# assert the restrained atoms really are P88 CA and R116 CA in THIS topology --
-# the two arms use different prmtops and a silent index shift would bias the PMF
-env -u PYTHONPATH /bigdata/cutlerlab/jjaco081/conda_envs/docking_env/bin/python - "$TOP" <<'PYX' || exit 1
+# P88 CA and R116 CA, COMPUTED per topology. They are 1403/1819 in the WT arms,
+# but K59R adds atoms before residue 88, so the quad arms shift -- hardcoding
+# would silently restrain the wrong pair in half the systems.
+read IAT1 IAT2 <<< "$(env -u PYTHONPATH \
+  /bigdata/cutlerlab/jjaco081/conda_envs/docking_env/bin/python - "$TOP" <<'PYX'
 import sys, parmed as pmd
 t = pmd.load_file(sys.argv[1])
-for idx, want_res, want_num in ((1403, "PRO", 88), (1819, "ARG", 116)):
-    a = t.atoms[idx - 1]
-    if a.name != "CA" or a.residue.name != want_res or a.residue.idx + 1 != want_num:
-        sys.exit(f"atom {idx} is {a.residue.name}{a.residue.idx+1}@{a.name}, "
-                 f"expected {want_res}{want_num}@CA")
-print(f"    restrained atoms verified: PRO88 CA (1403), ARG116 CA (1819)")
+out = []
+for num, want in ((88, "PRO"), (116, "ARG")):
+    r = t.residues[num - 1]
+    if r.name != want:
+        sys.exit(f"residue {num} is {r.name}, expected {want}")
+    ca = [a for a in r.atoms if a.name == "CA"]
+    if len(ca) != 1:
+        sys.exit(f"residue {num} has {len(ca)} CA atoms")
+    out.append(ca[0].idx + 1)
+print(*out)
 PYX
+)"
+[[ -n "${IAT1:-}" && -n "${IAT2:-}" ]] || { echo "could not resolve restraint atoms"; exit 1; }
+echo "    restraint atoms: PRO88 CA = $IAT1, ARG116 CA = $IAT2"
+
 
 cat > rst.dat <<RST
 # umbrella restraint, window $W A
