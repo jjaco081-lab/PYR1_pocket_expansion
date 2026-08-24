@@ -2556,6 +2556,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | ground truth reframed as positive-unlabeled; metric switched to hit-retention vs library size | §51 |
 | 2026-08-24 | incumbent corrected to the two-round process; potency bias found; target set at 17 % of 1 uM clones at ~80K members | §52 |
 | 2026-08-24 | library sizes corrected for substitution depth; round 2 reframed as narrow+deep, not smaller | §53 |
+| 2026-08-24 | round-1 -> round-2 carryover measured; design problem reframed as vocabulary subset selection | §54 |
 
 ### Reversals and corrections
 
@@ -2616,6 +2617,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 53 | 08-24 | recall of observed substitutions was the right way to score a designed library | the hit sets are **positive-unlabeled**: the landscape is not fully tested, libraries are SAMPLED not enumerated, and selection removes variants for reasons unrelated to pocket binding (URA3 activity, constitutive interface binding, and non-uniform promiscuity filtering -- pan-PFAS cross-reactivity was a FEATURE there). 'Not observed' means unknown, not non-functional | **precision is unmeasurable, only recall**; the frequency baseline is **advantaged by construction** so failing to beat it is weak evidence; `oracle@20=0.99` was misread. Metric replaced by **fraction of ligands whose library contains >=1 hit, vs library SIZE** -- you need *a* sensor, not every sensor. New bar: **58 % at 10^5.9, 72 % at 10^7.3**, matching Tian's own focused-library sizes (§51) |
 | 54 | 08-24 | hit retention vs library size was the metric that would show a designed library winning | every ground-truth hit came OUT of the existing libraries, so a designed menu is a SUBSET and can only lose hits -- ceiling 100 % at full size. And hit RATE is not recoverable at all: the data record characterised hits, not screening depth. The real incumbent is free (DSM glycerol stock) then a **focused ~1e5 round-2 library built from round-1 hit profiles** -- Tian coumarin **77,327**, TNT **506,229** -- which demonstrably works, rescuing 5 ligands round 1 missed | **retention can only measure shrinkage, never advantage.** The novel claim available is different and stronger: Tian's focused libraries NEED a round-1 screen, so designing one from chemistry alone **removes an experimental round**. Measurable headroom found: frequency ordering is biased to WEAK sensors -- at ~80,000 members it captures **17 % of 1 uM clones vs 24 % of 100 uM** (§52) |
 | 55 | 08-24 | library size = product over positions of (allowed residues + 1) | the primaries are **substitution-DEPTH limited**: DSM-Hao is a **double**-substitution library and TSM a **triple**, confirmed in the clones (dsm mode 2, 193/266; tsm mode 3, 346/403). True sizes are **DSM-Hao 36,140** and **TSM 332,863**, not 3.8e21 and 7.7e15 -- wrong by up to **16 orders of magnitude**. Every library is 1e4-1e7 and the PRIMARIES are the smallest | **round 2 is not smaller, it is differently SHAPED** -- broad+shallow (18 positions, 2-3 deep) becomes narrow+DEEP (11-14 positions, 7-8 deep), reaching combinations round 1 cannot express at any screening depth. '>=10x size reduction' is the wrong axis; the task is **which positions are worth combining deeply**. Retention percentages survive (set containment); only the size axis was wrong (§53) |
+| 56 | 08-24 | a secondary library is built by extrapolating from that ligand's own round-1 hit | measured on the 11 coumarin round-2 sensors: **own-ligand carryover is 0-64 %** (median ~23 %, and **4 of 11 had NO round-1 hit at all**), while **pooled round-1 across 194 ligands covers 75-100 %** (mostly 93-100). Round-1 explores 144 of 342 possible single substitutions and contains 75 % of all round-2 chemistry; the residual 8 sit at positions 65/71/74/109/124/134/178/184, OUTSIDE the original 18 | **an initial hit is neither necessary nor sufficient.** The design problem is **subset selection from a known ~144-substitution vocabulary plus a depth choice**, not extrapolation -- use the hit to WEIGHT the vocabulary, never to restrict it, since restricting would have failed for every ligand in the table (§54) |
 
 ### Bugs caught before they cost anything
 
@@ -6470,3 +6472,75 @@ Jannis has selected an initial target molecule and others with known weak initia
 hits, and is **deliberately withholding their identities to prevent unintentional
 biasing**. Do not ask for them, and do not attempt to infer them from the data.
 Any method must be specified and frozen before those identities are revealed.
+
+---
+
+## 54. Round-1 hits do not predict round-2 hits — the vocabulary does (2026-08-24)
+
+The obvious model of the two-round process is "extrapolate from this ligand's
+weak round-1 hit". Measured on the coumarin family (sd07 is DEV; PFAS/TNT stay
+sealed), that model is wrong.
+
+### 54a. Per-ligand carryover is near zero; the pooled vocabulary is near complete
+
+For each round-2 sensor, what fraction of its substitutions had already been seen
+in round-1 hits **for that same ligand**, versus in the **pooled** round-1 data
+across all 194 ligands:
+
+| ligand | round-2 distinct | own round-1 | **pooled round-1** |
+|---|---|---|---|
+| Osthole | 14 | 64 % | 100 % |
+| Imperatorin | 13 | 46 % | 100 % |
+| Isopsoralen | 11 | 36 % | 100 % |
+| Methoxsalen | 13 | 23 % | 100 % |
+| Scopoletin | 16 | 6 % | 100 % |
+| Psoralen | 17 | 6 % | 94 % |
+| Bergapten | 16 | **0 %** | 94 % |
+| Citropten | 13 | **0 %** | 100 % |
+| 7-Methoxycoumarin | 15 | **0 %** | 93 % |
+| 5,7-DH-4-methylcoumarin | 11 | **0 %** | 91 % |
+| 4-Methylumbelliferone | 20 | **0 %** | 75 % |
+
+**Four of eleven round-2 sensors had no round-1 hit for their ligand at all** —
+they were round-1 *failures*, rescued by round 2. And even where a round-1 hit
+existed, it typically supplied under a quarter of the chemistry the round-2
+sensor used.
+
+Meanwhile round-1 across all ligands explores **144 of the 342 possible single
+substitutions** (42 %) at the 18 pocket positions, and **75 % of all round-2
+chemistry already appears somewhere in it**. The residual 8 substitutions are at
+positions **65, 71, 74, 109, 124, 134, 178, 184** — *outside* the original 18, so
+round 2 also widened the position set.
+
+### 54b. What the design problem actually is
+
+Not extrapolation from a weak hit. **Subset selection from a known, small, largely
+closed vocabulary**, plus a decision about depth:
+
+> given ~144 substitutions that are known to do something in PYR1, choose ~11
+> positions and their residues, to be combined **7–8 deep**, such that the
+> resulting ≤10⁵ library contains a sensor for the target chemical class.
+
+That is a far better-posed problem than anything attempted in §20–46, and it
+explains why Tian's method works: their profiles are built from first-round hits
+**pooled across the library**, not from one ligand's hits.
+
+Two consequences for a prospective target:
+
+- **An initial hit is not necessary** — 4 of 11 succeeded without one.
+- **An initial hit is not sufficient** — own-ligand carryover is 0–64 %. It should
+  be used to *weight* the vocabulary, never to restrict it. Restricting to the
+  hit's own substitutions would have failed for every ligand in the table.
+
+### 54c. The next test, and it is runnable now
+
+Design a **coumarin-class secondary library** from the pooled round-1 vocabulary
+plus class chemistry — **without touching sd07** — and ask:
+
+1. does it contain the known round-2 hits, and for how many of the 11 ligands?
+2. at what library size, against the **138,240** Tian actually built?
+3. does it recover the four ligands that round 1 missed entirely — the cases where
+   the method has to work without a hit to lean on?
+
+Bias control: pooled round-1 is legitimate input, because it is what Tian had.
+sd07 is not. PFAS and TNT stay sealed for the prospective test (§48d).
