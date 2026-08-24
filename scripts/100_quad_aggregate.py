@@ -52,10 +52,10 @@ _s.loader.exec_module(_m)
 
 
 def window(leg, i):
-    p = os.path.join(TI, leg, f"lam{i:02d}", "prod.out")
-    if not os.path.exists(p):
+    wd = os.path.join(TI, leg, f"lam{i:02d}")
+    x = _m.series_dir(wd)          # spans every prod*.out segment (see 105)
+    if x is None or len(x) == 0:
         return None
-    x = _m.series(p)
     h = len(x) // 2
     t = _m.tau_int(x)
     neff = len(x) / (1 + 2 * t)

@@ -60,6 +60,21 @@ def series(path):
     return np.array([seen[s] for s in sorted(order)])
 
 
+def series_dir(wd):
+    """Concatenate every production segment in a window directory, in order.
+
+    105 extends production in chunks (prod.out, prod01.out, prod02.out, ...).
+    De-duplication must happen WITHIN each file and never across them: Amber
+    restarts NSTEP from zero in every new run, so a global de-duplication would
+    silently discard all but the first segment.
+    """
+    import glob
+    files = sorted(glob.glob(os.path.join(wd, "prod*.out")))
+    if not files:
+        return None
+    return np.concatenate([series(f) for f in files])
+
+
 def tau_int(x):
     """Integrated autocorrelation time, initial-positive-sequence estimator."""
     x = x - x.mean()

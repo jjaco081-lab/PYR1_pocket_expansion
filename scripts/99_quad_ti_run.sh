@@ -192,8 +192,15 @@ run prod eq.rst7        || exit 2
 # the deliverable: <dV/dlambda> for this window
 python3 - <<'PY'
 import re, statistics, sys
+# pmemd prints every frame TWICE (one block per TI region) and the trailing
+# AVERAGES / RMS banners are a mean and a sd, not samples. Counting them gives
+# n = 2*frames + 4 and an error bar sqrt(2) too small -- see 89's header.
 txt = open("prod.out").read()
-v = [float(x) for x in re.findall(r"DV/DL\s+=\s+(-?\d+\.\d+)", txt)]
+body = re.split(r"A V E R A G E S", txt)[0]
+seen = {}
+for st, val in re.findall(r"NSTEP =\s*(\d+).*?DV/DL\s+=\s+(-?\d+\.\d+)", body, re.S):
+    seen.setdefault(int(st), float(val))
+v = [seen[k] for k in sorted(seen)]
 if not v:
     sys.exit("no DV/DL found in prod.out")
 h = len(v) // 2

@@ -2549,6 +2549,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-22 | `.gitignore` given **global** extension rules after the 4th per-directory miss left a 7.9 GB `prod.nc` untracked | `.gitignore` |
 | 2026-08-23 | **non-cognate MD complete** (9 x 150 ns, 1.35 us); quadruple TI built and 40/48 windows run | §45, `results/noncognate/`, `data/ti_quad/` |
 | 2026-08-24 | **quadruple TI 48/48**: crystal arm -1.12 +/- 2.34 (no call); docked arm invalid, ligand collapses into ghost F108 | S46, `results/ti_quad/` |
+| 2026-08-24 | crystal arm **extension launched** (27725295, 24 windows to 120 ns); project-wide reflection written | §47 |
 
 ### Reversals and corrections
 
@@ -5778,3 +5779,131 @@ had the ligand relaxed back out (+27, +10).
 Also recorded: amber22 `pmemd.cuda` has no kernels for **h100 (gpu11)**, which
 fails in seconds with `invalid device symbol` — the same class as the known
 blackwell and k80 failures. Working set is a100 + ada6000 only.
+
+---
+
+## 47. Where this project actually stands (2026-08-24)
+
+Written after 49 recorded belief changes, ~6 µs of MD, two retracted results and
+one estimator switch. The question asked was: are we at marginal returns, and
+should the goal change?
+
+### 47a. The scoreboard
+
+| method | asked to | outcome |
+|---|---|---|
+| Rosetta FastDesign / ratchet | recover PYR1^MANDI | F108A + F159L only; K59R and V81I missed — **stage 1 does not clear** (§23j) |
+| LigandMPNN | same | F108A +0.111, F159L +0.071; K59R missed; V81I **inverted** at −0.841 (§23h) |
+| Per-position steric admissibility | generate residue menus | **fails** — 14.7 of 20 residues admissible, ABA/mandi menus at Jaccard 0.84, i.e. not ligand-conditional (§31) |
+| **Pairwise enumeration + packing term** | narrow the search | **works** — 3 of 4 ground truth in the top 150 of 13,457, a **90× narrowing**; shrink/grow enrichment 62 % vs 42 % (§32) |
+| Electrostatic complementarity | reach K59R | K59 rank 1 for ABA, but K59R still missed — crystal χ3 ≈ 100° is non-rotameric (§33) |
+| Coupled moves (Kortemme) | fix K59R by sampling | **0 % K59 retention even with the cognate ligand** → it is scoring, not sampling (§36) |
+| MM-GBSA | rank ΔΔG | **retracted** — unconverged reference; ±3.85 needs n=60/variant ≈ 1748 GPU-h (§40–42) |
+| MD closed-state filter (§24b) | rank ligands | ligand-sensitive, but **passes α-estradiol**, a true negative (§45) |
+| TI | rank selectivity | crystal arm right sign, **no call** at ±2.34; docked arm structurally invalid (§46) |
+
+One clear success. One weak-positive. Seven failures or no-calls.
+
+### 47b. Three failure modes, each recurring
+
+**1. K59R is invisible to every method, always for the same reason.** It does not
+clash, so steric methods miss it *by category* (§32d). Its benefit is a bidentate
+hydrogen bond whose crystal χ3 is non-rotameric, so rotamer libraries never
+propose it (§33b). And ref2015 pays +10.1 REU of desolvation to bury the salt
+bridge it correctly rewards (§23j). More sampling does not help — the method
+built for exactly this benchmark retains K59 in 0 % of trajectories.
+
+**2. Every affinity estimator's noise exceeds the spacing it must resolve.**
+MM-GBSA: ±3.85 against a ranking spacing of 0.01–1.8. TI: ±2.34 against an effect
+of ~1. This is not a bug to fix; it is what computing small differences of large
+numbers in a flexible protein costs.
+
+**3. Setup defects that return a plausible number instead of an error.** Shifted
+PDB columns silently dropped a ligand and voided a whole arm (§23g); a params
+parser summed the atom-*type* column and returned 0.000 charge for any ligand;
+smina typed mandipropamid as dummy atoms and scored −9.7 for it; a regex
+double-counted every frame and made an error bar 20× too small; docking into a
+designed cavity broke the alchemical path. **Nearly every serious error in this
+project produced a number, not a crash.** The assertion discipline is the reason
+they were caught, and it should not be relaxed.
+
+### 47c. Are we at marginal returns?
+
+**For the affinity-prediction line: yes, and the arithmetic is not close.**
+Resolving the selectivity of *one* variant pair, with a crystal structure in
+hand, is now costed at **8.3 GPU-days** (§46a). A modest screen — 100
+substitutions × 3 ligands — is ~2,500 GPU-days. That is not a screen. And §46b
+showed the cheaper path is worse than slow: docking into an enlarged pocket puts
+the ligand in the volume the alchemical transformation deletes, so the
+dock-then-TI workflow is ill-conditioned *by construction*, not by bad luck.
+
+**For the project: no — but only if the goal changes.** The goal was never "compute
+ΔΔG". It is a sensor for a novel ligand. Physics-based ranking was one candidate
+engine for that, and it has now been tested about as fairly as we can afford.
+
+### 47d. The reframing this argues for
+
+Every real PYR1 sensor in the literature — Park 2015, Tian, Beltran — came from
+**directed evolution over a library**, not from a prediction. And the field's own
+baseline is low: RbsB, 2 M variants → 1.2–1.5× improvement (§34). If even large
+libraries are low-yield, the value computation can add is **making the library
+smaller and richer**, not picking the winner.
+
+We already have the one result that does this. §32's pairwise enumeration turned
+13,457 candidates into a top-150 containing 3 of 4 ground-truth mutations. If a
+Y2H library of 10³–10⁴ is screenable — and this lab runs Y2H — then a
+computationally enriched 10³ library beats a random 10⁶ one.
+
+So the proposal is to change the success metric from
+
+> *rank mutations by predicted ΔΔG* — which nothing here achieves to the needed precision
+
+to
+
+> *design a maximally enriched ~10³-variant pocket library for a given ligand*,
+> scored by **recall of known sensors in the top N**.
+
+That metric is measurable today, on data already in hand, without a single GPU.
+
+### 47e. The tests we are missing — in priority order
+
+1. **The Beltran 45-sensor table is extracted and has never been used as a
+   benchmark** (§31). Forty-five real sensors is a genuine test set, and top-N
+   recall against it directly measures the reframed goal. Cheap, CPU-only, and
+   the single highest-value thing not yet done.
+2. **Tian's 229 failures have never been screened** (§8 step 5). Failures
+   discriminate: a method that cannot separate 229 known failures from the
+   successes is not usable, however well it recovers PYR1^MANDI.
+3. **Nothing has ever been predicted prospectively.** Every result is
+   retrospective recovery of a 4-mutation answer we already knew. §32's 3/4 in
+   the top 150 could be overfitting to that one set — points 1 and 2 are exactly
+   what would show it.
+4. **§38's held-out test is gated on a retired method.** WIN 55,212-2 stays
+   sealed pending MM-GBSA, which no longer exists as a ranking method. That gate
+   should be rewritten against the library-recall benchmark, not quietly dropped.
+5. **We never established the target.** What ΔΔG does a working sensor need? Without
+   it, "±2.34 kcal/mol" has no pass/fail meaning. Beltran's table carries EC50s
+   and can supply the number.
+6. **No computational output has reached the bench.** The lab does Y2H. Nothing
+   from this project has been handed over.
+
+### 47f. What I would do next
+
+1. **Finish the running extension** (27725295) — it is already paid for and
+   settles whether TI is usable *at all* when a structure exists. That is worth
+   knowing even if TI never becomes the screening engine.
+2. **Benchmark §32's pairwise method on Beltran's 45 sensors and Tian's 229
+   failures.** Days of CPU. This is the decisive test of the reframing, and it
+   can invalidate it cheaply.
+3. **Rewrite §38's gate** against that benchmark.
+4. If the benchmark holds, **design a ~10³ library for one target ligand and hand
+   it to Y2H.**
+
+The honest summary: the physics arm has produced reliable *negative* knowledge —
+open and closed are both kinetically trapped, the gate–latch staple is clamped by
+HAB1, closed-state stability is a weak positive and not a gate, K59R is a scoring
+failure and not a sampling one — and one reusable *positive* result, the pairwise
+narrowing. The negative results are worth having and were expensive to get
+honestly. But they say what will not work. The pairwise result is the only thing
+so far that says what will, and it has never been tested outside the one case it
+was built on. That test should come before any more GPU time.
