@@ -2557,6 +2557,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 2026-08-24 | incumbent corrected to the two-round process; potency bias found; target set at 17 % of 1 uM clones at ~80K members | §52 |
 | 2026-08-24 | library sizes corrected for substitution depth; round 2 reframed as narrow+deep, not smaller | §53 |
 | 2026-08-24 | round-1 -> round-2 carryover measured; design problem reframed as vocabulary subset selection | §54 |
+| 2026-08-24 | co-folding validation submitted (27727052, 4 runs incl. WT negative control); ML data audit | §55 |
 
 ### Reversals and corrections
 
@@ -2618,6 +2619,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 54 | 08-24 | hit retention vs library size was the metric that would show a designed library winning | every ground-truth hit came OUT of the existing libraries, so a designed menu is a SUBSET and can only lose hits -- ceiling 100 % at full size. And hit RATE is not recoverable at all: the data record characterised hits, not screening depth. The real incumbent is free (DSM glycerol stock) then a **focused ~1e5 round-2 library built from round-1 hit profiles** -- Tian coumarin **77,327**, TNT **506,229** -- which demonstrably works, rescuing 5 ligands round 1 missed | **retention can only measure shrinkage, never advantage.** The novel claim available is different and stronger: Tian's focused libraries NEED a round-1 screen, so designing one from chemistry alone **removes an experimental round**. Measurable headroom found: frequency ordering is biased to WEAK sensors -- at ~80,000 members it captures **17 % of 1 uM clones vs 24 % of 100 uM** (§52) |
 | 55 | 08-24 | library size = product over positions of (allowed residues + 1) | the primaries are **substitution-DEPTH limited**: DSM-Hao is a **double**-substitution library and TSM a **triple**, confirmed in the clones (dsm mode 2, 193/266; tsm mode 3, 346/403). True sizes are **DSM-Hao 36,140** and **TSM 332,863**, not 3.8e21 and 7.7e15 -- wrong by up to **16 orders of magnitude**. Every library is 1e4-1e7 and the PRIMARIES are the smallest | **round 2 is not smaller, it is differently SHAPED** -- broad+shallow (18 positions, 2-3 deep) becomes narrow+DEEP (11-14 positions, 7-8 deep), reaching combinations round 1 cannot express at any screening depth. '>=10x size reduction' is the wrong axis; the task is **which positions are worth combining deeply**. Retention percentages survive (set containment); only the size axis was wrong (§53) |
 | 56 | 08-24 | a secondary library is built by extrapolating from that ligand's own round-1 hit | measured on the 11 coumarin round-2 sensors: **own-ligand carryover is 0-64 %** (median ~23 %, and **4 of 11 had NO round-1 hit at all**), while **pooled round-1 across 194 ligands covers 75-100 %** (mostly 93-100). Round-1 explores 144 of 342 possible single substitutions and contains 75 % of all round-2 chemistry; the residual 8 sit at positions 65/71/74/109/124/134/178/184, OUTSIDE the original 18 | **an initial hit is neither necessary nor sufficient.** The design problem is **subset selection from a known ~144-substitution vocabulary plus a depth choice**, not extrapolation -- use the hit to WEIGHT the vocabulary, never to restrict it, since restricting would have failed for every ligand in the table (§54) |
+| 57 | 08-24 | ~1150 labelled clones might be enough to bias an ML tool from ligand SMILES to sequence | the effective sample size is the number of independent **LIGANDS (~208)**, not clones -- clones sharing a ligand are repeats under one input. 69 ligands have exactly 1 clone; only 47 have >=5; median pairwise Tanimoto **0.106** | **generative SMILES->sequence is 2-4 orders of magnitude short**, and LigandMPNN fine-tuning inherits the pose problem AND starts from a model that INVERTS V81I (-0.841, §23h). What IS supported: a ~10^2-parameter conditional model over position x residue-class (§49a generalised), and -- unused so far -- a **tractability classifier** on 208 positives + **229 documented negatives** = 437 ligand-level labels (§55b) |
 
 ### Bugs caught before they cost anything
 
@@ -6544,3 +6546,78 @@ plus class chemistry — **without touching sd07** — and ask:
 
 Bias control: pooled round-1 is legitimate input, because it is what Tian had.
 sd07 is not. PFAS and TNT stay sealed for the prospective test (§48d).
+
+---
+
+## 55. Co-folding validation, and whether the data can support an ML design tool (2026-08-24)
+
+### 55a. The co-folding test (27727052, running)
+
+§49c rated pose-derived methods do-not-attempt, on the measured basis that
+docking into a not-yet-existing pocket lands 8.33 Å from the crystal pose (§46b).
+**An initial hit changes that problem**: it supplies a sequence *known to bind*, so
+the task becomes modelling a complex that exists rather than designing one. Boltz
+2.2.1 is installed locally, so this costs nothing but GPU time.
+
+Four runs, and the controls carry the weight:
+
+| run | purpose |
+|---|---|
+| PYR1^MANDI + mandipropamid | the design scenario |
+| PYR1^MANDI + HAB1 + mandipropamid | matches 4WVO, which is ternary |
+| **WT + mandipropamid** | **negative control** |
+| **WT + ABA** | **positive control** (3QN1) |
+
+The ternary run matters because the gate–latch only closes on HAB1 binding, so a
+binary prediction may not reach the closed state at all. The negative control
+matters more: **WT is known not to bind mandipropamid** — that is why the
+quadruple was evolved — so if WT scores as confidently as the quadruple, the
+method has no discriminative power however good the quadruple's pose looks.
+
+Gate: if 4WVO is reproduced, structure becomes usable for the steric positions
+(159/160/83/87/89) and the polar ones (120/163) that §49b left open. If not, the
+stack stays pose-free and those positions fall back to frequency priors.
+
+### 55b. Is there enough data to bias an ML tool from SMILES to sequence?
+
+Counted rather than guessed:
+
+| quantity | value |
+|---|---|
+| distinct **ligands** with ≥1 hit | **~208** (194 sd03 + 14 Beltran) |
+| labelled clones | ~1150 |
+| distinct substitutions (**output space**) | **144** over 18 positions |
+| documented **ligand-level negatives** | **229** |
+| ligands with ≥5 clones | 47 (69 have exactly 1) |
+| median pairwise ligand Tanimoto | **0.106** |
+
+**The effective sample size is ~208, not ~1150.** Clones sharing a ligand are not
+independent draws for learning a ligand→sequence map; they are repeats under one
+input. So:
+
+**Generative SMILES → sequence: no.** Two to four orders of magnitude short, and
+the chemical space is too sparse (median Tanimoto 0.106) for interpolation to
+rescue it — the same sparsity that killed the lookup baseline in §50b.
+
+**Fine-tuning LigandMPNN: not advisable, for two reasons.** It consumes a
+*structure*, not a SMILES, so it inherits the pose problem this was meant to avoid.
+And §23h measured the base model on exactly this task: it recovers F108A (+0.111)
+and F159L (+0.071), misses K59R, and **inverts V81I to −0.841**. Fitting 208
+ligands on top of that would overfit long before it corrected the inversion.
+
+**What the data does support** is a small, heavily regularised conditional model —
+position × coarse residue class (~18 × 5 = 90 cells) conditioned on a handful of
+ligand descriptors (formal charge class, heavy-atom count, HBD/HBA, aromatic
+rings). That is §49a generalised from one position to all of them, and 208 ligands
+can carry it if the parameter count stays near 10².
+
+**And one genuinely well-posed ML task is sitting unused.** The 229 failures are
+*ligand-level* labels — no sensor found for that molecule in any of six libraries.
+Combined with the 208 successes that is **437 ligands with binary labels**, enough
+for a modest classifier on ligand descriptors answering:
+
+> *is this molecule tractable for a PYR1 sensor at all?*
+
+That is target triage, not design, and it is the one place where the label count
+is adequate rather than marginal. It has never been attempted here, and it would
+directly inform which molecules are worth a library.
