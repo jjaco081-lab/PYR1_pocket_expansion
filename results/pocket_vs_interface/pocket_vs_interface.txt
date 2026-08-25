@@ -1,0 +1,85 @@
+==============================================================================
+0. INPUT
+==============================================================================
+   /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/complex_AB_ABA.pdb
+   PYR1 chain A: 179 residues; HAB1 chain B: 2260 heavy atoms; ABA: 19 heavy atoms
+   all 18 library positions carry their expected residue
+
+==============================================================================
+1. THE TWO SETS
+==============================================================================
+   HAB1-interface residues (< 4.5 A to chain B): 19
+     [60, 61, 63, 84, 85, 86, 87, 88, 89, 116, 117, 148, 151, 155, 156, 158, 159, 162, 166]
+   ABA-contacting residues  (< 4.5 A to ligand): 19
+     [59, 61, 83, 87, 88, 89, 91, 92, 94, 108, 110, 115, 117, 120, 141, 159, 163, 164, 167]
+   OVERLAP: [61, 87, 88, 89, 117, 159]
+   of the 18 LIBRARY positions, how many touch HAB1? [87, 89, 117, 159]
+
+==============================================================================
+2. SECONDARY STRUCTURE (PyRosetta DSSP)
+==============================================================================
+   53 helical residues, 64 strand, 62 loop -- the helix-grip START fold
+
+   element   range      library positions           HAB1-interface
+   beta2     62-67      -                           [63]
+   beta3     78-83      [81, 83]                    -
+   beta4     91-100     [92, 94]                    -
+   beta5     105-112    [108, 110]                  -
+   beta6     121-131    [122]                       -
+   beta7     134-146    [141]                       -
+   alpha3    153-180    [159, 160, 163, 164, 167]   [155, 156, 158, 159, 162, 166]
+
+==============================================================================
+3. ELEMENTS CARRYING BOTH -- where a pocket mutation can reach HAB1
+==============================================================================
+   alpha3 (153-180):  library [159, 160, 163, 164, 167]   HAB1-contacting [155, 156, 158, 159, 162, 166]
+      F159: 0 apart in sequence, 0.0 A in space  SAME residue
+      A160: 1 apart in sequence, 1.3 A in space  
+      V163: 1 apart in sequence, 1.3 A in space  
+      V164: 2 apart in sequence, 3.3 A in space  
+      N167: 1 apart in sequence, 1.3 A in space  
+
+==============================================================================
+4. THE C-TERMINAL HELIX HAS TWO FACES, and the library sits on one
+==============================================================================
+   Per-residue minimum distances along alpha3. The helix-grip helix caps
+   the pocket on one side and forms the HAB1 interface on the other.
+   res       to ABA   to HAB1   face
+   E153        12.5       7.6   HAB1
+   D154        12.6       5.4   HAB1
+   D155        10.4       3.8   HAB1
+   T156         7.7       4.1   HAB1
+   R157         8.6       6.3   HAB1
+   M158         8.8       2.6   HAB1
+   F159         3.2       3.2   both/edge  <- library
+   A160         4.6       5.9   both/edge  <- library
+   D161         6.5       7.5   both/edge
+   T162         7.4       3.7   HAB1
+   V163         3.5       5.0   both/edge  <- library
+   V164         4.4       8.6   POCKET  <- library
+   K165         7.9       7.2   both/edge
+   L166         8.5       3.7   HAB1
+   N167         3.8       7.1   POCKET  <- library
+   L168         8.0       9.8   both/edge
+   Q169        10.8       6.6   HAB1
+   K170        10.9       6.0   HAB1
+   L171        10.5       8.9   both/edge
+   A172        13.1       9.7   HAB1
+   T173        15.3       5.9   HAB1
+   V174        14.3       8.8   HAB1
+   A175        16.1      11.8   HAB1
+   E176        18.4      11.3   HAB1
+   A177        20.2      11.5   HAB1
+   M178        18.1      14.0   HAB1
+   A179        21.9      16.3   HAB1
+   R180        24.3      15.9   HAB1
+
+   ==> the two functions are on OPPOSITE FACES of one helix. That is why
+       HAB1 contains no pocket residues and yet five library positions
+       share an element with six interface residues: a mutation at 160,
+       163, 164 or 167 does not touch HAB1 directly, but it repacks the
+       core of the helix that presents the interface.
+
+   On a STRAND side chains alternate faces, so i and i+2 point the same
+   way; on a HELIX i and i+3/i+4 do. Those are the separations at which a
+   pocket mutation sits on the same surface as an interface residue.

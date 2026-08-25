@@ -2646,6 +2646,9 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 76 | 08-25 | PFAS sensors spread out because the PFAS panel is chemically broader than the coumarins | **refuted**: mean pairwise ECFP4 Tanimoto within class is **coumarin 0.352 vs PFAS 0.339**, indistinguishable | whether a class admits a forceable position is **not** explained by the class's chemical spread, and nothing here predicts it in advance. The rule can say "no" honestly; it has said "yes" once, on one position, retrospectively (§65e) |
 | 77 | 08-25 | Tian's libraries are all sized about as tightly as the coumarin one (15x off optimal) | **the PFAS library is over-hedged by three orders of magnitude**: the exact smallest library holding a round-2 sensor for all 25 PFAS is **14,400 (3,441x) with WT offered, 9,600 (5,161x) forced**, against 49,545,216 built. Its optimum uses **8 variable positions, not 13** -- V83, L87, A89, V163, N167 contribute nothing, every sensor keeps wild-type there | library width tracks **designer confidence**, which tracks class-relevant round-1 data: coumarin had 36 own-class clones and a clean position signal, PFAS had 89 whose best position reached only 0.61 and whose identities never converged. **For PFAS the prize is which positions to open (3,441x), not residue identity (1.5x)** -- the opposite of coumarin, and the half class-weighted round-1 already recovers (rho +0.74) (§65f) |
 | 78 | 08-25 | the position half of the design problem is only demonstrated in-domain (coumarin) | on PFAS, the **out-of-domain** class, ranking positions by round-1 P(mutated) over 89 clones recovers **7 of 8 needed positions in its top 8 and 8 of 8 in its top 10**, almost monotonically (ranks 1-7 all needed) | strongest position-selection result in the project, and it is on the hard class. But a library from it reaches only **15/25 ligands at 933,120 (53x smaller than Tian's 49.5M)** because residue identity needs top-5 depth to get anywhere. **Positions recoverable, residues not -- the same boundary as coumarin, on different chemistry** (§65g) |
+| 79 | 08-25 | with the menu fixed by round-1 data, a scorer only has to RANK combinations -- an easier and pose-free job | **no separation.** 670 variants, protein-only ref2015 with a paired wild-type control repacked in the identical shell: **REAL vs LIBRARY AUC 0.542 (p 0.28), REAL vs WILD AUC 0.443 (p 0.14)**; excluding the clash tail makes it worse (0.333). Real sensors are if anything MORE strained than random library members | a sensor works by **remodelling** the cavity, and remodelling costs packing energy -- the property that makes a combination good is the one ref2015 penalises. Protein-only stability is mildly ANTI-correlated, not merely uninformative. Ruled out: cheap repack scoring as a library filter. Not ruled out: FastRelax (~100x cost, poor prior) and ligand-aware scores (still blocked by the pose problem). ⚠ The first version scored against the RAW wild-type and gave every variant -130 to -165 REU -- input strain being repacked away (§66a) |
+| 80 | 08-25 | the START/SRPBCC fold has a useful body of ligand-bound structures to learn from | **it has 11.** Of 261 foldseek homologs, 195 are AlphaFold models and 66 experimental; 11 of those 66 carry a buried pocket ligand, **2 of them ABA** and 2 more buffer additives (HEZ, CXS) -- so **~7 non-ABA biological ligands** | against Tian's 208 ligands with sensor data the structural record adds nothing on the chemistry axis. ⚠ `data/survey_cache/` is the WRONG directory (built by scripts 44-46 for the floppy-ligand survey; 97 % ligand-bound, topped by bacteriochlorophyll and detergent), and any compositional count returns 100 % because glycans and modified residues are HETATM. Census must be geometric (§66b) |
+| 81 | 08-25 | the pocket and the HAB1 interface are structurally separate because HAB1 has no pocket residues | **they share the C-terminal helix.** alpha3 (153-180) carries **5 library positions (159, 160, 163, 164, 167) and 6 HAB1-contacting residues (155, 156, 158, 159, 162, 166)** on OPPOSITE FACES, and **F159 is both** -- 3.2 A from the ligand and 3.2 A from HAB1, and the most-mutated position in round 1 (317 of 1747). 4 of 18 library positions touch HAB1: L87, A89, L117, F159 | the ratchet framing survives (HAB1 still contacts no pocket residue) but a mutation at 160/163/164/167 repacks the core of the helix presenting the interface -- **an untested route to dead or constitutive sensors**. ⚠ cpptraj DSSP failed silently (no amide H); argmax over an all-zero row called PYR1 20 strands and ZERO helices (§66c) |
 
 ### Bugs caught before they cost anything
 
@@ -7682,3 +7685,134 @@ sensors were found by screening 49.5 M, and a 933 K library would plausibly find
 
 The pattern is identical to coumarin (§63c): **positions recoverable, residues
 not.** Two classes, two chemistries, same boundary.
+
+---
+
+## 66. Three questions: hybrid scoring, the START-fold ligand census, and pocket vs interface (2026-08-25)
+
+### 66a. Can a scorer rank COMBINATIONS once the wet lab has fixed the menu? — no
+
+`scripts/122_combination_viability.py`, `123_viability_aggregate.py`, job 27752872
+(cutlerlab, CPU, no GPU allowance touched).
+
+Every previous attempt asked a structure-based tool to pick the right *residue*,
+and every one failed. §63–§65 showed round-1 data already narrows the menu. So the
+tools no longer have to generate candidates — only to **rank combinations inside a
+menu the wet lab chose**. And that can be done **pose-free**, which sidesteps the
+circularity that killed everything else (§49b, §46b's 8.33 Å docking error): a
+working sensor must at minimum fold and pack, and asking whether a combination of
+5–8 mutations is structurally viable needs no ligand.
+
+670 variants, protein-only ref2015, shell repacked, each against a **paired
+wild-type control repacked in the identical shell**:
+
+| set | n | median ΔΔG | p25 | p75 | catastrophic (> 200 REU) |
+|---|---|---|---|---|---|
+| REAL (sd07 sensors) | 70 | 66.7 | 31.8 | 125.7 | **22.9 %** |
+| LIBRARY (random from Tian's 138,240) | 300 | 53.1 | 20.9 | 762.4 | 32.3 % |
+| WILD (random from DSM-Hao at the same 11 positions) | 300 | 89.8 | 41.3 | 292.8 | 30.3 % |
+
+| comparison | AUC | p |
+|---|---|---|
+| REAL vs WILD | **0.443** | 0.14 |
+| REAL vs LIBRARY | **0.542** | 0.28 |
+
+**No separation, from either null.** Excluding the catastrophic tail does not
+rescue it: REAL vs LIBRARY AUC falls to **0.333** and REAL vs WILD to 0.550.
+
+And the direction is the interesting part. Real sensors are *slightly more
+strained* than random library members, which is mechanistically sensible: a sensor
+works by **remodelling** the cavity, and remodelling costs packing energy. The
+property that makes a combination good is the one ref2015 penalises. Protein-only
+stability is not merely uninformative here — it is mildly anti-correlated.
+
+The only real signal is the clash tail: 22.9 % of real sensors are catastrophic
+against ~31 % of both nulls. A hard clash filter would cut ~30 % of the library
+while losing ~23 % of the sensors. That is barely better than deleting at random.
+
+⚠ **What this does and does not close.** Ruled out: cheap protein-only repack
+scoring as a library filter. Not tested: a FastRelax-based version (~100× the
+cost, and the prior is now poor), and any ligand-aware score — still blocked by
+the pose problem, not by cost.
+
+⚠ **A confound found and fixed mid-run.** The first version scored the repacked
+mutant against the *raw* wild-type and returned ΔΔG of −130 to −165 REU for every
+variant — that was the input structure's own strain being repacked away, plus a
+bias toward variants with more mutations, which open larger shells. The paired
+control removes both. The early "signal" that motivated the full run was two
+extreme WILD variants and did not survive n = 670.
+
+### 66b. START/SRPBCC-fold proteins with a known pocket ligand: **11**
+
+`scripts/120_start_ligand_census.py`. Of the 261 homologs the foldseek search
+returned, **195 are AlphaFold models** (no ligands by construction) and **66 are
+experimental**. Of those 66, **11 have a buried pocket ligand**:
+
+| | ligand | heavy atoms | | | ligand | heavy atoms |
+|---|---|---|---|---|---|---|
+| 2flhA00 | ZEA | 16 | | 4jhiA00 | EMU | 17 |
+| 3h3qA00 | H13 | 27 | | 4n3eY00 | 2AN | 21 |
+| 3oquB00 | **A8S (ABA)** | 19 | | 4qdcA02 | ASD | 21 |
+| 3putA00 | HEZ | 8 | | 5nonC00 | 93H | 42 |
+| 3tfzE00 | CXS | 14 | | 6awvC00 | 28E | 21 |
+| 4dsbB00 | **A8S (ABA)** | 19 | | | | |
+
+Two are ABA in PYL-family proteins, and HEZ (hexanediol) and CXS (a CHAPS-like
+sulfonate) are buffer additives that happen to be buried. **So the fold offers
+about seven non-ABA biological pocket ligands.**
+
+⚠ **The obvious directory is the wrong one.** `data/survey_cache/` holds 478 CIFs
+and returns 97 % ligand-bound with bacteriochlorophyll, chlorophyll, carotenoid
+and lauryl maltoside at the top — it was built by scripts 44–46 for the
+floppy-ligand survey and is full of light-harvesting complexes, not START
+proteins. And a purely compositional count over any set returns 100 %, because
+NAG/BMA/MAN glycans, TYS/CSO/TPO modified residues and ACE caps are all HETATM.
+The census is geometric: ≥ 8 heavy atoms, ≥ 70 % of atoms contacting protein
+within 4.5 Å, ≥ 20 contacts.
+
+**Seven ligands is not a training set.** Against Tian's 208 ligands with sensor
+data, the structural record for this fold adds essentially nothing on the chemistry
+axis. Where it could still matter is geometry — the 42-heavy-atom 93H shows the
+fold *can* hold something twice ABA's size.
+
+### 66c. The pocket and the HAB1 interface share one helix, and F159 is both
+
+`scripts/121_pocket_vs_interface.py`, on `data/complex_AB_ABA.pdb`, secondary
+structure from PyRosetta DSSP.
+
+| set | n | residues |
+|---|---|---|
+| HAB1-contacting (< 4.5 Å) | 19 | 60, 61, 63, 84–89, 116, 117, 148, 151, 155, 156, 158, **159**, 162, 166 |
+| ABA-contacting (< 4.5 Å) | 19 | 59, 61, 83, 87, 88, 89, 91, 92, 94, 108, 110, 115, 117, 120, 141, **159**, 163, 164, 167 |
+| **both** | 6 | 61, 87, 88, 89, 117, **159** |
+
+**Four of the 18 library positions touch HAB1 directly: L87, A89, L117, F159.**
+The first three are the gate (87–89) and latch (117) — the ratchet residues, which
+is expected. **F159 is the one that should give pause**: it is the most-mutated
+position in round 1 (317 of 1747 substitutions) and it sits 3.2 Å from *both* the
+ligand and HAB1.
+
+The structural picture is one element doing two jobs. The C-terminal helix
+**α3 (153–180)** carries **five library positions (159, 160, 163, 164, 167)** and
+**six HAB1-contacting residues (155, 156, 158, 159, 162, 166)**, interleaved —
+and per-residue distances show they are on **opposite faces**:
+
+```
+D155  HAB1 3.8   T156  HAB1 4.1   M158  HAB1 2.6
+F159  ABA 3.2 / HAB1 3.2   <- both
+A160  ABA 4.6   V163  ABA 3.5   V164  ABA 4.4   N167  ABA 3.8
+T162  HAB1 3.7   L166  HAB1 3.7
+```
+
+This is why HAB1 contains no pocket residues (the ratchet framing is intact) and
+yet a third of the library sits on the helix that presents the interface. A
+mutation at 160, 163, 164 or 167 never touches HAB1, but it repacks the core of
+the helix that does — a route to a dead or constitutive sensor that nothing in
+this project currently screens for, and a plausible contributor to the
+constitutive clones seen in the Y2H work.
+
+⚠ **cpptraj's DSSP failed silently** on this input — no backbone amide hydrogens,
+so every residue came back Turn or all-zero. My first parser took argmax over an
+all-zero row, which returns column 0, so 0.0 became "Extended" and PYR1 was
+reported as **20 strands and zero helices**. A helix-grip fold with no helices
+should have stopped me. Replaced with PyRosetta DSSP (53 H, 64 E, 62 L).

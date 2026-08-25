@@ -1,0 +1,33 @@
+==============================================================================
+PROTEIN-ONLY VIABILITY: can Rosetta rank combinations inside a fixed menu?
+==============================================================================
+   20 chunks, 670 variants scored
+
+   set           n  ddG median      mean       sd   n_sub   shell
+   REAL         70        66.7     233.8    346.7     6.6    52.1
+   LIBRARY     300        53.1     299.8    396.9     6.7    51.8
+   WILD        300        89.8     282.2    408.5     6.6    51.6
+
+   n_sub and shell are printed because they are the obvious confound:
+   more mutations open a larger repacking shell. The random sets were
+   drawn to match REAL's substitution-count range, so these columns
+   should be close -- if they are not, the comparison is contaminated.
+
+   REAL vs WILD     AUC = 0.443   z = -1.49   p = 0.14
+      (AUC 0.5 = indistinguishable; > 0.5 means REAL scores BETTER)
+   REAL vs LIBRARY  AUC = 0.542   z = +1.08   p = 0.28
+      (AUC 0.5 = indistinguishable; > 0.5 means REAL scores BETTER)
+
+   How many of each set would survive a filter set at REAL's 90th percentile?
+   threshold ddG <= 1018.9 REU (keeps 90 % of real sensors)
+     REAL       90.0 % survive   (63/70)
+     LIBRARY    93.0 % survive   (279/300)
+     WILD       91.7 % survive   (275/300)
+
+   ==> such a filter would shrink Tian's 138,240-member library to
+       about 128,563 while keeping 90 % of the known
+       sensors -- a 1.1x reduction, IF the score is real.
+
+   ⚠ Everything above is recall-only. LIBRARY members are UNLABELLED, not
+   known failures, so the reduction figure is what the filter would
+   REMOVE, not what it would remove correctly.

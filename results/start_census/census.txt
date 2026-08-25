@@ -1,0 +1,45 @@
+START/SRPBCC foldseek hit set: 66 structures (66 experimental, 0 AlphaFold models)
+AlphaFold models carry no ligands by construction, so only the
+experimental subset can answer the question.
+criteria: >= 8 heavy atoms, >= 70% of atoms contacting protein within 4.5 A, >= 20 contacts
+
+EXPERIMENTAL structures with >= 1 buried pocket ligand: 11 of 66  (17%)
+distinct ligand chemical components: 10
+skipped: none
+
+largest ligand per structure, heavy-atom count: median 19, range 8-42
+  PYR1's ABA is 19 heavy atoms; mandipropamid 29
+    <= 20  (ABA-sized)                  6  (54.5%)
+    21-28                               4  (36.4%)
+    29-50  (the §58c expansion band)    1  ( 9.1%)
+    > 50   (lipids, cofactors)          0  ( 0.0%)
+
+every structure with a buried pocket ligand:
+   target      ligand    heavy  buried  contacts
+   2flhA00     ZEA          16    1.00        97
+   3h3qA00     H13          27    1.00       160
+   3oquB00     A8S          19    1.00        81
+   3putA00     HEZ           8    1.00        67
+   3tfzE00     CXS          14    1.00        82
+   4dsbB00     A8S          19    0.84        71
+   4jhiA00     EMU          17    1.00        99
+   4n3eY00     2AN          21    0.90       119
+   4qdcA02     ASD          21    0.90       103
+   5nonC00     93H          42    1.00       211
+   6awvC00     28E          21    1.00        71
+
+components, counted once per structure:
+   A8S    2
+   ZEA    1
+   H13    1
+   HEZ    1
+   CXS    1
+   EMU    1
+   2AN    1
+   ASD    1
+   93H    1
+   28E    1
+
+⚠ Structure count is not chemistry count -- the same protein solved many
+  times with the same ligand inflates it. Distinct components is the
+  conservative number.
