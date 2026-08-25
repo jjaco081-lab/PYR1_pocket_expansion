@@ -2644,6 +2644,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 74 | 08-25 | P(top residue \| mutated) in round 2 measures selection | **where a library offers exactly ONE substitution at a position it is 1.00 by construction.** Every coumarin position I quoted at 1.00 -- V83, F108, V163, N167 -- offered exactly one residue | the round-2 half of §64d was inflated. What survives and is not circular is **P(mutated)** -- did the winners keep wild-type when they could have. V163 still stands (0.95, and its single option makes it collapsible, 2x); A160 at 0.87 is wild-type-droppable but keeps 4 residues, worth only 1.25x. §63b's branch-and-bound was never affected -- it works from clone sets and forced V163 alone (§65c) |
 | 75 | 08-25 | forcing is a general lever worth ~2x per position | **it pays in proportion to how SHALLOW the menu is.** Dropping wild-type at PFAS's three high-P(mutated) positions (E94 0.87, Y120 0.86, K59 0.83) takes 49.5M -> 27.5M = **1.8x only**, because they offer 3/5/8 residues; coumarin's V163 offered ONE and was worth 2x | forcing is worth (1+n)/n, so it is a **shallow-position lever**. Separately, round-1 P(mutated) predicts round-2 P(mutated) at **Spearman +0.74** over 17 positions -- but it missed K59 badly (round-1 rank 7 at 6 %, round-2 83 %) (§65d) |
 | 76 | 08-25 | PFAS sensors spread out because the PFAS panel is chemically broader than the coumarins | **refuted**: mean pairwise ECFP4 Tanimoto within class is **coumarin 0.352 vs PFAS 0.339**, indistinguishable | whether a class admits a forceable position is **not** explained by the class's chemical spread, and nothing here predicts it in advance. The rule can say "no" honestly; it has said "yes" once, on one position, retrospectively (§65e) |
+| 77 | 08-25 | Tian's libraries are all sized about as tightly as the coumarin one (15x off optimal) | **the PFAS library is over-hedged by three orders of magnitude**: the exact smallest library holding a round-2 sensor for all 25 PFAS is **14,400 (3,441x) with WT offered, 9,600 (5,161x) forced**, against 49,545,216 built. Its optimum uses **8 variable positions, not 13** -- V83, L87, A89, V163, N167 contribute nothing, every sensor keeps wild-type there | library width tracks **designer confidence**, which tracks class-relevant round-1 data: coumarin had 36 own-class clones and a clean position signal, PFAS had 89 whose best position reached only 0.61 and whose identities never converged. **For PFAS the prize is which positions to open (3,441x), not residue identity (1.5x)** -- the opposite of coumarin, and the half class-weighted round-1 already recovers (rho +0.74) (§65f) |
 
 ### Bugs caught before they cost anything
 
@@ -7605,3 +7606,45 @@ admits a forceable position appears to be a property of the receptor–class
 interaction, not of the class's chemical spread, and nothing here predicts it in
 advance.** The rule can say "no" honestly. It has said "yes" exactly once, on one
 position, retrospectively. That is where it stands.
+
+### 65f. The PFAS headroom is enormous — and it is positions, not forcing
+
+Same exact branch-and-bound as §63b, over the 154 round-2 clones (16.9 M nodes,
+exhaustive):
+
+| arithmetic | exact minimum | vs Tian's 49,545,216 |
+|---|---|---|
+| wild-type always offered | **14,400** | **3,441×** |
+| forcing allowed | **9,600** | **5,161×** |
+
+Against coumarin's 15× / 30×, that is a different regime entirely. The optimum
+menu is
+
+```
+K59:MN(forced)  E94:ADEGS  Y120:LMTVY  S122:LS  E141:EGQ  F159:FHIL  A160:ALMV  V164:VW
+```
+
+— **8 variable positions, not 13.** Five of Tian's positions (V83, L87, A89,
+V163, N167) contribute nothing: every one of the 154 sensors keeps wild-type
+there. Almost all of the 3,441× is **positions that did not need to be open**, and
+only 1.5× of it is the K59 forcing.
+
+So the two libraries were sized very differently against their own results.
+Tian's coumarin library was near-optimally tight (15× off); the PFAS library was
+**over-hedged by three orders of magnitude**. That tracks how much class-relevant
+round-1 data each had: coumarin had 36 own-class round-1 clones with a clean
+position signal, PFAS had 89 clones whose best position (E94) reached only 0.61
+and whose identities never converged. Less confidence, wider library.
+
+⚠ **Two things this is not.** It is not a claim that a 14,400-member library would
+have *found* those 154 sensors — they were found by screening 49.5 M, and hits are
+positive-unlabeled ([[feedback_hits_are_not_optima]]); a tighter library contains
+them but was not where anyone was looking. And the optimum is fitted to the clones
+actually recovered, so it is a bound on the prize, not a design.
+
+But it does relocate where the prize is. For coumarin the whole 15× sat in residue
+identity at fixed positions. For PFAS the 3,441× sits almost entirely in **which
+positions to open at all** — and that is the half §63c already showed is
+recoverable, with class-weighted round-1 putting 11/11 true coumarin positions in
+its top 12, and round-1 P(mutated) predicting round-2 P(mutated) at ρ = +0.74
+here.
