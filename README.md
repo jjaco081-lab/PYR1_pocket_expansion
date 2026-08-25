@@ -2640,6 +2640,10 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 70 | 08-25 | the three substitutions §32 recovered clash and K59R does not | **V81I clashes LESS than K59R (0.12 vs 0.21 A) and was still recovered at rank 150.** The separating axis is VOLUME: F108A -101 A^3, V81I +27, F159L -23, **K59R +5**. K59R is **triply invisible** -- near-isosteric, charge-neutral (Lys +1 -> Arg +1), non-clashing; what it changes is H-bond GEOMETRY | the signature is not hydrophobicity, burial or contact count, it is **does the substitution move volume**. Three separate blindnesses is why §32, §33 and §36 all missed the same residue. The blind spot is **20-28 % of real sensor chemistry** (|dVol| < 25 A^3) (§64a-b) |
 | 71 | 08-25 | WT residue volume predicts which direction a position mutates (rho +0.62, p 0.007) | scored against the shrink fraction implied by each position's **own sd04 menu**, mean enrichment is **+0 percentage points** (sd 22). Most of the correlation is the trivial null: a big residue shrinks because most amino acids are smaller. What survives is per-position -- **F108 -54 points, V163 -41, V83 -37** | no structural descriptor reaches significance against position usage on n = 18 (8 tested, best p = 0.12). Residue identity comes from **pooled/class frequency**, not from geometry (§64c) |
 | 72 | 08-25 | a position whose substitutions are concentrated can be fixed to save library size | concentration GIVEN a substitution is not universality. **V163: 96 % W when mutated, and 95 % of round-2 sensors carry it -- forceable, worth 2x.** V83L (71 % when mutated) drops capture to 9/11 and F108W (66 %) to 8/11 | the statistic is **two numbers**: P(mutated \| class) AND P(residue \| mutated, class). V163 was **callable in advance** -- pooled round-1 rates it 9 % (bottom of the list) but class-restricted it is 22-25 % mutated and **9 of 9 own-class mutations are W**. All 30x of the forcing headroom is this one position. Pre-registered for PFAS/TNT (§64d-e) |
+| 73 | 08-25 | sd03 is the round-1 input for every target class | **the 3,366-compound screening deck contains no PFAS at all**, and Tian ran a SEPARATE PFAS round-1 screen whose data sits inside sd09 under `mut_lib`: **DSM-Hao = 89 clones / 18 ligands (round 1)**, **PFOS_GenWT = 154 / 25 (round 2)**. My first prospective run used sd03, got an empty class set, and "passed" by having nothing to say | that verdict was **void**. Re-run on the right input the §64e rule is a genuine **true negative**: 89 class clones, fired nowhere, and nothing in round 2 was forceable (best carry-top K59M **0.44** vs the 0.80 bar). 7 of 25 round-2 targets had no round-1 hit, again supporting "an initial hit is not necessary" (§65a-b) |
+| 74 | 08-25 | P(top residue \| mutated) in round 2 measures selection | **where a library offers exactly ONE substitution at a position it is 1.00 by construction.** Every coumarin position I quoted at 1.00 -- V83, F108, V163, N167 -- offered exactly one residue | the round-2 half of §64d was inflated. What survives and is not circular is **P(mutated)** -- did the winners keep wild-type when they could have. V163 still stands (0.95, and its single option makes it collapsible, 2x); A160 at 0.87 is wild-type-droppable but keeps 4 residues, worth only 1.25x. §63b's branch-and-bound was never affected -- it works from clone sets and forced V163 alone (§65c) |
+| 75 | 08-25 | forcing is a general lever worth ~2x per position | **it pays in proportion to how SHALLOW the menu is.** Dropping wild-type at PFAS's three high-P(mutated) positions (E94 0.87, Y120 0.86, K59 0.83) takes 49.5M -> 27.5M = **1.8x only**, because they offer 3/5/8 residues; coumarin's V163 offered ONE and was worth 2x | forcing is worth (1+n)/n, so it is a **shallow-position lever**. Separately, round-1 P(mutated) predicts round-2 P(mutated) at **Spearman +0.74** over 17 positions -- but it missed K59 badly (round-1 rank 7 at 6 %, round-2 83 %) (§65d) |
+| 76 | 08-25 | PFAS sensors spread out because the PFAS panel is chemically broader than the coumarins | **refuted**: mean pairwise ECFP4 Tanimoto within class is **coumarin 0.352 vs PFAS 0.339**, indistinguishable | whether a class admits a forceable position is **not** explained by the class's chemical spread, and nothing here predicts it in advance. The rule can say "no" honestly; it has said "yes" once, on one position, retrospectively (§65e) |
 
 ### Bugs caught before they cost anything
 
@@ -7494,3 +7498,110 @@ and is right (95 %). A rule that fires once on one class is not a method; PFAS a
 TNT decide it. It fails if it fires on a position whose round-2 frequency is
 < 80 %, or fires nowhere on either sealed class while a forceable position exists
 in their round-2 data.
+
+---
+
+## 65. The forcing rule, run prospectively on PFAS (2026-08-25)
+
+Jannis authorised unsealing sd09. `scripts/119_pfas_prospective.py`, results in
+`results/secondary_library/pfas_prospective.*`.
+
+**TNT is not run.** Its round-2 library was not built from hits on chemically
+related ligands — none had hits — but from ligands sharing specific structural
+features. The rule keys on 2D whole-molecule similarity, so its input does not
+exist for TNT. sd08 stays sealed.
+
+### 65a. ⚠ The first run used the wrong round-1 input and its verdict is void
+
+I took round 1 to be sd03 — the 194 hits from the 3,366-compound Selleck/LATCA
+deck — which contains **no PFAS at all** (0 compounds with "perfluoro" in the
+name; the most fluorinated is perflubron at 17 F, not a hit). The class set came
+out empty, the rule fired nowhere by default, and it "passed" by having nothing
+to say.
+
+Tian in fact ran a separate PFAS round-1 screen: an improved DSM-Hao library
+against a panel of 103 PFAS. **That data is inside sd09 itself**, separated by
+`mut_lib`:
+
+| `mut_lib` | clones | ligands | role |
+|---|---|---|---|
+| `DSM-Hao` | 89 | 18 | **round 1** — the design input |
+| `PFOS_GenWT` | 154 | 25 | **round 2** — the answer sheet |
+
+Seven of the 25 round-2 targets had no round-1 hit — PFOA, PFHxS, PFNA,
+perfluorodecanoic acid, and three fluorotelomer alcohols. Same shape as
+coumarin's 4 of 11 (§54a), and it again supports "an initial hit is not
+necessary".
+
+### 65b. The pre-registered test, on the right data
+
+Class set: 89 clones at Tanimoto ≥ 0.40 — well past the n ≥ 8 trigger, so the
+rule had every opportunity to fire.
+
+**It fired nowhere.** No position's round-1 residue identity reaches
+P(top | mutated) ≥ 0.85. The most-mutated position, E94 (54 of 89 clones), splits
+G 0.59 / others; Y120 splits A 0.23; A160 splits I 0.28.
+
+**And nothing was forceable.** Best round-2 "carries one specific residue" is
+K59→M at **0.44**, against the 0.80 bar. Nothing else exceeds 0.39.
+
+> **Verdict: true negative.** The rule declined and there was genuinely nothing to
+> fire on. Unlike the void first run, this one had the data to catch a false
+> positive and did not produce one — but it still cannot demonstrate the rule
+> *finds* things, because PFAS has nothing to find.
+
+### 65c. ⚠ A correction to §64d's statistic — P(top | mutated) is partly circular
+
+Checking why PFAS lacks consensus exposed a confound in my own measure. **Where a
+library offers exactly one substitution at a position, round-2 P(top | mutated) is
+1.00 by construction, not by selection.**
+
+Every coumarin position I reported at 1.00 — V83, F108, V163, N167 — offered
+exactly one residue. So the round-2 half of the coumarin claim was inflated.
+
+What survives, and is *not* circular, is **P(mutated)**: whether the winners kept
+wild-type when they could have. Re-reading §64d through that lens:
+
+| coumarin position | options offered | P(mutated) | forceable? |
+|---|---|---|---|
+| **V163** | W (1) | **0.95** | **yes — collapses to one residue, 2×** |
+| A160 | GIMV (4) | 0.87 | wild-type droppable, but 4 residues remain → 1.25× |
+| V83 | L (1) | 0.74 | no |
+
+The exact branch-and-bound in §63b was never affected — it forced V163 and only
+V163, working from clone sets rather than from this statistic. It is the *rule's*
+predictor that needed the correction, and the round-1 side is clean (DSM-Hao
+offers 6–17 residues per position, so round-1 unanimity is real selection).
+
+### 65d. What did transfer: P(mutated), at ρ = +0.74
+
+Post-hoc, not part of the test. Round-1 mutation rate predicts round-2 mutation
+rate across 17 positions at **Spearman +0.74**. Three positions drop wild-type in
+round 2 at ≥ 80 %: **E94 (0.87), Y120 (0.86), K59 (0.83)**.
+
+Round-1 called E94 (rank 1 of 18) and Y120 (rank 4). It missed **K59 badly** —
+rank 7, mutated in 6 % of round-1 clones and 83 % of round-2 clones. So the
+ordering transfers, the top of it does not.
+
+**And the payoff is small here, for a structural reason worth keeping:** forcing
+pays in proportion to how *shallow* the menu is. Dropping wild-type at all three
+takes 49,545,216 → 27,525,120, a **1.8×**. A position offering one substitution
+halves the library; one offering eight saves 11 %. Coumarin's V163 offered exactly
+one residue; PFAS's K59/E94/Y120 offer 3, 5 and 8.
+
+### 65e. The two classes differ in kind, and I could not explain why
+
+- **coumarin** — one position converges on one residue → force it, 2×
+- **PFAS** — three positions drop wild-type but spread across residues → 1.8×, and
+  nothing to collapse to
+
+⚠ **My proposed explanation is refuted.** I guessed PFAS sensors spread out
+because the PFAS panel is chemically broader than the coumarin panel. Mean
+pairwise ECFP4 Tanimoto within each class: **coumarin 0.352, PFAS 0.339** —
+indistinguishable. Class breadth does not explain it.
+
+What remains unexplained is therefore worth stating plainly: **whether a class
+admits a forceable position appears to be a property of the receptor–class
+interaction, not of the class's chemical spread, and nothing here predicts it in
+advance.** The rule can say "no" honestly. It has said "yes" exactly once, on one
+position, retrospectively. That is where it stands.

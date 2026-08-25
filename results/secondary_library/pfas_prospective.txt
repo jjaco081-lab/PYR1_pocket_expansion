@@ -1,0 +1,107 @@
+================================================================================
+PHASE 0. TARGET SET, VALIDATED BEFORE USE
+================================================================================
+   25 PFAS structures parsed; every name that states a fluorine
+   count matches it (1H,1H,8H,8H-Dodecafluoro-1,8-octanediol, 1H,1H,9H-Hexadecafluorononan-1-ol, 3,5,6-trichlorooctafluorohexanoic acid, 9-Chlorohexadecafluorononanoic Acid)
+
+================================================================================
+PHASE 1. PREDICTIONS -- from ROUND-1 hits and target SMILES ONLY
+================================================================================
+   round-1 corpus: sd03 692 clones (194 ligands) + sd09/DSM-Hao 89 PFAS clones (18 ligands)
+   round-1 ligands fingerprinted: 211
+   max Tanimoto to the PFAS class, best 10 round-1 ligands:
+     1.000  2h,2h,3h,3h-perfluorohexanoic acid
+     1.000  2h,2h,3h,3h-perfluoroheptanoic acid
+     1.000  2h,2h,3h,3h-perfluorooctanoic acid
+     1.000  2h,2h,3h,3h-perfluorononanoic acid
+     1.000  perfluorooctanesulfonic acid
+     1.000  perfluorobutylsulfonamide
+     1.000  perfluorohexanesulfonamide
+     1.000  perfluorooctanesulfonamide
+     1.000  n-methylperfluorobutanesulfonamide
+     1.000  1h,1h,6h,6h-perfluoro-1,6-hexandiol
+   median 0.078, max 1.000
+   of the class set, 89 are PFAS round-1 hits and 0 are from the general deck
+
+   clones at Tanimoto >= 0.4: 89
+   ==> the rule fires nowhere.
+
+================================================================================
+PHASE 2. OPENING sd09 (PFAS round 2) -- 245 clones, sealed until now
+================================================================================
+   154 round-2 clones over 25 PFAS ligands (mut_lib = PFOS_GenWT)
+   7 of them had NO round-1 hit: 1H,1H,8H-Perfluorooctan-1-ol, 1H,1H,9H-Hexadecafluorononan-1-ol, 9-Chlorohexadecafluorononanoic Acid, Perfluorodecanoic acid, Perfluorohexanesulfonic Acid, Perfluorononanoic acid, Perfluorooctanoic acid
+   Tian's PFAS library: 13 positions, 45 substitutions, size 49,545,216
+
+   THE ANSWER -- which positions are actually forceable in round 2?
+   ⚠ P(top|mut) is CONFOUNDED where the round-2 library offered only one
+   substitution -- it is then 1.00 by construction, not by selection. The
+   column that carries real information in both rounds is P(mutated),
+   i.e. whether the winners kept wild-type when they could have.
+   pos      P(mutated)   top  P(top|mut)  carry top   forceable (>= 80 %)?
+   K59            0.83     M        0.53       0.44   no
+   V83            0.14     I        1.00       0.14   no
+   L87            0.02     M        1.00       0.02   no
+   A89            0.02     F        1.00       0.02   no
+   E94            0.87     D        0.40       0.34   no
+   Y120           0.86     L        0.45       0.39   no
+   S122           0.30     L        0.52       0.16   no
+   E141           0.55     Q        0.50       0.27   no
+   F159           0.43     H        0.61       0.26   no
+   A160           0.69     V        0.42       0.29   no
+   V164           0.69     W        0.55       0.38   no
+   N167           0.01     G        1.00       0.01   no
+
+================================================================================
+VERDICT
+================================================================================
+   rule fired on   : NOTHING
+   actually forceable: NOTHING
+
+   ==> PASS, in the weak sense that matters least: the rule declined
+       to fire and there was nothing to fire on. It was right, but the
+       test had no opportunity to catch it being wrong.
+
+================================================================================
+PHASE 3 (post-hoc diagnostic, NOT part of the pre-registered test)
+================================================================================
+   The rule declined because no position's round-1 residue IDENTITY was
+   concentrated enough. But the other half of the two-part statistic --
+   P(mutated), i.e. whether the winners keep wild-type -- transfers well.
+
+   pos     r1 P(mut)  r1 n  r1 top|mut  r2 P(mut)  r2 top|mut   options
+   K59          0.06     5      M 0.60       0.83      M 0.53         3
+   V83          0.02     2      I 1.00       0.14      I 1.00         1
+   L87          0.02     2      M 0.50       0.02      M 1.00         1
+   A89          0.01     1      T 1.00       0.02      F 1.00         3
+   S92          0.01     1      A 1.00       0.00      - 0.00         -
+   E94          0.61    54      G 0.59       0.87      D 0.40         5
+   F108         0.04     4      Q 0.25       0.00      - 0.00         -
+   I110         0.01     1      M 1.00       0.00      - 0.00         -
+   L117         0.02     2      A 0.50       0.00      - 0.00         -
+   Y120         0.25    22      A 0.23       0.86      L 0.45         8
+   S122         0.03     3      Q 0.33       0.30      L 0.52         3
+   E141         0.11    10      K 0.30       0.55      Q 0.50         3
+   F159         0.26    23      H 0.35       0.43      H 0.61         3
+   A160         0.28    25      I 0.28       0.69      V 0.42         6
+   V163         0.02     2      S 0.50       0.00      - 0.00         1
+   V164         0.19    17      G 0.35       0.69      W 0.55         7
+   N167         0.04     4      G 0.25       0.01      G 1.00         1
+
+   Spearman( round-1 P(mutated), round-2 P(mutated) ) = +0.74 over n = 17 positions
+   positions where round 2 nearly always drops wild-type: ['K59', 'E94', 'Y120']
+     K59: round-2 0.83, round-1 was 0.06 (rank 7 of 18)
+     E94: round-2 0.87, round-1 was 0.61 (rank 1 of 18)
+     Y120: round-2 0.86, round-1 was 0.25 (rank 4 of 18)
+
+   ⚠ AND THE PAYOFF IS SMALL HERE, for a structural reason worth keeping.
+   Dropping wild-type at all three: 49,545,216 -> 27,525,120 = 1.8x only.
+   Forcing pays in proportion to how SHALLOW the position's menu is: a
+   position offering one substitution halves the library when wild-type
+   goes, one offering eight saves 11 %. Coumarin's V163 offered exactly
+   one residue (W) and was worth 2x; PFAS's K59/E94/Y120 offer 3/5/8.
+
+   So the two classes differ in KIND, not degree:
+     coumarin  one position converges on one residue      -> force it, 2x
+     PFAS      three positions drop wild-type but spread  -> 1.8x, no
+               single residue to collapse to
