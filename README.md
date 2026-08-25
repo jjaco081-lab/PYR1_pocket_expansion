@@ -2645,6 +2645,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 75 | 08-25 | forcing is a general lever worth ~2x per position | **it pays in proportion to how SHALLOW the menu is.** Dropping wild-type at PFAS's three high-P(mutated) positions (E94 0.87, Y120 0.86, K59 0.83) takes 49.5M -> 27.5M = **1.8x only**, because they offer 3/5/8 residues; coumarin's V163 offered ONE and was worth 2x | forcing is worth (1+n)/n, so it is a **shallow-position lever**. Separately, round-1 P(mutated) predicts round-2 P(mutated) at **Spearman +0.74** over 17 positions -- but it missed K59 badly (round-1 rank 7 at 6 %, round-2 83 %) (§65d) |
 | 76 | 08-25 | PFAS sensors spread out because the PFAS panel is chemically broader than the coumarins | **refuted**: mean pairwise ECFP4 Tanimoto within class is **coumarin 0.352 vs PFAS 0.339**, indistinguishable | whether a class admits a forceable position is **not** explained by the class's chemical spread, and nothing here predicts it in advance. The rule can say "no" honestly; it has said "yes" once, on one position, retrospectively (§65e) |
 | 77 | 08-25 | Tian's libraries are all sized about as tightly as the coumarin one (15x off optimal) | **the PFAS library is over-hedged by three orders of magnitude**: the exact smallest library holding a round-2 sensor for all 25 PFAS is **14,400 (3,441x) with WT offered, 9,600 (5,161x) forced**, against 49,545,216 built. Its optimum uses **8 variable positions, not 13** -- V83, L87, A89, V163, N167 contribute nothing, every sensor keeps wild-type there | library width tracks **designer confidence**, which tracks class-relevant round-1 data: coumarin had 36 own-class clones and a clean position signal, PFAS had 89 whose best position reached only 0.61 and whose identities never converged. **For PFAS the prize is which positions to open (3,441x), not residue identity (1.5x)** -- the opposite of coumarin, and the half class-weighted round-1 already recovers (rho +0.74) (§65f) |
+| 78 | 08-25 | the position half of the design problem is only demonstrated in-domain (coumarin) | on PFAS, the **out-of-domain** class, ranking positions by round-1 P(mutated) over 89 clones recovers **7 of 8 needed positions in its top 8 and 8 of 8 in its top 10**, almost monotonically (ranks 1-7 all needed) | strongest position-selection result in the project, and it is on the hard class. But a library from it reaches only **15/25 ligands at 933,120 (53x smaller than Tian's 49.5M)** because residue identity needs top-5 depth to get anywhere. **Positions recoverable, residues not -- the same boundary as coumarin, on different chemistry** (§65g) |
 
 ### Bugs caught before they cost anything
 
@@ -7648,3 +7649,36 @@ positions to open at all** — and that is the half §63c already showed is
 recoverable, with class-weighted round-1 putting 11/11 true coumarin positions in
 its top 12, and round-1 P(mutated) predicting round-2 P(mutated) at ρ = +0.74
 here.
+
+### 65g. Position selection works; residue selection is still the bottleneck
+
+Ranking the 18 positions by round-1 P(mutated) on the 89 PFAS round-1 clones,
+against the 8 positions the exact optimum actually needs:
+
+| | positions recovered |
+|---|---|
+| top 6 | 6/8 |
+| **top 8** | **7/8** |
+| top 10 | **8/8** |
+
+The ranking is almost monotone in usefulness — ranks 1–7 are all needed, and the
+only break is S122 at rank 10. **This is the strongest position-selection result
+in the project**, and it is on the out-of-domain class.
+
+But turning it into a library still fails on residue identity:
+
+| positions × residues | size | ligands | clones |
+|---|---|---|---|
+| top 8 × top 2 | 6,561 | 4/25 | 4/154 |
+| top 8 × top 3 | 65,536 | 7/25 | 12/154 |
+| top 8 × top 4 | 312,500 | 14/25 | 21/154 |
+| **top 8 × top 5** | **933,120** | **15/25** | 26/154 |
+| *Tian* | *49,545,216* | *25/25* | *154/154* |
+
+So a **53× smaller** library reaches 15 of 25 targets. That is a real trade rather
+than a win, and the positive-unlabeled caveat cuts both ways here: those 154
+sensors were found by screening 49.5 M, and a 933 K library would plausibly find
+*different* sensors for some of the 10 it misses — but nothing here measures that.
+
+The pattern is identical to coumarin (§63c): **positions recoverable, residues
+not.** Two classes, two chemistries, same boundary.
