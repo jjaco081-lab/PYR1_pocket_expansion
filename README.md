@@ -2633,6 +2633,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 63 | 08-24 | the open/closed free-energy difference is simply out of reach here (§24, §58a) | that is a property of UNBIASED MD. Umbrella sampling returns it, and a coordinate exists: **P88 CA - R116 CA**, picked by scoring every gate-latch CA pair against the two crystals and then checked against 5 x 300 ns -- **closed basin 6.06-6.08 A, open basin 16.3-16.9 A, no overlap**. S9 and S2 sit at the SAME value, so the closed state is geometrically identical with and without ligand -- exactly why stability cannot separate them | 62 windows seeded from real equilibrated frames (not a steered pull), 1.24 us. Run as a **CALIBRATION on a known answer first** (holo must favour CLOSED, apo OPEN); the reported quantity is the holo-apo DIFFERENCE so coordinate error cancels, and overlap/drift/hysteresis print beside every number (§60) |
 | 64 | 08-24 | the umbrella restraint atoms (P88 CA / R116 CA) are the same indices in every arm | **K59R adds atoms before residue 88**: the quad arms put them at **1408/1814**, the WT arms at **1403/1819**. 112 hardcoded the WT pair | a hardcoded pair would have restrained **the wrong atoms in every quad window, silently**. Indices are now derived per topology with the residue identity asserted. Also caught: transplanted rotamers appended AFTER residue 191 rather than in residue order (tleap `Atom .R<THR 191>.A<OXT 15> does not have a type`), and a 0-byte prmtop passing a `-f` guard that should have been `-s` (§60d) |
 | 65 | 08-24 | the 2x2 factorial would show what the ligand contributes to holding the gate closed | analysed at n=1 on the P88-R116 coordinate: **closed/apo 6.08 A vs closed/+ABA 6.06 A -- a 0.02 A difference** -- and ABA does not close an open gate either (S10 stays 16.3-16.6 A over 2 reps). **ZERO transitions in any cell, either direction, with or without ligand** (hysteretic assignment; a naive midpoint threshold had reported 18 spurious crossings for S10, whose min is 11.01 A and never nears the closed basin at 6 A) | occupancy changes NOTHING measurable about conformation on this timescale. The §58a question is not unanswered by unbiased MD, it is **unanswerable** by it, and the 7 truncated reps would only have added error bars to a quantity carrying no ligand information. Sets §60's acceptance bar: the two closed states are GEOMETRICALLY identical, so any scheme separating them must do it on free energy (§61) |
+| 66 | 08-24 | the closed state is identical with and without ligand, so MD sees nothing (§61) | that was true of the MEAN and false of the DISTRIBUTION. The two closed basins differ **threefold in width** (k_eff 3.26 apo vs 1.06 holo) and up to **26x in barrier-ward excursions** (>8 A: 0.19 % apo vs 5.00 % holo). The apo pocket collapses and STIFFENS, matching §29's 'most rigid gate of 15 units' | **MD is not blind -- it measures the basin's CURVATURE and gets ~0.33 kcal/mol of the answer** (harmonic entropy of the softer well). What it cannot measure is the basin's DEPTH relative to the other basin, where most of a switch's ddG lives; depth and curvature are independent. The ratio saturates: 0 of 27,000 frames open in BOTH arms, so both return the same upper bound. Not force field, not entropy -- **ergodicity** (§62) |
 
 ### Bugs caught before they cost anything
 
@@ -7125,9 +7126,12 @@ midpoint threshold reported 18 spurious "crossings" for S10, whose minimum is
 ### 61a. What it shows
 
 **The closed state sits at the same coordinate with and without ligand — 6.08 vs
-6.06 Å, a difference of 0.02 Å.** An empty closed pocket is just as closed, and
-just as stable over 300 ns, as one holding ABA. And ABA does not close an open
-gate either: both S10 replicates stay at 16.3–16.6 Å.
+6.06 Å, a difference of 0.02 Å.** And ABA does not close an open gate either:
+both S10 replicates stay at 16.3–16.6 Å.
+
+⚠ **Corrected in §62: that is true of the MEAN and false of the distribution.**
+The two closed basins differ threefold in width and up to 26-fold in
+barrier-ward excursions. "Just as stable" was wrong.
 
 **Zero transitions in any cell, in either direction, with or without ligand.**
 
@@ -7150,3 +7154,97 @@ acceptance criterion concretely: the two closed states are *geometrically*
 identical, so any scheme claiming to separate them must do so on free energy, and
 must produce that separation from ensembles whose mean coordinates differ by
 0.02 Å.
+
+---
+
+## 62. Why unbiased MD cannot see it — and the part where it can (2026-08-24)
+
+Jannis asked whether the failure in §61 is the force field, or entropy, or
+something else — and noted that even a small effect ought to show up.
+
+It is none of those, and the question exposed an overstatement in §61 that needs
+correcting first.
+
+### 62a. Correction: MD does show a difference. I compared the wrong statistic.
+
+§61 reported the two closed cells as identical because their means differ by
+0.02 Å. Their **distributions** do not:
+
+| | mean | sd | p99 | max | k_eff (kT/var) |
+|---|---|---|---|---|---|
+| closed / apo | 6.08 | **0.43** | 7.45 | 9.35 | **3.26** kcal/mol/Å² |
+| closed / +ABA | 6.06 | **0.75** | 8.65 | 10.30 | **1.06** kcal/mol/Å² |
+
+| frames above | apo | +ABA |
+|---|---|---|
+| 7.0 Å | 3.78 % | 11.42 % |
+| 8.0 Å | 0.19 % | **5.00 %** |
+| 9.0 Å | 0.00 % | 0.36 % |
+
+**The holo closed basin is threefold softer and excurses toward the barrier up to
+26× more often.** So "an empty closed pocket is just as stable" was wrong — it is
+*more rigid*, which is exactly §29's finding that apo-closed has the most rigid
+gate of the 15 units profiled. The empty pocket collapses and stiffens; with ABA
+present the gate rests on the ligand and has room to breathe.
+
+### 62b. What that difference is worth, and what it is not
+
+Treating the basin as harmonic along this coordinate, the softer well carries more
+vibrational entropy:
+
+> ΔF = −kT/2 · ln(k_apo/k_holo) = **−0.33 kcal/mol** in favour of the holo closed state.
+
+Real, in the right direction, and **small**. For comparison, a 10× shift in the
+closed:open ratio is 1.37 kcal/mol and a 100× shift is 2.75.
+
+So MD is not blind here. It measures the **curvature** of the basin it is sitting
+in, and gets ~0.3 kcal/mol of the answer. What it cannot measure is the basin's
+**depth relative to the other basin** — and that is where most of a switch's
+ΔΔG lives. A ligand can shift a well's depth by several kcal/mol without changing
+its width at all; depth and curvature are independent.
+
+### 62c. Why the ratio is unmeasurable, concretely
+
+The quantity that separates a switch from a constitutive binder is
+P(closed)/P(open). Unbiased MD estimates it by counting frames:
+
+| | frames open | estimate |
+|---|---|---|
+| apo | **0 of 27,000** | P(open) < 3.7 × 10⁻⁵ |
+| +ABA | **0 of 27,000** | P(open) < 3.7 × 10⁻⁵ |
+
+Both are **upper bounds, and the same upper bound**. A hundredfold difference
+between them is invisible because neither numerator is ever non-zero. The
+observable saturates at "never seen".
+
+The timescale arithmetic says why, taking τ = τ₀ exp(ΔG‡/kT) with τ₀ ≈ 1 ns:
+
+| barrier | mean transition time | vs one 300 ns replicate |
+|---|---|---|
+| 5 kcal/mol | 4.4 µs | 15× |
+| 8 | 0.67 ms | 2.2 × 10³ × |
+| **10** | **19 ms** | **6.4 × 10⁴ ×** |
+| 12 | 0.55 s | 1.8 × 10⁶ × |
+
+§24 saw zero transitions in 1.8 µs of aggregate sampling, which already puts the
+barrier above ~5 kcal/mol. At a gate barrier of 10 kcal/mol — unremarkable for a
+loop rearrangement with a latch — one transition needs ~19 ms, about **10⁵ times**
+what we ran.
+
+### 62d. So: not the force field, and not entropy either
+
+- **Not the force field.** It would govern the *accuracy* of a PMF, but the
+  problem here is sampling, not accuracy — and the force field is visibly
+  producing a ligand-dependent signal (the threefold width difference).
+- **Not entropy as such.** MD captures entropy within a basin it samples; the
+  0.33 kcal/mol above *is* an entropy term, measured. What is missing is the
+  entropy and enthalpy of the basin never visited, and the population ratio
+  between them.
+- **It is ergodicity.** The estimator needs both basins; the barrier prevents
+  visiting both; so the estimator returns a bound rather than a value.
+
+This is precisely what umbrella sampling fixes: it forces occupancy of the whole
+coordinate and removes the bias afterwards, converting an unmeasurable ratio into
+a PMF. §61's numbers set the bar — any scheme claiming to separate these two
+states must do it on free energy, from ensembles whose means differ by 0.02 Å and
+whose widths differ by threefold.
