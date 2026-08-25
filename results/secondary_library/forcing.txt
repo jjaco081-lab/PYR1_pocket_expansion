@@ -1,0 +1,77 @@
+================================================================================
+1. THE HEADROOM, WITH AND WITHOUT FORCING
+================================================================================
+   wild-type always offered  (§51d arithmetic)
+     exact minimum    9,216   =    15x smaller than Tian's 138,240
+   positions may be FORCED   (wild-type dropped)
+     exact minimum    4,608   =    30x smaller than Tian's 138,240
+     positions forced: ['V163']
+     full menu: K59:AK  V81:IVY  V83:LV  L87:L  A89:A  S92:S  E94:E  F108:FW  I110:I  L117:L  Y120:MY  S122:NS  E141:E  F159:FH  A160:AGIV  V163:W  V164:ESV  N167:DN
+
+   partial capture, forcing allowed:
+      8/11 ligands       384  (  360x)
+      9/11 ligands     1,152  (  120x)
+     10/11 ligands     2,592  (   53x)
+     11/11 ligands     4,608  (   30x)
+
+   ==> forcing is worth exactly the 6.5x between 30,000 and 4,608, and
+       ALL of it comes from ONE position. Every other position in the
+       optimum still needs wild-type as an option, because different
+       ligands' sensors disagree there.
+
+================================================================================
+2. THE TWO-PART STATISTIC -- could a prospective designer have called it?
+================================================================================
+   set sizes: pooled r1 692, class r1 49, own r1 36, round-2 78
+
+   pos                 pooled r1              class r1                own r1               round-2
+                 P(mut)  top|mut       P(mut)  top|mut       P(mut)  top|mut       P(mut)  top|mut
+   K59       21%  D  19% (n=143)    24%  A  25% (n=12)    28%  A  30% (n=10)    63%  Q  63% (n=49)
+   V81       22%  Y  41% (n=149)    20%  Y  40% (n=10)     25%  Y  44% (n=9)    65%  I  76% (n=51)
+   V83       17%  L  38% (n=121)    29%  L  71% (n=14)    28%  L  80% (n=10)    74%  L 100% (n=58)
+   F108        7%  Y  26% (n=46)      6%  L  33% (n=3)      8%  L  33% (n=3)    49%  W 100% (n=38)
+   Y120      24%  A  31% (n=164)      8%  A  50% (n=4)     11%  A  50% (n=4)    54%  M  79% (n=42)
+   S122       11%  Q  22% (n=79)     12%  G  33% (n=6)     14%  G  40% (n=5)    67%  N  42% (n=52)
+   F159      46%  I  21% (n=317)    27%  I  38% (n=13)    28%  I  50% (n=10)    29%  H  91% (n=23)
+   A160      20%  L  25% (n=139)    20%  I  50% (n=10)     22%  I  62% (n=8)    87%  I  53% (n=68)
+   V163        9%  W  80% (n=59)    22%  W  91% (n=11)     25%  W 100% (n=9)    95%  W 100% (n=74)
+   V164      21%  F  15% (n=147)    31%  F  33% (n=15)    31%  F  36% (n=11)    56%  F  48% (n=44)
+   N167       14%  V  15% (n=97)    20%  D  40% (n=10)     11%  D  75% (n=4)    26%  D 100% (n=20)
+
+   THE ONE POSITION THE OPTIMUM FORCES, in full:
+     pooled r1   mutated  59/692  {'W': 47, 'M': 7, 'H': 3, 'Q': 2}
+     class r1    mutated  11/49   {'W': 10, 'M': 1}
+     own r1      mutated   9/36   {'W': 9}
+     round-2     mutated  74/78   {'W': 74}
+
+   READ. Pooled round-1 gives V163 a mutation rate of only 9 %, which is
+   why every ligand-blind method here leaves it near the bottom. Restrict
+   to the chemical class and the rate rises to 22-25 % AND the identity
+   becomes unanimous -- 9 of 9 own-class round-1 mutations are W, 10 of 11
+   at similarity >= 0.4. Round 2 then carries W163 in 74 of 78 sensors.
+   So yes: this one was callable in advance, from round-1 data a
+   prospective designer would have had.
+
+   ⚠ n = 9 to 11 clones. One position, called from a small sample, in a
+   retrospective test. It is a hypothesis with a mechanism to check, not
+   an established rule -- and it is pre-registered for PFAS/TNT below.
+
+================================================================================
+3. PRE-REGISTRATION for the sealed sets (sd08 TNT, sd09 PFAS)
+================================================================================
+   Written before either sheet is read, and falsifiable in the obvious way.
+
+   The rule, stated so it can fail:
+     For a target class, compute over round-1 clones whose ligand has
+     Tanimoto >= 0.4 to the class:  P(mutated) and P(top residue | mutated).
+     PREDICT that any position with P(top | mutated) >= 0.85 on n >= 8
+     class clones will carry that residue in >= 80 % of that class's
+     round-2 sensors, and may therefore be FORCED.
+
+   On the coumarin dev set this rule fires exactly once (V163W: 91 % on
+   n = 11) and is right (95 % of round-2 sensors). A rule that fires once
+   on one class is not yet a method -- the sealed sets are what decide it.
+
+   It fails if: it fires on a position whose round-2 frequency is < 80 %,
+   or fires nowhere on either sealed class while a forceable position
+   exists in their round-2 data.

@@ -1,0 +1,123 @@
+================================================================================
+1. INPUTS   (round-2 sd07 is the answer sheet and is never an input)
+================================================================================
+   round-1 sd03  692 clones / 194 ligands / 144 distinct substitutions / 18 positions
+   targets       11 coumarin-class ligands, 8 with round-1 clones of their own (3 had none at all)
+   budget        138,240 members = Tian's coumarin library
+
+================================================================================
+2. THE VOCABULARY IS CLOSED -- this is subset selection, not invention
+================================================================================
+   23/23 of Tian's coumarin substitutions already appear in the pooled round-1 vocabulary
+   round-2 substitutions absent from round-1: 8 of 32, all singletons outside the 18 positions
+     C65F, D184Y, F71S, M178I, R134L, R74C, S109R, T124M
+   ==> nothing has to be invented. Every residue the answer uses was
+       already visible in round 1; the whole task is choosing a subset.
+
+================================================================================
+3. CEILINGS -- read every number below against these
+================================================================================
+   whole round-1 vocabulary  11/11 ligands  70/78 clones  size 3.20e+16
+   Tian's coumarin library   11/11 ligands  69/78 clones  size 138,240  (11 pos, 23 subs)
+   EXACT ORACLE              11/11 ligands            size 9,216  (11 pos, 15 subs)
+     menu  K59:AQ V81:Y V83:L F108:W Y120:M S122:N F159:H A160:GIV V163:W V164:EF N167:D
+   ==> headroom at full capture is 15.0x. A 10x reduction IS available in principle.
+   exact minimum for the easiest k ligands:
+      8/11 ligands     2,304   ( 60.0x smaller than Tian)
+      9/11 ligands     3,456   ( 40.0x smaller than Tian)
+     10/11 ligands     5,184   ( 26.7x smaller than Tian)
+     11/11 ligands     9,216   ( 15.0x smaller than Tian)
+   NOTE the shape of the optimum: 11 positions but only 15 substitutions, i.e. 8 of 11 positions need exactly
+   ONE residue. Positions are non-negotiable (every round-2 clone spans
+   7-8 of them); the entire prize is in residue identity.
+
+================================================================================
+4. CAN THE POSITIONS BE RECOVERED?   (yes)
+================================================================================
+   position   used in r2  rank, blind  rank, class
+  *V163              74           11            6
+  *A160              68            6            7
+  *V83               58            7            4
+  *S122              52            9            8
+  *V81               51            3            5
+  *K59               49            5            3
+  *V164              44            4            1
+  *Y120              42            2           10
+  *F108              38           15           12
+  *F159              23            1            2
+  *N167              20            8            9
+   blind : 10/11 true positions in its top 11, 10/11 in its top 12
+   class : 10/11 true positions in its top 11, 11/11 in its top 12
+   (* = one of the 11 positions Tian actually used)
+
+================================================================================
+5. CAN THE RESIDUES BE RECOVERED?   (partly -- and this is the bottleneck)
+================================================================================
+   Rank of the OPTIMAL residue inside its own position's profile:
+   pos    optimal    rank blind  rank class
+   K59    AQ                  4           1
+   V81    Y                   1           1
+   V83    L                   1           1
+   F108   W                   4           3
+   Y120   M                   8           3
+   S122   N                   8           4
+   F159   H                   7           4
+   A160   GIV                 2           1
+   V163   W                   1           1
+   V164   EF                  1           1
+   N167   D                   2           1
+   blind : optimal residue ranked 1st at 4/11 positions, top-3 at 6/11
+   class : optimal residue ranked 1st at 7/11 positions, top-3 at 9/11
+   ==> ligand-awareness moves residue identity a long way (4/11 -> 7/11 exact hits), which is the
+       first place in this project where knowing the ligand has paid.
+
+================================================================================
+6. DESIGNED LIBRARIES, re-optimised at each budget
+================================================================================
+   design                     3,000      10,000      30,000     100,000     138,240
+   ----------------------------------------------------------------------------
+   blind/global                 0/0         0/0         1/1         1/1         1/1
+   blind/profile                0/0         0/0         0/0         0/0         0/0
+   class/global                 2/3         2/3         2/3         2/3         2/3
+   class/profile                1/1         1/1         3/4        8/12        8/12
+   class/cover                  1/1         1/1         2/3         6/9        9/14
+   ----------------------------------------------------------------------------
+   ORACLE (exact)                 8        11/-        11/-        11/-        11/-
+   Tian (138,240)                                                             11/69
+
+   ⚠ THE COMPARISON WITH TIAN IS NOT SYMMETRIC, and this bounds what the
+     benchmark can ever show. sd07 clones were DRAWN FROM Tian's library,
+     so it contains them by construction -- 11/11 is automatic, not earned.
+     A different library of equal quality would score badly here because
+     the sensors IT would have found were never screened. Hits are
+     positive-unlabeled (feedback_hits_are_not_optima), so this metric
+     measures REDISCOVERY OF TIAN'S CHOICES, not library quality.
+
+================================================================================
+7. THE SYMMETRIC METRIC: recovery of Tian's 23 substitutions
+================================================================================
+   Tian chose their 23 from the same round-1 data we are given, so this
+   is method against method with no drawn-from advantage.
+   design                     3,000      10,000      30,000     100,000     138,240
+   blind/global                9/23        9/23       13/23       13/23       13/23
+   blind/profile               6/23        8/23        8/23       11/23       11/23
+   class/global               13/23       13/23       13/23       14/23       15/23
+   class/profile              10/23       13/23       14/23       17/23       17/23
+   class/cover                 9/23       12/23       14/23       17/23       18/23
+
+================================================================================
+8. LEAVE-ONE-LIGAND-OUT (class/profile) -- no memorising own round-1
+================================================================================
+   ligand                              own r1  captured  Tian subs
+   4-Methylumbelliferone                    0       YES      17/23
+   5,7-Dihydroxy-4-methylcoumarin           0        no      17/23
+   7-Methoxycoumarin                        0        no      17/23
+   Bergapten                                1       YES      17/23
+   Citropten                                2       YES      17/23
+   Imperatorin                             11       YES      17/23
+   Isopsoralen                              6       YES      16/23
+   Methoxsalen                              6       YES      15/23
+   Osthole                                  8        no      14/23
+   Psoralen                                 1       YES      17/23
+   Scopoletin                               1       YES      17/23
+   ==> 8/11 ligands captured with their own round-1 evidence deleted

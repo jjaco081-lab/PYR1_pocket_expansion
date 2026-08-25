@@ -2634,6 +2634,12 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 64 | 08-24 | the umbrella restraint atoms (P88 CA / R116 CA) are the same indices in every arm | **K59R adds atoms before residue 88**: the quad arms put them at **1408/1814**, the WT arms at **1403/1819**. 112 hardcoded the WT pair | a hardcoded pair would have restrained **the wrong atoms in every quad window, silently**. Indices are now derived per topology with the residue identity asserted. Also caught: transplanted rotamers appended AFTER residue 191 rather than in residue order (tleap `Atom .R<THR 191>.A<OXT 15> does not have a type`), and a 0-byte prmtop passing a `-f` guard that should have been `-s` (§60d) |
 | 65 | 08-24 | the 2x2 factorial would show what the ligand contributes to holding the gate closed | analysed at n=1 on the P88-R116 coordinate: **closed/apo 6.08 A vs closed/+ABA 6.06 A -- a 0.02 A difference** -- and ABA does not close an open gate either (S10 stays 16.3-16.6 A over 2 reps). **ZERO transitions in any cell, either direction, with or without ligand** (hysteretic assignment; a naive midpoint threshold had reported 18 spurious crossings for S10, whose min is 11.01 A and never nears the closed basin at 6 A) | occupancy changes NOTHING measurable about conformation on this timescale. The §58a question is not unanswered by unbiased MD, it is **unanswerable** by it, and the 7 truncated reps would only have added error bars to a quantity carrying no ligand information. Sets §60's acceptance bar: the two closed states are GEOMETRICALLY identical, so any scheme separating them must do it on free energy (§61) |
 | 66 | 08-24 | the closed state is identical with and without ligand, so MD sees nothing (§61) | that was true of the MEAN and false of the DISTRIBUTION. The two closed basins differ **threefold in width** (k_eff 3.26 apo vs 1.06 holo) and up to **26x in barrier-ward excursions** (>8 A: 0.19 % apo vs 5.00 % holo). The apo pocket collapses and STIFFENS, matching §29's 'most rigid gate of 15 units' | **MD is not blind -- it measures the basin's CURVATURE and gets ~0.33 kcal/mol of the answer** (harmonic entropy of the softer well). What it cannot measure is the basin's DEPTH relative to the other basin, where most of a switch's ddG lives; depth and curvature are independent. The ratio saturates: 0 of 27,000 frames open in BOTH arms, so both return the same upper bound. Not force field, not entropy -- **ergodicity** (§62) |
+| 67 | 08-25 | §53b settled that library SIZE is the wrong axis for round 2 | that was right about what round 2 IS and wrong about what it COULD be. The **exact** smallest library holding a known round-2 sensor for all 11 coumarin ligands is **9,216 with wild-type offered (15x) and 4,608 with one position forced (30x)** against Tian's 138,240; 10/11 costs 2,592 (53x). Its shape: **11 positions but 15 substitutions**, so 8 of 11 need exactly one residue | a >=10x reduction IS available, and it is entirely in **residue identity** -- positions are non-negotiable because every round-2 clone spans 7-8 of them. ⚠ A greedy oracle returned 31,104 (3.4x too pessimistic) AND was `PYTHONHASHSEED`-dependent; both fixed by exact branch and bound with sorted iteration (§63b) |
+| 68 | 08-25 | round-1 frequency should be enough to design a secondary library | ligand-blind gets **1 of 11** ligands at Tian's budget. Class-weighting (ECFP4 Tanimoto to the target class) moves positions to **11/11 in the top 12** and the optimal residue to **rank 1 at 7/11 positions** (blind: 4/11), and the best design reaches **8-9 of 11 ligands, 8/11 under leave-one-ligand-out** -- still short of Tian's 11/11 at the same size | the first place in this project where knowing the ligand has PAID. But a **global weight-per-log-size greedy captured 1/11** (it deepens loud positions and shuts quiet ones) and a per-position profile plateaued at **4/11**; only a **coverage/co-occurrence** objective reaches 9/11, and that sits on a knife edge (exponent 1 or 3 -> 2/11). Lead, not method (§63c-d) |
+| 69 | 08-25 | sd07 recall measures whether a designed coumarin library is good | sd07's clones were **DRAWN FROM** Tian's library, so it contains them by construction and 11/11 is automatic. A different library of equal quality scores badly because the sensors IT would have found were never screened | the metric measures **rediscovery of Tian's choices**, not library quality -- [[feedback_hits_are_not_optima]] applied to libraries. The symmetric metric is recovery of Tian's 23 substitutions from the same round-1 data: **17-18 of 23** (§63e) |
+| 70 | 08-25 | the three substitutions §32 recovered clash and K59R does not | **V81I clashes LESS than K59R (0.12 vs 0.21 A) and was still recovered at rank 150.** The separating axis is VOLUME: F108A -101 A^3, V81I +27, F159L -23, **K59R +5**. K59R is **triply invisible** -- near-isosteric, charge-neutral (Lys +1 -> Arg +1), non-clashing; what it changes is H-bond GEOMETRY | the signature is not hydrophobicity, burial or contact count, it is **does the substitution move volume**. Three separate blindnesses is why §32, §33 and §36 all missed the same residue. The blind spot is **20-28 % of real sensor chemistry** (|dVol| < 25 A^3) (§64a-b) |
+| 71 | 08-25 | WT residue volume predicts which direction a position mutates (rho +0.62, p 0.007) | scored against the shrink fraction implied by each position's **own sd04 menu**, mean enrichment is **+0 percentage points** (sd 22). Most of the correlation is the trivial null: a big residue shrinks because most amino acids are smaller. What survives is per-position -- **F108 -54 points, V163 -41, V83 -37** | no structural descriptor reaches significance against position usage on n = 18 (8 tested, best p = 0.12). Residue identity comes from **pooled/class frequency**, not from geometry (§64c) |
+| 72 | 08-25 | a position whose substitutions are concentrated can be fixed to save library size | concentration GIVEN a substitution is not universality. **V163: 96 % W when mutated, and 95 % of round-2 sensors carry it -- forceable, worth 2x.** V83L (71 % when mutated) drops capture to 9/11 and F108W (66 %) to 8/11 | the statistic is **two numbers**: P(mutated \| class) AND P(residue \| mutated, class). V163 was **callable in advance** -- pooled round-1 rates it 9 % (bottom of the list) but class-restricted it is 22-25 % mutated and **9 of 9 own-class mutations are W**. All 30x of the forcing headroom is this one position. Pre-registered for PFAS/TNT (§64d-e) |
 
 ### Bugs caught before they cost anything
 
@@ -7248,3 +7254,243 @@ coordinate and removes the bias afterwards, converting an unmeasurable ratio int
 a PMF. §61's numbers set the bar — any scheme claiming to separate these two
 states must do it on free energy, from ensembles whose means differ by 0.02 Å and
 whose widths differ by threefold.
+
+---
+
+## 63. The coumarin secondary library, designed from round-1 alone (2026-08-25)
+
+§54c specified this test and it is now run. `scripts/116_secondary_library.py`,
+`scripts/118_force_positions.py`, results in `results/secondary_library/`.
+
+Inputs are sd03 (692 round-1 clones over 194 ligands) and the target SMILES —
+what Tian had before building the coumarin library. **sd07 is the answer sheet
+and is never an input.** sd08/sd09 stay sealed (§48d).
+
+### 63a. The vocabulary is closed — this really is subset selection
+
+All **23 of 23** of Tian's coumarin substitutions already appear in pooled
+round-1's 144. The only round-2 substitutions absent from round-1 are 8
+singletons at positions *outside* the 18 — C65F, F71S, R74C, S109R, T124M,
+R134L, M178I, D184Y — i.e. PCR carry-through, not designed content. Nothing has
+to be invented. §54b's framing is confirmed exactly.
+
+### 63b. The headroom, measured exactly rather than guessed
+
+The smallest library containing at least one known round-2 sensor for **every**
+one of the 11 ligands, by branch and bound over the clone choices:
+
+| arithmetic | exact minimum | vs Tian's 138,240 |
+|---|---|---|
+| wild-type always offered (§51d) | **9,216** | **15×** |
+| positions may be **forced** (WT dropped) | **4,608** | **30×** |
+
+and at partial capture, forcing allowed: 10/11 at 2,592 (53×), 9/11 at 1,152
+(120×), 8/11 at 384 (360×).
+
+⚠ **A greedy version of this oracle was wrong twice.** It returned 31,104 against
+the true 9,216 — understating the prize by 3.4× and nearly killing the exercise —
+and because it iterated a *set* of ligand names, `PYTHONHASHSEED` made it return
+different answers on different runs. Both are fixed: the search is exact and every
+iteration order is sorted.
+
+**So a ≥10× reduction is genuinely available.** §53b said size was the wrong axis
+for round 2; that was right about what round 2 *is* and wrong about what it
+*could be*.
+
+The shape of the optimum matters more than its size: **11 positions but only 15
+substitutions**, so 8 of 11 positions need exactly one residue. Positions are
+non-negotiable — every round-2 clone spans 7–8 of them and is lost if one is shut
+— and the entire prize is in **residue identity**.
+
+### 63c. Positions are recoverable. Residues are the bottleneck.
+
+Ranking the 18 positions by round-1 substitution weight:
+
+| | true positions in top 11 | in top 12 |
+|---|---|---|
+| ligand-blind | 10/11 | 10/11 |
+| class-weighted (max ECFP4 Tanimoto to the 11 targets, α = 4) | 10/11 | **11/11** |
+
+Rank of the *optimal* residue inside its own position's profile:
+
+| | ranked 1st | top-3 |
+|---|---|---|
+| ligand-blind | 4/11 | 6/11 |
+| **class-weighted** | **7/11** | **9/11** |
+
+This is the first place in the project where knowing the ligand has paid.
+
+### 63d. What the designed libraries actually capture
+
+Ligands captured / clones captured, re-optimising at each budget:
+
+| design | 3,000 | 10,000 | 30,000 | 100,000 | 138,240 |
+|---|---|---|---|---|---|
+| blind/global | 0/0 | 0/0 | 1/1 | 1/1 | 1/1 |
+| blind/profile | 0/0 | 0/0 | 0/0 | 0/0 | 0/0 |
+| class/global | 2/3 | 2/3 | 2/3 | 2/3 | 2/3 |
+| class/profile | 1/1 | 1/1 | 3/4 | **8/12** | 8/12 |
+| class/cover | 1/1 | 1/1 | 2/3 | 6/9 | **9/14** |
+| *Tian* | | | | | *11/69* |
+
+**We do not beat the incumbent.** Best is 8–9 of 11 ligands at Tian's own budget.
+Leave-one-ligand-out — deleting each target's own round-1 clones before designing
+— gives **8/11**, and the three failures are not the four ligands that had no
+round-1 hit at all, so this is not simple memorisation.
+
+⚠ Two objectives were tried and discarded, and both failures were informative.
+A **global weight-per-log-size greedy** captured 1 of 11: pooled counts are wildly
+uneven (F159 alone carries 317 of 1747 round-1 substitutions), so it spent the
+whole budget deepening loud positions while quiet ones stayed shut. A
+**per-position profile** with forced breadth plateaued at 4 of 11: marginal
+frequency picks the wrong residue too often. What works better is a **coverage**
+objective over whole round-1 clones — i.e. residue **co-occurrence**, not marginal
+frequency. That is a real signal, but its 9/11 sits on a knife edge (the same
+objective at exponent 1 or 3 gives 2/11), so it is reported as a lead, not a
+method.
+
+### 63e. ⚠ The comparison with Tian is not symmetric, and that bounds the test
+
+sd07's clones were **drawn from** Tian's library, so it contains them by
+construction — 11/11 is automatic, not earned. A different library of equal
+quality scores badly here because the sensors *it* would have found were never
+screened. Hits are positive-unlabeled ([[feedback_hits_are_not_optima]]), so this
+metric measures **rediscovery of Tian's choices**, not library quality.
+
+The symmetric metric is recovery of Tian's 23 substitutions — method against
+method, both working from the same round-1 data:
+
+| design | 3,000 | 30,000 | 138,240 |
+|---|---|---|---|
+| blind/global | 9/23 | 13/23 | 13/23 |
+| class/profile | 10/23 | 14/23 | **17/23** |
+| class/cover | 9/23 | 14/23 | **18/23** |
+
+**17–18 of 23**, from round-1 data alone. That is the defensible claim: we
+reproduce most of an expert's library choice, and we cannot yet beat it.
+
+---
+
+## 64. What ties real sensor substitutions together (2026-08-25)
+
+`scripts/117_hit_signature.py`, results in `results/hit_signature/`. Structures
+are `data/stage1/wt_{aba,mandi}.pdb`, native numbering, **all 18 positions
+asserted to carry their expected wild-type residue** before anything is computed
+(§44d).
+
+### 64a. The PYR1^MANDI four — and my first reading was wrong
+
+The obvious story is "the three §32 recovered clash, K59R does not". It is false:
+
+| substitution | clash | ΔVolume | charge | §32 rank of 13,457 |
+|---|---|---|---|---|
+| F108A | 2.78 Å | **−101 Å³** | 0 → 0 | 5 |
+| F159L | 1.42 Å | **−23 Å³** | 0 → 0 | 75 |
+| K59R | 0.21 Å | **+5 Å³** | +1 → +1 | **3907** |
+| V81I | **0.12 Å** | **+27 Å³** | 0 → 0 | 150 |
+
+**V81I clashes less than K59R and was still recovered.** Clash is not the
+discriminator — it is what makes 108 and 159 *easy*, not what makes 59 *hard*.
+
+The axis that separates them cleanly is **volume**. F108A and F159L relieve
+overlap by shrinking; V81I is the **grow** half of a shrink/grow pair, recovered
+by §32's packing term with no clash to relieve; K59R moves +5 Å³, which is
+nothing.
+
+**K59R is triply invisible.** Near-isosteric (+5 Å³), charge-neutral (Lys +1 →
+Arg +1), and non-clashing. What it changes is hydrogen-bond *geometry* —
+guanidinium is planar and bidentate where ammonium is not, and the crystal makes
+two bonds with it (NE–O2 2.64 Å, NH1–O2 3.26 Å, §33a). A volume term, a
+formal-charge term and a clash term are three separate blindnesses, which is
+exactly why §32, §33 and §36's coupled moves all missed the same residue.
+
+> **The signature is not hydrophobicity, not burial, not contact count. It is:
+> does the substitution move volume?**
+
+Percentiles across the 18 positions confirm the negative half — burial 6th–83rd,
+contacts 39th–94th, polar-neighbour count 0th–89th. Nothing separates the four.
+
+### 64b. How big the blind spot is
+
+Fraction of substitutions that are near-isosteric (|ΔVolume| < 25 Å³, the band
+K59R sits in):
+
+| set | distinct | by occurrence |
+|---|---|---|
+| sd03 (194 ligands) | 32/113 (28 %) | 25.5 % |
+| sd07 (coumarin) | 7/32 (22 %) | 11.9 % |
+| Beltran-45 | 10/36 (28 %) | 19.9 % |
+
+A quarter to a third. Not a corner case, not the majority — which is why §32
+works at all and why it stops where it does.
+
+### 64c. No structural descriptor reaches significance on n = 18
+
+Spearman against how often real sensors use a position, over all 18:
+
+| descriptor | ρ | perm p |
+|---|---|---|
+| max overlap with mandipropamid | 0.38 | 0.12 |
+| Σ overlap | 0.38 | 0.12 |
+| min distance to ligand | −0.36 | 0.15 |
+| contacts, burial, polar neighbours, WT volume | 0.03–0.26 | 0.29–0.91 |
+
+Eight descriptors on 18 points. Nothing is called a rule.
+
+⚠ **And the one correlation that did look strong is mostly a null.** WT residue
+volume vs % of substitutions that shrink gives ρ = +0.62, p = 0.007 — but a big
+residue shrinks because most of the other amino acids are smaller, and the
+libraries do not offer all 19 anyway. Scoring against the shrink fraction implied
+by each position's **own sd04 menu**: mean enrichment **+0 percentage points**
+(sd 22). Most of the signal was the null. What survives is per-position and large
+at a few positions — **F108 −54 points** (grows far more than its menu implies),
+**V163 −41**, **V83 −37** — but that is empirical, not derived from geometry.
+
+### 64d. The design payoff: which residues can be *forced*
+
+The design-relevant statistic is two numbers, not one: **P(mutated | class)** and
+**P(residue | mutated, class)**. High concentration with a low mutation rate means
+the residue is right *when used*, not that it should always be used.
+
+A position can be forced — wild-type dropped, so it costs a factor of 1 instead of
+2 — only when the second is near 1. Across the 11 coumarin positions, exactly one
+qualifies, and it is the one the exact optimum forces:
+
+| set | V163 mutated | identities |
+|---|---|---|
+| pooled round-1 | 59/692 (9 %) | W 47, M 7, H 3, Q 2 |
+| class round-1 (Tanimoto ≥ 0.4) | 11/49 (22 %) | **W 10**, M 1 |
+| own-class round-1 | 9/36 (25 %) | **W 9** |
+| round-2 sensors | **74/78 (95 %)** | **W 74** |
+
+Pooled round-1 rates V163 at 9 % — bottom of the list, which is why every
+ligand-blind method here leaves it out. Restricted to the class the rate rises to
+22–25 % **and the identity becomes unanimous**. This one was callable in advance.
+
+Forcing it is worth the 6.5× between 30,000 and 4,608, and **all of the forcing
+headroom comes from this single position** — every other position in the optimum
+still needs wild-type, because different ligands' sensors disagree there.
+
+⚠ Forcing the next two most concentrated positions **fails**: V163+V83L drops to
+9/11 ligands, +F108W to 8/11. Concentration *given a substitution* is not the same
+as universality, and 66 % is not 95 %.
+
+Mutual information against a within-position permutation null makes all 11
+positions ligand-dependent at p < 0.05 — but with 50–360 substitutions each that
+test has power to call trivial effects, so the column that matters is P(top |
+mutated), not p.
+
+### 64e. PRE-REGISTRATION: the forcing rule on the sealed sets
+
+Written before sd08/sd09 are read.
+
+> For a target class, over round-1 clones whose ligand has Tanimoto ≥ 0.4 to the
+> class, compute P(mutated) and P(top residue | mutated). **Predict that any
+> position with P(top | mutated) ≥ 0.85 on n ≥ 8 class clones carries that residue
+> in ≥ 80 % of that class's round-2 sensors, and may be forced.**
+
+On the coumarin dev set the rule fires **exactly once** (V163W, 91 % on n = 11)
+and is right (95 %). A rule that fires once on one class is not a method; PFAS and
+TNT decide it. It fails if it fires on a position whose round-2 frequency is
+< 80 %, or fires nowhere on either sealed class while a forceable position exists
+in their round-2 data.
