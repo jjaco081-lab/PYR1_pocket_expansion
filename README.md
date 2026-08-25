@@ -2632,6 +2632,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 62 | 08-24 | an enlarged cavity needs a larger ligand to fill it, or transduction breaks (§58) | measured over 691 clones: **94 release >=100 A^3 of side-chain volume, and 28 of those bind ligands of <=20 heavy atoms** -- ABA-sized. **Honokiol and Magnolol (isomers, 20 heavy) both give 1 uM sensors at -161 A^3**, close to doubling PYR1's 174 A^3 cavity; Carpropamid 1 uM at -144 | **the ligand does NOT have to fill the enlarged cavity.** Partial occupancy reaches the top potency class empirically, so the under-filling worry is materially weakened -- with the caveat that net side-chain volume is not cavity volume (the pocket may be RESHAPED rather than voided, and water fills the rest) (§59a) |
 | 63 | 08-24 | the open/closed free-energy difference is simply out of reach here (§24, §58a) | that is a property of UNBIASED MD. Umbrella sampling returns it, and a coordinate exists: **P88 CA - R116 CA**, picked by scoring every gate-latch CA pair against the two crystals and then checked against 5 x 300 ns -- **closed basin 6.06-6.08 A, open basin 16.3-16.9 A, no overlap**. S9 and S2 sit at the SAME value, so the closed state is geometrically identical with and without ligand -- exactly why stability cannot separate them | 62 windows seeded from real equilibrated frames (not a steered pull), 1.24 us. Run as a **CALIBRATION on a known answer first** (holo must favour CLOSED, apo OPEN); the reported quantity is the holo-apo DIFFERENCE so coordinate error cancels, and overlap/drift/hysteresis print beside every number (§60) |
 | 64 | 08-24 | the umbrella restraint atoms (P88 CA / R116 CA) are the same indices in every arm | **K59R adds atoms before residue 88**: the quad arms put them at **1408/1814**, the WT arms at **1403/1819**. 112 hardcoded the WT pair | a hardcoded pair would have restrained **the wrong atoms in every quad window, silently**. Indices are now derived per topology with the residue identity asserted. Also caught: transplanted rotamers appended AFTER residue 191 rather than in residue order (tleap `Atom .R<THR 191>.A<OXT 15> does not have a type`), and a 0-byte prmtop passing a `-f` guard that should have been `-s` (§60d) |
+| 65 | 08-24 | the 2x2 factorial would show what the ligand contributes to holding the gate closed | analysed at n=1 on the P88-R116 coordinate: **closed/apo 6.08 A vs closed/+ABA 6.06 A -- a 0.02 A difference** -- and ABA does not close an open gate either (S10 stays 16.3-16.6 A over 2 reps). **ZERO transitions in any cell, either direction, with or without ligand** (hysteretic assignment; a naive midpoint threshold had reported 18 spurious crossings for S10, whose min is 11.01 A and never nears the closed basin at 6 A) | occupancy changes NOTHING measurable about conformation on this timescale. The §58a question is not unanswered by unbiased MD, it is **unanswerable** by it, and the 7 truncated reps would only have added error bars to a quantity carrying no ligand information. Sets §60's acceptance bar: the two closed states are GEOMETRICALLY identical, so any scheme separating them must do it on free energy (§61) |
 
 ### Bugs caught before they cost anything
 
@@ -7096,3 +7097,56 @@ that disagrees: the transplanted rotamer atoms were appended after residue 191
 instead of in residue order (tleap: `Atom .R<THR 191>.A<OXT 15> does not have a
 type`), and a 0-byte prmtop left behind by the failed run passed a `-f` guard that
 should have been `-s`.
+
+---
+
+## 61. The factorial, analysed at n=1 — and why it closes the argument for §60 (2026-08-24)
+
+§58b established the 2×2 is n = 1 per cell rather than n = 3. Analysed anyway,
+because a *qualitative* observation (does a cell stay in its basin?) does not need
+replication, and the result is the strongest available argument for the umbrella
+work.
+
+Measured on the reaction coordinate P88 Cα – R116 Cα rather than gate RMSD to a
+reference — the coordinate needs no reference and separates the basins better.
+Basin assignment is **hysteretic** (closed only below 9 Å, open only above 14 Å)
+so a brief excursion into the empty gap is not miscounted as a transition; a naive
+midpoint threshold reported 18 spurious "crossings" for S10, whose minimum is
+11.01 Å and which never approaches the closed basin at 6 Å.
+
+| cell | rep | mean (Å) | sd | min | max | transitions |
+|---|---|---|---|---|---|---|
+| open / apo | rep1 | 16.90 | 1.13 | 11.81 | 20.72 | **0** |
+| open / +ABA | rep0 | 16.63 | 1.37 | 11.01 | 20.59 | **0** |
+| open / +ABA | rep2 | 16.30 | 1.34 | 10.96 | 19.99 | **0** |
+| closed / apo | rep0 | **6.08** | 0.43 | 5.01 | 9.35 | **0** |
+| closed / +ABA | rep0 | **6.06** | 0.75 | 5.08 | 10.30 | **0** |
+
+### 61a. What it shows
+
+**The closed state sits at the same coordinate with and without ligand — 6.08 vs
+6.06 Å, a difference of 0.02 Å.** An empty closed pocket is just as closed, and
+just as stable over 300 ns, as one holding ABA. And ABA does not close an open
+gate either: both S10 replicates stay at 16.3–16.6 Å.
+
+**Zero transitions in any cell, in either direction, with or without ligand.**
+
+### 61b. What it does not show, and why that is the point
+
+This is not a null result about the biology. It is a restatement of §24's
+trapping in the cleanest possible form: **occupancy changes nothing measurable
+about the conformation on this timescale**, because the only accessible observable
+is the stability of whichever state you start in.
+
+Which means the §58a question — can an under-filled cavity hold closed, and at
+what cost — is not merely unanswered by unbiased MD. It is *unanswerable* by it,
+and no amount of additional replication would change that. The 7 truncated
+replicates would have added error bars to a quantity that carries no information
+about the ligand.
+
+That is the argument for §60. The PMF is not a refinement of this measurement; it
+is the only way to measure the thing at all. And §61's numbers set its
+acceptance criterion concretely: the two closed states are *geometrically*
+identical, so any scheme claiming to separate them must do so on free energy, and
+must produce that separation from ensembles whose mean coordinates differ by
+0.02 Å.

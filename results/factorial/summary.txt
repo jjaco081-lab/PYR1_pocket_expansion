@@ -1,0 +1,30 @@
+CONFORMATION x OCCUPANCY FACTORIAL (README 30) -- the 5 reps that reached 300 ns
+reaction coordinate P88 CA - R116 CA   (closed basin ~6 A, open basin ~17 A)
+basin assignment is hysteretic: closed only below 9.0 A, open only above 14.0 A,
+so a brief excursion into the empty gap is not miscounted as a transition.
+
+  cell              rep    mean     sd    min    max  transitions  verdict
+  open / apo       rep1   16.90   1.13  11.81  20.72            0     OPEN
+  open / +ABA      rep0   16.63   1.37  11.01  20.59            0     OPEN
+  open / +ABA      rep2   16.30   1.34  10.96  19.99            0     OPEN
+  closed / apo     rep0    6.08   0.43   5.01   9.35            0   CLOSED
+  closed / +ABA    rep0    6.06   0.75   5.08  10.30            0   CLOSED
+
+  n = 1 per cell (S10 has 2): only 5 of 12 reps reached 300 ns (README 58b).
+  270 ns analysed per rep after a 30 ns discard.
+
+THE COMPARISON THE FACTORIAL EXISTS FOR
+  closed / apo  (S9) = 6.08 A      closed / +ABA (S2) = 6.06 A      difference +0.02 A
+  -> the closed state sits at the SAME coordinate with and without ligand.
+     An EMPTY closed pocket is just as closed, and just as stable, over 300 ns.
+
+  open / +ABA (S10) = 16.46 A (2 reps)   open / apo (S1) = 16.90 A
+  -> ABA does NOT close an open gate in 300 ns either.
+
+CONCLUSION
+  ZERO transitions in any cell, in either direction, with or without ligand.
+  Occupancy changes nothing measurable about the conformation on this
+  timescale. That is not a null result about the biology -- it is a
+  restatement of 24's trapping: the observable is the stability of whichever
+  state you start in. Ligand-dependence of the open/closed EQUILIBRIUM is
+  invisible to unbiased MD and needs the PMF (60).
