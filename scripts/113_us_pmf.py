@@ -53,11 +53,16 @@ def load(tag):
     d = os.path.join(US, tag)
     if not os.path.isdir(d):
         return out
+    import glob
     for w in sorted(os.listdir(d)):
-        f = os.path.join(d, w, "prod.rc")
-        if not os.path.exists(f):
+        # production runs in chunks so each job fits short_gpu's 2 h limit, so a
+        # window's samples are spread over prod01.rc, prod02.rc, ... Concatenate
+        # in order; they are one continuous trajectory (irest=1 carries velocities
+        # and box across, only the Langevin seed is redrawn).
+        files = sorted(glob.glob(os.path.join(d, w, "prod*.rc")))
+        if not files:
             continue
-        v = np.array([float(l.split()[1]) for l in open(f)
+        v = np.array([float(l.split()[1]) for f in files for l in open(f)
                       if l.strip() and not l.startswith("#")])
         if len(v) < 100:
             continue

@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH -p gpu
+#SBATCH -p short_gpu
 #SBATCH --gres=gpu:1
 #SBATCH --exclude=gpu01,gpu02,gpu03,gpu05,gpu11,gpu13,gpu14   # amber22 has no kernels for k80/p100/h100/blackwell
 #SBATCH -c 4
 #SBATCH --mem=24G
-#SBATCH -t 12:00:00
+#SBATCH -t 1:58:00
 #SBATCH -J us
-#SBATCH -a 0-61%4
+#SBATCH -a 0-61%4        # short_gpu carries its own 4-GPU allowance, separate from `gpu`
 #SBATCH --requeue
 #SBATCH --open-mode=append
 #SBATCH -o /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/logs/us_%a.log
@@ -99,6 +99,7 @@ cat > $1.in <<IN
 umbrella $1, window $W A
  &cntrl
   imin=0, irest=$3, ntx=$( [[ $3 == 1 ]] && echo 5 || echo 1 ), nstlim=$2, dt=0.002,
+$( [[ $3 == 0 ]] && echo "  tempi=300.0," )
   ntb=2, ntp=1, barostat=2, pres0=1.0, taup=2.0,
   ntc=2, ntf=2, cut=10.0, ntt=3, gamma_ln=2.0, ig=-1, temp0=300.0,
   ntpr=5000, ntwx=0, ntwr=50000,
@@ -125,13 +126,70 @@ run () {   # name prev
         || { echo "    !! $nm FAILED"; tail -20 ${nm}.out 2>/dev/null; return 2; }
 }
 
-# equilibration under the restraint -- this is also what pulls the 4 windows whose
-# seed sits up to 1.15 A off target onto their target value
-mk_in eq  "$NEQ" 1 5000
+# Equilibration under the restraint. irest=0 / ntx=1, NOT irest=1: the seeds were
+# extracted from trajectory frames by cpptraj, and a trajectory carries no
+# velocities, so pmemd rejects them with "could not find enough velocities in
+# seed.rst7". Velocities are reassigned from a 300 K Maxwell distribution instead,
+# which is right here anyway -- the frame came from a 300 K trajectory and this
+# stage exists to re-equilibrate it under the bias. It is also what pulls the four
+# windows whose seed sits up to 1.15 A off target onto their target value.
+mk_in eq "$NEQ" 0 5000
 run eq seed.rst7 || exit 2
-mk_in prod "$NPR" 1 100          # dump the coordinate every 100 steps = 0.2 ps
-run prod eq.rst7 || exit 2
 
-n=$(grep -vc '^#' prod.rc 2>/dev/null || echo 0)
-echo "    prod.rc: $n samples"
-echo "=== $TAG w$W done $(date -Is)"
+# ---------------------------------------------------------------------------
+# DEADLINE-AWARE CHUNKING, so a 20 ns window fits short_gpu's 2 h limit.
+#
+# 20 ns at the measured 225 ns/day is 2.14 h, which does not fit; 2 ns of
+# equilibration plus 20 ns of production certainly does not. So production runs
+# in CHUNK_NS pieces and the job stops cleanly while it still has time to write a
+# restart. Re-submitting the array continues from wherever each window got to.
+#
+# This is continuation, not restart-from-scratch: irest=1/ntx=5 carries velocities
+# and box across, so the trajectory is unbroken. `ig=-1` does draw a fresh Langevin
+# seed each chunk, which is harmless for equilibrium sampling -- the samples remain
+# a valid draw from the canonical ensemble, and the seam only matters if one were
+# computing a time correlation function across it, which WHAM does not.
+#
+# Accumulated production is MEASURED from the .rc files each pass, never counted
+# from a variable, so a preempted or requeued chunk cannot inflate the total.
+# ---------------------------------------------------------------------------
+CHUNK_NS=${CHUNK_NS:-5}
+BUDGET_S=${BUDGET_S:-6300}       # 105 min of the 118 min limit
+START=$SECONDS
+
+have_ns () {
+    python3 - "$PWD" <<'PYX'
+import glob, os, sys
+wd = sys.argv[1]
+n = 0
+for f in sorted(glob.glob(os.path.join(wd, "prod*.rc"))):
+    n += sum(1 for l in open(f) if l.strip() and not l.startswith("#"))
+print(f"{n * 0.2 / 1000:.2f}")          # one sample per 100 steps = 0.2 ps
+PYX
+}
+
+NCH=$(python3 -c "print(int($CHUNK_NS*1000/0.002))")
+i=1
+while :; do
+    CUR=$(have_ns)
+    if python3 -c "import sys; sys.exit(0 if $CUR >= $PROD_NS-0.2 else 1)"; then
+        echo "    have ${CUR} ns >= ${PROD_NS} ns target -- window complete"; break
+    fi
+    # stop while there is still time to finish a chunk and write its restart
+    LEFT=$((BUDGET_S - (SECONDS - START)))
+    NEED=$(python3 -c "print(int($CHUNK_NS/225.0*86400*1.25))")
+    if (( LEFT < NEED )); then
+        echo "    ${LEFT}s left, a ${CHUNK_NS} ns chunk needs ~${NEED}s -- stopping cleanly at ${CUR} ns"
+        echo "    resubmit the array to continue"; break
+    fi
+    SEG=prod$(printf '%02d' $i)
+    if [[ -s ${SEG}.rst7 ]]; then i=$((i+1)); continue; fi
+    PREV=eq.rst7
+    j=$((i-1)); [[ $j -ge 1 ]] && PREV=prod$(printf '%02d' $j).rst7
+    echo "    chunk $i (have ${CUR} ns) from $PREV"
+    mk_in "$SEG" "$NCH" 1 100
+    run "$SEG" "$PREV" || exit 2
+    i=$((i+1))
+done
+echo "    total production: $(have_ns) ns"
+echo "=== $TAG w$W $(date -Is)"
