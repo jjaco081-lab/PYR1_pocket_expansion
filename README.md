@@ -2660,6 +2660,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 90 | 08-25 | the umbrella was 24/62 complete and just needed resubmitting | **38 windows had NEVER RUN.** The four md191 systems were solvated independently (S2 46,570 / S10 51,588 / S9 46,483 / S1 51,585 atoms); 111 seeded the open-basin windows from the OPEN systems while 112 runs every window under the CLOSED topology, so all 38 died instantly with `natom mismatch`. Complete windows span **5.0-10.5 A -- the closed basin only** | **no PMF was ever computable** -- §60's quantity is G(open) - G(closed) and the open basin is at 16.3-16.9 A. My guard in 111 checked holo-vs-apo and missed closed-vs-open WITHIN an arm, because I treated "topology" as which molecules are present when the thing that must match is the ATOM COUNT. Also: they failed in 23 s against a 2 h window and I read the zero as "not started". Fix = adiabatic pulling from the completed 10.5 A window, 0.5 A x 200 ps steps, 3.8 ns/arm (§70) |
 | 91 | 08-26 | the coumarin headroom is 15x and PFAS is over-hedged 3,441x (§63b, §65f) | **both were measured against too easy a target.** Those oracles accept ANY known hit, including ones **50x weaker** than the best available for that ligand. Requiring the BEST measured sensor per ligand: coumarin exact minimum goes **9,216 -> 55,296**, i.e. Tian's 138,240 is only **2x** above optimal, not 15x | Tian's library is close to optimally sized; the apparent waste was my metric, not their design. And our best designed library drops from **8/11 ligands to 2/11** on the best-hit target, catching sensors ~4.5x weaker than available. Use the best-hit target from here (§71) |
 | 92 | 08-26 | the best-hit correction (§71) deflates the headroom everywhere | **only for coumarin.** Requiring the best measured sensor per ligand: coumarin **15x -> 2x** (Tian sized it near-optimally), but **PFAS 3,441x -> 510x** -- still enormously over-hedged | §65f's claim that library width tracks DESIGNER CONFIDENCE survives the correction. Coumarin had 36 own-class round-1 clones and a clean position signal; PFAS had 89 with a weak signal against a chemically novel class. ⚠ Also: **sd09 encodes potency in a `min_conc (µM)` column from a finer RETEST (9 levels)**, which disagrees with its 3-point primary screen on **98 of 154 rows** (always lower). sd07 has no such column and uses the explicit ladder instead (§71e) |
+| 93 | 08-26 | Tian's PFAS library holds 49,545,216 variants (product of its 13 positions) | **the arithmetic is right and the MODEL is wrong -- it is depth-capped at ~6 substitutions, so 2,193,926 (4.4 %).** Tell: **93 of 154 sensors carry exactly 6 substitutions and one carries 7**, while a full-combinatorial member would average 9.2. Coumarin by contrast expects 7.0 and observes 6.8 over a 3-10 range -- genuinely uncapped | headroom overstated **18x (any-hit: 3,441x -> 192x)** and **12x (best-hit: 510x -> 43x)** once both sides are costed under the same cap. Coumarin stands at **2.5x**. Same error as §53's DSM-Hao 3.79e21. **Standing check: before quoting a library size, compare the expected substitution count of a random member against the observed distribution in that library's own hits, and look for a hard ceiling** (§73) |
 
 ### Bugs caught before they cost anything
 
@@ -8335,7 +8336,7 @@ Exact smallest library containing, for every one of the 25 PFAS ligands:
 | target | exact minimum | vs Tian's 49,545,216 |
 |---|---|---|
 | **any** known hit | 14,400 | **3,441×** |
-| **the BEST** known hit | **97,200** | **510×** |
+| **the BEST** known hit | **97,200** | **510×** ⚠ superseded by §73: **43×** |
 
 So the correction behaves completely differently in the two classes:
 
@@ -8353,3 +8354,66 @@ position signal; PFAS had 89 clones whose best position reached 0.61 and whose
 residue identities never converged, against a chemically novel class. Less
 confidence, wider library — and for PFAS the widening was far beyond what its own
 results needed.
+
+---
+
+## 73. ⚠ Correction: the PFAS library is depth-capped, and the headroom was overstated ~12–18× (2026-08-26)
+
+Jannis flagged 49,545,216 as looking high. The arithmetic was right — it is the
+13 positions' `(1+n)` factors, and equals the three assembly blocks crossed
+(384 × 144 × 896). **The model was wrong.**
+
+### 73a. The tell
+
+If a library is full-combinatorial, a random member carries a predictable number
+of substitutions. Comparing that to what the sensors actually carry:
+
+| library | expected per random member | observed in sensors | |
+|---|---|---|---|
+| Coumarin | 7.0 | **6.8** (range 3–10) | consistent |
+| PFAS | 9.2 | **5.4** (range 2–7) | **not consistent** |
+
+And the PFAS shape is decisive: **93 of 154 sensors carry exactly 6 substitutions
+and exactly one carries 7.** Selection gives smooth distributions; that is a wall.
+The PFAS library's own variant count peaks at **9** substitutions, so under a
+full-combinatorial model the modal sensor should have 9 — none does.
+
+Coumarin's sensors peak at 7, and its library's variant count also peaks at 7
+(34,789 members). That one really is full-combinatorial.
+
+**So PFAS is depth-capped at ~6 substitutions**, making its true size
+**2,193,926 — 4.4 % of the product, a 22.6× overstatement.**
+
+This is the same error as §53, where DSM-Hao was taken as 3.79 × 10²¹ before it
+turned out to be a *double*-substitution library. I reprinted that same absurd
+number in §72's table without flagging it.
+
+### 73b. The corrected comparison, like for like
+
+The oracle minimises a full-combinatorial product, so its menus have to be
+re-costed under the same ≤6 cap — otherwise a capped denominator is being divided
+into an uncapped numerator.
+
+| class | library as built | any-hit oracle | | best-hit oracle | |
+|---|---|---|---|---|---|
+| coumarin (uncapped) | 138,240 | 9,216 | 15× | 55,296 | **2.5×** |
+| **PFAS (≤6 cap)** | **2,193,926** | **11,424** | **192×** | **51,008** | **43×** |
+
+| PFAS headroom | reported | corrected | overstated by |
+|---|---|---|---|
+| any-hit | 3,441× | **192×** | 18× |
+| best-hit | 510× | **43×** | 12× |
+
+### 73c. What survives
+
+The qualitative split holds: **coumarin is near-optimally sized (2.5×), PFAS is
+genuinely over-hedged (43×)**, and §65f's explanation — library width tracks
+class-relevant round-1 data — is unaffected. What does not survive is the
+magnitude. "Over-hedged by three orders of magnitude" was wrong; it is a bit over
+one order.
+
+⚠ **A standing check this project keeps failing:** before quoting a library size,
+confirm whether it is full-combinatorial or substitution-depth-limited. The
+diagnostic is cheap and now written down — compare the expected substitution count
+of a random member against the observed distribution in that library's own hits,
+and look for a hard ceiling.
