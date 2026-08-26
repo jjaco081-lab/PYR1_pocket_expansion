@@ -1,0 +1,64 @@
+sd07 DOSE-RESPONSE, AS READ
+  blank cell = BELOW the tested window; 'ND' = ABOVE it; window is per-compound
+  detection limit = lowest dose scored '+'; 'last -' is the highest dose scored '-'
+  77/78 clones are cleanly bracketed (- then +); 0 non-monotone; 1 left-censored
+
+=== 4-Methylumbelliferone   tested 0.25-25.0 uM   BEST LIMIT 0.5 uM   (9 clones)
+    clone           tested  last -   limit   mutations
+    13H-9        0.25-25.0    0.25     0.5   V81Y_V83L_A160V_V163W_N167D
+    13H-8        0.25-25.0     1.0     2.5   V81Y_V83L_A160I_V163W_N167D_M178I
+    13H-2        0.25-25.0     2.5     5.0   V81Y_V83L_Y120M_S122E_A160V_V163W_V164F_N167D
+=== 5,7-Dihydroxy-4-methylcoumarin   tested 0.25-25.0 uM   BEST LIMIT 1.0 uM   (4 clones)
+    clone           tested  last -   limit   mutations
+    11F-2        0.25-25.0     0.5     1.0   K59A_V81I_V83L_F108W_Y120M_S122N_A160V_V163W_V164E
+    11F-1        0.25-25.0     1.0     2.5   K59A_V83L_F108W_Y120M_S122N_A160I_V163W_V164E
+    11F-5        0.25-25.0     1.0     2.5   K59A_V83L_F108W_Y120M_S122N_A160V_V163W_V164E
+=== 7-Methoxycoumarin   tested 0.5-25.0 uM   BEST LIMIT 5.0 uM   (9 clones)
+    clone           tested  last -   limit   mutations
+    10B-1         0.5-25.0     2.5     5.0   K59A_V81I_V83L_F108W_Y120M_F159H_A160I_V163W
+    10B-2         0.5-25.0     2.5     5.0   V83L_F108W_Y120M_S122E_F159H_A160V_V163W_V164E
+    10B-12        0.5-25.0     2.5     5.0   V83L_F108W_Y120M_S122G_F159H_A160V_V163W
+=== Bergapten   tested 0.05-2.5 uM   BEST LIMIT 0.5 uM   (8 clones)
+    clone           tested  last -   limit   mutations
+    6E-1          0.05-2.5    0.25     0.5   K59A_V81I_V83L_S122E_A160I_V163W_V164S
+    6E-4          0.05-2.5    0.25     0.5   K59A_V81I_V83L_S122E_F159I_A160I_V163W
+    6E-7          0.05-2.5    0.25     0.5   V81I_V83L_F108W_Y120M_S122G_F159H_A160I_V163W
+=== Citropten   tested 0.05-2.5 uM   BEST LIMIT 0.25 uM   (5 clones)
+    clone           tested  last -   limit   mutations
+    9M-5          0.05-2.5     0.1    0.25   V81Y_V83L_S122G_F159H_A160I_V163W
+    9M-3          0.05-2.5    0.25     0.5   V81Y_V83L_Y120M_F159H_A160I_V163W
+    9M-8          0.05-2.5    0.25     0.5   V81Y_V83L_S122E_F159V_A160I_V163W_N167D
+=== Imperatorin   tested 0.025-1.0 uM   BEST LIMIT 0.05 uM   (7 clones)
+    clone           tested  last -   limit   mutations
+    3I-1         0.025-1.0   0.025    0.05   S122N_A160G_V163W_N167D
+    3I-2         0.025-1.0   0.025    0.05   F108W_S122N_V163W_N167D
+    3I-6         0.025-1.0    0.05     0.1   K59Q_F108W_Y120A_S122E_A160M_V163W_V164F
+=== Isopsoralen   tested 0.25-5.0 uM   BEST LIMIT 1.0 uM   (5 clones)
+    clone           tested  last -   limit   mutations
+    4J-3          0.25-5.0     0.5     1.0   K59A_V83L_S122N_A160I_V163W_V164S
+    4J-9          0.25-5.0     0.5     1.0   K59Q_V81I_V83L_A160I_V163W_V164S
+    4J-11         0.25-5.0     0.5     1.0   K59A_V83L_A160I_V163W_V164F
+=== Methoxsalen   tested 0.025-1.0 uM   BEST LIMIT 0.025 uM   (8 clones)
+    clone           tested  last -   limit   mutations
+    12A-1        0.025-1.0      --   0.025 * K59Q_V81I_F108W_Y120A_S122E_A160M_V163W_V164F
+    12A-2        0.025-1.0   0.025    0.05   K59Q_V81I_Y120A_S122E_A160M_V163W_V164F
+    12A-3        0.025-1.0   0.025    0.05   K59A_V81I_Y120M_S122E_A160M_V163W_V164F
+=== Osthole   tested 0.05-1.0 uM   BEST LIMIT 0.1 uM   (7 clones)
+    clone           tested  last -   limit   mutations
+    14N-6         0.05-1.0    0.05     0.1   K59Q_V81I_Y120A_S122E_A160M_V163W_V164F
+    14N-11        0.05-1.0    0.05     0.1   F108W_S122N_A160G_V163W_N167D
+    14N-4         0.05-1.0     0.1    0.25   K59Q_V81I_F108W_Y120M_A160M_V163W_V164S
+=== Psoralen   tested 0.25-25.0 uM   BEST LIMIT 2.5 uM   (6 clones)
+    clone           tested  last -   limit   mutations
+    8L-1         0.25-25.0     1.0     2.5   K59Q_V81I_V83L_F108W_A160I_V163W_V164S
+    8L-5         0.25-25.0     1.0     2.5   K59Q_V83L_Y120M_S122N_F159H_A160I_V163W
+    8L-9         0.25-25.0     1.0     2.5   K59Q_V81I_V83L_Y120M_S122E_A160M_V163W_V164E
+=== Scopoletin   tested 2.5-100.0 uM   BEST LIMIT 10.0 uM   (10 clones)
+    clone           tested  last -   limit   mutations
+    5k-4         2.5-100.0     5.0    10.0   K59Q_V81I_V83L_F108W_A160I_V163W_V164S
+    5k-5         2.5-100.0    10.0    25.0   K59Q_V81I_V83L_F108W_S122G_A160I_V163W_V164S
+    5k-8         2.5-100.0    10.0    25.0   K59Q_V81I_V83L_F108W_V164F
+
+  * = lowest TESTED dose was already '+', so the true limit is <= that value
+      (only Methoxsalen 12A-1, at <= 0.025 uM -- and it is that ligand's best clone,
+       so its margin over the runner-up is understated, not overstated)

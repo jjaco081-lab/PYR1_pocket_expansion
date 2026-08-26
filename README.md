@@ -8272,3 +8272,46 @@ What it does is enumerate every possible *library* exactly against the strongest
 label available. The ground truth is still positive-unlabeled
 ([[feedback_hits_are_not_optima]]); it is now anchored to the best measured sensor
 rather than to an arbitrary one.
+
+### 71d. Audit of the sd07 dose-response parse (2026-08-26)
+
+The dose block is laid out for a human reader, not a parser, so the reading was
+checked rather than assumed. `results/secondary_library/sd07_dose_audit.txt`.
+
+**Four cell values, not two**: `+` (244), `-` (231), **`ND` (273)** and **blank
+(188)**. Blank means *below* the tested window and `ND` means *above* it — each
+compound was assayed over its own contiguous window, chosen to bracket its
+sensors:
+
+| compound | tested window (µM) | best limit |
+|---|---|---|
+| Methoxsalen | 0.025 – 1.0 | **≤ 0.025** |
+| Imperatorin | 0.025 – 1.0 | 0.05 |
+| Osthole | 0.05 – 1.0 | 0.1 |
+| Citropten | 0.05 – 2.5 | 0.25 |
+| Bergapten | 0.05 – 2.5 | 0.5 |
+| 4-Methylumbelliferone | 0.25 – 25 | 0.5 |
+| Isopsoralen | 0.25 – 5.0 | 1.0 |
+| 5,7-DH-4-methylcoumarin | 0.25 – 25 | 1.0 |
+| Psoralen | 0.25 – 25 | 2.5 |
+| 7-Methoxycoumarin | 0.5 – 25 | 5.0 |
+| Scopoletin | 2.5 – 100 | 10.0 |
+
+**The parse survives the audit**: of 78 clones, **77 are cleanly bracketed** (a `-`
+immediately below the first `+`), **0 are non-monotone** (no `-` ever follows a
+`+`), and **0 failed to respond** anywhere in their window. So "lowest dose scored
+`+`" is a real detection limit, not an artefact of where the window happened to
+start.
+
+⚠ **One clone is left-censored**: Methoxsalen **12A-1** is `+` at 0.025 µM, the
+lowest dose anyone tested it at, so its true limit is **≤ 0.025** rather than
+`= 0.025`. It is that ligand's best sensor, so the error understates its margin
+over the runner-up (0.05 µM) rather than inflating it — the direction that cannot
+create a false §71 conclusion.
+
+⚠ **Windows differ by compound**, so a limit is only resolved to the ladder used
+for that compound. Scopoletin's 10 µM and Methoxsalen's 0.025 µM are both "best",
+400× apart, and neither was tested outside its own window.
+
+Also checked: the off-position filter (§63a's 8 PCR singletons) **removes no
+ligand's best sensor** — best-overall equals best-within-the-18 for all 11.
