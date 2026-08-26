@@ -1,0 +1,50 @@
+==============================================================================
+CAVITY MATCH vs ddG -- the §68e test
+==============================================================================
+
+   COUMARIN: target ligand volume 162.7 A^3, unmutated closed PYR1 cavity 165.9 A^3
+   set           n   ddG med  cavity med  |cav-target| med  n_sub
+   REAL         70     -0.60       124.8              39.5    6.6
+   LIBRARY     300      3.47       161.9              34.6    6.7
+   WILD        300      8.54       161.4              42.6    6.6
+
+   PFAS: target ligand volume 224.6 A^3, unmutated closed PYR1 cavity 165.9 A^3
+   set           n   ddG med  cavity med  |cav-target| med  n_sub
+   REAL        152      2.93       197.6              36.9    5.4
+   LIBRARY     300      7.21       195.6              36.3    3.9
+   WILD        300      5.36       164.2              61.3    4.1
+
+==============================================================================
+AUC  (below 0.5 = REAL wins; REAL vs LIBRARY is the one that matters)
+==============================================================================
+   class     score                     vs LIBRARY               vs WILD
+   coumarin  ddG                  0.280 (p 1e-08)       0.121 (p 5e-23)
+   coumarin  cavity match           0.540 (p 0.3)         0.474 (p 0.5)
+   pfas      ddG                  0.334 (p 8e-09)      0.397 (p 0.0003)
+   pfas      cavity match           0.461 (p 0.2)       0.301 (p 5e-12)
+
+==============================================================================
+PRE-REGISTERED VERDICT
+==============================================================================
+   1. ddG works on coumarin (AUC < 0.40)                AUC 0.280   HOLDS
+   2. ddG FAILS on pfas (AUC >= 0.45)                   AUC 0.334   FAILS
+   3a. cavity match works on coumarin (AUC < 0.40)      AUC 0.540   FAILS
+   3b. cavity match works on pfas (AUC < 0.40)          AUC 0.461   FAILS
+
+   ==> CAVITY MATCH IS DEAD. It cannot even reproduce the arm where
+       ddG already works, so the objective swap is not the answer.
+
+   ⚠ LIBRARY is unlabelled, not a set of known failures, so every AUC here
+   is a lower bound on the separation ([[feedback_hits_are_not_optima]]).
+
+==============================================================================
+DIRECTION CHECK -- do real sensors move the cavity toward their ligand?
+==============================================================================
+   coumarin   wild-type 165.9 -> target 162.7 A^3, so the cavity must SHRINK
+     REAL      median cavity change vs its own paired wild-type:   -35.4 A^3
+     LIBRARY   median cavity change vs its own paired wild-type:    -3.0 A^3
+     WILD      median cavity change vs its own paired wild-type:    -4.4 A^3
+   pfas       wild-type 165.9 -> target 224.6 A^3, so the cavity must GROW
+     REAL      median cavity change vs its own paired wild-type:   +39.2 A^3
+     LIBRARY   median cavity change vs its own paired wild-type:   +31.6 A^3
+     WILD      median cavity change vs its own paired wild-type:    +1.2 A^3

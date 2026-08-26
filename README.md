@@ -2654,6 +2654,9 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 84 | 08-25 | if relax ranks residues that well it should improve the library design | **it makes it worse: 0/11 ligands vs class-frequency's 8/11.** Rosetta selects for STABILITY, and the residues that create a new binding site are not the stable ones | **relax is a filter over combinations inside a menu someone else chose, not a menu generator.** Worth **1.74x at 90 % sensor retention** (57.3 % of the library kept), and much better at rejecting non-library residues (31 % of WILD kept). Division of labour: positions from round-1 rate, residues from round-1 class frequency, COMBINATIONS from relax (§67c-e) |
 | 85 | 08-25 | the relax filter is a general viability screen | its value is a **DEPTH effect**. Separation widens monotonically with substitution count -- AUC **0.359 (3-5 subs) -> 0.219 (8-10)** -- and Spearman(n_sub, ddG) is **-0.12 in REAL vs +0.14 LIBRARY / +0.29 WILD**: random stacking accumulates strain, real sensors do not. The deepest real sensors are the MOST stable group | stability only becomes limiting at round-2 depth (5-8 substitutions), never at round-1 depth (2-3). That is also why round-1 frequency cannot encode it (§67b) -- it is measured in a regime where the constraint does not bind. Real sensors are mutually COMPENSATING combinations, which is what relax sees and a per-substitution rule cannot (§68b) |
 | 86 | 08-25 | §67 validated the relax filter for library design | **it validated it in the FAVOURABLE regime and it is expected to fail on our actual goal.** ref2015 penalises cavities, so it prefers GROW (mean beta **+0.43** vs **+1.75** for SHRINK; Spearman(beta, dVol) -0.25). Coumarins are 11-15 heavy atoms vs ABA's 19, so their sensors GROW the lining (+23.1 A^3 per substitution) -- the same direction ref2015 wants. Across 125 sd03 ligands, Spearman(ligand size, mean dVol) = **-0.30**: <=15 atoms **+2.4**, 16-20 **-2.3**, 21-28 **-9.0**, >=29 **-15.1 A^3** | **for ligands larger than ABA real sensors SHRINK the lining, which is the move ref2015 penalises most.** Left to choose a menu it picks K59D/A160L/N167Y/S122Q -- none in any round-2 sensor. Fix the OBJECTIVE not the method: score **abs(cavity volume - target ligand volume)**, which is still pose-free (volume is a 2D property of the SMILES), and keep ddG as a constraint rather than an objective (§68c-e) |
+| 87 | 08-25 | §68d: ddG works on coumarins only because they are SMALLER than ABA, so it should fail on pocket expansion | **refuted.** On PFAS (target 224.6 A^3 vs PYR1's 165.9) ddG gives **AUC 0.334 raw and 0.206 once matched on substitution count** -- BETTER than coumarin's 0.251. The premises were right (mean beta +0.43 grow vs +1.75 shrink; Spearman(ligand size, dVol) -0.30); the inference was wrong | **the MENU already encodes the direction.** Tian's PFAS menu is built from pocket-opening substitutions, so LIBRARY members open the cavity too (+31.6 A^3 vs REAL's +39.2, against WILD's +1.2) and ref2015's grow-bias never gets to express itself. Within a directionally-correct menu ddG ranks **combinatorial compatibility**, not cavity size -- §68b survives, §68c only bites when the score must CHOOSE a menu (§69c) |
+| 88 | 08-25 | scoring |cavity volume - target ligand volume| would beat ddG (§68e) | **dead in both arms**: coumarin AUC **0.540**, PFAS **0.461**. It cannot reproduce even the arm where ddG works. Its only significant result is REAL vs WILD on PFAS (0.301), i.e. it distinguishes a pocket-opening library from an arbitrary one | it re-measures the direction the menu has already fixed, so it adds nothing the wet lab needs. ⚠ Also: REAL sensors OVERSHOOT -- coumarin sensors shrink the cavity 35 A^3 below a target only 3 A^3 away, consistent with the ligand not having to fill the pocket (§59a) (§69a) |
+| 89 | 08-25 | random draws matched to the real substitution-count range are an adequate null | the PFAS draws were **uniform over 2-6 while the real distribution is skewed high (5.4 vs 3.9 mean)**, and since separation WIDENS with depth (§68b) that **understated** the effect: PFAS ddG AUC 0.334 raw -> **0.206 stratified** | match the null on the confound, or stratify and re-weight; a range match is not a distribution match. Corrected filter payoff is **~2x at 90 % sensor retention in BOTH classes** (coumarin 2.10x, PFAS 2.05x), up from §67d's unstratified 1.74x (§69b, §69d) |
 
 ### Bugs caught before they cost anything
 
@@ -8044,3 +8047,95 @@ Retrospective test, runnable on the variants already scored: compute cavity volu
 for all 670 and ask whether **cavity-match** separates REAL from LIBRARY for
 coumarins *and* keeps separating them for a large-ligand class, where ΔΔG is
 predicted to fail.
+
+---
+
+## 69. The cavity-match test: my mechanism was wrong, and the filter is better than I claimed (2026-08-25)
+
+`scripts/125_cavity_match.py`, `126_cavity_aggregate.py`, jobs 27812914 (coumarin)
+and 27812915 (PFAS), cutlerlab CPU. Predictions were fixed in 125's header before
+the run; two of the three failed.
+
+Two arms on opposite sides of the wild-type cavity (**165.9 Å³**, measured here,
+consistent with §04):
+
+| arm | target ligand volume | pocket must |
+|---|---|---|
+| coumarin | 162.7 Å³ | barely change |
+| **PFAS** | **224.6 Å³** | **open by ~60 Å³** — the expansion regime |
+
+### 69a. Verdict
+
+| prediction | result | |
+|---|---|---|
+| 1. ΔΔG works on coumarin (AUC < 0.40) | **0.280** | HOLDS |
+| 2. ΔΔG **fails** on PFAS (AUC ≥ 0.45) | **0.334** | **FAILS** |
+| 3a. cavity match works on coumarin | 0.540 | **FAILS** |
+| 3b. cavity match works on PFAS | 0.461 | **FAILS** |
+
+**Cavity match is dead** — it cannot reproduce even the arm where ΔΔG already
+works. And **§68d's central prediction is refuted**: ΔΔG did not fail in the
+expansion regime.
+
+### 69b. ⚠ A confound that was working AGAINST the result
+
+PFAS REAL sensors carry 5.4 substitutions on average against LIBRARY's 3.9 — the
+random draws were uniform over the observed range while the real distribution is
+skewed high. Since §68b established that ΔΔG separation *widens* with depth, the
+raw PFAS number was **understating** the effect. Stratifying by substitution count
+and re-weighting:
+
+| | raw AUC | **n_sub-matched AUC** |
+|---|---|---|
+| coumarin | 0.280 | **0.251** |
+| **PFAS** | 0.334 | **0.206** |
+
+**ΔΔG works *better* in the expansion regime than in the coumarin one.** And the
+depth effect reappears inside PFAS exactly as §68b predicts: AUC 0.350 at 4
+substitutions → 0.288 at 5 → **0.145 at 6**.
+
+### 69c. Why §68d was wrong
+
+The argument was: ref2015 prefers GROW substitutions; ligands larger than ABA need
+SHRINK substitutions; therefore ΔΔG should oppose large-ligand sensors. The two
+measured premises are still true — mean β **+0.43 grow vs +1.75 shrink**, and
+Spearman(ligand size, ΔVolume used) = **−0.30**. The inference was wrong.
+
+The direction check shows why:
+
+| arm | REAL Δcavity | LIBRARY Δcavity | WILD Δcavity |
+|---|---|---|---|
+| coumarin (needs shrink) | **−35.4 Å³** | −3.0 | −4.4 |
+| PFAS (needs grow) | **+39.2 Å³** | +31.6 | **+1.2** |
+
+Real sensors move the cavity strongly in the required direction in **both**
+arms — and so do random members of the same library (+31.6 for PFAS). **The menu
+already encodes the direction.** Tian's PFAS menu is built from pocket-opening
+substitutions, so every member of it opens the pocket, and ref2015's grow-bias
+never gets the chance to express itself. Within a directionally-correct menu, what
+ΔΔG ranks is **combinatorial compatibility**, not cavity size.
+
+So §68b (the depth/compensation mechanism) survives and is the real explanation;
+§68c's volume bias is correctly measured but only matters when the score is asked
+to *choose* a menu (§67c), which is exactly where it already failed. The two
+findings are consistent: **the menu supplies the direction, ΔΔG supplies the
+compatibility.**
+
+And that is also why cavity match adds nothing — it re-measures the direction the
+menu has already fixed. Its one significant result is REAL vs **WILD** on PFAS
+(AUC 0.301, p 5 × 10⁻¹²), i.e. it can tell a pocket-opening library from an
+arbitrary one, which the wet lab does not need help with.
+
+### 69d. The filter, restated on matched strata
+
+| class | keep 95 % of sensors | keep 90 % | keep 80 % |
+|---|---|---|---|
+| coumarin | 1.93× | **2.10×** | 2.32× |
+| PFAS | 1.54× | **2.05×** | 2.42× |
+
+**~2× at 90 % sensor retention, in both regimes** — up from §67d's 1.74×, which was
+computed without stratifying. Modest, consistent, and now demonstrated on the
+class we actually care about.
+
+⚠ LIBRARY is unlabelled, so these are lower bounds on the separation and the
+reduction figure is what the filter *removes*, not what it removes correctly.
