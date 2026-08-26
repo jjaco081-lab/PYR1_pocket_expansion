@@ -2652,6 +2652,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 82 | 08-25 | §66a settled that protein-only Rosetta cannot rank combinations | **fixed-backbone scoring INVERTED the signal.** Cartesian FastRelax on the identical 670 variants gives **REAL vs LIBRARY AUC 0.284 (p 1.7e-8)** and **REAL vs WILD 0.117 (p 2.1e-23)**, medians REAL -1.1 < LIBRARY 3.3 < WILD 8.6 -- against repack's 0.542/0.443 with REAL apparently worst | a sensor needs backbone motion to accommodate its side chains; denying it charges the sensor for strain it never carries. §66a's "real sensors are more strained" was an artefact. ⚠ Two silent bugs on the way: torsion-space relax moved "frozen" residues **0.98 A** (lever arm; Cartesian gives 0.000), and the AUC label was backwards for two runs (§67a) |
 | 83 | 08-25 | the relax score is a black box that has to be run per variant | it is **89 % additive** (R^2 0.892 over 175 substitutions) and its per-substitution coefficients are **orthogonal to round-1 frequency (Spearman +0.03)**. Predicting which of Tian's 23 coumarin substitutions round 2 actually uses: **Rosetta +0.46 (p 0.029)**, class-weighted r1 +0.13, **pooled r1 -0.27 (wrong direction)** | round-1 frequency badly over-weights F159 and V81Y -- **F159I is round-1's most common substitution (66) and appears in ONE round-2 sensor**; V81Y (61) is used 12 times and is the residue relax penalises hardest. The additive fit is also the practical route: score a few hundred combinations, apply the coefficients to a whole library for free (§67b) |
 | 84 | 08-25 | if relax ranks residues that well it should improve the library design | **it makes it worse: 0/11 ligands vs class-frequency's 8/11.** Rosetta selects for STABILITY, and the residues that create a new binding site are not the stable ones | **relax is a filter over combinations inside a menu someone else chose, not a menu generator.** Worth **1.74x at 90 % sensor retention** (57.3 % of the library kept), and much better at rejecting non-library residues (31 % of WILD kept). Division of labour: positions from round-1 rate, residues from round-1 class frequency, COMBINATIONS from relax (§67c-e) |
+| 85 | 08-25 | the relax filter is a general viability screen | its value is a **DEPTH effect**. Separation widens monotonically with substitution count -- AUC **0.359 (3-5 subs) -> 0.219 (8-10)** -- and Spearman(n_sub, ddG) is **-0.12 in REAL vs +0.14 LIBRARY / +0.29 WILD**: random stacking accumulates strain, real sensors do not. The deepest real sensors are the MOST stable group | stability only becomes limiting at round-2 depth (5-8 substitutions), never at round-1 depth (2-3). That is also why round-1 frequency cannot encode it (§67b) -- it is measured in a regime where the constraint does not bind. Real sensors are mutually COMPENSATING combinations, which is what relax sees and a per-substitution rule cannot (§68b) |
+| 86 | 08-25 | §67 validated the relax filter for library design | **it validated it in the FAVOURABLE regime and it is expected to fail on our actual goal.** ref2015 penalises cavities, so it prefers GROW (mean beta **+0.43** vs **+1.75** for SHRINK; Spearman(beta, dVol) -0.25). Coumarins are 11-15 heavy atoms vs ABA's 19, so their sensors GROW the lining (+23.1 A^3 per substitution) -- the same direction ref2015 wants. Across 125 sd03 ligands, Spearman(ligand size, mean dVol) = **-0.30**: <=15 atoms **+2.4**, 16-20 **-2.3**, 21-28 **-9.0**, >=29 **-15.1 A^3** | **for ligands larger than ABA real sensors SHRINK the lining, which is the move ref2015 penalises most.** Left to choose a menu it picks K59D/A160L/N167Y/S122Q -- none in any round-2 sensor. Fix the OBJECTIVE not the method: score **abs(cavity volume - target ligand volume)**, which is still pose-free (volume is a 2D property of the SMILES), and keep ddG as a constraint rather than an objective (§68c-e) |
 
 ### Bugs caught before they cost anything
 
@@ -7940,3 +7942,105 @@ Cost: ~21 CPU-hours for 670 variants, i.e. ~2 CPU-minutes per variant. Filtering
 additive model (R² = 0.89) is the practical route — score a few hundred sampled
 combinations, fit per-substitution coefficients, and apply those to the full
 library for free.
+
+---
+
+## 68. Why the relax filter works, and why it will not transfer to expansion (2026-08-25)
+
+§67 established that Cartesian FastRelax separates real sensors from random
+library members (AUC 0.284) but cannot choose a menu (0/11). Both halves have the
+same explanation, and following it out produces a warning about our actual goal.
+
+### 68a. What it measures: a necessary condition, not a sufficient one
+
+Protein-only ΔΔG asks *does this combination of side chains pack into this
+backbone*. A working sensor needs two things:
+
+- **(A) it must fold and pack** — necessary, not sufficient
+- **(B) the cavity must fit the new ligand** — needs the ligand
+
+The score sees (A) and is blind to (B). That predicts exactly the observed pattern:
+good at **rejecting** (things failing (A) are certainly not sensors), useless at
+**choosing** (maximising (A) gives a well-packed protein with no site).
+
+### 68b. Why (A) binds at all: it is a DEPTH effect
+
+Round-1 clones carry 2–3 substitutions and round-2 clones 5–8. Stability is not
+limiting at 2–3; at 7–8 it is, because strain accumulates. Prediction: the
+separation should widen with depth. It does, monotonically:
+
+| substitutions | n REAL | n LIBRARY | REAL median | LIBRARY median | AUC |
+|---|---|---|---|---|---|
+| 3–5 | 13 | 103 | −0.52 | +1.81 | 0.359 |
+| 6 | 13 | 34 | −0.71 | +5.47 | 0.251 |
+| 7 | 27 | 37 | +0.15 | +5.16 | 0.259 |
+| **8–10** | 17 | 126 | **−2.73** | +4.20 | **0.219** |
+
+And the direction inside each set says the same thing:
+Spearman(n_sub, ΔΔG) = **−0.12 in REAL, +0.14 in LIBRARY, +0.29 in WILD.**
+Random stacking accumulates strain; real sensors do not — the deepest real sensors
+are the *most* stable group. Real sensors are mutually compensating combinations,
+and that is precisely what relax can see and a per-substitution rule cannot.
+
+**This also explains why round-1 frequency fails at it (§67b).** Round-1 frequency
+is measured in the shallow regime where stability never binds, so it cannot encode
+a constraint that only appears at depth.
+
+### 68c. Why it cannot choose a menu: ref2015 fills cavities
+
+A cavity is a packing defect and ref2015 penalises it. So the score systematically
+prefers **growing** the lining:
+
+| | mean β | n |
+|---|---|---|
+| GROW (ΔVol > +20 Å³) | **+0.43 REU** | 76 |
+| SHRINK (ΔVol < −20 Å³) | **+1.75 REU** | 76 |
+
+Spearman(β, ΔVolume) = **−0.25**. Left to choose, it picks K59D, A160L, N167Y,
+S122Q, V163D — **none of which appears in a single round-2 sensor.** It designs a
+well-packed protein with the pocket filled in.
+
+### 68d. ⚠ The coumarin validation was in the FAVOURABLE regime
+
+Coumarins are **11–15 heavy atoms; ABA is 19**. A smaller ligand needs the lining
+to grow *inward*, which is the same direction ref2015 wants. Real coumarin sensors
+average **+23.1 Å³ per substitution**, about +162 Å³ over a 7-substitution sensor.
+So §67's success was partly luck of the target class.
+
+Across 125 sd03 ligands with ≥ 4 substitutions,
+Spearman(ligand heavy atoms, mean ΔVolume used) = **−0.30**:
+
+| ligand size | ligands | mean ΔVolume per substitution |
+|---|---|---|
+| ≤ 15 (smaller than ABA) | 33 | **+2.4 Å³** |
+| 16–20 (ABA-sized) | 36 | −2.3 |
+| 21–28 | 46 | −9.0 |
+| **≥ 29 (the §58c expansion band)** | 10 | **−15.1 Å³** |
+
+> **For ligands larger than ABA, real sensors SHRINK the lining — and that is
+> exactly the move ref2015 penalises most. The filter that works for coumarins is
+> expected to work AGAINST us on pocket expansion.**
+
+This is testable rather than speculative: rerun §67 with a large-ligand class
+(sd03's ≥ 29-heavy-atom ligands, or Beltran's cannabinoids at 21–25) and the AUC
+should move toward or past 0.5.
+
+### 68e. The alternative the reasoning points to
+
+The defect is not the sampling (Cartesian relax is fine) and not the backbone
+(§67a fixed that). It is the **objective**: ΔΔG minimises cavity, and a sensor
+needs a cavity of a *particular size*. So replace the target rather than the
+method:
+
+> score a combination by **|cavity volume − target ligand volume|**, not by ΔΔG.
+
+That stays pose-free — it needs the ligand's *volume*, which is a 2D property of
+the SMILES, not its pose, so it does not re-import the circularity of §49b. The
+machinery exists (`lib_cavity.py`, §04/§16 measured PYR1's cavity at 174 Å³ and
+donor pockets up to 570 Å³). ΔΔG is then kept as a **constraint**, not an
+objective: reject the strained, then select on cavity match among what survives.
+
+Retrospective test, runnable on the variants already scored: compute cavity volume
+for all 670 and ask whether **cavity-match** separates REAL from LIBRARY for
+coumarins *and* keeps separating them for a large-ligand class, where ΔΔG is
+predicted to fail.
