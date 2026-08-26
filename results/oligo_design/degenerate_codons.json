@@ -1,0 +1,574 @@
+{
+ "Coumarin": {
+  "cur_oligos": 362,
+  "deg_oligos": 6,
+  "cur_size": 138240,
+  "deg_size": 10838016,
+  "positions": [
+   {
+    "pos": 59,
+    "wt": "K",
+    "want": "AKQ",
+    "codon": "VMA",
+    "encodes": "AEKPQT",
+    "extra": "EPT",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 81,
+    "wt": "V",
+    "want": "IVY",
+    "codon": "DWC",
+    "encodes": "DFINVY",
+    "extra": "DFN",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 83,
+    "wt": "V",
+    "want": "LV",
+    "codon": "KTA",
+    "encodes": "LV",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 108,
+    "wt": "F",
+    "want": "FW",
+    "codon": "TKK",
+    "encodes": "CFLW",
+    "extra": "CL",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 120,
+    "wt": "Y",
+    "want": "AMY",
+    "codon": "ATG+GCA+TAC",
+    "encodes": "AMY",
+    "extra": "",
+    "n_oligo": 3,
+    "block": "2.0"
+   },
+   {
+    "pos": 122,
+    "wt": "S",
+    "want": "EGNS",
+    "codon": "RRK",
+    "encodes": "DEGKNRS",
+    "extra": "DKR",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 159,
+    "wt": "F",
+    "want": "FHIV",
+    "codon": "NWC",
+    "encodes": "DFHILNVY",
+    "extra": "DLNY",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 160,
+    "wt": "A",
+    "want": "AGIMV",
+    "codon": "RBR",
+    "encodes": "AGIMRTV",
+    "extra": "RT",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 163,
+    "wt": "V",
+    "want": "VW",
+    "codon": "KKG",
+    "encodes": "GLVW",
+    "extra": "GL",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 164,
+    "wt": "V",
+    "want": "EFSV",
+    "codon": "GWA+TYC",
+    "encodes": "EFSV",
+    "extra": "",
+    "n_oligo": 2,
+    "block": "3.0"
+   },
+   {
+    "pos": 167,
+    "wt": "N",
+    "want": "DN",
+    "codon": "RAC",
+    "encodes": "DN",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "3.0"
+   }
+  ]
+ },
+ "PFAS": {
+  "cur_oligos": 1424,
+  "deg_oligos": 16,
+  "cur_size": 49545216,
+  "deg_size": 1828915200,
+  "positions": [
+   {
+    "pos": 59,
+    "wt": "K",
+    "want": "KLMN",
+    "codon": "MWK",
+    "encodes": "HIKLMNQ",
+    "extra": "HIQ",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 83,
+    "wt": "V",
+    "want": "IV",
+    "codon": "RTA",
+    "encodes": "IV",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 87,
+    "wt": "L",
+    "want": "LM",
+    "codon": "MTG",
+    "encodes": "LM",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 89,
+    "wt": "A",
+    "want": "AFST",
+    "codon": "DYC",
+    "encodes": "AFISTV",
+    "extra": "IV",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 94,
+    "wt": "E",
+    "want": "ADEGST",
+    "codon": "RVK",
+    "encodes": "ADEGKNRST",
+    "extra": "KNR",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 120,
+    "wt": "Y",
+    "want": "AGILMNSTY",
+    "codon": "GSA+WAC+WYR",
+    "encodes": "AGILMNSTY",
+    "extra": "",
+    "n_oligo": 3,
+    "block": "2.0"
+   },
+   {
+    "pos": 122,
+    "wt": "S",
+    "want": "LRSW",
+    "codon": "YBG",
+    "encodes": "LPRSW",
+    "extra": "P",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 141,
+    "wt": "E",
+    "want": "EGKQ",
+    "codon": "VRA",
+    "encodes": "EGKQR",
+    "extra": "R",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 159,
+    "wt": "F",
+    "want": "FHIL",
+    "codon": "HWC",
+    "encodes": "FHILNY",
+    "extra": "NY",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 160,
+    "wt": "A",
+    "want": "AILMNVW",
+    "codon": "AAC+ATR+GYA+TKG",
+    "encodes": "AILMNVW",
+    "extra": "",
+    "n_oligo": 4,
+    "block": "3.0"
+   },
+   {
+    "pos": 163,
+    "wt": "V",
+    "want": "SV",
+    "codon": "KYA",
+    "encodes": "ALSV",
+    "extra": "AL",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 164,
+    "wt": "V",
+    "want": "GKLMNSVW",
+    "codon": "ARC+AWG+KKG",
+    "encodes": "GKLMNSVW",
+    "extra": "",
+    "n_oligo": 3,
+    "block": "3.0"
+   },
+   {
+    "pos": 167,
+    "wt": "N",
+    "want": "GN",
+    "codon": "RRC",
+    "encodes": "DGNS",
+    "extra": "DS",
+    "n_oligo": 1,
+    "block": "3.0"
+   }
+  ]
+ },
+ "TNTv1": {
+  "cur_oligos": 894,
+  "deg_oligos": 6,
+  "cur_size": 4665600,
+  "deg_size": 537477120,
+  "positions": [
+   {
+    "pos": 59,
+    "wt": "K",
+    "want": "DKMNR",
+    "codon": "RDK",
+    "encodes": "DEGIKMNRSV",
+    "extra": "EGISV",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 81,
+    "wt": "V",
+    "want": "IV",
+    "codon": "RTA",
+    "encodes": "IV",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 83,
+    "wt": "V",
+    "want": "FIV",
+    "codon": "DTC",
+    "encodes": "FIV",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 87,
+    "wt": "L",
+    "want": "ILM",
+    "codon": "MTK",
+    "encodes": "ILM",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 89,
+    "wt": "A",
+    "want": "AM",
+    "codon": "RYG",
+    "encodes": "AMTV",
+    "extra": "TV",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 92,
+    "wt": "S",
+    "want": "GS",
+    "codon": "RGC",
+    "encodes": "GS",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 94,
+    "wt": "E",
+    "want": "EQ",
+    "codon": "SAA",
+    "encodes": "EQ",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 117,
+    "wt": "L",
+    "want": "LW",
+    "codon": "TKG",
+    "encodes": "LW",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 120,
+    "wt": "Y",
+    "want": "FWY",
+    "codon": "TGG+TWC",
+    "encodes": "FWY",
+    "extra": "",
+    "n_oligo": 2,
+    "block": "2.0"
+   },
+   {
+    "pos": 122,
+    "wt": "S",
+    "want": "ESW",
+    "codon": "GAA+TSG",
+    "encodes": "ESW",
+    "extra": "",
+    "n_oligo": 2,
+    "block": "2.0"
+   },
+   {
+    "pos": 141,
+    "wt": "E",
+    "want": "EIT",
+    "codon": "RHA",
+    "encodes": "AEIKTV",
+    "extra": "AKV",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 159,
+    "wt": "F",
+    "want": "FT",
+    "codon": "WYC",
+    "encodes": "FIST",
+    "extra": "IS",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 160,
+    "wt": "A",
+    "want": "AV",
+    "codon": "GYA",
+    "encodes": "AV",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 163,
+    "wt": "V",
+    "want": "MV",
+    "codon": "RTG",
+    "encodes": "MV",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 164,
+    "wt": "V",
+    "want": "KLNSV",
+    "codon": "VDM",
+    "encodes": "DEGHIKLNQRSV",
+    "extra": "DEGHIQR",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 167,
+    "wt": "N",
+    "want": "NQV",
+    "codon": "VWM",
+    "encodes": "DEHIKLNQV",
+    "extra": "DEHIKL",
+    "n_oligo": 1,
+    "block": "3.0"
+   }
+  ]
+ },
+ "TNTv2": {
+  "cur_oligos": 480,
+  "deg_oligos": 3,
+  "cur_size": 1244160,
+  "deg_size": 564350976,
+  "positions": [
+   {
+    "pos": 59,
+    "wt": "K",
+    "want": "DKMNRT",
+    "codon": "RNK",
+    "encodes": "ADEGIKMNRSTV",
+    "extra": "AEGISV",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 81,
+    "wt": "V",
+    "want": "IMV",
+    "codon": "RTK",
+    "encodes": "IMV",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 83,
+    "wt": "V",
+    "want": "IV",
+    "codon": "RTA",
+    "encodes": "IV",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 87,
+    "wt": "L",
+    "want": "ILM",
+    "codon": "MTK",
+    "encodes": "ILM",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 89,
+    "wt": "A",
+    "want": "AM",
+    "codon": "RYG",
+    "encodes": "AMTV",
+    "extra": "TV",
+    "n_oligo": 1,
+    "block": "1.0"
+   },
+   {
+    "pos": 117,
+    "wt": "L",
+    "want": "LW",
+    "codon": "TKG",
+    "encodes": "LW",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 120,
+    "wt": "Y",
+    "want": "FY",
+    "codon": "TWC",
+    "encodes": "FY",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 122,
+    "wt": "S",
+    "want": "ES",
+    "codon": "RRK",
+    "encodes": "DEGKNRS",
+    "extra": "DGKNR",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 141,
+    "wt": "E",
+    "want": "EIT",
+    "codon": "RHA",
+    "encodes": "AEIKTV",
+    "extra": "AKV",
+    "n_oligo": 1,
+    "block": "2.0"
+   },
+   {
+    "pos": 159,
+    "wt": "F",
+    "want": "FM",
+    "codon": "WTK",
+    "encodes": "FILM",
+    "extra": "IL",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 160,
+    "wt": "A",
+    "want": "AV",
+    "codon": "GYA",
+    "encodes": "AV",
+    "extra": "",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 163,
+    "wt": "V",
+    "want": "GMVW",
+    "codon": "DKG",
+    "encodes": "GLMRVW",
+    "extra": "LR",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 164,
+    "wt": "V",
+    "want": "DKLNV",
+    "codon": "VWM",
+    "encodes": "DEHIKLNQV",
+    "extra": "EHIQ",
+    "n_oligo": 1,
+    "block": "3.0"
+   },
+   {
+    "pos": 167,
+    "wt": "N",
+    "want": "NQV",
+    "codon": "VWM",
+    "encodes": "DEHIKLNQV",
+    "extra": "DEHIKL",
+    "n_oligo": 1,
+    "block": "3.0"
+   }
+  ]
+ }
+}

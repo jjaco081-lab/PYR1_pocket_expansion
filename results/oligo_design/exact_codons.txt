@@ -1,0 +1,70 @@
+EXACT-COVER DEGENERATE CODONS -- library identical, oligo count cut 11-30x
+(union of the listed codons == wild-type + the intended menu, no extra residues,
+ no stop codons; oligos per block = product of the codon counts in that block)
+
+=== Coumarin
+   block 1.0  K59    want AKQ            codons GCA+MAA          (2)
+   block 1.0  V81    want IVY            codons TAC+RTA          (2)
+   block 1.0  V83    want LV             codons STA              (1)
+   block 2.0  F108   want FW             codons TGG+TTC          (2)
+   block 2.0  Y120   want AMY            codons ATG+GCA+TAC      (3)
+   block 2.0  S122   want EGNS           codons ARC+GRA          (2)
+   block 3.0  F159   want FHIV           codons CAC+DTC          (2)
+   block 3.0  A160   want AGIMV          codons ATR+GBA          (2)
+   block 3.0  V163   want VW             codons GTA+TGG          (2)
+   block 3.0  V164   want EFSV           codons GWA+TYC          (2)
+   block 3.0  N167   want DN             codons RAC              (1)
+   -> oligos per block: {'1.0': 4, '2.0': 12, '3.0': 16}   TOTAL 32
+
+=== PFAS
+   block 1.0  K59    want KLMN           codons AAS+WTG          (2)
+   block 1.0  V83    want IV             codons RTA              (1)
+   block 1.0  L87    want LM             codons WTG              (1)
+   block 1.0  A89    want AFST           codons TTC+DCA          (2)
+   block 1.0  E94    want ADEGST         codons ASC+GVS          (2)
+   block 2.0  Y120   want AGILMNSTY      codons GSA+WAC+WYR      (3)
+   block 2.0  S122   want LRSW           codons AGA+TBG          (2)
+   block 2.0  E141   want EGKQ           codons GGA+VAA          (2)
+   block 3.0  F159   want FHIL           codons CAC+WTW          (2)
+   block 3.0  A160   want AILMNVW        codons AAC+ATR+GYA+TKG  (4)
+   block 3.0  V163   want SV             codons AGC+GTA          (2)
+   block 3.0  V164   want GKLMNSVW       codons ARC+AWG+KKG      (3)
+   block 3.0  N167   want GN             codons AAC+GGA          (2)
+   -> oligos per block: {'1.0': 8, '2.0': 12, '3.0': 96}   TOTAL 116
+
+=== TNTv1
+   block 1.0  K59    want DKMNR          codons ADG+RAC          (2)
+   block 1.0  V81    want IV             codons RTA              (1)
+   block 1.0  V83    want FIV            codons DTC              (1)
+   block 1.0  L87    want ILM            codons WTR              (1)
+   block 1.0  A89    want AM             codons ATG+GCA          (2)
+   block 1.0  S92    want GS             codons RGC              (1)
+   block 1.0  E94    want EQ             codons SAA              (1)
+   block 2.0  L117   want LW             codons TKG              (1)
+   block 2.0  Y120   want FWY            codons TGG+TWC          (2)
+   block 2.0  S122   want ESW            codons GAA+TSG          (2)
+   block 2.0  E141   want EIT            codons AYA+GAA          (2)
+   block 3.0  F159   want FT             codons ACA+TTC          (2)
+   block 3.0  A160   want AV             codons GYA              (1)
+   block 3.0  V163   want MV             codons RTG              (1)
+   block 3.0  V164   want KLNSV          codons AAA+ARC+STA      (3)
+   block 3.0  N167   want NQV            codons AAC+CAA+GTA      (3)
+   -> oligos per block: {'1.0': 4, '2.0': 8, '3.0': 18}   TOTAL 30
+
+=== TNTv2
+   block 1.0  K59    want DKMNRT         codons ANG+RAC          (2)
+   block 1.0  V81    want IMV            codons RTR              (1)
+   block 1.0  V83    want IV             codons RTA              (1)
+   block 1.0  L87    want ILM            codons WTR              (1)
+   block 1.0  A89    want AM             codons ATG+GCA          (2)
+   block 2.0  L117   want LW             codons TKG              (1)
+   block 2.0  Y120   want FY             codons TWC              (1)
+   block 2.0  S122   want ES             codons AGC+GAA          (2)
+   block 2.0  E141   want EIT            codons AYA+GAA          (2)
+   block 3.0  F159   want FM             codons ATG+TTC          (2)
+   block 3.0  A160   want AV             codons GYA              (1)
+   block 3.0  V163   want GMVW           codons RTG+KGG          (2)
+   block 3.0  V164   want DKLNV          codons AAA+RAC+STA      (3)
+   block 3.0  N167   want NQV            codons AAC+CAA+GTA      (3)
+   -> oligos per block: {'1.0': 4, '2.0': 4, '3.0': 36}   TOTAL 44
+
