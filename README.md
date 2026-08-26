@@ -2657,6 +2657,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 87 | 08-25 | §68d: ddG works on coumarins only because they are SMALLER than ABA, so it should fail on pocket expansion | **refuted.** On PFAS (target 224.6 A^3 vs PYR1's 165.9) ddG gives **AUC 0.334 raw and 0.206 once matched on substitution count** -- BETTER than coumarin's 0.251. The premises were right (mean beta +0.43 grow vs +1.75 shrink; Spearman(ligand size, dVol) -0.30); the inference was wrong | **the MENU already encodes the direction.** Tian's PFAS menu is built from pocket-opening substitutions, so LIBRARY members open the cavity too (+31.6 A^3 vs REAL's +39.2, against WILD's +1.2) and ref2015's grow-bias never gets to express itself. Within a directionally-correct menu ddG ranks **combinatorial compatibility**, not cavity size -- §68b survives, §68c only bites when the score must CHOOSE a menu (§69c) |
 | 88 | 08-25 | scoring |cavity volume - target ligand volume| would beat ddG (§68e) | **dead in both arms**: coumarin AUC **0.540**, PFAS **0.461**. It cannot reproduce even the arm where ddG works. Its only significant result is REAL vs WILD on PFAS (0.301), i.e. it distinguishes a pocket-opening library from an arbitrary one | it re-measures the direction the menu has already fixed, so it adds nothing the wet lab needs. ⚠ Also: REAL sensors OVERSHOOT -- coumarin sensors shrink the cavity 35 A^3 below a target only 3 A^3 away, consistent with the ligand not having to fill the pocket (§59a) (§69a) |
 | 89 | 08-25 | random draws matched to the real substitution-count range are an adequate null | the PFAS draws were **uniform over 2-6 while the real distribution is skewed high (5.4 vs 3.9 mean)**, and since separation WIDENS with depth (§68b) that **understated** the effect: PFAS ddG AUC 0.334 raw -> **0.206 stratified** | match the null on the confound, or stratify and re-weight; a range match is not a distribution match. Corrected filter payoff is **~2x at 90 % sensor retention in BOTH classes** (coumarin 2.10x, PFAS 2.05x), up from §67d's unstratified 1.74x (§69b, §69d) |
+| 90 | 08-25 | the umbrella was 24/62 complete and just needed resubmitting | **38 windows had NEVER RUN.** The four md191 systems were solvated independently (S2 46,570 / S10 51,588 / S9 46,483 / S1 51,585 atoms); 111 seeded the open-basin windows from the OPEN systems while 112 runs every window under the CLOSED topology, so all 38 died instantly with `natom mismatch`. Complete windows span **5.0-10.5 A -- the closed basin only** | **no PMF was ever computable** -- §60's quantity is G(open) - G(closed) and the open basin is at 16.3-16.9 A. My guard in 111 checked holo-vs-apo and missed closed-vs-open WITHIN an arm, because I treated "topology" as which molecules are present when the thing that must match is the ATOM COUNT. Also: they failed in 23 s against a 2 h window and I read the zero as "not started". Fix = adiabatic pulling from the completed 10.5 A window, 0.5 A x 200 ps steps, 3.8 ns/arm (§70) |
 
 ### Bugs caught before they cost anything
 
@@ -8139,3 +8140,77 @@ class we actually care about.
 
 ⚠ LIBRARY is unlabelled, so these are lower bounds on the separation and the
 reduction figure is what the filter *removes*, not what it removes correctly.
+
+---
+
+## 70. ⚠ The umbrella sampling has been half-dead since launch (2026-08-25)
+
+Found while resubmitting the array. **38 of the 62 windows have never produced a
+single frame**, and I had been reporting "24/62 complete, resubmit to finish" as
+though the rest were merely unstarted.
+
+### 70a. The failure
+
+```
+| ERROR:   natom mismatch in inpcrd/restrt and prmtop files!
+```
+
+The four md191 systems were solvated **independently** and have different atom
+counts:
+
+| system | atoms |
+|---|---|
+| S2_holo_closed | 46,570 |
+| S10_holo_open | **51,588** |
+| S9_apo_closed | 46,483 |
+| S1_apo_open | **51,585** |
+
+`111_us_seed.py` seeded the open-basin windows from the OPEN systems, while
+`112_us_run.sh` runs every window in an arm under the **closed** system's topology.
+The split is exact and total:
+
+| windows | seeded from | result |
+|---|---|---|
+| 5.0–10.5 Å (24) | S2_holo_closed / S9_apo_closed | **20.0 ns each, complete** |
+| **11.0–20.0 Å (38)** | S10_holo_open / S1_apo_open | **0.0 ns, dead on arrival** |
+
+### 70b. Why it matters more than "38 jobs to rerun"
+
+The completed windows span **5.0–10.5 Å — the closed basin only.** §60's headline
+quantity is *G(open) − G(closed)*, and the open basin sits at 16.3–16.9 Å. **No PMF
+was ever computable from what had run**, in either arm. The calibration was not
+partially finished; it was structurally incapable of producing its result.
+
+### 70c. My own guard was one level too shallow
+
+`111`'s docstring says: *"the two arms use DIFFERENT topologies (holo carries A8S),
+so a seed frame may only be taken from a trajectory built on the same topology."*
+I checked holo-vs-apo and never considered closed-vs-open **within** an arm —
+because I was thinking of topology as "what molecules are present" when the thing
+that actually has to match is the atom count, which independent solvation changes.
+This is the same class as §60d's restraint-atom indices, where K59R shifting atom
+numbering would have silently restrained the wrong pair: **an identity that looks
+obviously shared and is not.**
+
+It also should have been caught immediately. The windows failed in 23 seconds
+each; a 20 ns window takes 2 hours. I had a `have_ns` progress function and read
+its output as "not started yet" rather than asking why nothing had started.
+
+### 70d. The fix — adiabatic pulling, `scripts/127_us_reseed_open.sh`
+
+The closed-system box can hold the open state, so no rebuild is needed:
+clearance is **19.7–22.3 Å** against an open-state protein extent of 52.0–55.2 Å,
+which is no larger than the closed states' 54.9/57.4 Å — the gate opens, the fold
+does not expand.
+
+So: start from window **10.5 Å**, which is complete, equilibrated and already in
+the correct topology, and step the restraint centre outward in 0.5 Å increments of
+200 ps, saving each step's final restart as the next window's seed. 19 steps per
+arm = **3.8 ns**, against ~10 ns for a Jarzynski pull, and it produces one seed per
+window directly.
+
+Slow stepping is the point: `112`'s equilibration is 2 ns, which can settle a
+structure already near its target but cannot drag one 10 Å — that is why this has
+to be a separate stage rather than something the restraint absorbs.
+
+Cost to finish: 3.8 ns × 2 arms of pulling, then 38 windows × 22 ns ≈ **840 ns**.
