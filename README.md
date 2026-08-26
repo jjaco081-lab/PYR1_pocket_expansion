@@ -2649,6 +2649,9 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 79 | 08-25 | with the menu fixed by round-1 data, a scorer only has to RANK combinations -- an easier and pose-free job | **no separation.** 670 variants, protein-only ref2015 with a paired wild-type control repacked in the identical shell: **REAL vs LIBRARY AUC 0.542 (p 0.28), REAL vs WILD AUC 0.443 (p 0.14)**; excluding the clash tail makes it worse (0.333). Real sensors are if anything MORE strained than random library members | a sensor works by **remodelling** the cavity, and remodelling costs packing energy -- the property that makes a combination good is the one ref2015 penalises. Protein-only stability is mildly ANTI-correlated, not merely uninformative. Ruled out: cheap repack scoring as a library filter. Not ruled out: FastRelax (~100x cost, poor prior) and ligand-aware scores (still blocked by the pose problem). ⚠ The first version scored against the RAW wild-type and gave every variant -130 to -165 REU -- input strain being repacked away (§66a) |
 | 80 | 08-25 | the START/SRPBCC fold has a useful body of ligand-bound structures to learn from | **it has 11.** Of 261 foldseek homologs, 195 are AlphaFold models and 66 experimental; 11 of those 66 carry a buried pocket ligand, **2 of them ABA** and 2 more buffer additives (HEZ, CXS) -- so **~7 non-ABA biological ligands** | against Tian's 208 ligands with sensor data the structural record adds nothing on the chemistry axis. ⚠ `data/survey_cache/` is the WRONG directory (built by scripts 44-46 for the floppy-ligand survey; 97 % ligand-bound, topped by bacteriochlorophyll and detergent), and any compositional count returns 100 % because glycans and modified residues are HETATM. Census must be geometric (§66b) |
 | 81 | 08-25 | the pocket and the HAB1 interface are structurally separate because HAB1 has no pocket residues | **they share the C-terminal helix.** alpha3 (153-180) carries **5 library positions (159, 160, 163, 164, 167) and 6 HAB1-contacting residues (155, 156, 158, 159, 162, 166)** on OPPOSITE FACES, and **F159 is both** -- 3.2 A from the ligand and 3.2 A from HAB1, and the most-mutated position in round 1 (317 of 1747). 4 of 18 library positions touch HAB1: L87, A89, L117, F159 | the ratchet framing survives (HAB1 still contacts no pocket residue) but a mutation at 160/163/164/167 repacks the core of the helix presenting the interface -- **an untested route to dead or constitutive sensors**. ⚠ cpptraj DSSP failed silently (no amide H); argmax over an all-zero row called PYR1 20 strands and ZERO helices (§66c) |
+| 82 | 08-25 | §66a settled that protein-only Rosetta cannot rank combinations | **fixed-backbone scoring INVERTED the signal.** Cartesian FastRelax on the identical 670 variants gives **REAL vs LIBRARY AUC 0.284 (p 1.7e-8)** and **REAL vs WILD 0.117 (p 2.1e-23)**, medians REAL -1.1 < LIBRARY 3.3 < WILD 8.6 -- against repack's 0.542/0.443 with REAL apparently worst | a sensor needs backbone motion to accommodate its side chains; denying it charges the sensor for strain it never carries. §66a's "real sensors are more strained" was an artefact. ⚠ Two silent bugs on the way: torsion-space relax moved "frozen" residues **0.98 A** (lever arm; Cartesian gives 0.000), and the AUC label was backwards for two runs (§67a) |
+| 83 | 08-25 | the relax score is a black box that has to be run per variant | it is **89 % additive** (R^2 0.892 over 175 substitutions) and its per-substitution coefficients are **orthogonal to round-1 frequency (Spearman +0.03)**. Predicting which of Tian's 23 coumarin substitutions round 2 actually uses: **Rosetta +0.46 (p 0.029)**, class-weighted r1 +0.13, **pooled r1 -0.27 (wrong direction)** | round-1 frequency badly over-weights F159 and V81Y -- **F159I is round-1's most common substitution (66) and appears in ONE round-2 sensor**; V81Y (61) is used 12 times and is the residue relax penalises hardest. The additive fit is also the practical route: score a few hundred combinations, apply the coefficients to a whole library for free (§67b) |
+| 84 | 08-25 | if relax ranks residues that well it should improve the library design | **it makes it worse: 0/11 ligands vs class-frequency's 8/11.** Rosetta selects for STABILITY, and the residues that create a new binding site are not the stable ones | **relax is a filter over combinations inside a menu someone else chose, not a menu generator.** Worth **1.74x at 90 % sensor retention** (57.3 % of the library kept), and much better at rejecting non-library residues (31 % of WILD kept). Division of labour: positions from round-1 rate, residues from round-1 class frequency, COMBINATIONS from relax (§67c-e) |
 
 ### Bugs caught before they cost anything
 
@@ -7816,3 +7819,124 @@ so every residue came back Turn or all-zero. My first parser took argmax over an
 all-zero row, which returns column 0, so 0.0 became "Extended" and PYR1 was
 reported as **20 strands and zero helices**. A helix-grip fold with no helices
 should have stopped me. Replaced with PyRosetta DSSP (53 H, 64 E, 62 L).
+
+---
+
+## 67. FastRelax reverses §66a — and the reversal is the result (2026-08-25)
+
+`scripts/124_viability_relax.py`, `124b` (job 27803659, cutlerlab CPU),
+aggregated with `123 --dir results/viability_relax`.
+
+Identical experiment to §66a — same 670 variants, same three sets, same 8 Å shell,
+same paired wild-type control — with **Cartesian FastRelax** (backbone and side
+chains free inside the shell) in place of fixed-backbone repacking. 3 replicates
+per structure, minimum taken.
+
+### 67a. Opposite answer
+
+| | REAL (70) | LIBRARY (300) | WILD (300) |
+|---|---|---|---|
+| **repack** median ΔΔG (§66a) | 66.7 | **53.1** | 89.8 |
+| **relax** median ΔΔG | **−1.1** | 3.3 | 8.6 |
+
+| comparison | repack AUC | **relax AUC** | relax p |
+|---|---|---|---|
+| REAL vs LIBRARY | 0.542 (REAL worse) | **0.284 (REAL better)** | **1.7 × 10⁻⁸** |
+| REAL vs WILD | 0.443 | **0.117 (REAL better)** | **2.1 × 10⁻²³** |
+
+Fixed-backbone scoring did not merely fail to see the signal — it **inverted** it.
+§66a's conclusion that real sensors are "more strained" was an artefact of denying
+them the backbone motion they need. With relaxation the ordering is clean and
+monotone: REAL < LIBRARY < WILD.
+
+Controls: n_sub 6.6/6.7/6.6 and shell 52.1/51.8/51.6 across sets, so the obvious
+confound is matched. Replicate spread median 1.34 REU (mutant), 0.30 (wild-type),
+against between-set gaps of 4.3–9.6 REU — **noise below signal**. Non-shell drift
+**0.000 Å**.
+
+⚠ **Two protocol bugs found on the way, both silent.** Torsion-space FastRelax with
+the backbone free only inside the shell moved "frozen" residues by **0.98 Å** — a
+phi/psi change at *i* rotates the whole chain after *i*, and the shells differ
+between sets, so it would have been a systematic between-set artefact. Cartesian
+fixes it. And the aggregator's AUC label read `> 0.5 means REAL scores BETTER`
+when the statistic is P(REAL ranks *above* the null) on a lower-is-better
+quantity — the prose in §66a was taken off the medians and is unaffected, but the
+label was backwards for two runs.
+
+### 67b. The score is 89 % additive, and orthogonal to round-1 frequency
+
+An additive per-substitution model fitted on LIBRARY+WILD only (600 variants, 175
+substitutions) explains **R² = 0.892**. Removing it moves REAL vs LIBRARY from
+AUC 0.284 to **0.400** — most of the separation is per-substitution, some residual
+epistasis survives.
+
+The per-substitution coefficients are the useful object, because they are
+**independent of what round 1 already told us**: Spearman(Rosetta β, round-1
+pooled frequency) = **+0.03**.
+
+Predicting which of Tian's 23 coumarin substitutions actually appear in round-2
+sensors:
+
+| predictor | Spearman |
+|---|---|
+| **Rosetta relax β** | **+0.46** (permutation p = 0.029) |
+| round-1 class-weighted frequency | +0.13 |
+| round-1 pooled frequency | **−0.27** |
+| any weighted combination of the two | ≤ +0.46 |
+
+Round-1 pooled frequency points the **wrong way**, and the reason is visible in the
+table: **F159I is the single most common round-1 substitution (66 occurrences) and
+appears in exactly one round-2 sensor**; F159V (64) likewise once; **V81Y (61) is
+used 12 times and is the substitution Rosetta penalises hardest (+13.7 REU)**.
+Meanwhile V81I (round-1 count 11) is used 39 times. Round 1 over-weights F159 and
+V81Y badly; relax does not.
+
+### 67c. ⚠ But it cannot CHOOSE the menu — only rank within one
+
+Substituting the Rosetta score into §63d's menu-selection step makes the library
+**worse, not better**:
+
+| scorer | best library ≤ 200 K | ligands captured |
+|---|---|---|
+| class-weighted frequency (§63d) | 103,680 | **8/11** |
+| class × Rosetta | 30,720–73,728 | **0/11** |
+| Rosetta alone | — | nothing under budget |
+
+Rosetta selects for **stability**, and the residues that create a new binding site
+are not the stable ones. Used as a menu generator it picks residues that pack well
+and do nothing. So the honest scope is narrow and specific:
+
+> **Rosetta relax is a filter over combinations inside a menu someone else chose.
+> It is not a menu generator.**
+
+### 67d. What the filter is actually worth
+
+| keep this fraction of known sensors | ΔΔG threshold | library retained | reduction |
+|---|---|---|---|
+| 95 % | ≤ 6.71 REU | 63.0 % | 1.59× |
+| **90 %** | **≤ 5.32 REU** | **57.3 %** | **1.74×** |
+| 80 % | ≤ 3.52 REU | 50.7 % | 1.97× |
+
+**1.7× at 90 % sensor retention** — real, statistically solid, and modest. On WILD
+the same threshold retains only 31 %, so it is much better at rejecting residues
+the wet lab never selected than at pruning the ones it did.
+
+⚠ LIBRARY is unlabelled, not a set of known failures, so "removes 43 % of the
+library" is not "removes 43 % correctly" ([[feedback_hits_are_not_optima]]). The
+retention figure for REAL is the reliable half.
+
+### 67e. So the hybrid works, in one specific place
+
+The division of labour the data supports:
+
+| step | what does it | evidence |
+|---|---|---|
+| which positions to open | round-1 mutation rate | 7/8 in top 8 on PFAS (§65g), 11/11 in top 12 on coumarin (§63c) |
+| which residues to allow | round-1 class-weighted frequency | §63c; **not** Rosetta (§67c) |
+| which combinations to keep | **Cartesian FastRelax ΔΔG** | AUC 0.284, p 1.7 × 10⁻⁸; 1.7× at 90 % retention |
+
+Cost: ~21 CPU-hours for 670 variants, i.e. ~2 CPU-minutes per variant. Filtering a
+10⁵-member library outright is not affordable at that rate (≈ 3,800 CPU-days); the
+additive model (R² = 0.89) is the practical route — score a few hundred sampled
+combinations, fit per-substitution coefficients, and apply those to the full
+library for free.

@@ -17,6 +17,7 @@ weak evidence.
 AUC is reported as the probability that a random REAL scores better (lower ddG)
 than a random member of the null, with a Mann-Whitney U p-value.
 """
+import argparse
 import glob
 import json
 import os
@@ -26,7 +27,7 @@ from collections import defaultdict
 import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "results", "viability")
+DEFAULT = os.path.join(ROOT, "results", "viability")
 
 
 def mannwhitney(a, b):
@@ -57,6 +58,11 @@ def mannwhitney(a, b):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dir", default=DEFAULT,
+                    help="results/viability (repack) or results/viability_relax")
+    a = ap.parse_args()
+    OUT = a.dir
     files = sorted(glob.glob(os.path.join(OUT, "chunk_*.json")))
     if not files:
         raise SystemExit(f"no chunks in {OUT}")
@@ -94,6 +100,35 @@ def main():
     say("   drawn to match REAL's substitution-count range, so these columns")
     say("   should be close -- if they are not, the comparison is contaminated.")
 
+    # ---- is the experiment even capable of answering the question? --------
+    if any("mut_spread" in r for r in rows):
+        say("")
+        say("=" * 78)
+        say("RESOLUTION CHECK -- run this BEFORE reading any AUC")
+        say("=" * 78)
+        sp = [r["mut_spread"] for r in rows if "mut_spread" in r]
+        wsp = [r["wt_spread"] for r in rows if "wt_spread" in r]
+        say(f"   within-variant replicate spread (max-min over "
+            f"{json.load(open(files[0])).get('nrep','?')} relaxes):")
+        say(f"     mutant     median {np.median(sp):6.2f} REU, "
+            f"p90 {np.percentile(sp,90):6.2f}")
+        say(f"     wild-type  median {np.median(wsp):6.2f} REU, "
+            f"p90 {np.percentile(wsp,90):6.2f}")
+        meds = {k: np.median([r["ddG"] for r in by[k]]) for k in by}
+        gaps = [abs(meds[x] - meds[y]) for x in meds for y in meds if x < y]
+        say(f"   between-set difference in median ddG: "
+            f"{', '.join(f'{g:.2f}' for g in sorted(gaps))} REU")
+        if gaps and np.median(sp) > max(gaps):
+            say("   ⚠ THE NOISE IS LARGER THAN THE SIGNAL. A single relax trajectory")
+            say("     cannot resolve the between-set difference; only the average")
+            say("     over many variants can, and any per-variant use of this score")
+            say("     as a filter would be dominated by which trajectory it drew.")
+        else:
+            say("   between-set differences exceed the per-variant noise")
+        dr = [r.get("nonshell_drift", 0.0) for r in rows]
+        say(f"   max non-shell heavy-atom drift across all variants: "
+            f"{max(dr):.3f} A  (Cartesian relax should give ~0)")
+
     real = [r["ddG"] for r in by["REAL"]]
     say("")
     for null in ("WILD", "LIBRARY"):
@@ -101,8 +136,16 @@ def main():
         if not v or not real:
             continue
         auc, z, p = mannwhitney(real, v)
-        say(f"   REAL vs {null:<8} AUC = {auc:.3f}   z = {z:+.2f}   p = {p:.2g}")
-        say(f"      (AUC 0.5 = indistinguishable; > 0.5 means REAL scores BETTER)")
+        # ⚠ DIRECTION. This AUC is P(a random REAL ranks ABOVE a random null),
+        # and ddG is lower-is-better, so AUC BELOW 0.5 means REAL is better. The
+        # printed label said the opposite for two runs before it was caught; the
+        # prose conclusions were read off the medians and were unaffected, but the
+        # label was wrong and is fixed here.
+        better = "REAL is BETTER (lower ddG)" if auc < 0.5 else "REAL is WORSE"
+        say(f"   REAL vs {null:<8} AUC = {auc:.3f}   z = {z:+.2f}   p = {p:.2g}"
+            f"   -> {better}")
+        say(f"      (AUC = P(REAL ranks above null); ddG is lower-is-better, so")
+        say(f"       0.5 = indistinguishable and BELOW 0.5 means REAL wins)")
     say("")
     say("   How many of each set would survive a filter set at REAL's 90th"
         " percentile?")
