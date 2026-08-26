@@ -2661,6 +2661,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 91 | 08-26 | the coumarin headroom is 15x and PFAS is over-hedged 3,441x (§63b, §65f) | **both were measured against too easy a target.** Those oracles accept ANY known hit, including ones **50x weaker** than the best available for that ligand. Requiring the BEST measured sensor per ligand: coumarin exact minimum goes **9,216 -> 55,296**, i.e. Tian's 138,240 is only **2x** above optimal, not 15x | Tian's library is close to optimally sized; the apparent waste was my metric, not their design. And our best designed library drops from **8/11 ligands to 2/11** on the best-hit target, catching sensors ~4.5x weaker than available. Use the best-hit target from here (§71) |
 | 92 | 08-26 | the best-hit correction (§71) deflates the headroom everywhere | **only for coumarin.** Requiring the best measured sensor per ligand: coumarin **15x -> 2x** (Tian sized it near-optimally), but **PFAS 3,441x -> 510x** -- still enormously over-hedged | §65f's claim that library width tracks DESIGNER CONFIDENCE survives the correction. Coumarin had 36 own-class round-1 clones and a clean position signal; PFAS had 89 with a weak signal against a chemically novel class. ⚠ Also: **sd09 encodes potency in a `min_conc (µM)` column from a finer RETEST (9 levels)**, which disagrees with its 3-point primary screen on **98 of 154 rows** (always lower). sd07 has no such column and uses the explicit ladder instead (§71e) |
 | 93 | 08-26 | Tian's PFAS library holds 49,545,216 variants (product of its 13 positions) | **the arithmetic is right and the MODEL is wrong -- it is depth-capped at ~6 substitutions, so 2,193,926 (4.4 %).** Tell: **93 of 154 sensors carry exactly 6 substitutions and one carries 7**, while a full-combinatorial member would average 9.2. Coumarin by contrast expects 7.0 and observes 6.8 over a 3-10 range -- genuinely uncapped | headroom overstated **18x (any-hit: 3,441x -> 192x)** and **12x (best-hit: 510x -> 43x)** once both sides are costed under the same cap. Coumarin stands at **2.5x**. Same error as §53's DSM-Hao 3.79e21. **Standing check: before quoting a library size, compare the expected substitution count of a random member against the observed distribution in that library's own hits, and look for a hard ceiling** (§73) |
+| 94 | 08-26 | our library-design method can be seeded from a single round-1 hit | **it cannot, for the residue step.** Recovering Tian's coumarin design: full class-weighted evidence puts the optimal residue at rank 1 for **7/11** positions, ligand-blind pooled for **4/11**, and **one own-ligand hit + pooled prior for 4.1/11** over 200 draws -- i.e. a single hit adds essentially NOTHING over ligand-blind | **positions survive on one hit (9.9/11), residues do not.** One clone carries 2-3 substitutions; an 11-position profile cannot be built from it. So a single hit may suffice where the prize is POSITIONS (PFAS, §73) and not where it is IDENTITY (coumarin). Fix = **SSM on the single hit** to make the profile experimentally, exactly as Baker's hcy129 -> hcy129.1 did (§74c) |
+| 95 | 08-26 | PFAS has 43x headroom because its library includes residues that turned out useless | **no -- only 4 of 45 offered substitutions are never used (9 %), and for coumarin it is 0 of 23.** Both libraries are well utilised. The driver is that size is EXPONENTIAL in positions: PFAS offers **3.46 substitutions/position where its winners need 1.92**, over 13 positions (ratio 1.53), against coumarin's **2.09 -> 1.64** over 11 (ratio 1.17); 1.53^13 ~ 244 vs 1.17^11 ~ 6 | hedging by ~1.5 residues per position is invisible locally and enormous globally. The lever with the most to gain is therefore **trimming per-position depth**, which is what a residue-ranking step does (§74b) |
 
 ### Bugs caught before they cost anything
 
@@ -8417,3 +8419,105 @@ confirm whether it is full-combinatorial or substitution-depth-limited. The
 diagnostic is cheap and now written down — compare the expected substitution count
 of a random member against the observed distribution in that library's own hits,
 and look for a hard ceiling.
+
+---
+
+## 74. Lee/Pellock/Baker NTF2 paper; why PFAS has more headroom; and what our method actually needs (2026-08-26)
+
+### 74a. The paper — peer-reviewed, and the affinity-maturation half is the usable part
+
+*Small-molecule binding and sensing with a designed protein family*, Lee, Pellock,
+Norn et al., **Nature Communications 2026, 17:4533** — so unlike §66's L-Caliby
+this one is peer-reviewed and has real binding data.
+
+>10,000 designed NTF2 scaffolds (hallucination + ProteinMPNN + Rosetta), RIFdock
+to place six ligands, sequence design by native-guided Rosetta or LigandMPNN,
+filtered on Rosetta ddG / H-bonds / contact molecular surface plus AF2. Then yeast
+display.
+
+**The screening burden is the number to take away:**
+
+| target | oligos ordered | unique hits | ITC-characterised |
+|---|---|---|---|
+| **HCY (cortisol)** | **630** | **1** | 1 |
+| ROC | 1,661 | 19 | 1 |
+| APX | 9,024 | 8 | 4 |
+| OHP | 7,573 | 117 | 4 |
+| WRF | 16,276 | 46 | 2 |
+| IRI | 19,390 | 8 | 2 |
+
+~54,500 designs → 199 hits (**0.36 %**), best affinities high-nM to low-µM. Their
+own honest note: the success rate "was lower than alternative methods utilizing the
+four-helical bundles", and the designs that worked hugged native ketosteroid
+isomerase structures — i.e. it worked where it stayed close to nature.
+
+**What we can actually use is Fig. 4.** From **hcy129 — the single cortisol hit out
+of 630** — they ran **site-saturation mutagenesis**, took the favourable mutations,
+built a **combinatorial library of just those**, screened it, and got **hcy129.1 at
+K_D 68 nM, a 31-fold improvement**. The same move on iri807 gave 1.5–5.5×.
+
+That is our two-stage problem exactly — hit → per-position profile → focused
+combinatorial library — executed from **one** starting hit. Which answers §74c.
+
+### 74b. Why PFAS has ~43× headroom and coumarin only 2.5×
+
+Not because the PFAS library wastes options — it barely does. Only **4 of 45**
+offered substitutions never appear in any PFAS sensor (9 %), and for coumarin it is
+**0 of 23**. Both libraries are well utilised at the substitution level.
+
+The driver is that **library size is exponential in position count, so a modest
+per-position excess compounds**:
+
+| class | positions | offered | oracle needs | per position | ratio | ratio^positions | observed |
+|---|---|---|---|---|---|---|---|
+| coumarin | 11 | 23 | 18 | 2.09 → 1.64 | 1.17 | ~6× | **2.5×** |
+| PFAS | 13 | **45** | 25 | **3.46 → 1.92** | **1.53** | ~244× | **43×** |
+
+PFAS offers **1.5 extra substitutions per position over 13 positions**; coumarin
+offers **0.45 over 11**. Neither looks extravagant per position — but 1.53¹³ is
+244 while 1.17¹¹ is 6. (The estimate overshoots the measured 43× because the depth
+cap and the uneven spread of substitutions across positions both damp it; the
+mechanism and direction are right, the arithmetic is indicative.)
+
+So the reason PFAS is loose is **not** bad judgement about which residues to
+include — it is that hedging by ~1.5 residues per position is invisible locally
+and enormous globally. That is also why our method has more to offer there: the
+prize is trimming per-position depth, which is exactly what a residue-ranking step
+does.
+
+### 74c. What our method is, and it needs MORE than one hit
+
+Stated plainly, the pipeline as it now stands:
+
+| step | how | evidence |
+|---|---|---|
+| 1. which positions to open | rank the 18 pocket positions by round-1 mutation rate | §63c, §65g |
+| 2. which residues per position | class-weighted round-1 frequency, keep within a fraction of the top | §63c |
+| 3. which combinations to keep | Cartesian FastRelax ΔΔG, applied through its additive per-substitution fit | §67, §69 |
+
+**Tested directly: can step 2 run off a single round-1 hit?** Recovering Tian's
+coumarin design from different amounts of evidence:
+
+| evidence | positions found | optimal residue ranked 1st |
+|---|---|---|
+| A. full class-weighted (49 clones, ≥0.4 Tanimoto) | 10/11 | **7/11** |
+| B. pooled round-1, **ligand-blind** (692 clones) | 10/11 | 4/11 |
+| C. **one own-ligand hit** + pooled prior (200 draws) | 9.9/11 | **4.1/11** |
+
+> **A single hit adds essentially nothing over the ligand-blind baseline** (4.1 vs
+> 4.0 residues). One clone carries 2–3 substitutions; an 11-position residue
+> profile cannot be built from that.
+
+**Positions survive on one hit — residues do not.** Step 1 draws on pooled
+round-1 and is ligand-blind anyway, so it gives 10/11 regardless. Step 2 is the
+part that needs a class, and one clone is not a class.
+
+Two consequences:
+
+- For a target like **PFAS**, where the prize is mostly position selection (§73),
+  a single hit may be enough to be useful.
+- For a target like **coumarin**, where the prize is residue identity, it is not —
+  and the fix is the one §74a's paper demonstrates: **run SSM on the single hit**
+  to generate the per-position profile experimentally, then apply steps 2–3 to
+  that. That converts one sequence into exactly the input our method wants, at the
+  cost of one extra round of wet-lab work.
