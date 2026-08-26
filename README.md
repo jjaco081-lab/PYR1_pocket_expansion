@@ -2663,6 +2663,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 93 | 08-26 | Tian's PFAS library holds 49,545,216 variants (product of its 13 positions) | **the arithmetic is right and the MODEL is wrong -- it is depth-capped at ~6 substitutions, so 2,193,926 (4.4 %).** Tell: **93 of 154 sensors carry exactly 6 substitutions and one carries 7**, while a full-combinatorial member would average 9.2. Coumarin by contrast expects 7.0 and observes 6.8 over a 3-10 range -- genuinely uncapped | headroom overstated **18x (any-hit: 3,441x -> 192x)** and **12x (best-hit: 510x -> 43x)** once both sides are costed under the same cap. Coumarin stands at **2.5x**. Same error as §53's DSM-Hao 3.79e21. **Standing check: before quoting a library size, compare the expected substitution count of a random member against the observed distribution in that library's own hits, and look for a hard ceiling** (§73) |
 | 94 | 08-26 | our library-design method can be seeded from a single round-1 hit | **it cannot, for the residue step.** Recovering Tian's coumarin design: full class-weighted evidence puts the optimal residue at rank 1 for **7/11** positions, ligand-blind pooled for **4/11**, and **one own-ligand hit + pooled prior for 4.1/11** over 200 draws -- i.e. a single hit adds essentially NOTHING over ligand-blind | **positions survive on one hit (9.9/11), residues do not.** One clone carries 2-3 substitutions; an 11-position profile cannot be built from it. So a single hit may suffice where the prize is POSITIONS (PFAS, §73) and not where it is IDENTITY (coumarin). Fix = **SSM on the single hit** to make the profile experimentally, exactly as Baker's hcy129 -> hcy129.1 did (§74c) |
 | 95 | 08-26 | PFAS has 43x headroom because its library includes residues that turned out useless | **no -- only 4 of 45 offered substitutions are never used (9 %), and for coumarin it is 0 of 23.** Both libraries are well utilised. The driver is that size is EXPONENTIAL in positions: PFAS offers **3.46 substitutions/position where its winners need 1.92**, over 13 positions (ratio 1.53), against coumarin's **2.09 -> 1.64** over 11 (ratio 1.17); 1.53^13 ~ 244 vs 1.17^11 ~ 6 | hedging by ~1.5 residues per position is invisible locally and enormous globally. The lever with the most to gain is therefore **trimming per-position depth**, which is what a residue-ranking step does (§74b) |
+| 96 | 08-26 | with a fixed pocket and ~1,150 labelled clones, a model could output a few candidate SEQUENCES per ligand | **the target does not exist.** Sensors for the SAME ligand share only **Jaccard 0.45**, there is exactly **1 identical pair** among all within-ligand pairs, and one ligand's own sensors span **10-16 distinct substitutions over 8-11 positions**. Each ligand has a MANIFOLD of solutions, not an answer | the correct output is a **library, not a shortlist** -- a property of the biology, not of our methods. Constructively, the **core IS predictable**: V163W is in every sensor for **10 of 11** ligands. Per-ligand LOLO, our designed library contains a hit for **9/11 at 69,120**, against an oracle of 32 for one known sensor but **10^3-10^4 to cover the solution union** -- so the realistic remaining prize is **10-50x, not 2,000x** (§75a-b) |
+| 97 | 08-26 | the Baker NTF2 result argues that ligand->sequence design is out of reach | **their hard problem is the one we do not have.** They built >10,000 novel backbones and docked into pockets that did not exist: 54,500 oligos, **0.36 %** hit rate, cortisol **1 hit from 630**. We change side chains in a backbone that already folds, binds and transduces, and read out by GROWTH SELECTION | **screening 10^5 PYR1 variants is one flask; 10^5 novel backbones is a campaign.** Library size is therefore NOT our scarce resource (Y2H handles 10^6-10^7), so shrinking 69,120 to 5,000 buys little. ⚠ The real risk is whether a NOVEL chemotype has any solution in the 144-substitution vocabulary at all -- which is what the sealed prospective test probes (§75c-d) |
 
 ### Bugs caught before they cost anything
 
@@ -8521,3 +8523,88 @@ Two consequences:
   to generate the per-position profile experimentally, then apply steps 2–3 to
   that. That converts one sequence into exactly the input our method wants, at the
   cost of one extra round of wet-lab work.
+
+---
+
+## 75. Can we go from ligand to a few sequences? The target is the wrong shape (2026-08-26)
+
+Jannis: we always modify the same pocket and have ~1,150 labelled clones, so could
+an algorithm output a few sequences, or a small library, from a ligand alone? And
+does §74a's Baker result argue against it?
+
+### 75a. "A few sequences" is ill-posed, and that is a measurement not an opinion
+
+There is no single answer per ligand to predict. Across the 78 coumarin sensors:
+
+| | |
+|---|---|
+| mean within-ligand Jaccard between sensors | **0.45** |
+| identical sensor pairs, out of all within-ligand pairs | **1** (one duplicate, Scopoletin) |
+| distinct substitutions spanned by one ligand's own sensors | **10–16** |
+| positions those sensors touch | **8–11** |
+| substitutions present in **every** sensor for a ligand | **1–7** |
+
+Every ligand has a *manifold* of solutions sharing under half their content. Asking
+a model for "the" sequence is asking it to pick one winning ticket out of many
+winning tickets. **The correct output format is a library, not a shortlist** — and
+that is a property of the biology, not a limitation of our methods.
+
+The constructive half: the **core is real and predictable**. **V163W appears in
+every sensor for 10 of 11 ligands**; V83L in 6. Those are exactly the substitutions
+§64d's forcing analysis identified from round-1 alone.
+
+### 75b. What a per-ligand library actually costs, LOLO
+
+The real use case is one target, not eleven. Deleting each ligand's own round-1
+clones and designing from the rest:
+
+| | median size |
+|---|---|
+| oracle, if you knew one specific working sensor | **32** (any hit) / 128 (best) |
+| oracle, to cover a ligand's whole known solution union | **2¹⁰–2¹⁶ ≈ 10³–10⁴** |
+| **our designed library, containing ≥1 hit** | **69,120** — works for **9/11 ligands** |
+| our designed library, containing the **best** hit | 9.2 M — works for 5/11 |
+
+So the gap to "knowing the answer" is ~2,000×, but the gap to the **realistic
+floor** — covering the solution manifold rather than one point in it — is only
+**~10–50×**.
+
+### 75c. Why the Baker result does not transfer
+
+Their hard problem was the one we do not have. They designed **>10,000 novel
+backbones**, docked ligands into pockets that did not exist, and needed sequences
+that both fold and bind — 54,500 oligos for a 0.36 % hit rate, and cortisol gave
+**1 hit from 630**. Their own retrospective says the designs that worked hugged
+native ketosteroid isomerase.
+
+We change 11–18 side chains in a backbone that already folds, already binds, and
+already transduces. Foldability is near-free (§67's ΔΔG separation is a
+*within*-menu effect, not a folding rescue), the pose problem is bounded, and the
+readout is a **growth selection** rather than yeast display plus FACS plus deep
+sequencing.
+
+Which flips the binding constraint. **Screening 10⁵ PYR1 variants is one flask;
+screening 10⁵ novel backbones is a campaign.** So for us library size is not the
+scarce resource — Y2H handles 10⁶–10⁷ — and shrinking 69,120 to 5,000 buys very
+little. What matters is whether the library **contains a sensor at all**.
+
+### 75d. So: yes to a program, no to a shortlist
+
+| ask | verdict |
+|---|---|
+| ligand → a few sequences | **no** — the solution manifold has Jaccard 0.45 and no unique target |
+| ligand → a ~10⁴–10⁵ library containing a sensor | **already ~there**: 9/11 ligands at 69,120, LOLO |
+| ligand → a library containing the **best** sensor | **no** — 5/11 at 9.2 M |
+| ligand → a small library **without any hit for that ligand** | positions yes, residues no (§74c) |
+
+The honest position is that we are at **parity with the incumbent**, not ahead of
+it, and the remaining prize on library size is ~10–50× rather than orders of
+magnitude. The two levers are known and both are measured: residue ranking
+(currently 7/11 at rank 1, §63c) and the ΔΔG combination filter (~2×, §69d).
+
+⚠ **And the real risk is not library size at all.** Everything above is measured
+on coumarins and PFAS, whose chemistry is inside the 144-substitution vocabulary
+round 1 already explored (§63a). Nothing here shows that a genuinely novel
+chemotype has *any* solution in that vocabulary. That — not shortlist length — is
+what would sink a prospective target, and it is what §48d's sealed prospective
+test was designed to probe.
