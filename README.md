@@ -2659,6 +2659,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 89 | 08-25 | random draws matched to the real substitution-count range are an adequate null | the PFAS draws were **uniform over 2-6 while the real distribution is skewed high (5.4 vs 3.9 mean)**, and since separation WIDENS with depth (§68b) that **understated** the effect: PFAS ddG AUC 0.334 raw -> **0.206 stratified** | match the null on the confound, or stratify and re-weight; a range match is not a distribution match. Corrected filter payoff is **~2x at 90 % sensor retention in BOTH classes** (coumarin 2.10x, PFAS 2.05x), up from §67d's unstratified 1.74x (§69b, §69d) |
 | 90 | 08-25 | the umbrella was 24/62 complete and just needed resubmitting | **38 windows had NEVER RUN.** The four md191 systems were solvated independently (S2 46,570 / S10 51,588 / S9 46,483 / S1 51,585 atoms); 111 seeded the open-basin windows from the OPEN systems while 112 runs every window under the CLOSED topology, so all 38 died instantly with `natom mismatch`. Complete windows span **5.0-10.5 A -- the closed basin only** | **no PMF was ever computable** -- §60's quantity is G(open) - G(closed) and the open basin is at 16.3-16.9 A. My guard in 111 checked holo-vs-apo and missed closed-vs-open WITHIN an arm, because I treated "topology" as which molecules are present when the thing that must match is the ATOM COUNT. Also: they failed in 23 s against a 2 h window and I read the zero as "not started". Fix = adiabatic pulling from the completed 10.5 A window, 0.5 A x 200 ps steps, 3.8 ns/arm (§70) |
 | 91 | 08-26 | the coumarin headroom is 15x and PFAS is over-hedged 3,441x (§63b, §65f) | **both were measured against too easy a target.** Those oracles accept ANY known hit, including ones **50x weaker** than the best available for that ligand. Requiring the BEST measured sensor per ligand: coumarin exact minimum goes **9,216 -> 55,296**, i.e. Tian's 138,240 is only **2x** above optimal, not 15x | Tian's library is close to optimally sized; the apparent waste was my metric, not their design. And our best designed library drops from **8/11 ligands to 2/11** on the best-hit target, catching sensors ~4.5x weaker than available. Use the best-hit target from here (§71) |
+| 92 | 08-26 | the best-hit correction (§71) deflates the headroom everywhere | **only for coumarin.** Requiring the best measured sensor per ligand: coumarin **15x -> 2x** (Tian sized it near-optimally), but **PFAS 3,441x -> 510x** -- still enormously over-hedged | §65f's claim that library width tracks DESIGNER CONFIDENCE survives the correction. Coumarin had 36 own-class round-1 clones and a clean position signal; PFAS had 89 with a weak signal against a chemically novel class. ⚠ Also: **sd09 encodes potency in a `min_conc (µM)` column from a finer RETEST (9 levels)**, which disagrees with its 3-point primary screen on **98 of 154 rows** (always lower). sd07 has no such column and uses the explicit ladder instead (§71e) |
 
 ### Bugs caught before they cost anything
 
@@ -8243,7 +8244,8 @@ Tian's 138,240 is then only 2× above the exact optimum.**
 
 So §63b's "the entire headroom is 15×" and §65f's "PFAS is over-hedged by 3,441×"
 were both measured against a target that accepts a sensor **50× weaker** than the
-one actually available. On the harder and more meaningful target, **Tian's
+one actually available. ⚠ §71e revises this: the coumarin claim does collapse, but
+the PFAS one **survives at 510×**. On the harder and more meaningful target, **Tian's
 coumarin library is close to optimally sized.** The apparent waste was mostly an
 artefact of my metric, not of their design.
 
@@ -8315,3 +8317,39 @@ for that compound. Scopoletin's 10 µM and Methoxsalen's 0.025 µM are both "bes
 
 Also checked: the off-position filter (§63a's 8 PCR singletons) **removes no
 ligand's best sensor** — best-overall equals best-within-the-18 for all 11.
+
+### 71e. PFAS on the best-hit target — the headroom survives there
+
+⚠ **sd09 encodes potency differently from sd07, and the difference matters.**
+sd07 carries the full explicit ladder (12 columns, `+`/`-`/`ND`/blank). sd09
+carries only a **coarse three-point primary screen** (1 / 10 / 100 µM, `+`/`-`
+only) **plus a separate `min_conc (µM)` column from a finer retest** with nine
+levels (0.05, 0.1, 0.5, 1, 5, 10, 50, 100, 500 µM). The two disagree on **98 of
+154 rows**, always with `min_conc` lower — 50 µM where the primary screen first
+scores `+` at 100 — and 3 rows carry values outside the three columns entirely.
+`min_conc` is the authoritative number; deriving potency from the dose columns
+would have been wrong for two-thirds of the PFAS sensors.
+
+Exact smallest library containing, for every one of the 25 PFAS ligands:
+
+| target | exact minimum | vs Tian's 49,545,216 |
+|---|---|---|
+| **any** known hit | 14,400 | **3,441×** |
+| **the BEST** known hit | **97,200** | **510×** |
+
+So the correction behaves completely differently in the two classes:
+
+| class | any-hit headroom | **best-hit headroom** | |
+|---|---|---|---|
+| coumarin | 15× | **2×** | Tian sized it near-optimally |
+| **PFAS** | 3,441× | **510×** | still enormously over-hedged |
+
+**§65f's claim survives the metric correction.** The coumarin library really was
+close to right and my 15× was an artefact; the PFAS library really was
+over-hedged, and remains so by ~500× even when the target is the best measured
+sensor rather than any sensor. The distinction tracks exactly what §65f proposed —
+class-relevant round-1 data. Coumarin had 36 own-class round-1 clones and a clean
+position signal; PFAS had 89 clones whose best position reached 0.61 and whose
+residue identities never converged, against a chemically novel class. Less
+confidence, wider library — and for PFAS the widening was far beyond what its own
+results needed.
