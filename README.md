@@ -2658,6 +2658,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 88 | 08-25 | scoring |cavity volume - target ligand volume| would beat ddG (§68e) | **dead in both arms**: coumarin AUC **0.540**, PFAS **0.461**. It cannot reproduce even the arm where ddG works. Its only significant result is REAL vs WILD on PFAS (0.301), i.e. it distinguishes a pocket-opening library from an arbitrary one | it re-measures the direction the menu has already fixed, so it adds nothing the wet lab needs. ⚠ Also: REAL sensors OVERSHOOT -- coumarin sensors shrink the cavity 35 A^3 below a target only 3 A^3 away, consistent with the ligand not having to fill the pocket (§59a) (§69a) |
 | 89 | 08-25 | random draws matched to the real substitution-count range are an adequate null | the PFAS draws were **uniform over 2-6 while the real distribution is skewed high (5.4 vs 3.9 mean)**, and since separation WIDENS with depth (§68b) that **understated** the effect: PFAS ddG AUC 0.334 raw -> **0.206 stratified** | match the null on the confound, or stratify and re-weight; a range match is not a distribution match. Corrected filter payoff is **~2x at 90 % sensor retention in BOTH classes** (coumarin 2.10x, PFAS 2.05x), up from §67d's unstratified 1.74x (§69b, §69d) |
 | 90 | 08-25 | the umbrella was 24/62 complete and just needed resubmitting | **38 windows had NEVER RUN.** The four md191 systems were solvated independently (S2 46,570 / S10 51,588 / S9 46,483 / S1 51,585 atoms); 111 seeded the open-basin windows from the OPEN systems while 112 runs every window under the CLOSED topology, so all 38 died instantly with `natom mismatch`. Complete windows span **5.0-10.5 A -- the closed basin only** | **no PMF was ever computable** -- §60's quantity is G(open) - G(closed) and the open basin is at 16.3-16.9 A. My guard in 111 checked holo-vs-apo and missed closed-vs-open WITHIN an arm, because I treated "topology" as which molecules are present when the thing that must match is the ATOM COUNT. Also: they failed in 23 s against a 2 h window and I read the zero as "not started". Fix = adiabatic pulling from the completed 10.5 A window, 0.5 A x 200 ps steps, 3.8 ns/arm (§70) |
+| 91 | 08-26 | the coumarin headroom is 15x and PFAS is over-hedged 3,441x (§63b, §65f) | **both were measured against too easy a target.** Those oracles accept ANY known hit, including ones **50x weaker** than the best available for that ligand. Requiring the BEST measured sensor per ligand: coumarin exact minimum goes **9,216 -> 55,296**, i.e. Tian's 138,240 is only **2x** above optimal, not 15x | Tian's library is close to optimally sized; the apparent waste was my metric, not their design. And our best designed library drops from **8/11 ligands to 2/11** on the best-hit target, catching sensors ~4.5x weaker than available. Use the best-hit target from here (§71) |
 
 ### Bugs caught before they cost anything
 
@@ -8214,3 +8215,60 @@ structure already near its target but cannot drag one 10 Å — that is why this
 to be a separate stage rather than something the restraint absorbs.
 
 Cost to finish: 3.8 ns × 2 arms of pulling, then 38 windows × 22 ns ≈ **840 ns**.
+
+---
+
+## 71. ⚠ The headroom numbers were measured against too easy a target (2026-08-26)
+
+Jannis: the round-2 hits came out of Tian's library, so if that library was built
+suboptimally we are asking a method to rediscover a mediocre answer — better to
+target the **best** sensor per ligand. `scripts/128_best_hit_target.py`.
+
+sd07 carries a full dose-response ladder (0.025–100 µM, 12 levels) and the
+within-ligand spread reaches **50×** (4-methylumbelliferone 0.5 vs 25 µM), so "any
+hit" and "best hit" are genuinely different targets.
+
+### 71a. The correction
+
+Exact smallest library, by branch and bound, containing for **every** one of the
+11 ligands:
+
+| target | WT offered | vs Tian | forcing allowed | vs Tian |
+|---|---|---|---|---|
+| **any** known hit (§63b) | 9,216 | **15×** | 4,608 | 30× |
+| **the BEST** known hit | **55,296** | **2×** | 27,648 | 5× |
+
+**Demanding the best sensor rather than any sensor costs 6× in library size, and
+Tian's 138,240 is then only 2× above the exact optimum.**
+
+So §63b's "the entire headroom is 15×" and §65f's "PFAS is over-hedged by 3,441×"
+were both measured against a target that accepts a sensor **50× weaker** than the
+one actually available. On the harder and more meaningful target, **Tian's
+coumarin library is close to optimally sized.** The apparent waste was mostly an
+artefact of my metric, not of their design.
+
+This cuts the other way from what the question anticipated: the worry was that
+Tian's library might be suboptimal and we were chasing a bad answer. The data says
+the opposite — the library is nearly right, and it was my *scoring* of it that was
+too lenient.
+
+### 71b. And our designed libraries catch weak hits
+
+| designed library | size | ligands with a hit | ligands with the **best** hit | potency of what it caught |
+|---|---|---|---|---|
+| class/profile f=0.50 | 17,280 | 3/11 | **1/11** | 5.0× weaker than best |
+| class/profile f=0.35 | 103,680 | **8/11** | **2/11** | 4.5× weaker than best |
+| class/profile f=0.25 | 129,600 | 3/11 | 1/11 | 5.0× weaker than best |
+
+The 8/11 headline from §63d collapses to **2/11** on the best-hit target, and what
+it does capture is ~4.5× weaker than what was available. **The two metrics are not
+interchangeable**, and the harder one is the one worth designing against from here.
+
+### 71c. What this does and does not settle
+
+It does **not** find the best possible *sequence* — that needs binding data for
+sequences nobody made, and nothing in this project predicts affinity (§40–§46).
+What it does is enumerate every possible *library* exactly against the strongest
+label available. The ground truth is still positive-unlabeled
+([[feedback_hits_are_not_optima]]); it is now anchored to the best measured sensor
+rather than to an arbitrary one.

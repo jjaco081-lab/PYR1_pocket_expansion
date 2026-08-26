@@ -1,0 +1,38 @@
+==============================================================================
+1. THE BEST MEASURED SENSOR PER LIGAND
+==============================================================================
+   70 round-2 clones inside the 18 positions, 11 ligands
+   ligand                             n  best uM   worst  spread #tied at best
+   4-Methylumbelliferone              5    0.500    25.0     50x             1
+   5,7-Dihydroxy-4-methylcoumarin     3    1.000     2.5      2x             1
+   7-Methoxycoumarin                  8    5.000    10.0      2x             3
+   Bergapten                          7    0.500     1.0      2x             6
+   Citropten                          5    0.250     1.0      4x             1
+   Imperatorin                        7    0.050     0.2      5x             2
+   Isopsoralen                        5    1.000     2.5      2x             3
+   Methoxsalen                        8    0.025     0.2     10x             1
+   Osthole                            7    0.100     0.2      2x             2
+   Psoralen                           5    2.500    25.0     10x             4
+   Scopoletin                        10   10.000   100.0     10x             1
+
+==============================================================================
+2. SMALLEST LIBRARY: 'any hit' vs 'the BEST hit'
+==============================================================================
+   target          WT offered   vs Tian     forcing   vs Tian
+   any hit              9,216       15x       4,608       30x
+   BEST hit            55,296        2x      27,648        5x
+
+   ==> demanding the BEST sensor rather than any sensor costs 6.0x in library size
+       (9,216 -> 55,296), and the target is still 2x under Tian's 138,240.
+
+==============================================================================
+3. WHAT DO THE DESIGNED LIBRARIES ACTUALLY CATCH? potency of what they hold
+==============================================================================
+   library                          size  ligands  best-hit   median potency caught / best available
+   class/profile f=0.50           17,280      3/11       1/11   5.0x worse than the best
+   class/profile f=0.35          103,680      8/11       2/11   4.5x worse than the best
+   class/profile f=0.25          129,600      3/11       1/11   5.0x worse than the best
+
+   ==> a library that captures 'a hit' does NOT generally capture the best
+       one, so the two metrics are not interchangeable and the harder one
+       is the one worth designing against.
