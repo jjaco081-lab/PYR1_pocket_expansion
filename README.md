@@ -2674,6 +2674,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 104 | 08-26 | ref2015 balances several terms when it discriminates a sensor | **it is ONE term.** Per-term WT-minus-sensor: raw **fa_rep 1995.12 = 100.4 %** of the total, repack **1484.69 = 100.2 %**; fa_atr, fa_sol, fa_elec and hbond_sc contribute nothing and **fa_atr/fa_elec point the WRONG way**. After relax fa_rep falls 1995 -> **1.76** and the residual cancels to **-0.04 REU** | **FastRelax does not overpack, it OVER-RELIEVES** -- WT+mandipropamid goes +1994 -> -37.5, a structure that cannot exist. The score is a **clash detector with a working sign and no usable magnitude**: right when a collision exists, silent when none does, and empty once the structure is physical. Same boundary §32 reached geometrically, now confirmed term by term on 2 receptors and 4 cells (§79b-c) |
 | 105 | 08-27 | with real structures in hand, a structural or confidence metric will rank sensor quality | **none does.** 590 Boltz-2 sensor structures over 172 ligands, correlated with measured min_conc: within-ligand rho is **-0.030 (confidence), -0.084 (ligand_iPTM), -0.029 (contacts), +0.089 (H-bonds), +0.061 (burial)** -- chance is 21.5/43 ligands and every descriptor sits on it, with H-bonds and burial pointing the WRONG way. The only strong pooled correlate is **ligand size (-0.246)**, a confound | ⚠ but the task is harder than §69's: these are all WORKING sensors, so this ranks potency AMONG POSITIVES rather than separating positives from random variants, and the label is only 3 levels. Poses are fine (0.49-0.66 A on 4WVO) -- **confidence does not know about binding** (WT+mandipropamid, which cannot bind, scores ligand_iPTM 0.97); seed spread separates 4.9x better (0.35 vs 1.70 A). Mapping recovered from the CIFs themselves: **637 of 718 uniquely resolved** (§80) |
 | 106 | 08-27 | with all 62 windows at 20 ns the umbrella would deliver its calibration | **it FAILS 2 of 3 pre-registered criteria.** Holo favours closed (+5.02 kcal/mol) ✅ but **apo also favours closed (+6.92)** ❌ and **ddG = -1.90 is the wrong sign** ❌. The easy explanations are excluded: no window has <5 occupied bins, coordinate drift is 0.02-0.03 A, and **ABA stays bound (52-82 contacts even at 20 A)** | ⚠ **my own §70 repair is the prime suspect**: it replaced every open-basin seed in BOTH arms with adiabatic pulling OUTWARD FROM CLOSED, so the two-directional seeding §60 built in specifically to expose hysteresis is gone, and one-directional pulling would inflate the open free energy in both arms -- the observed pattern. §113's docstring promises a hysteresis check the code never implemented. The dimer mis-specification (apo-open is a DIMER state, we ran a monomer) does NOT rescue it: ddG should still be positive. **No designed-pocket number may be quoted** (§81) |
+| 107 | 08-27 | Boltz-2's binder-vs-decoy classifier is the strongest untried idea (EF ~18x in BoltzMol-1) | **it calls 90 % of real PYR1 sensors NON-BINDERS.** Median `affinity_probability_binary` over 637 experimentally confirmed sensors is **0.303**; only **9.6 %** clear p > 0.5. The archive already held the affinity output (2,870 files) so this cost **no GPU** | there IS a signal but at the wrong LEVEL: "called binder" is monotone in potency (20.0 / 11.3 / 5.8 % at 1 / 10 / 100 uM, pooled AUC 0.634) yet **within-ligand rho is -0.028** (20/43, chance 21.5) and `affinity_pred_value` goes **+0.327 pooled -> -0.000 within-ligand**. The signal is BETWEEN ligands, not between sensors. **Boltz-2 varies the LIGAND against a fixed protein; we vary the PROTEIN** -- a direction its training never constrains. Protein-only fa_rep (§69) remains the only method above chance (§82) |
 
 ### Bugs caught before they cost anything
 
@@ -9078,3 +9079,77 @@ Two repairs are needed before it could be, and they are separable:
 
 Until 1 is done the result cannot be interpreted, because the most likely
 explanation for it is an artefact I introduced.
+
+---
+
+## 82. Boltz-2's binder classifier calls 90 % of real sensors non-binders (2026-08-27)
+
+BoltzMol-1 (bioRxiv 2026.07.04.736485) builds hit discovery on Boltz-2, which
+co-folds a complex and emits **a binder-vs-decoy classifier** plus a pIC50 head,
+reporting **EF ≈ 18× at the top 0.5 %** on MF-PCBA. That classifier is exactly the
+discrimination §69 measures, so it is the strongest untried idea we have.
+
+**No GPU was needed.** The June 2025 archive already contains the affinity output —
+2,870 files — so the classifier had been run on every sensor and never read.
+
+### 82a. The result
+
+`affinity_probability_binary` over the **637 experimentally confirmed sensors**,
+every one isolated in a growth selection and validated by dose–response:
+
+| | |
+|---|---|
+| median binder probability | **0.303** |
+| called a binder at p > 0.5 | **9.6 %** (61/637) |
+| at p > 0.3 | 50.9 % |
+| at p > 0.2 | 81.6 % |
+
+**Boltz-2 calls 90 % of real PYR1 sensors non-binders.**
+
+### 82b. There is a signal, and it is at the wrong level
+
+| min_conc | n | median p_bind | called binder |
+|---|---|---|---|
+| **1 µM** | 55 | 0.345 | **20.0 %** |
+| 10 µM | 257 | 0.290 | 11.3 % |
+| 100 µM | 278 | 0.301 | **5.8 %** |
+
+The "called binder" rate is monotone in potency, and pooled AUC separating 1 µM
+from 100 µM sensors is **0.634** — above chance.
+
+⚠ **But within-ligand it vanishes**: ρ = **−0.028** (20/43 ligands in the right
+direction, chance is 21.5). So the pooled signal is **between ligands**, not between
+sensors — some ligands both yield better sensors and score higher. For design we
+need discrimination *among variants for one ligand*, and there it is at chance.
+`affinity_pred_value` behaves identically: pooled ρ = **+0.327** (p 2 × 10⁻¹⁵),
+within-ligand ρ = **−0.000**.
+
+### 82c. Why — the direction is untested by construction
+
+BoltzMol-1 and Boltz-2's affinity training vary the **ligand** against a fixed
+protein: that is what ChEMBL-style data contains, and what EF ≈ 18× measures. **We
+vary the protein — 11–18 pocket mutations — against a fixed ligand.** Nothing in
+the training distribution constrains that direction, and this is the first
+measurement of it we know of.
+
+Two things are separable in the failure and only one is fatal:
+
+- **Calibration** — these sensors bind at 1–100 µM, weak by the standards of the
+  affinity data Boltz-2 was trained on, so a low absolute probability is defensible.
+- **Ranking** — being unable to order variants *within* one ligand is not, and that
+  is the property a design filter needs.
+
+### 82d. Where that leaves the scoreboard
+
+| method | discriminates real sensors from random library variants? |
+|---|---|
+| protein-only Cartesian FastRelax ΔΔG (§69) | **yes** — AUC 0.250 n_sub-matched, ~2× at 90 % retention |
+| ligand-aware Rosetta with docked pose (§77) | no — AUC 0.504 |
+| cavity-volume match (§69) | no — AUC 0.540 |
+| Boltz-2 confidence / iPTM (§80) | no — within-ligand ρ −0.03 to −0.08 |
+| **Boltz-2 binder classifier (§82)** | **no** — within-ligand ρ −0.028 |
+
+The protein-only clash filter remains the only thing that works, and §79 explains
+why: it reads unrelieved `fa_rep`, which is the one quantity that actually differs
+between a sensor and a random variant. Every richer method tested has been at
+chance.
