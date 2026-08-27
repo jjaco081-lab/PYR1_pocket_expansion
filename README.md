@@ -2675,6 +2675,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 105 | 08-27 | with real structures in hand, a structural or confidence metric will rank sensor quality | **none does.** 590 Boltz-2 sensor structures over 172 ligands, correlated with measured min_conc: within-ligand rho is **-0.030 (confidence), -0.084 (ligand_iPTM), -0.029 (contacts), +0.089 (H-bonds), +0.061 (burial)** -- chance is 21.5/43 ligands and every descriptor sits on it, with H-bonds and burial pointing the WRONG way. The only strong pooled correlate is **ligand size (-0.246)**, a confound | ⚠ but the task is harder than §69's: these are all WORKING sensors, so this ranks potency AMONG POSITIVES rather than separating positives from random variants, and the label is only 3 levels. Poses are fine (0.49-0.66 A on 4WVO) -- **confidence does not know about binding** (WT+mandipropamid, which cannot bind, scores ligand_iPTM 0.97); seed spread separates 4.9x better (0.35 vs 1.70 A). Mapping recovered from the CIFs themselves: **637 of 718 uniquely resolved** (§80) |
 | 106 | 08-27 | with all 62 windows at 20 ns the umbrella would deliver its calibration | **it FAILS 2 of 3 pre-registered criteria.** Holo favours closed (+5.02 kcal/mol) ✅ but **apo also favours closed (+6.92)** ❌ and **ddG = -1.90 is the wrong sign** ❌. The easy explanations are excluded: no window has <5 occupied bins, coordinate drift is 0.02-0.03 A, and **ABA stays bound (52-82 contacts even at 20 A)** | ⚠ **my own §70 repair is the prime suspect**: it replaced every open-basin seed in BOTH arms with adiabatic pulling OUTWARD FROM CLOSED, so the two-directional seeding §60 built in specifically to expose hysteresis is gone, and one-directional pulling would inflate the open free energy in both arms -- the observed pattern. §113's docstring promises a hysteresis check the code never implemented. The dimer mis-specification (apo-open is a DIMER state, we ran a monomer) does NOT rescue it: ddG should still be positive. **No designed-pocket number may be quoted** (§81) |
 | 107 | 08-27 | Boltz-2's binder-vs-decoy classifier is the strongest untried idea (EF ~18x in BoltzMol-1) | **it calls 90 % of real PYR1 sensors NON-BINDERS.** Median `affinity_probability_binary` over 637 experimentally confirmed sensors is **0.303**; only **9.6 %** clear p > 0.5. The archive already held the affinity output (2,870 files) so this cost **no GPU** | there IS a signal but at the wrong LEVEL: "called binder" is monotone in potency (20.0 / 11.3 / 5.8 % at 1 / 10 / 100 uM, pooled AUC 0.634) yet **within-ligand rho is -0.028** (20/43, chance 21.5) and `affinity_pred_value` goes **+0.327 pooled -> -0.000 within-ligand**. The signal is BETWEEN ligands, not between sensors. **Boltz-2 varies the LIGAND against a fixed protein; we vary the PROTEIN** -- a direction its training never constrains. Protein-only fa_rep (§69) remains the only method above chance (§82) |
+| 108 | 08-27 | a ligand class where Boltz ranks variants would be worth finding, and a corrected permutation test can find it | **calibration yes, ranking no.** Boltz is more confident on **aromatic (rho +0.387, p 4e-7)** and **H-bond-donating (+0.262)** ligands -- drug-like ChEMBL-dense space, NOT non-polar. But for within-ligand RANKING the best subgroup (high-HBD, median rho -0.528, n=9) **passed a multiplicity-corrected permutation at p=0.013 and still failed** | **capsaicin and zucapsaicin have IDENTICAL ECFP4 fingerprints (Tanimoto 1.00) and give rho +0.488 vs +0.183**; capsaicin vs nonivamide differ by **1.056**. Per-ligand rho is sampling noise and the 9 "independent" ligands are ~6 chemotypes, violating the permutation's exchangeability. **The check with teeth is not a p-value but whether near-duplicate inputs agree** -- and the screening library supplies those free (§83) |
 
 ### Bugs caught before they cost anything
 
@@ -9153,3 +9154,74 @@ The protein-only clash filter remains the only thing that works, and §79 explai
 why: it reads unrelieved `fa_rep`, which is the one quantity that actually differs
 between a sensor and a random variant. Every richer method tested has been at
 chance.
+
+---
+
+## 83. Is there a ligand class Boltz handles better? Calibration yes, ranking no (2026-08-27)
+
+Jannis asked whether Boltz-2 does better on some chemical class — non-polar, say —
+and whether it is even worth looking. `scripts/137_boltz_by_ligand_class.py`.
+Descriptor list fixed before running; two questions kept separate.
+
+### 83a. Calibration: yes, and not in the direction one would guess
+
+Median `p_bind` per ligand vs eight descriptors, 171 ligands:
+
+| descriptor | ρ | p |
+|---|---|---|
+| **aromatic rings** | **+0.387** | **4.4 × 10⁻⁷** |
+| **H-bond donors** | **+0.262** | **6.4 × 10⁻⁴** |
+| cLogP | +0.124 | 0.11 |
+| rotatable bonds | −0.132 | 0.085 |
+| heavy atoms, TPSA, HBA | −0.07 … +0.07 | ns |
+
+**Boltz is most confident on aromatic, hydrogen-bond-donating ligands** — the
+drug-like region where ChEMBL is densest — **not** on non-polar ones. That is a
+real and interpretable property of the model. It is a statement about *calibration*,
+not about whether the score works: it cannot pick a variant, because it is constant
+across every variant for a given ligand.
+
+### 83b. Ranking: a subgroup passed the permutation test and failed on inspection
+
+Within-ligand ρ across the 43 ligands with ≥ 4 sensors and potency variation:
+median **+0.000**, 20/43 negative against a chance rate of 21.5. Splitting into
+tertiles, the best cell was **high H-bond donors: median ρ −0.528 (n = 9)**.
+
+A permutation test that shuffles the 43 ρ values and re-takes the most extreme of
+21 cells — so the multiple comparison is corrected — gave **p = 0.013**. It
+survived.
+
+**It should not have.** Four of the nine ligands in that cell are capsaicinoids:
+
+| pair | Tanimoto | ρ A | ρ B | difference |
+|---|---|---|---|---|
+| capsaicin / zucapsaicin | **1.00** | +0.488 | +0.183 | 0.305 |
+| capsaicin / dihydrocapsaicin | 0.71 | +0.488 | −0.528 | **1.016** |
+| capsaicin / nonivamide | 0.68 | +0.488 | −0.569 | **1.056** |
+| dihydrocapsaicin / nonivamide | 0.76 | −0.528 | −0.569 | 0.041 |
+
+**Molecules with an identical ECFP4 fingerprint give ρ differing by 0.305, and
+near-identical ones by up to 1.06.** If the subgroup effect were chemical they
+would agree. They do not — so per-ligand ρ is dominated by sampling noise, and the
+nine "independent" ligands are ~6 chemotypes, violating the exchangeability the
+permutation assumed.
+
+### 83c. Was it worth looking?
+
+Yes, for two reasons, and the second is the more useful:
+
+- §83a is a real finding about where Boltz is confident, and it predicts the model
+  will be least useful exactly where our targets are unusual — PFAS being the
+  obvious case.
+- §83b is a worked example of a significance test being overturned by an **internal
+  replicate**. The permutation corrected for multiplicity and still passed;
+  what caught it was asking whether two versions of the same molecule agree.
+
+> With 43 noisy per-ligand estimates, subgroup analysis will always produce a
+> winner. The check that has teeth is not a p-value, it is whether near-duplicate
+> inputs give the same answer.
+
+That check is cheap here because the screening library contains salt forms and
+close analogues by construction — capsaicin/zucapsaicin at Tanimoto 1.00 is a free
+internal replicate, and it should be used routinely rather than only when a result
+looks too good.
