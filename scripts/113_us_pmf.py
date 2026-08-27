@@ -48,7 +48,10 @@ K = 10.0                        # kcal/mol/A^2, must match 112
 DISCARD = 0.25                  # fraction of each window's samples dropped
 
 
-def load(tag):
+def load(tag, branch=""):
+    """branch="" reads the forward run (w*/prod*.rc); branch="reverse" reads the
+    reverse-seeded rerun (w*/reverse/prod*.rc). §138 keeps them side by side so the
+    two can be compared without either overwriting the other."""
     out = OrderedDict()
     d = os.path.join(US, tag)
     if not os.path.isdir(d):
@@ -59,7 +62,7 @@ def load(tag):
         # window's samples are spread over prod01.rc, prod02.rc, ... Concatenate
         # in order; they are one continuous trajectory (irest=1 carries velocities
         # and box across, only the Langevin seed is redrawn).
-        files = sorted(glob.glob(os.path.join(d, w, "prod*.rc")))
+        files = sorted(glob.glob(os.path.join(d, w, branch, "prod*.rc")))
         if not files:
             continue
         v = np.array([float(l.split()[1]) for f in files for l in open(f)
@@ -133,11 +136,53 @@ def report(tag, win):
     return go - gc
 
 
+def hysteresis(tag):
+    """Compare the forward-seeded and reverse-seeded PMFs.
+
+    §60 seeded from BOTH basins precisely so that "disagreement in the overlap
+    region is visible"; §70's repair replaced every open seed with an outward pull
+    from closed and destroyed that control; §136/§138 restored the missing
+    direction by pulling INWARD from the equilibrated 20 A window. This is the
+    check this file's docstring promised and never implemented.
+
+    Reported on the windows both branches cover (10.5-19.5 A). A converged PMF is
+    seed-independent; systematic divergence means the pull direction is setting the
+    answer, and §81's verdict would then be about the protocol rather than the
+    physics.
+    """
+    fwd, rev = load(tag), load(tag, "reverse")
+    shared = [w for w in rev if w in fwd]
+    if len(shared) < 5:
+        print(f"\n{tag}: only {len(shared)} windows have BOTH branches "
+              f"({len(rev)} reverse so far) -- rerun still in progress")
+        return None
+    print(f"\n=== HYSTERESIS {tag}: {len(shared)} windows with both seedings")
+    mf, pf, _hf, _i = wham({w: fwd[w] for w in shared}, (10.0, 20.5, 105))
+    mr, pr, _hr, _j = wham({w: rev[w] for w in shared}, (10.0, 20.5, 105))
+    m = np.isfinite(pf) & np.isfinite(pr)
+    d = pf[m] - pr[m]
+    d = d - d.mean()                       # PMFs are defined up to a constant
+    print(f"  mean |forward - reverse| after aligning the offset: "
+          f"{np.abs(d).mean():.2f} kcal/mol   max {np.abs(d).max():.2f}")
+    # the quantity that actually matters
+    for nm, br in (("forward", fwd), ("reverse", rev)):
+        mm, pp, _h, _k = wham({w: br[w] for w in shared}, (10.0, 20.5, 105))
+        lo = basin(mm, pp, 10.5, 13.0)
+        hi = basin(mm, pp, 16.0, 19.5)
+        print(f"  {nm:<8} G(16-19.5) - G(10.5-13) = {hi-lo:+7.2f} kcal/mol")
+    print("  READ: a converged PMF is seed-independent. If the two disagree by more")
+    print("  than the half-split drift (§81a: 0.22 holo, 1.05 apo), the pull")
+    print("  direction is setting the answer.")
+    return float(np.abs(d).mean())
+
+
 def main():
     holo = load("holo")
     apo = load("apo")
     dh = report("HOLO (WT + ABA)", holo)
     da = report("APO  (WT)", apo)
+    for tag in ("holo", "apo"):
+        hysteresis(tag)
     print("\n" + "=" * 72)
     print("CALIBRATION VERDICT (README 59b)")
     print("=" * 72)
