@@ -1,0 +1,12 @@
+============================================================================
+CROSS-OVER on crystal poses -- ligand = mandi
+============================================================================
+   frame wt_mandi.pdb, params ligand matches its HETATM to 0.0000 A
+   4WVO -> frame on 696 backbone atoms, RMSD 0.53 A
+   WT PYR1      dG_bind  raw   1993.99   repack   1497.76   relax    -37.50
+   PYR1^MANDI   dG_bind  raw      6.85   repack     11.26   relax    -36.75
+
+   SELECTIVITY for mandi:  dG_bind(PYR1^MANDI) - dG_bind(WT)
+     raw      -1987.14 REU   quad should WIN (negative)  CORRECT
+     repack   -1486.51 REU   quad should WIN (negative)  CORRECT
+     relax       +0.75 REU   quad should WIN (negative)  WRONG

@@ -1,0 +1,12 @@
+============================================================================
+CROSS-OVER on crystal poses -- ligand = aba
+============================================================================
+   frame wt_aba.pdb, params ligand matches its HETATM to 0.0000 A
+   4WVO -> frame on 696 backbone atoms, RMSD 0.53 A
+   WT PYR1      dG_bind  raw    -26.67   repack    -23.93   relax    -67.14
+   PYR1^MANDI   dG_bind  raw    191.08   repack    -19.87   relax    -59.21
+
+   SELECTIVITY for aba:  dG_bind(PYR1^MANDI) - dG_bind(WT)
+     raw       +217.74 REU   WT should win (positive)    CORRECT
+     repack      +4.06 REU   WT should win (positive)    CORRECT
+     relax       +7.93 REU   WT should win (positive)    CORRECT

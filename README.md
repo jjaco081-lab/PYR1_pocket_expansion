@@ -2668,6 +2668,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 98 | 08-26 | our ligand-present failures could be sampling, scoring or both -- we never separated them | **it is SCORING.** Handed PYR1^MANDI's sequence and the crystal mandipropamid pose, FastRelax converges to the SAME conformation from the crystal rotamers and from a scrambled repack -- **max |A-B| = 0.035 A over 18 pocket positions** -- and that shared minimum sits **0.61 A from the crystal overall, 1.08 A at the four mutated positions** | sampling reaches the score's minimum reliably; the minimum is simply wrong. ⚠ Backbone frame mismatch does NOT explain it (Spearman(bb dev, sc RMSD) = **+0.13**), though K59's own backbone deviates 1.15 A so its number is partly frame. **No ligand-present run before this one tested structural recovery** -- §23j/§36/§37-42/§43-46 all asked for ranking or design (§76a-b) |
 | 99 | 08-26 | a ~1 A side-chain RMSD at the mutated positions is a modest modelling error | **it destroys the interaction.** ARG59-ligand contacts measured within one structure, so frame error cancels: crystal **NE-O2 2.64 A + NH1-O2 3.26 A (bidentate)** becomes **NH1-O2 2.78 A, NE-O2 3.96 A (monodentate)** after relax -- two H-bonds under 3.5 A become one | this refines §33b rather than contradicting it: the library never PROPOSES crystal Arg59's non-rotameric chi3, AND the score does not KEEP it when handed it. Same interaction ref2015 overcharged by +10.1 REU in §23j. **An iterative dock/relax/mutate loop converges on ref2015's fixed point, so more iterations cannot help -- only a better score can** (§76c-d) |
 | 100 | 08-26 | docking the ligand and relaxing it with the protein should beat the protein-only score | **it is at chance.** REAL vs LIBRARY goes **0.284 -> 0.471** pooled and **0.250 -> 0.504** n_sub-matched; only REAL vs WILD survives (0.117 -> 0.332). 670 variants, 40/40 chunks, zero failures | **the noise is 3-5x the signal**: sd of dG_bind among REAL sensors FOR THE SAME LIGAND is 1.4-5.2 REU (range to 16) against a between-set median difference of ~1 REU. dG_bind also tracks ligand SIZE (Spearman -0.39). Within-ligand AUC recovers to 0.417, still far off protein-only. Both pre-registered causes are demonstrated -- pose noise (one smina run per variant) AND §76's scoring defect -- and this test cannot apportion them. **The protein-only filter works BECAUSE it never touches the ligand** (§77) |
+| 101 | 08-26 | relaxing before scoring is harmless bookkeeping | **it destroys the discrimination.** On crystal poses the mandipropamid cross-over is correct at raw (**-1987 REU**) and repack (**-1487**) and WRONG after relax (**+0.75**). WT+mandipropamid starts at **+1994 REU** -- F108 is 0.62 A from a ligand atom -- and relax drives it to **-37.5**, indistinguishable from the real sensor | relaxation lets the wild-type pocket make room for a ligand it cannot accommodate; §37b's "relaxation absorbs the clash it exists to relieve" now shown for the whole cross-over. The ABA arm is correct at all three protocols (§78a) |
+| 102 | 08-26 | getting the cross-over right means the score sees complementarity | **it sees one clash.** Single-mutant decomposition: **F108A alone is 99.8 % of the quad's repack signal (-1478.81 of -1481.50)**; F159L is -0.02 after repack, V81I +0.82, and **K59R -3.47 (0.23 %)** | the "success" is a steric collision that §32a already detected geometrically with no energy function, naming F108 (2.78 A) and F159 (1.42 A) unprompted. An unrelaxed score is a clash detector, and we had a cheaper one. K59R stays invisible, though at the right sign and above §69's 1.34 REU replicate noise (§78b) |
 
 ### Bugs caught before they cost anything
 
@@ -8764,3 +8766,70 @@ not a plan.
 **What survives is the protein-only filter** (§67, §69): AUC 0.250 n_sub-matched,
 ~2× at 90 % sensor retention, in both the coumarin and PFAS regimes. It works
 *because* it never touches the ligand, and so never incurs the pose noise.
+
+---
+
+## 78. The score gets the cross-over right on crystal poses — and relax destroys it (2026-08-26)
+
+Jannis: does it work when we hand it the right pose, and what if we skip the relax?
+`scripts/134_crystal_crossover.py`. A receptor × ligand cross-over so the diagonal
+must win in **both** directions — getting one right is easy for the wrong reason
+(a mutant pocket is emptier), getting both means complementarity rather than a size
+artefact. All four cells built identically in the stage-1 frame, so none is a
+crystal while another is a model.
+
+### 78a. Right at raw and repack, wrong after relax
+
+`dG_bind = E(complex) − E(protein) − E(ligand)`, same protocol per row:
+
+| cell | raw | repack | relax |
+|---|---|---|---|
+| WT + mandipropamid | **+1994.0** | +1497.8 | −37.5 |
+| PYR1^MANDI + mandipropamid | +6.9 | +11.3 | −36.8 |
+| WT + ABA | −26.7 | −23.9 | −67.1 |
+| PYR1^MANDI + ABA | +191.1 | −19.9 | −59.2 |
+
+| selectivity | raw | repack | relax |
+|---|---|---|---|
+| mandipropamid (quad should win) | **−1987** ✅ | **−1487** ✅ | **+0.8 ❌** |
+| ABA (WT should win) | **+218** ✅ | **+4.1** ✅ | +7.9 ✅ |
+
+**Jannis's hypothesis is confirmed: relaxation destroys the mandipropamid signal.**
+WT + mandipropamid starts at +1994 REU — F108 sits 0.62 Å from a ligand heavy atom
+(§46c) — and relax drives it to **−37.5**, indistinguishable from the real sensor.
+Relaxation lets the wild-type pocket make room for a ligand it cannot actually
+accommodate. That is §37b's "F108A comes out NULL because relaxation absorbs the
+clash it exists to relieve", now shown for the whole cross-over.
+
+### 78b. ⚠ But the signal is one clash, not complementarity
+
+Single-mutant decomposition against WT, same crystal pose:
+
+| variant | Δ(raw) | Δ(repack) |
+|---|---|---|
+| K59R | +0.39 | **−3.47** |
+| V81I | −19.91 | +0.82 |
+| **F108A** | **−1751.08** | **−1478.81** |
+| F159L | −216.54 | −0.02 |
+| quad | −1987.14 | −1481.50 |
+
+**F108A alone is 99.8 % of the quad's repack signal. K59R is 0.23 % of it.**
+F159L, worth −217 raw, vanishes to −0.02 once side chains repack.
+
+So the cross-over "success" is a single steric collision — the same thing §32a
+detected geometrically without any energy function, which named F108 (2.78 Å) and
+F159 (1.42 Å) unprompted. **The score is not seeing complementarity; it is seeing
+that phenylalanine does not fit.** K59R, the substitution every method has missed,
+is still invisible: −3.47 REU against F108's −1479, though it is at least the right
+sign and above §69's 1.34 REU replicate noise.
+
+### 78c. What this changes
+
+- **Do not relax before scoring for discrimination.** The information lives in the
+  unrelieved clash, and relax is very good at relieving it.
+- **But an unrelaxed score is a clash detector**, and we already had one that is
+  cheaper and needs no energy function at all (§32).
+- The honest scope is unchanged from §68: shape gets recovered, chemistry does not.
+
+⚠ Cosmetic defect in the decomposition output: the label prints the first letter of
+the three-letter code, so K59**R** appears as "59A" (ARG). Values are correct.
