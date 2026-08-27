@@ -2672,6 +2672,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 102 | 08-26 | getting the cross-over right means the score sees complementarity | **it sees one clash.** Single-mutant decomposition: **F108A alone is 99.8 % of the quad's repack signal (-1478.81 of -1481.50)**; F159L is -0.02 after repack, V81I +0.82, and **K59R -3.47 (0.23 %)** | the "success" is a steric collision that §32a already detected geometrically with no energy function, naming F108 (2.78 A) and F159 (1.42 A) unprompted. An unrelaxed score is a clash detector, and we had a cheaper one. K59R stays invisible, though at the right sign and above §69's 1.34 REU replicate noise (§78b) |
 | 103 | 08-26 | the cross-over result might be specific to PYR1/mandipropamid | **it reproduces in PYL2.** A 2x2 inside one system (7MWN WIN sensor, 3KDI wild-type + ABA, same numbering) is **correct in all six cells** -- WIN -46.00/-2.44/-1.44, ABA -35.83/-0.67/-2.83 -- and each column is again carried by ONE substitution: **Q64K is 98.6 % of the WIN signal, V166I is all of the ABA signal** | ⚠ **3KDJ is PYL1 + ABI1, not PYL2** (27 % identity, numbered 31-209); using it would have mutated R64/I165/W166 and returned a confident cross-over on the wrong protein. 7MWN's deposited record independently confirms `K64Q, F165A, V166I`. K64 is visible where PYR1's K59 was not **because it CLASHES with WIN** (K59 sits 2.86 A from mandipropamid and does not) (§79a) |
 | 104 | 08-26 | ref2015 balances several terms when it discriminates a sensor | **it is ONE term.** Per-term WT-minus-sensor: raw **fa_rep 1995.12 = 100.4 %** of the total, repack **1484.69 = 100.2 %**; fa_atr, fa_sol, fa_elec and hbond_sc contribute nothing and **fa_atr/fa_elec point the WRONG way**. After relax fa_rep falls 1995 -> **1.76** and the residual cancels to **-0.04 REU** | **FastRelax does not overpack, it OVER-RELIEVES** -- WT+mandipropamid goes +1994 -> -37.5, a structure that cannot exist. The score is a **clash detector with a working sign and no usable magnitude**: right when a collision exists, silent when none does, and empty once the structure is physical. Same boundary §32 reached geometrically, now confirmed term by term on 2 receptors and 4 cells (§79b-c) |
+| 105 | 08-27 | with real structures in hand, a structural or confidence metric will rank sensor quality | **none does.** 590 Boltz-2 sensor structures over 172 ligands, correlated with measured min_conc: within-ligand rho is **-0.030 (confidence), -0.084 (ligand_iPTM), -0.029 (contacts), +0.089 (H-bonds), +0.061 (burial)** -- chance is 21.5/43 ligands and every descriptor sits on it, with H-bonds and burial pointing the WRONG way. The only strong pooled correlate is **ligand size (-0.246)**, a confound | ⚠ but the task is harder than §69's: these are all WORKING sensors, so this ranks potency AMONG POSITIVES rather than separating positives from random variants, and the label is only 3 levels. Poses are fine (0.49-0.66 A on 4WVO) -- **confidence does not know about binding** (WT+mandipropamid, which cannot bind, scores ligand_iPTM 0.97); seed spread separates 4.9x better (0.35 vs 1.70 A). Mapping recovered from the CIFs themselves: **637 of 718 uniquely resolved** (§80) |
 
 ### Bugs caught before they cost anything
 
@@ -8912,3 +8913,92 @@ away destroys the measurement.
 
 That is the same boundary §32 reached geometrically with no energy function at all,
 now confirmed term by term, on two receptors, two ligand classes and four cells.
+
+---
+
+## 80. 718 Boltz-2 sensor structures: good poses, no potency signal (2026-08-27)
+
+Jannis supplied `boltz_predictions_719sensors.zip` — Boltz-2 co-folded models of the
+Tian sensors, June 2025, **one seed each**. This is the structural dataset §79
+said we lacked, and it changes what can be tested.
+
+### 80a. Recovering the mapping
+
+The archive carries no input manifest, so sensor identity was recovered from the
+CIFs themselves: the consensus over all 718 sequences reproduces wild-type PYR1
+exactly (191 aa + an `SGDGSGSQVT` linker), each structure's substitutions follow by
+diff, and the ligand is identified by heavy-atom count.
+
+| | |
+|---|---|
+| structures extracted | **718** (1,436 files; MSAs left in the archive) |
+| matched to an sd03/sd07/sd09 clone by substitution set | **701** |
+| **uniquely resolved** (substitution set **+** ligand heavy-atom count) | **637** |
+| distinct ligands | **185** |
+| with a measured potency | **590** (1 µM: 55, 10 µM: 257, 100 µM: 278) |
+
+⚠ 57 remained ambiguous (one substitution set used for several ligands of the same
+size) and 24 had no size match. Both are dropped rather than guessed.
+
+### 80b. The poses are good — where we can check them
+
+From §55a's co-folding run, against crystals:
+
+| system | ligand RMSD | ligand_iPTM | seed spread (5 models) |
+|---|---|---|---|
+| PYR1^MANDI + mandipropamid | **0.49–0.66 Å** | 0.985–0.988 | **0.35 Å** |
+| WT PYR1 + ABA | 0.72–1.19 Å | 0.937–0.954 | 0.91 Å |
+| **WT PYR1 + mandipropamid** (cannot bind) | 1.28–1.63 Å | 0.963–0.976 | **1.70 Å** |
+
+Sub-Ångström on the real complex — far better than the smina poses whose noise
+destroyed §77. **But confidence does not know about binding**: wild-type PYR1 +
+mandipropamid, a complex that does not form, scores ligand_iPTM **0.97**. Seed
+spread separates them 4.9× better than confidence does (0.35 vs 1.70 Å), matching
+the binder project's finding that iPTM reproduces while the pose may not.
+
+⚠ 4WVO and 3K3K are both in the PDB and so in training; the one case that is not
+(WT + mandipropamid) looks like 4WVO's mode copied onto the wild-type sequence.
+These are not clean tests.
+
+### 80c. ⚠ Nothing structural predicts potency — 590 sensors, 172 ligands
+
+Spearman against measured min_conc (lower = better sensor). "Within-ligand" removes
+ligand identity by correlating only inside each ligand's own sensor set (43 ligands
+with ≥ 4 sensors and potency variation, 328 sensors):
+
+| metric | pooled ρ | within-ligand ρ | ligands in the right direction |
+|---|---|---|---|
+| Boltz confidence | −0.019 | −0.030 | 20/43 |
+| ligand_iPTM | −0.112 | −0.084 | 23/43 |
+| complex_pLDDT | +0.009 | −0.047 | 20/43 |
+| protein–ligand contacts | −0.145 | −0.029 | 22/43 |
+| polar contacts (H-bond proxy) | +0.024 | **+0.089** | 13/43 |
+| buried fraction | +0.117 | **+0.061** | 13/43 |
+| max / summed VdW overlap | −0.012 / −0.029 | −0.006 / −0.047 | 20/43, 22/43 |
+| **ligand heavy atoms** | **−0.246** (p 2×10⁻⁹) | — | — |
+
+**Chance is 21.5/43.** Every descriptor sits on it, and the two most chemically
+meaningful — hydrogen bonds and burial — point the **wrong way**. The only strong
+pooled correlate is **ligand size**, which is a confound, not a design signal, and
+it explains most of the pooled numbers that look non-zero.
+
+### 80d. What this does and does not close
+
+It does **not** say the structures are wrong — poses validate at 0.5 Å where a
+crystal exists. It says that **given good structures, neither co-folding confidence
+nor simple structural descriptors rank sensor potency.**
+
+Two caveats that matter for how hard to read it:
+
+- **The task here is harder than the one our filter does.** These 590 are all
+  *working sensors*; ranking potency *among positives* is a different and harder
+  problem than separating positives from random library members, which §69 does at
+  AUC 0.25. A null here does not overturn §69.
+- **The label is coarse** — three levels (1/10/100 µM) from a round-1 screen, and
+  many ligands have little potency variation among their sensors.
+
+**The decisive experiment this dataset finally makes possible** is the one §79 said
+we could not run: co-fold a matched set of *random library variants* — non-sensors —
+and repeat §69's discrimination test with Boltz poses instead of smina poses. That
+separates "the poses were too poor" from "the score cannot see it", which §77 could
+not apportion. It needs GPU time and 300–600 co-folding runs.

@@ -206,3 +206,13 @@ data/umbrella_arms/**/*.pdb
 data/umbrella_arms/**/*.log
 data/umbrella_arms/**/*.in
 data/umbrella_arms/**/*.template
+
+# Boltz-2 co-folded sensor structures (~81 MB extracted, 682 MB archive).
+# Supplied by Jannis 2026-08-27; re-extract with:
+#   unzip -j boltz_predictions_719sensors.zip "*/predictions/*/*.cif" \
+#            "*/predictions/*/confidence_*.json" -d boltz719/
+# The DERIVED mapping and descriptors are small and ARE tracked, because
+# recovering them needs the sd03/sd07/sd09 sheets and the consensus-sequence
+# trick in README 80a.
+data/structures/boltz719/
+data/structures/*.zip
