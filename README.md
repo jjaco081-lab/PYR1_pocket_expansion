@@ -2665,6 +2665,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 95 | 08-26 | PFAS has 43x headroom because its library includes residues that turned out useless | **no -- only 4 of 45 offered substitutions are never used (9 %), and for coumarin it is 0 of 23.** Both libraries are well utilised. The driver is that size is EXPONENTIAL in positions: PFAS offers **3.46 substitutions/position where its winners need 1.92**, over 13 positions (ratio 1.53), against coumarin's **2.09 -> 1.64** over 11 (ratio 1.17); 1.53^13 ~ 244 vs 1.17^11 ~ 6 | hedging by ~1.5 residues per position is invisible locally and enormous globally. The lever with the most to gain is therefore **trimming per-position depth**, which is what a residue-ranking step does (§74b) |
 | 96 | 08-26 | with a fixed pocket and ~1,150 labelled clones, a model could output a few candidate SEQUENCES per ligand | **the target does not exist.** Sensors for the SAME ligand share only **Jaccard 0.45**, there is exactly **1 identical pair** among all within-ligand pairs, and one ligand's own sensors span **10-16 distinct substitutions over 8-11 positions**. Each ligand has a MANIFOLD of solutions, not an answer | the correct output is a **library, not a shortlist** -- a property of the biology, not of our methods. Constructively, the **core IS predictable**: V163W is in every sensor for **10 of 11** ligands. Per-ligand LOLO, our designed library contains a hit for **9/11 at 69,120**, against an oracle of 32 for one known sensor but **10^3-10^4 to cover the solution union** -- so the realistic remaining prize is **10-50x, not 2,000x** (§75a-b) |
 | 97 | 08-26 | the Baker NTF2 result argues that ligand->sequence design is out of reach | **their hard problem is the one we do not have.** They built >10,000 novel backbones and docked into pockets that did not exist: 54,500 oligos, **0.36 %** hit rate, cortisol **1 hit from 630**. We change side chains in a backbone that already folds, binds and transduces, and read out by GROWTH SELECTION | **screening 10^5 PYR1 variants is one flask; 10^5 novel backbones is a campaign.** Library size is therefore NOT our scarce resource (Y2H handles 10^6-10^7), so shrinking 69,120 to 5,000 buys little. ⚠ The real risk is whether a NOVEL chemotype has any solution in the 144-substitution vocabulary at all -- which is what the sealed prospective test probes (§75c-d) |
+| 98 | 08-26 | our ligand-present failures could be sampling, scoring or both -- we never separated them | **it is SCORING.** Handed PYR1^MANDI's sequence and the crystal mandipropamid pose, FastRelax converges to the SAME conformation from the crystal rotamers and from a scrambled repack -- **max |A-B| = 0.035 A over 18 pocket positions** -- and that shared minimum sits **0.61 A from the crystal overall, 1.08 A at the four mutated positions** | sampling reaches the score's minimum reliably; the minimum is simply wrong. ⚠ Backbone frame mismatch does NOT explain it (Spearman(bb dev, sc RMSD) = **+0.13**), though K59's own backbone deviates 1.15 A so its number is partly frame. **No ligand-present run before this one tested structural recovery** -- §23j/§36/§37-42/§43-46 all asked for ranking or design (§76a-b) |
+| 99 | 08-26 | a ~1 A side-chain RMSD at the mutated positions is a modest modelling error | **it destroys the interaction.** ARG59-ligand contacts measured within one structure, so frame error cancels: crystal **NE-O2 2.64 A + NH1-O2 3.26 A (bidentate)** becomes **NH1-O2 2.78 A, NE-O2 3.96 A (monodentate)** after relax -- two H-bonds under 3.5 A become one | this refines §33b rather than contradicting it: the library never PROPOSES crystal Arg59's non-rotameric chi3, AND the score does not KEEP it when handed it. Same interaction ref2015 overcharged by +10.1 REU in §23j. **An iterative dock/relax/mutate loop converges on ref2015's fixed point, so more iterations cannot help -- only a better score can** (§76c-d) |
 
 ### Bugs caught before they cost anything
 
@@ -8608,3 +8610,88 @@ round 1 already explored (§63a). Nothing here shows that a genuinely novel
 chemotype has *any* solution in that vocabulary. That — not shortlist length — is
 what would sink a prospective target, and it is what §48d's sealed prospective
 test was designed to probe.
+
+---
+
+## 76. FastRelax reproduces the pocket but breaks the salt bridge — it is SCORING (2026-08-26)
+
+Jannis asked the question none of the ligand-present runs had asked: **does relax
+reproduce the experimental pocket when handed the right sequence and ligand?** If
+it does, our failures are in ranking, not modelling; if it does not, the problem is
+the score and an iterative dock/relax/mutate loop would just converge on the wrong
+answer faster. `scripts/133_relax_vs_crystal.py`.
+
+Every previous ligand-present protocol asked the protocol to *rank* or *design* —
+FastDesign (§23j), coupled moves (§36), MM-GBSA (§37–42), TI (§43–46). **None
+tested structural recovery.** §67/§69's FastRelax was protein-only by construction.
+
+### 76a. Design
+
+PYR1^MANDI in the stage-1 frame (4WVO's four substitutions, its side chains
+transplanted after a 696-atom backbone superposition at 0.53 Å), with the crystal
+mandipropamid pose — `stage1/params/3UZ_0001.pdb` matches `wt_mandi.pdb`'s 3UZ to
+**0.0000 Å**, so it *is* the crystal ligand in params-compatible naming.
+
+| arm | start | asks |
+|---|---|---|
+| **A** | crystal rotamers | do they **stay**? → scoring |
+| **B** | repacked from scratch | do they **reach** it? → sampling |
+
+### 76b. Relax converges to one minimum, and it is not the crystal
+
+| | mean over 18 pocket positions | the four mutated |
+|---|---|---|
+| A (from crystal, relaxed) | **0.61 Å** | **1.08 Å** |
+| B (repacked, relaxed) | **0.61 Å** | **1.07 Å** |
+
+**Maximum |A − B| across all 18 positions: 0.035 Å.** Relax finds the *same*
+conformation whether started at the crystal or from a scrambled repack. B's start
+was genuinely scrambled (L159 at 2.88 Å, N167 at 1.58 Å before relax) and still
+converged to A.
+
+So **sampling is not the bottleneck** for reaching the score's minimum — and that
+minimum sits 0.6 Å from the crystal overall, 1.1 Å at the positions we care about.
+
+⚠ **Control: backbone frame mismatch does not explain it.** Spearman(per-residue
+backbone deviation, side-chain RMSD) = **+0.13**. L117 has 0.24 Å backbone
+deviation and 1.50 Å side-chain error; I110 has 0.53 Å backbone and 0.26 Å side
+chain. The one position where the caveat does bite is **K59 itself** (backbone
+deviation 1.15 Å, the largest in the set), so its 1.22 Å is partly frame.
+
+### 76c. The mechanism: bidentate becomes monodentate
+
+The RMSD understates what is lost. ARG59 → ligand polar contacts, measured **within
+one structure** so the frame mismatch cancels:
+
+| | contacts |
+|---|---|
+| crystal (transplanted) | **NE–O2 2.64 Å, NH1–O2 3.26 Å** — bidentate |
+| after FastRelax | NH1–O2 2.78 Å, **NE–O2 3.96 Å** — monodentate |
+
+Two H-bonds under 3.5 Å become one. The crystal geometry reproduces §33a exactly
+(2.64 / 3.26 Å), and **ref2015 walks away from it.**
+
+### 76d. What this settles
+
+> **It is the score, not the sampling.** Relax converges reliably to a well-defined
+> minimum from any start; that minimum discards the bidentate guanidinium
+> interaction the real sensor uses.
+
+This refines rather than contradicts §33b. That section found crystal Arg59's
+χ3 ≈ 100° is non-rotameric so the library never *proposes* it — true, and now we
+know the deeper problem: **even handed the answer, the score does not keep it.**
+Both failures point at the same interaction, and both are consistent with §23j,
+where ref2015 saw the K59 salt bridge and overcharged its desolvation by +10.1 REU.
+
+**Consequences for the iterative loop (§76's originating question):** iterating
+dock → relax → mutate with ref2015 converges on ref2015's preferred pocket, which
+is the wrong one at exactly the positions that distinguish a sensor. Adding more
+iterations cannot fix a fixed point. What would help is the score.
+
+**And a general score may not suffice.** §68c measured that ref2015 prefers GROW
+over SHRINK (β +0.43 vs +1.75), and §69c that the required direction **flips with
+ligand size** (Spearman(ligand heavy atoms, ΔVolume used) = −0.30). A single
+global reweighting cannot satisfy both regimes, so the tractable form is
+**class-conditioned** weights — binned by ligand size and polarity — rather than
+one PYR1 function. The data supports ~208 independent ligands (§55b), which is
+enough for a handful of parameters per bin and not enough for a general model.

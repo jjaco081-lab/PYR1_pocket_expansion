@@ -1,0 +1,36 @@
+==============================================================================
+0. FRAME AND IDENTITY
+==============================================================================
+   stage-1 frame: 179 residues
+   params ligand matches wt_mandi's 3UZ to 0.0000 A -- it IS the crystal pose
+   4WVO -> frame: 696 backbone atoms, RMSD 0.53 A
+   mutations confirmed in 4WVO: 59R, 81I, 108A, 159L
+   pose built: 180 residues incl. ligand
+   all four mutations present in the pose
+   relaxable shell: 57 residues, ligand free
+
+==============================================================================
+RESULT: side-chain heavy-atom RMSD to the crystal conformation
+==============================================================================
+   pos   res    A: from xtal  B: repacked   B relaxed
+   59    ARG            1.22         1.19        1.22  <-- PYR1^MANDI
+   81    ILE            1.22         0.99        1.21  <-- PYR1^MANDI
+   83    VAL            0.32         0.33        0.32
+   87    LEU            0.83         0.43        0.83
+   89    ALA            0.22         0.02        0.22
+   92    SER            0.30         0.08        0.30
+   94    GLU            1.15         0.63        1.15
+   108   ALA            0.95         0.57        0.95  <-- PYR1^MANDI
+   110   ILE            0.26         0.14        0.26
+   117   LEU            1.50         1.65        1.50
+   120   TYR            0.12         0.17        0.11
+   122   SER            0.38         0.16        0.38
+   141   GLU            0.67         0.63        0.67
+   159   LEU            0.91         2.88        0.90  <-- PYR1^MANDI
+   160   ALA            0.18         0.06        0.19
+   163   VAL            0.38         0.14        0.39
+   164   VAL            0.17         0.16        0.14
+   167   ASN            0.16         1.58        0.17
+
+   mean over all 18 pocket positions:  A 0.61   B 0.61
+   mean over the four mutated positions:  A 1.08   B 1.07
