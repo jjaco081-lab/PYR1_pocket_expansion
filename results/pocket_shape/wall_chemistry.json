@@ -1,0 +1,51 @@
+{
+ "part_a": {
+  "pyr1": {
+   "n": 24,
+   "aliphatic": 11,
+   "aromatic": 4,
+   "polar": 6,
+   "basic": 1,
+   "acidic": 2,
+   "charge": -1,
+   "hydropathy": 0.81,
+   "hbd": 8,
+   "hba": 11
+  },
+  "3oquB00": {
+   "n": 32,
+   "aliphatic": 17,
+   "aromatic": 4,
+   "polar": 6,
+   "basic": 3,
+   "acidic": 2,
+   "charge": 1,
+   "hydropathy": 0.95,
+   "hbd": 15,
+   "hba": 12
+  },
+  "extra_positions": [
+   48,
+   49,
+   51,
+   52,
+   55,
+   58,
+   79,
+   90,
+   106,
+   107,
+   124
+  ]
+ },
+ "part_b": {
+  "G_lib": {
+   "subset_of_wall": true,
+   "n": 18
+  },
+  "G_hit": {
+   "subset_of_wall": true,
+   "n": 18
+  }
+ }
+}
