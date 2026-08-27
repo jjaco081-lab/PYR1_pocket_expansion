@@ -1,0 +1,73 @@
+PYR1 frame wt_aba.pdb: 179 residues, wall identities KREFYE at [59, 79, 94, 108, 120, 141] CONFIRMED; A8S stripped for the cavity
+P-SEA validation: PYR1 grip helix 160-178 called 100% helix
+  2pcsA00: cavity 570 A^3, 45 lining
+  2ns9B01: cavity 455 A^3, 41 lining
+  2bk0A00: cavity 344 A^3, 39 lining
+  6awvC00: cavity 319 A^3, 47 lining
+  3qrzA00: cavity 210 A^3, 30 lining
+  3tfzE00: cavity 207 A^3, 27 lining
+  4xrwA02: cavity 204 A^3, 20 lining
+  3oquB00: cavity 204 A^3, 32 lining
+  2flhA00: cavity 167 A^3, 23 lining
+  3oh8A01: cavity 162 A^3, 28 lining
+  4dsbB00: cavity 162 A^3, 24 lining
+  1z94E00: cavity 156 A^3, 28 lining
+  4n3eY00: cavity 141 A^3, 26 lining
+  4xrtB02: cavity 137 A^3, 23 lining
+  5nonC00: cavity 137 A^3, 24 lining
+  2resA00: cavity 135 A^3, 22 lining
+  3p51A00: cavity 124 A^3, 26 lining
+  4xrwA01: cavity 118 A^3, 21 lining
+  3qrzB00: cavity 104 A^3, 26 lining
+
+================================================================================================
+ENVELOPE vs FILL -- is the pocket small because of the fold, or the side chains?
+================================================================================================
+structure   cavity  envelope   fill   polyGly  lin  bbOnly      L1   L2   L3  elong
+2PCS_A         570      4870   0.88        12   45      10    21.5 12.4 11.1   1.93
+2NS9_B         455      4136   0.89        90   41       6    20.8 11.9  7.6   2.72
+2BK0_A         344      4225   0.92         0   39       1    19.0 14.6 10.8   1.75
+6AWV_C         319      5018   0.94        10   47      11    20.8 16.8  9.6   2.17
+3QRZ_A         210      2508   0.92         2   30       5    14.5  9.6  7.8   1.85
+3TFZ_E         207      2117   0.90       407   27       0    15.8 10.0  6.9   2.28
+4XRW_A         204      1771   0.89       532   20       1    12.7  9.7  6.8   1.88
+3OQU_B         204      2676   0.92       448   32       6    16.3  9.7  8.4   1.95
+2FLH_A         167      1988   0.92       322   23       0    13.5  7.8  6.3   2.15
+PYR1           165      1873   0.91         3   24       2    11.6  9.0  7.5   1.55
+3OH8_A         162      2726   0.94       220   28       4    16.9 10.3  5.7   2.94
+4DSB_B         162      1800   0.91       293   24       2     9.7  9.1  8.4   1.15
+1Z94_E         156      3117   0.95         2   28       5    16.6 11.1  9.4   1.77
+4N3E_Y         141      2066   0.93        71   26       4    17.3  8.1  5.5   3.15
+4XRT_B         137      2139   0.94       340   23       0    14.7  8.2  6.6   2.22
+5NON_C         137      2230   0.94       248   24       0    14.7  9.9  5.8   2.53
+2RES_A         135      1998   0.93       511   22       2    11.3  9.7  6.2   1.83
+3P51_A         124      2330   0.95         3   26       8    10.9 10.8  5.2   2.12
+4XRW_A         118      1870   0.94       197   21       1    11.0  9.3  6.9   1.59
+3QRZ_B         104      2120   0.95       100   26       4    12.2 11.2  7.2   1.69
+
+================================================================================================
+WALL COMPOSITION -- lining residues by chemical class, and by secondary structure
+================================================================================================
+structure   alip  arom  polar  basic  acid     helix sheet  loop   lining sequence
+2PCS_A        31     8      3      0     3        14    27     4   LLMLCIMLYALIVYDAIVYLVGEGFVAEGILYTYSAVVLVALIFF
+2NS9_B        27    10      2      2     0        15    21     5   VYFLFAFFILLLLARVAFVGRGSTLFLFVWFVALLAMIVIV
+2BK0_A        23     7      7      1     1        12    21     6   HVLLFVVDLAYVKILIMLIFYVIINVCTAFIYANQNLFL
+6AWV_C        23     7      4      6     7        18    26     3   DEIYMADTVVKLIEIHVYAYYVVAPIFETKLGKLTLYELKGKKGELF
+3QRZ_A        14     5      6      3     2         5    14    11   VRFPVYKNFIRVMVSEIFVHLYSTEVIVNL
+3TFZ_E        14     5      6      1     1         7    16     4   VYFPTVLVVNWSRIYQAVMWLHLVVND
+4XRW_A         5     3     10      1     1         6    12     2   WLHLMTTESRYQHWHALNST
+3OQU_B        17     4      6      3     2        11    15     6   LVRFPYKFVRVVLATTSELGIIHLYSLEVLIN
+2FLH_A        10     7      5      0     1         9    11     3   LFVLIVLFFQEIILVYYTFTSTY
+PYR1          11     4      6      1     2         5    12     7   KHFIVVLPATSEFIHLYSEFAVVN
+3OH8_A        11     6      8      2     1        11    14     3   WHAVLTPILLGTTFWARHFDLWHHTLFR
+4DSB_B        11     4      6      2     1         6    11     7   PKHFIRVVLATSEFVHLYSFVVVN
+1Z94_E         8     9      6      2     3         8    18     2   FLLWLPCKVEHYKEFFYYDFTQIPCGWS
+4N3E_Y        12     6      2      3     3        10    15     1   IKEESLFLVRYYVLSKGIVYVGEAYY
+4XRT_B         7     5     10      1     0         8    11     4   WHVFMTTSRYQPLHWHYLVLNSN
+5NON_C        14     7      0      1     2        10    12     2   YLALLFLMFPYEFKVMYYDIPLAM
+2RES_A         5     8      7      1     1         6    10     6   WFEYFLWSAHRFMNLWWQLTTN
+3P51_A        12     8      2      1     3         7    11     8   VFLIRLFLDYSDEGVIYWWAVYNVYL
+4XRW_A         7     5      7      1     1         7    13     1   VWFPTIAWSRFHQMWLHVNSE
+3QRZ_B        10     5      7      2     2         7    16     3   KNFIRVVVSSEFVHLYSEYVTFVIVN
+
+written to /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/pocket_shape/pocket_shape.json
