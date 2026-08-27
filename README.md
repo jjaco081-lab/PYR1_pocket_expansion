@@ -2667,6 +2667,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 97 | 08-26 | the Baker NTF2 result argues that ligand->sequence design is out of reach | **their hard problem is the one we do not have.** They built >10,000 novel backbones and docked into pockets that did not exist: 54,500 oligos, **0.36 %** hit rate, cortisol **1 hit from 630**. We change side chains in a backbone that already folds, binds and transduces, and read out by GROWTH SELECTION | **screening 10^5 PYR1 variants is one flask; 10^5 novel backbones is a campaign.** Library size is therefore NOT our scarce resource (Y2H handles 10^6-10^7), so shrinking 69,120 to 5,000 buys little. ⚠ The real risk is whether a NOVEL chemotype has any solution in the 144-substitution vocabulary at all -- which is what the sealed prospective test probes (§75c-d) |
 | 98 | 08-26 | our ligand-present failures could be sampling, scoring or both -- we never separated them | **it is SCORING.** Handed PYR1^MANDI's sequence and the crystal mandipropamid pose, FastRelax converges to the SAME conformation from the crystal rotamers and from a scrambled repack -- **max |A-B| = 0.035 A over 18 pocket positions** -- and that shared minimum sits **0.61 A from the crystal overall, 1.08 A at the four mutated positions** | sampling reaches the score's minimum reliably; the minimum is simply wrong. ⚠ Backbone frame mismatch does NOT explain it (Spearman(bb dev, sc RMSD) = **+0.13**), though K59's own backbone deviates 1.15 A so its number is partly frame. **No ligand-present run before this one tested structural recovery** -- §23j/§36/§37-42/§43-46 all asked for ranking or design (§76a-b) |
 | 99 | 08-26 | a ~1 A side-chain RMSD at the mutated positions is a modest modelling error | **it destroys the interaction.** ARG59-ligand contacts measured within one structure, so frame error cancels: crystal **NE-O2 2.64 A + NH1-O2 3.26 A (bidentate)** becomes **NH1-O2 2.78 A, NE-O2 3.96 A (monodentate)** after relax -- two H-bonds under 3.5 A become one | this refines §33b rather than contradicting it: the library never PROPOSES crystal Arg59's non-rotameric chi3, AND the score does not KEEP it when handed it. Same interaction ref2015 overcharged by +10.1 REU in §23j. **An iterative dock/relax/mutate loop converges on ref2015's fixed point, so more iterations cannot help -- only a better score can** (§76c-d) |
+| 100 | 08-26 | docking the ligand and relaxing it with the protein should beat the protein-only score | **it is at chance.** REAL vs LIBRARY goes **0.284 -> 0.471** pooled and **0.250 -> 0.504** n_sub-matched; only REAL vs WILD survives (0.117 -> 0.332). 670 variants, 40/40 chunks, zero failures | **the noise is 3-5x the signal**: sd of dG_bind among REAL sensors FOR THE SAME LIGAND is 1.4-5.2 REU (range to 16) against a between-set median difference of ~1 REU. dG_bind also tracks ligand SIZE (Spearman -0.39). Within-ligand AUC recovers to 0.417, still far off protein-only. Both pre-registered causes are demonstrated -- pose noise (one smina run per variant) AND §76's scoring defect -- and this test cannot apportion them. **The protein-only filter works BECAUSE it never touches the ligand** (§77) |
 
 ### Bugs caught before they cost anything
 
@@ -8695,3 +8696,71 @@ global reweighting cannot satisfy both regimes, so the tractable form is
 **class-conditioned** weights — binned by ligand size and polarity — rather than
 one PYR1 function. The data supports ~208 independent ligands (§55b), which is
 enough for a handful of parameters per bin and not enough for a general model.
+
+---
+
+## 77. Ligand-aware scoring is WORSE than protein-only (2026-08-26)
+
+The gate test from §76's originating question, run to completion: 670 variants,
+each with its cognate coumarin docked into the relaxed mutant pocket and protein +
+ligand relaxed jointly, scored `dG_bind = E(complex) − E(protein) − E(ligand)`.
+Job 27823020, 40/40 chunks, **zero failures**. `scripts/131_ligand_aware_score.py`.
+
+### 77a. Adding the ligand destroys the discrimination
+
+| comparison | protein-only (§69) | **ligand-aware** |
+|---|---|---|
+| REAL vs LIBRARY | **0.284** (p 2 × 10⁻⁸) | **0.471** (p 0.5) |
+| REAL vs LIBRARY, n_sub-matched | **0.250** | **0.504** |
+| REAL vs WILD | 0.117 (p 2 × 10⁻²³) | 0.332 (p 1 × 10⁻⁵) |
+
+**Exactly chance on the comparison that matters.** The score still separates REAL
+from WILD, so it is not pure noise — it can tell library residues from arbitrary
+ones. It cannot tell a working combination from a random one inside the library,
+which is the entire job.
+
+### 77b. Why — the noise is several times the signal
+
+| diagnostic | result |
+|---|---|
+| Spearman(ligand heavy atoms, dG_bind) | **−0.39** — partly measuring ligand size, not fit |
+| within-ligand AUC (ligand identity removed) | **0.417** weighted mean — better than pooled, still far off 0.250 |
+| sd of dG_bind among REAL sensors **for the same ligand** | **1.4 – 5.2 REU**, range to 16 REU |
+| between-set difference in median dG_bind | **~1 REU** (REAL −20.64 vs LIBRARY −19.72) |
+
+**The spread among sensors that all demonstrably work is three to five times the
+difference between sensors and random variants.** No amount of careful reading
+recovers a signal from that.
+
+Per-ligand AUC swings from 0.25 (methoxsalen, good) to **0.78 (citropten,
+backwards)** — consistent with a per-variant quantity dominated by pose noise
+rather than by fit.
+
+### 77c. The pre-registered ambiguity, and how far it can be resolved
+
+§131's header committed in advance that a null here would be ambiguous between
+"ligand-awareness adds nothing" and "the docking is too poor to tell". The
+diagnostics narrow it but do not close it:
+
+- **Docking noise is real and large** — one smina pose per variant, no replicates,
+  and the within-ligand spread is exactly what that predicts.
+- **§76's scoring defect is also real and independent** — handed the crystal
+  complex, relax breaks the bidentate ARG59 salt bridge into a monodentate one.
+
+So both candidate causes are demonstrated, and this experiment cannot apportion
+them. The cheap next test would be best-of-N docking (say 5 poses per variant,
+taking the lowest dG_bind), which would collapse the pose component and leave the
+scoring component exposed. **§76 makes the prior poor**: even with a perfect pose,
+the score walks away from the interaction that distinguishes the real sensor.
+
+### 77d. Where this leaves the loop
+
+An iterative dock → relax → mutate cycle is now doubly discouraged. §76 showed it
+converges on ref2015's fixed point, which is the wrong conformation at the mutated
+positions. §77 shows the ligand-aware objective it would optimise is **at chance**
+on the discrimination task. Iterating a noisy score toward a wrong fixed point is
+not a plan.
+
+**What survives is the protein-only filter** (§67, §69): AUC 0.250 n_sub-matched,
+~2× at 90 % sensor retention, in both the coumarin and PFAS regimes. It works
+*because* it never touches the ligand, and so never incurs the pose noise.

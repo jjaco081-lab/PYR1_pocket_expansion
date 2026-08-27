@@ -1,0 +1,17 @@
+============================================================================
+LIGAND-AWARE vs PROTEIN-ONLY  (AUC below 0.5 = REAL wins; lower score better)
+============================================================================
+   set          n   dG_bind median      p25      p75
+   REAL        70           -20.64   -22.98   -17.26
+   LIBRARY    300           -19.72   -23.72   -16.66
+   WILD       300           -17.41   -21.14   -14.56
+
+   comparison            protein-only (§69)    ligand-aware
+   REAL vs LIBRARY             0.284 (p 2e-08)    0.471 (p 5e-01)
+   REAL vs WILD                0.117 (p 2e-23)    0.332 (p 1e-05)
+
+   n_sub-MATCHED   protein-only 0.250   ligand-aware 0.504
+
+   ⚠ per §76 the score walks away from the crystal salt bridge, so a null
+     here cannot separate 'ligand-awareness adds nothing' from 'the score
+     is wrong about the interaction it would have to see'.
