@@ -2670,6 +2670,8 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 100 | 08-26 | docking the ligand and relaxing it with the protein should beat the protein-only score | **it is at chance.** REAL vs LIBRARY goes **0.284 -> 0.471** pooled and **0.250 -> 0.504** n_sub-matched; only REAL vs WILD survives (0.117 -> 0.332). 670 variants, 40/40 chunks, zero failures | **the noise is 3-5x the signal**: sd of dG_bind among REAL sensors FOR THE SAME LIGAND is 1.4-5.2 REU (range to 16) against a between-set median difference of ~1 REU. dG_bind also tracks ligand SIZE (Spearman -0.39). Within-ligand AUC recovers to 0.417, still far off protein-only. Both pre-registered causes are demonstrated -- pose noise (one smina run per variant) AND §76's scoring defect -- and this test cannot apportion them. **The protein-only filter works BECAUSE it never touches the ligand** (§77) |
 | 101 | 08-26 | relaxing before scoring is harmless bookkeeping | **it destroys the discrimination.** On crystal poses the mandipropamid cross-over is correct at raw (**-1987 REU**) and repack (**-1487**) and WRONG after relax (**+0.75**). WT+mandipropamid starts at **+1994 REU** -- F108 is 0.62 A from a ligand atom -- and relax drives it to **-37.5**, indistinguishable from the real sensor | relaxation lets the wild-type pocket make room for a ligand it cannot accommodate; §37b's "relaxation absorbs the clash it exists to relieve" now shown for the whole cross-over. The ABA arm is correct at all three protocols (§78a) |
 | 102 | 08-26 | getting the cross-over right means the score sees complementarity | **it sees one clash.** Single-mutant decomposition: **F108A alone is 99.8 % of the quad's repack signal (-1478.81 of -1481.50)**; F159L is -0.02 after repack, V81I +0.82, and **K59R -3.47 (0.23 %)** | the "success" is a steric collision that §32a already detected geometrically with no energy function, naming F108 (2.78 A) and F159 (1.42 A) unprompted. An unrelaxed score is a clash detector, and we had a cheaper one. K59R stays invisible, though at the right sign and above §69's 1.34 REU replicate noise (§78b) |
+| 103 | 08-26 | the cross-over result might be specific to PYR1/mandipropamid | **it reproduces in PYL2.** A 2x2 inside one system (7MWN WIN sensor, 3KDI wild-type + ABA, same numbering) is **correct in all six cells** -- WIN -46.00/-2.44/-1.44, ABA -35.83/-0.67/-2.83 -- and each column is again carried by ONE substitution: **Q64K is 98.6 % of the WIN signal, V166I is all of the ABA signal** | ⚠ **3KDJ is PYL1 + ABI1, not PYL2** (27 % identity, numbered 31-209); using it would have mutated R64/I165/W166 and returned a confident cross-over on the wrong protein. 7MWN's deposited record independently confirms `K64Q, F165A, V166I`. K64 is visible where PYR1's K59 was not **because it CLASHES with WIN** (K59 sits 2.86 A from mandipropamid and does not) (§79a) |
+| 104 | 08-26 | ref2015 balances several terms when it discriminates a sensor | **it is ONE term.** Per-term WT-minus-sensor: raw **fa_rep 1995.12 = 100.4 %** of the total, repack **1484.69 = 100.2 %**; fa_atr, fa_sol, fa_elec and hbond_sc contribute nothing and **fa_atr/fa_elec point the WRONG way**. After relax fa_rep falls 1995 -> **1.76** and the residual cancels to **-0.04 REU** | **FastRelax does not overpack, it OVER-RELIEVES** -- WT+mandipropamid goes +1994 -> -37.5, a structure that cannot exist. The score is a **clash detector with a working sign and no usable magnitude**: right when a collision exists, silent when none does, and empty once the structure is physical. Same boundary §32 reached geometrically, now confirmed term by term on 2 receptors and 4 cells (§79b-c) |
 
 ### Bugs caught before they cost anything
 
@@ -8833,3 +8835,80 @@ sign and above §69's 1.34 REU replicate noise.
 
 ⚠ Cosmetic defect in the decomposition output: the label prints the first letter of
 the three-letter code, so K59**R** appears as "59A" (ARG). Values are correct.
+
+---
+
+## 79. The 2×2 in PYL2, and where the signal actually lives (2026-08-26)
+
+Jannis supplied 7MWN (an engineered PYL2 WIN 55,212-2 sensor) and then a wild-type
+PYL2 + ABA control, which together give a receptor × ligand cross-over **inside one
+system with one numbering**. `scripts/135_win_crossover.py --system {win,aba}`.
+
+⚠ **3KDJ was rejected and would have been a silent wrong-receptor error.** It is
+**PYL1 + ABI1 + ABA**, not PYL2 — chain A is **27 % identical** to PYL2 and numbered
+31–209. Applying K64Q/F165A/V166I there would have mutated R64/I165/W166 and
+returned a confident cross-over on the wrong protein. **3KDI** is the right control:
+wild-type PYL2 + ABA, 181 residues 7–187, **zero gaps, 100 % identity, same
+numbering as 7MWN**. 7MWN's own deposited entity record independently confirms the
+mutation set: `'K64Q, F165A, V166I'` against UNP PYL2_ARATH O80992.
+
+### 79a. Six of six correct — and each on one substitution
+
+| column | expected winner | raw | repack | relax |
+|---|---|---|---|---|
+| WIN (7MWN) | sensor | **−46.00** ✅ | **−2.44** ✅ | **−1.44** ✅ |
+| ABA (3KDI) | wild-type | **−35.83** ✅ | **−0.67** ✅ | **−2.83** ✅ |
+
+The diagonal is right everywhere, including after relax — better than PYR1's
+mandipropamid arm, which flipped (§78a). But the decomposition repeats §78b's
+pattern exactly, at a different position each time:
+
+| WIN, revert one | raw | repack | | ABA, install one | raw | repack |
+|---|---|---|---|---|---|---|
+| **Q64K** | **+45.37** | +0.84 | | K64Q | −3.11 | −0.20 |
+| A165F | +0.23 | +0.12 | | F165A | +0.84 | +0.82 |
+| I166V | +0.39 | +1.48 | | **V166I** | **+38.11** | +0.05 |
+| all three | +46.00 | +2.44 | | all three | +35.83 | +0.67 |
+
+**Q64K is 98.6 % of the WIN signal; V166I is more than all of the ABA signal** (K64Q
+points the wrong way there). One collision per column, and at repack the totals fall
+to **−2.44 and −0.67 REU** — at or below §69's 1.34 REU replicate noise.
+
+**Why K64 is visible where PYR1's K59 was not:** wild-type K59 sits **2.86 Å** from
+mandipropamid and does not clash (§32a), so reverting it costs +0.39 REU. Wild-type
+K64 **collides** with WIN's 32 heavy atoms, so reverting it costs +45 REU. The score
+sees the lysine for the same reason it saw F108 — steric overlap, not chemistry.
+
+### 79b. The score is one term
+
+Per-term decomposition of the WT-minus-sensor difference (mandipropamid):
+
+| protocol | **fa_rep** | fa_atr | fa_sol | fa_elec | hbond_sc | total |
+|---|---|---|---|---|---|---|
+| raw | **1995.12 (100.4 %)** | −5.90 | +4.39 | −5.78 | +0.29 | 1988.12 |
+| repack | **1484.69 (100.2 %)** | −2.84 | +2.56 | −3.44 | +0.11 | 1481.07 |
+| relax | **+1.76** | −2.13 | −0.99 | +1.99 | −0.84 | **−0.04** |
+
+**Unrelaxed, the discrimination is 100 % steric repulsion.** Attraction, solvation,
+electrostatics and hydrogen bonding contribute nothing measurable, and `fa_atr` and
+`fa_elec` point the **wrong way** — they mildly favour the cell that cannot bind.
+
+After relax `fa_rep` falls from 1995 to **1.76**, a thousandfold, and the residual
+is competing terms of 1–2 REU that cancel to **−0.04**. The post-relax signal is not
+a weaker version of the same thing; it is gone, replaced by term-level noise.
+
+### 79c. The correction this forces on how we describe it
+
+FastRelax does not *overpack*. It **over-relieves**: WT + mandipropamid goes
++1994 → −37.5 REU, landing indistinguishable from the real sensor — a structure that
+does not exist, since wild-type PYR1 genuinely cannot bind mandipropamid. Because
+the discriminating information lives entirely in unrelieved `fa_rep`, relaxing it
+away destroys the measurement.
+
+> **The score is a clash detector with a working sign and no usable magnitude.** It
+> is right when a collision exists, silent when one does not, and the moment the
+> structure is relaxed enough to be physical the collision — and the answer — is
+> gone.
+
+That is the same boundary §32 reached geometrically with no energy function at all,
+now confirmed term by term, on two receptors, two ligand classes and four cells.

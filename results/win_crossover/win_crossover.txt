@@ -1,0 +1,28 @@
+============================================================================
+WIN 55,212-2 CROSS-OVER on 7MWN (PYL2 sensor + WI5)
+============================================================================
+   chain A: 180 residues; ligand WI5 32 heavy atoms
+   vs wild-type PYL2 (O80992): K64Q, F165A, V166I
+   reversion map asserted: Q64->K, A165->F, I166->V
+   params built from the CRYSTAL pose; max deviation 0.0000 A over 32 heavy atoms (58 32 atoms total/heavy)
+   pose: 181 residues including WI5
+   24 residues within 5 A of WI5: [60, 64, 66, 67, 83, 85, 87, 91, 92, 93, 95, 96, 98, 112, 114, 119, 120, 121, 124, 165, 166, 169, 170, 173]
+
+   cell                           raw      repack       relax
+   SENSOR (7MWN)               -29.44      -32.61      -38.77
+   wild-type PYL2               16.55      -30.17      -37.33
+   revert Q64K                  15.93      -31.77      -38.34
+   revert A165F                -29.21      -32.49      -39.33
+   revert I166V                -29.06      -31.13      -38.93
+
+   SELECTIVITY: dG_bind(sensor) - dG_bind(wild-type); sensor should WIN
+     raw         -46.00 REU   CORRECT  (raw is biased toward the sensor -- see header)
+     repack       -2.44 REU   CORRECT
+     relax        -1.44 REU   CORRECT
+
+   DECOMPOSITION: cost of reverting ONE position (positive = that mutation
+   is doing work; compare against the full reversion)
+     Q64K             +45.37       +0.84       +0.43
+     A165F              +0.23       +0.12       -0.56
+     I166V              +0.39       +1.48       -0.16
+     ALL THREE         +46.00       +2.44       +1.44
