@@ -2673,6 +2673,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 103 | 08-26 | the cross-over result might be specific to PYR1/mandipropamid | **it reproduces in PYL2.** A 2x2 inside one system (7MWN WIN sensor, 3KDI wild-type + ABA, same numbering) is **correct in all six cells** -- WIN -46.00/-2.44/-1.44, ABA -35.83/-0.67/-2.83 -- and each column is again carried by ONE substitution: **Q64K is 98.6 % of the WIN signal, V166I is all of the ABA signal** | ⚠ **3KDJ is PYL1 + ABI1, not PYL2** (27 % identity, numbered 31-209); using it would have mutated R64/I165/W166 and returned a confident cross-over on the wrong protein. 7MWN's deposited record independently confirms `K64Q, F165A, V166I`. K64 is visible where PYR1's K59 was not **because it CLASHES with WIN** (K59 sits 2.86 A from mandipropamid and does not) (§79a) |
 | 104 | 08-26 | ref2015 balances several terms when it discriminates a sensor | **it is ONE term.** Per-term WT-minus-sensor: raw **fa_rep 1995.12 = 100.4 %** of the total, repack **1484.69 = 100.2 %**; fa_atr, fa_sol, fa_elec and hbond_sc contribute nothing and **fa_atr/fa_elec point the WRONG way**. After relax fa_rep falls 1995 -> **1.76** and the residual cancels to **-0.04 REU** | **FastRelax does not overpack, it OVER-RELIEVES** -- WT+mandipropamid goes +1994 -> -37.5, a structure that cannot exist. The score is a **clash detector with a working sign and no usable magnitude**: right when a collision exists, silent when none does, and empty once the structure is physical. Same boundary §32 reached geometrically, now confirmed term by term on 2 receptors and 4 cells (§79b-c) |
 | 105 | 08-27 | with real structures in hand, a structural or confidence metric will rank sensor quality | **none does.** 590 Boltz-2 sensor structures over 172 ligands, correlated with measured min_conc: within-ligand rho is **-0.030 (confidence), -0.084 (ligand_iPTM), -0.029 (contacts), +0.089 (H-bonds), +0.061 (burial)** -- chance is 21.5/43 ligands and every descriptor sits on it, with H-bonds and burial pointing the WRONG way. The only strong pooled correlate is **ligand size (-0.246)**, a confound | ⚠ but the task is harder than §69's: these are all WORKING sensors, so this ranks potency AMONG POSITIVES rather than separating positives from random variants, and the label is only 3 levels. Poses are fine (0.49-0.66 A on 4WVO) -- **confidence does not know about binding** (WT+mandipropamid, which cannot bind, scores ligand_iPTM 0.97); seed spread separates 4.9x better (0.35 vs 1.70 A). Mapping recovered from the CIFs themselves: **637 of 718 uniquely resolved** (§80) |
+| 106 | 08-27 | with all 62 windows at 20 ns the umbrella would deliver its calibration | **it FAILS 2 of 3 pre-registered criteria.** Holo favours closed (+5.02 kcal/mol) ✅ but **apo also favours closed (+6.92)** ❌ and **ddG = -1.90 is the wrong sign** ❌. The easy explanations are excluded: no window has <5 occupied bins, coordinate drift is 0.02-0.03 A, and **ABA stays bound (52-82 contacts even at 20 A)** | ⚠ **my own §70 repair is the prime suspect**: it replaced every open-basin seed in BOTH arms with adiabatic pulling OUTWARD FROM CLOSED, so the two-directional seeding §60 built in specifically to expose hysteresis is gone, and one-directional pulling would inflate the open free energy in both arms -- the observed pattern. §113's docstring promises a hysteresis check the code never implemented. The dimer mis-specification (apo-open is a DIMER state, we ran a monomer) does NOT rescue it: ddG should still be positive. **No designed-pocket number may be quoted** (§81) |
 
 ### Bugs caught before they cost anything
 
@@ -9002,3 +9003,78 @@ we could not run: co-fold a matched set of *random library variants* — non-sen
 and repeat §69's discrimination test with Boltz poses instead of smina poses. That
 separates "the poses were too poor" from "the score cannot see it", which §77 could
 not apportion. It needs GPU time and 300–600 co-folding runs.
+
+---
+
+## 81. The umbrella calibration FAILS — and my own repair is a prime suspect (2026-08-27)
+
+All 62 windows reached 20.0 ns (1.24 µs total) after §70's reseed. `113_us_pmf.py`:
+
+| arm | G(closed) | G(open) | G_open − G_closed | |
+|---|---|---|---|---|
+| **HOLO** (WT + ABA) | −1.70 | +3.32 | **+5.02** kcal/mol | CLOSED favoured ✅ |
+| **APO** (WT) | −1.26 | +5.65 | **+6.92** kcal/mol | CLOSED favoured ❌ |
+| | | | **ΔΔG = −1.90** | ❌ |
+
+Pre-registered (§60c): holo favours closed ✅, **apo favours open ❌**, **ΔΔG
+positive ❌**. **Two of three fail.**
+
+### 81a. The failure is not technical — the easy explanations are all excluded
+
+| check | result |
+|---|---|
+| window overlap | **no window has < 5 occupied bins** |
+| coordinate equilibration | drift **0.02–0.03 Å**; windows sit on target within 0.05–0.09 Å |
+| does ABA dissociate in the open windows? | **no** — 52–82 heavy-atom contacts < 4.5 Å even at 20 Å |
+| holo convergence | half-split drift **0.22** kcal/mol |
+| apo convergence | half-split drift **1.05** kcal/mol ⚠ |
+
+So the restrained coordinate is sampled properly, the ligand stays bound, and the
+windows overlap. The number is what it is.
+
+### 81b. ⚠ The §70 repair destroyed the control that would have caught this
+
+The original design (§60, `111_us_seed.py`) seeded windows from **both basins** —
+closed-basin trajectories for the low windows, open-basin for the high ones —
+specifically *"so the low and high arms approach the barrier from opposite
+directions and disagreement in the overlap region is visible."*
+
+§70's repair replaced every open-basin seed (11.0–20.0 Å, **both arms**) with
+**adiabatic pulling outward from the closed basin**. It made the windows run — but
+now **every open window descends from the closed state**, one-directionally, over
+3.8 ns. The hysteresis control is gone, and a directional bias from pulling would
+inflate the open-state free energy **in both arms** — which is exactly the
+observed pattern.
+
+⚠ `113_us_pmf.py`'s own docstring promises a hysteresis diagnostic that **the code
+never implemented** and that the data can no longer support. I chose pulling
+because it was the cheap fix; the expensive fix — re-solvating the open frames into
+the matching topology — was the one that would have preserved the control.
+
+### 81c. The other candidate, and why it does not rescue the result
+
+The apo reference may simply be mis-specified. **Apo-open PYR1 is a dimer state**
+(3K3K chain A, §28g), and we simulated a **monomer** — and §29b/§30 already found
+the apo-closed monomer stable across 3 × 300 ns with the **most rigid gate of all
+fifteen units**, with a "dimer confound" flagged at 2.9×. On that reading the PMF's
+apo answer may be correct for the system actually simulated.
+
+**But that does not save it.** Even granting a monomer that prefers closed, ABA
+should make it prefer closed **more**, not less. ΔΔG = −1.90 kcal/mol says ligand
+binding *destabilises* the closed state relative to open, which is backwards on any
+reading of the mechanism. That failure is independent of the dimer question.
+
+### 81d. Verdict
+
+> **The scheme is not validated. No designed-pocket number may be quoted from it.**
+
+Two repairs are needed before it could be, and they are separable:
+
+1. **Restore both-basin seeding** — re-solvate the S10/S1 open frames into the
+   S2/S9 topologies so the open windows descend from the open state, and implement
+   the hysteresis check §113 promises. This tests §81b directly.
+2. **Match the reference system** — run the apo arm as the dimer, or re-specify the
+   pre-registration for a monomer, so the expectation matches what is simulated.
+
+Until 1 is done the result cannot be interpreted, because the most likely
+explanation for it is an artefact I introduced.
