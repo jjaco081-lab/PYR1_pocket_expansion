@@ -2676,6 +2676,7 @@ reversed. Never delete the old claim — strike it through in place and add a ro
 | 106 | 08-27 | with all 62 windows at 20 ns the umbrella would deliver its calibration | **it FAILS 2 of 3 pre-registered criteria.** Holo favours closed (+5.02 kcal/mol) ✅ but **apo also favours closed (+6.92)** ❌ and **ddG = -1.90 is the wrong sign** ❌. The easy explanations are excluded: no window has <5 occupied bins, coordinate drift is 0.02-0.03 A, and **ABA stays bound (52-82 contacts even at 20 A)** | ⚠ **my own §70 repair is the prime suspect**: it replaced every open-basin seed in BOTH arms with adiabatic pulling OUTWARD FROM CLOSED, so the two-directional seeding §60 built in specifically to expose hysteresis is gone, and one-directional pulling would inflate the open free energy in both arms -- the observed pattern. §113's docstring promises a hysteresis check the code never implemented. The dimer mis-specification (apo-open is a DIMER state, we ran a monomer) does NOT rescue it: ddG should still be positive. **No designed-pocket number may be quoted** (§81) |
 | 107 | 08-27 | Boltz-2's binder-vs-decoy classifier is the strongest untried idea (EF ~18x in BoltzMol-1) | **it calls 90 % of real PYR1 sensors NON-BINDERS.** Median `affinity_probability_binary` over 637 experimentally confirmed sensors is **0.303**; only **9.6 %** clear p > 0.5. The archive already held the affinity output (2,870 files) so this cost **no GPU** | there IS a signal but at the wrong LEVEL: "called binder" is monotone in potency (20.0 / 11.3 / 5.8 % at 1 / 10 / 100 uM, pooled AUC 0.634) yet **within-ligand rho is -0.028** (20/43, chance 21.5) and `affinity_pred_value` goes **+0.327 pooled -> -0.000 within-ligand**. The signal is BETWEEN ligands, not between sensors. **Boltz-2 varies the LIGAND against a fixed protein; we vary the PROTEIN** -- a direction its training never constrains. Protein-only fa_rep (§69) remains the only method above chance (§82) |
 | 108 | 08-27 | a ligand class where Boltz ranks variants would be worth finding, and a corrected permutation test can find it | **calibration yes, ranking no.** Boltz is more confident on **aromatic (rho +0.387, p 4e-7)** and **H-bond-donating (+0.262)** ligands -- drug-like ChEMBL-dense space, NOT non-polar. But for within-ligand RANKING the best subgroup (high-HBD, median rho -0.528, n=9) **passed a multiplicity-corrected permutation at p=0.013 and still failed** | **capsaicin and zucapsaicin have IDENTICAL ECFP4 fingerprints (Tanimoto 1.00) and give rho +0.488 vs +0.183**; capsaicin vs nonivamide differ by **1.056**. Per-ligand rho is sampling noise and the 9 "independent" ligands are ~6 chemotypes, violating the permutation's exchangeability. **The check with teeth is not a p-value but whether near-duplicate inputs agree** -- and the screening library supplies those free (§83) |
+| 109 | 08-27 | a hit/non-hit ligand benchmark just needs non-hits sampled from the screen | **a random draw is rigged, and by POLARITY not size.** With random negatives **TPSA alone separates at AUC 0.298** (HBD 0.307, HBA 0.328, rotb 0.364, cLogP 0.632) while heavy atoms manage only 0.412 -- PYR1's hits skew greasy and aromatic. Any model would "succeed" on a descriptor | matched negatives by greedy nearest-neighbour on 7 z-scored descriptors bring the **worst |AUC-0.5| to 0.021**, so the benchmark cannot be won on size or polarity. Both classes co-folded against the SAME wild-type PYR1 (a hit is a ligand some VARIANT bound, so an evolved-pocket/wild-type split would be a fatal asymmetry). 181 vs 181, 362 runs, built not yet run (§84) |
 
 ### Bugs caught before they cost anything
 
@@ -9225,3 +9226,61 @@ That check is cheap here because the screening library contains salt forms and
 close analogues by construction — capsaicin/zucapsaicin at Tanimoto 1.00 is a free
 internal replicate, and it should be used routinely rather than only when a result
 looks too good.
+
+---
+
+## 84. A property-matched tractability benchmark (built 2026-08-27, not yet run)
+
+§82 showed Boltz-2 cannot rank pocket VARIANTS for a fixed ligand — a direction its
+training never constrains. The ligand-level question runs **with** the training
+direction: given a molecule, will PYR1 yield a sensor for it at all? sd01 supplies
+the labels — **194 Hit? = Yes, 3,172 Hit? = No** — the first genuine negative set
+this project has had. 181 hits and 2,531 non-hits survive SMILES parsing and
+de-duplication.
+
+### 84a. ⚠ A random negative set would be rigged, and by polarity not size
+
+Jannis's constraint: the benchmark must not be winnable by "obviously too large for
+the pocket", or a model would succeed for a reason `heavy_atoms` also delivers.
+Measured, and the concern is real — though the giveaway is not the one expected:
+
+| descriptor | AUC, **random** negatives | AUC, **matched** negatives |
+|---|---|---|
+| TPSA | **0.298** | 0.491 |
+| H-bond donors | **0.307** | 0.499 |
+| H-bond acceptors | **0.328** | 0.490 |
+| rotatable bonds | **0.364** | 0.499 |
+| cLogP | **0.632** | 0.517 |
+| heavy atoms | 0.412 | 0.479 |
+| formal charge | 0.492 | 0.500 |
+
+With a random draw **TPSA alone reaches AUC 0.298**. Size is the weaker signal
+(0.412); PYR1's hits skew greasy and aromatic, so *polarity* is what leaks.
+
+Negatives are therefore matched to hits by greedy nearest-neighbour on z-scored
+heavy atoms, cLogP, TPSA, HBD, HBA, charge and rotatable bonds, without
+replacement. **Worst |AUC − 0.5| after matching: 0.021.** Median heavy atoms 20 vs
+21; median cLogP 3.1 vs 3.1. The random set is kept on disk as the naive comparator,
+to show how much easier the rigged version looks.
+
+### 84b. Design decisions
+
+- **Both classes get the same wild-type PYR1.** A hit is a ligand some *variant*
+  bound, not one wild-type binds; giving hits an evolved pocket and non-hits
+  wild-type would be a fatal asymmetry. The question becomes *does WT co-folding
+  predict LIBRARY tractability* — a proxy one step from the label, but symmetric.
+- **One MSA for all 362 runs** (`141`), since the receptor is identical throughout.
+  Paying the public server 362 times would dominate cost and introduce variation in
+  the one input that must be constant.
+- Affinity head on, 5 diffusion samples, 5 affinity samples.
+
+`139_tractability_set.py`, `140_tractability_yaml.py`, `141_tractability_msa.sh`,
+`142_tractability_run.sh`. **362 runs, ~5 GPU-hours, ~1.5 h at 4 concurrent.**
+Queued behind the umbrella hysteresis rerun by Jannis's instruction.
+
+### 84c. What it can and cannot show
+
+It can show whether Boltz-2 is useful **before** a campaign — is this target worth a
+library — which is a real decision and one nothing in this project addresses. It
+**cannot** rescue the design question: §82 settled that variant ranking is at
+chance, and a ligand-level result would not change it.
