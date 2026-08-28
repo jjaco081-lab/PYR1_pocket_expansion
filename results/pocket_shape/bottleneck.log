@@ -1,0 +1,32 @@
+  2pcsA00 done
+  2ns9B01 done
+  2bk0A00 done
+  6awvC00 done
+  3qrzA00 done
+  3oquB00 done
+  2flhA00 done
+  4dsbB00 done
+  3tfzE00 done
+  1z94E00 done
+
+================================================================================
+CAVITY DECOMPOSED INTO CHAMBERS -- no ligand used
+================================================================================
+structure    total    main   r_max   satellites (volume @ bottleneck radius)
+PYR1           164     119    3.21   19 A^3 @ r=2.36  27 A^3 @ r=2.38
+2PCS_A         570     570    3.80   none
+2NS9_B         462     157    3.06   114 A^3 @ r=2.38  66 A^3 @ r=2.04  127 A^3 @ r=2.37
+2BK0_A         346     172    3.33   60 A^3 @ r=2.36  103 A^3 @ r=2.36  12 A^3 @ r=2.04
+6AWV_C         305     126    3.17   50 A^3 @ r=1.43  92 A^3 @ r=1.43  36 A^3 @ r=1.91
+3QRZ_A         212      73    3.18   30 A^3 @ r=2.23  33 A^3 @ r=2.11  76 A^3 @ r=2.40
+3OQU_B         204     146    3.23   58 A^3 @ r=2.23
+2FLH_A         170      54    3.12   25 A^3 @ r=2.17  51 A^3 @ r=2.37  40 A^3 @ r=2.40
+4DSB_B         173     173    3.68   none
+3TFZ_E         206     103    3.24   74 A^3 @ r=2.26  29 A^3 @ r=2.30
+1Z94_E         159      61    3.01   36 A^3 @ r=1.49  30 A^3 @ r=1.49  32 A^3 @ r=2.35
+
+   r_max = radius of the largest sphere that fits anywhere in the cavity.
+   A satellite at r < 1.4 is not even water-connected; at r < 2.4 no
+   ligand atom passes and its volume should NOT be counted as pocket.
+
+written to /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/pocket_shape/cavity_chambers.json
