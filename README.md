@@ -9444,3 +9444,70 @@ reaches it. §23's "F108 gatekeeps the second lobe" survives intact — this is 
 gatekeeping looks like measured properly — but the stronger reading I offered in
 §87, that 3OQU's isoleucine at this position opens a usable chamber, does not.
 This is the same lesson as §58: **the second lobe is narrow, not merely blocked.**
+
+---
+
+## 87. The Beltran-45 benchmark: the first prospective result (2026-08-28)
+
+§47e listed this as "the single highest-value thing not yet done", and §47f put
+it before any more GPU time. `scripts/153_library_recall.py`.
+
+**The task, and why it is the right one.** A library is a MENU — positions, each
+with allowed residues, wild type always retained, size ∏(1 + nᵢ) per §53. A
+sensor is CAPTURED when all of its substitutions lie inside the menu. The score
+is recall at fixed size, never precision, because the ground truth is
+positive-unlabeled (§51).
+
+**Why Beltran-45 is a real test set.** Nothing in this project was built on it.
+It uses 20 design positions and only 10 overlap Tian's 18; only 7 have ever been
+scored here. A method tuned on Tian's vocabulary is being asked to work where it
+has never looked — the transfer failure mode §47e point 3 warns about.
+
+### 87a. Tian's frequency prior transfers
+
+| library size | frequency (Tian sd03) | greedy-cover (sees the answers) | random null | p |
+|---|---|---|---|---|
+| 10³ | **33 %** | 51 % | 4 % ± 6 % | 0.001 |
+| 10⁴ | **42 %** | 53 % | 7 % ± 9 % | 0.001 |
+| 10⁵ | **64 %** | 76 % | 15 % ± 13 % | <0.001 |
+| 10⁶ | **67 %** | 80 % | 27 % ± 17 % | 0.013 |
+
+Substitution frequencies learned from Tian's coumarin/PFAS/etc. round-1 clones
+recover **64 % of 45 real cannabinoid sensors at a library of 10⁵**, against a
+random null of 15 %. This is the first result in the project that is
+prospective rather than retrospective recovery of a known answer, and the first
+that transfers across ligand class and across library design.
+
+### 87b. And it saturates exactly at the vocabulary ceiling
+
+Tian's **entire** 144-substitution vocabulary, taken as one menu, captures
+**30/45 = 67 %**. The frequency ranking reaches 67 % at 10⁶ and stops — so
+within Tian's vocabulary the frequency prior is already essentially optimal, and
+**all remaining headroom is in POSITIONS, not identities.**
+
+| ligand | captured by Tian's whole vocabulary |
+|---|---|
+| JWH-015 | 7/7 |
+| WIN 55,212 | 6/9 |
+| JWH-072 | 5/6 |
+| **CBDA** | **0/3** |
+| **∆9-THC** | **0/2** |
+| **4F-MDMB-BUTINACA** | **0/1** |
+
+Three ligands are **completely unreachable** no matter how the 144 substitutions
+are re-ranked. This is the same conclusion the PFAS arm reached by a different
+route (§71/§73): the headroom is positional.
+
+### 87c. What is running
+
+That makes the open question specific: can the one scorer that beats chance
+(§69, protein-only Cartesian FastRelax ΔΔG) nominate substitutions at positions
+where **no frequency prior exists at all**? `154` scores all 380 single
+substitutions at Beltran's 20 positions — 10 of which this project has never
+touched — by 124's method unchanged, with the paired same-shell wild-type
+control that §66a's first version lacked. 20-task CPU array on `cutlerlab`,
+gated behind an identity-assertion smoke test.
+
+⚠ It remains a **stability** filter (§69, §77). It can say a substitution is
+tolerated; it cannot say it makes a sensor. Its only job here is to supply a
+ranking where frequency is silent.
