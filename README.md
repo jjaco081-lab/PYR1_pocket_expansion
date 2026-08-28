@@ -9284,3 +9284,127 @@ It can show whether Boltz-2 is useful **before** a campaign — is this target w
 library — which is a real decision and one nothing in this project addresses. It
 **cannot** rescue the design question: §82 settled that variant ranking is at
 chance, and a ligand-level result would not change it.
+
+---
+
+## 85. The umbrella sampling FAILS its own pre-registered test — the arm is closed (2026-08-28)
+
+§81 reported a failing PMF and named my own §70 repair as the prime suspect: that
+repair rebuilt window 127 in a way that destroyed the two-directional seeding, so
+every window was reached by pulling in one direction only. The fix was to reseed
+inward from the equilibrated outermost window (`136`) and rerun (`138`), with the
+acceptance criterion **fixed in advance in §81a**: a converged PMF is
+seed-independent, so forward and reverse must agree to within the half-split
+drift — **0.22 kcal/mol holo, 1.05 apo**.
+
+All 38 reverse windows finished at 20 ns (job 27854551; 24 of the 62 array tasks
+exited immediately because reverse seeds exist only for the 10.5–19.5 Å half of
+the coordinate). `113_us_pmf.py` now implements the hysteresis check it had only
+promised.
+
+| | forward | reverse | disagreement | bar |
+|---|---|---|---|---|
+| holo, mean \|F−R\| after offset alignment | — | — | **3.22** | 0.22 |
+| apo, mean \|F−R\| | — | — | **2.74** | 1.05 |
+| holo G(16–19.5) − G(10.5–13) | **+4.61** | **−3.29** | sign flips | — |
+| apo G(16–19.5) − G(10.5–13) | **+3.14** | **−2.40** | sign flips | — |
+
+The magnitude misses by 15× and **the sign of the tilt reverses with the pull
+direction**. Calibration fails on its own terms too: holo +5.02, apo +6.92,
+ddG −1.90 where a pass needs positive. The pull direction is setting the answer.
+
+**This is protocol, not physics, and it is not a sampling-length problem.** A
+15× miss with a sign flip is not closed by extending 20 ns windows. §62 already
+established that unbiased MD cannot reach the transition and §29 that both states
+are kinetically trapped at 300 ns; this was the enhanced-sampling attempt to get
+around that, and it does not work in this geometry with this coordinate.
+
+**Do not rerun, extend, or re-window this scheme.** No open/closed ΔG from it is
+quotable, and the designed-pocket switching-cost number it was built to produce
+remains unavailable by simulation. That was the last route to it that did not
+require new chemistry, so **switch cost stays a Y2H question** (§58).
+
+---
+
+## 86. The graft direction, closed — and three of my own metrics withdrawn (2026-08-28)
+
+Jannis asked whether the pocket could be enlarged by adding residues to the β
+sheet, and how the best transplantable donor's wall differs from PYR1's.
+Scripts `143`–`152`, `results/pocket_shape/`.
+
+### 86a. Enlargement is neither insertion nor displacement
+
+| donor | cavity | wall residues | aligned to a PYR1 position | **inserted** |
+|---|---|---|---|---|
+| 2PCS | 570 Å³ | 45 | 43 | **2** |
+| 2NS9 | 455 | 41 | 39 | **2** |
+| 2BK0 | 344 | 39 | 36 | **3** |
+| 6AWV | 319 | 47 | 44 | **3** |
+
+No donor builds its pocket out of new backbone. Nor are the lobes further apart:
+sheet-to-grip-helix separation at structurally equivalent positions is **14.31 Å
+in PYR1 and 14.67 Å in 2PCS**, correlating with cavity volume at **r = −0.18**
+across 19 relatives. Adding 2 aa per strand is the wrong lever, and in a
+7-stranded sheet whose hairpins *are* the gate and latch it is also the most
+expensive one.
+
+### 86b. Three metrics of mine, withdrawn
+
+1. **143's envelope was circular** — the C-β hull of residues the cavity itself
+   selected, so a bigger cavity recruited more residues into its own hull. With
+   a structurally defined wall (the same 24 aligned positions everywhere),
+   cavity vs envelope falls from ~+0.99 to **r = +0.20**.
+2. **143's poly-Gly column was meaningless** — 0–3 Å³ for five structures is the
+   enclosed component *ceasing to exist* once buriedness drops below cut, not a
+   small cavity. The leak flag missed it because a component that vanishes never
+   touches the grid boundary.
+3. **149's ligand-distance audit and 148's 9 Å adjacency filter were invalid in
+   principle.** Jannis: *"the pocket goes beyond just ABA and selecting residues
+   within a distance of ABA is not an effective way to quantify the pocket."*
+   Correct — ABA is 19 heavy atoms in a cavity we are trying to enlarge, so
+   scoring membership by proximity to it defines the pocket as the volume
+   already occupied and excludes every expansion by construction. 148 discarded
+   43 of 52 candidates on that basis. **150's `r_eq` was also wrong**: it is the
+   equal-area radius of a cross-section of *grid points*, which are probe
+   centres already satisfying clear > 1.4 Å, so a thin ribbon of them does not
+   imply a thin passage.
+
+### 86c. What a ligand-free measurement says
+
+`151` decomposes each cavity by the **maximin of clearance along paths between
+chambers** — the largest sphere that can be walked from one to the other. Exact
+on the grid, no ligand, no straight-pocket assumption.
+
+| structure | total | main chamber | r_max | satellites |
+|---|---|---|---|---|
+| 2PCS | 570 | **570** | 3.80 | none |
+| 4DSB | 173 | 173 | 3.68 | none at r ≥ 2.4 |
+| 2BK0 | 346 | 172 | 3.33 | 60, 103, 12 |
+| 2NS9 | 462 | 157 | 3.06 | 114, 66, 127 |
+| 3OQU | 204 | 146 | 3.23 | 58 @ r = 2.23 |
+| 6AWV | 305 | 126 | 3.17 | 50 and 92 @ r = **1.43** |
+| PYR1 | 164 | **119** | 3.21 | 19, 27 |
+
+**A quarter of PYR1's own published volume is satellite, not chamber** — every
+cross-structure volume comparison in §56/§79 was partly counting voids a ligand
+cannot reach. Only 2PCS has a genuinely large single chamber; the other large
+totals are fragmentation.
+
+### 86d. Why the direction is closed anyway
+
+I proposed 4DSB as a find on the strength of its 173 Å³ single chamber against
+PYR1's 119. **Jannis rejected it, and was right:** on the cavity-independent
+measures 4DSB has *less* room than PYR1 — envelope **1804 vs 1873**, poly-Gly
+ceiling **1079 vs 1184** — its variable positions sit where PYR1's already are,
+so it offers no new ligand chemistry, and "no satellites at r = 2.4" is not "no
+bottleneck": the method only sees constrictions that *separate* chambers and is
+blind to a waist within one. One metric said +45 %, two said negative, and I led
+with the flattering one.
+
+**The graft direction is closed.** It was already lower priority (§56); the
+categorical tension is now explained rather than merely observed — the donors
+with real chambers are at ~10 % identity and 3.5–4 Å core RMSD, and the ones
+close enough to transplant have no more usable room than PYR1. Effort returns to
+the non-grafting work: the library-enrichment reframing (§47c), the protein-only
+ΔΔG filter (§69), and the tractability benchmark (§84), which is still built and
+unrun.
