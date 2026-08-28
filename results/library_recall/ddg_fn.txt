@@ -1,0 +1,76 @@
+70 REAL sensors, 300 LIBRARY draws, 300 WILD; n_sub 3-10
+n_sub strata present in REAL: [3, 4, 5, 6, 7, 8, 9, 10]
+
+==================================================================================
+HOW MUCH SHRINKAGE DOES A GIVEN SENSOR RETENTION BUY?
+   (thresholds set WITHIN n_sub strata, so size cannot leak in)
+==================================================================================
+  sensor retention  library kept   wild kept   shrinkage  enrichment
+             100%           51%         25%        1.9x       1.95x
+              89%           49%         20%        2.0x       1.80x
+              84%           48%         18%        2.1x       1.74x
+              76%           44%         15%        2.3x       1.71x
+              69%           40%         12%        2.5x       1.73x
+              53%           29%          7%        3.4x       1.82x
+
+   'shrinkage' is how many-fold smaller the library becomes.
+   'enrichment' is sensor retention / library retention -- the number
+   previously quoted. Read the FIRST column as the cost.
+
+==================================================================================
+WHICH SUBSTITUTIONS ARE OVER-REPRESENTED IN THE SENSORS ddG REJECTS?
+==================================================================================
+
+   at 59/70 sensors retained (11 eliminated)
+           sub  in lost  in kept   excess
+          V81Y        4        6   +0.042
+         N167D        4       14   +0.022
+         A160G        2        4   +0.018
+         S122G        2        6   +0.013
+         A160M        2        9   +0.006
+         F159H        3       15   +0.005
+         V163W       10       56   +0.001
+         V164F        3       17   -0.000
+         S122N        3       17   -0.000
+         S122E        3       17   -0.000
+          K59Q        4       23   -0.001
+         V164S        2       12   -0.002
+      substitutions appearing ONLY in eliminated sensors: V164M
+
+   at 53/70 sensors retained (17 eliminated)
+           sub  in lost  in kept   excess
+          V81Y        7        3   +0.055
+         V164F        7       13   +0.027
+         N167D        6       12   +0.021
+         A160G        3        3   +0.019
+         S122E        6       14   +0.015
+         Y120A        3        6   +0.010
+          K59Q        7       20   +0.007
+         A160M        3        8   +0.005
+          V83L       12       38   +0.002
+         S122G        2        6   +0.001
+         F108W        8       26   -0.001
+         F159H        4       14   -0.003
+      substitutions appearing ONLY in eliminated sensors: F159V, V164M
+
+   Example eliminated sensors at 90 % retention:
+      14N-8          n_sub  6  ddG   +8.31  K59Q+V81I+S122N+A160G+V163W+V164S
+      9M-9           n_sub  9  ddG   +7.87  V81Y+V83L+F108W+Y120M+S122E+F159H+A160I+V163W+V164M
+      13H-11         n_sub  6  ddG   +7.17  V81Y+V83L+Y120M+A160I+V163W+N167D
+      9M-6           n_sub  7  ddG   +7.06  V81Y+V83L+Y120M+F159H+A160I+V163W+V164S
+      5k-11          n_sub  5  ddG   +6.28  K59Q+V81I+V83L+F108W+V164F
+      13H-1          n_sub  7  ddG   +5.31  V81Y+V83L+F108W+S122G+A160I+V163W+N167D
+
+==================================================================================
+MECHANISM TEST -- does ddG reject sensors that GROW the pocket?  NO
+==================================================================================
+   ddG vs net side-chain volume change   r = +0.155
+   same, controlling n_sub               r = +0.187
+   sensors that net-grow: 69/70 -- there is
+   no shrink group to contrast against, so this hypothesis of mine is
+   not supported and the substitution attribution above stands on its
+   own small counts (2-7 per substitution). Treat it as a lead only.
+
+⚠ These are COMBINATION-level rejections. Whether a specific RESIDUE
+  would be eliminated needs single-substitution ddG, which job 27925009
+  is computing for Beltran's 20 positions.

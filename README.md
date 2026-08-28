@@ -9511,3 +9511,45 @@ gated behind an identity-assertion smoke test.
 ⚠ It remains a **stability** filter (§69, §77). It can say a substitution is
 tolerated; it cannot say it makes a sensor. Its only job here is to supply a
 ranking where frequency is silent.
+
+### 87d. The false-negative side of the ΔΔG filter — and it is the side that matters
+
+Jannis asked the question every previous report of this filter avoided: what is
+the rate at which ΔΔG is *right* to eliminate something, and are there real
+sensors carrying substitutions it would have thrown away?
+
+§69 and §82d quoted **enrichment**. That is the wrong side of the ledger for
+library design — a library you never build cannot be rescued by the fact that
+what you did build was enriched. `155` reports recall first, with thresholds set
+**within n_sub strata** so variant size cannot leak in.
+
+| sensor retention | library kept | wild kept | **shrinkage** | enrichment |
+|---|---|---|---|---|
+| **100 %** | 51 % | 25 % | **1.9×** | 1.95× |
+| 89 % | 49 % | 20 % | 2.0× | 1.80× |
+| 76 % | 44 % | 15 % | 2.3× | 1.71× |
+| 69 % | 40 % | 12 % | 2.5× | 1.73× |
+| 53 % | 29 % | 7 % | 3.4× | 1.82× |
+
+**To lose no real sensor at all, the library can only be halved.** Pushing to
+3.4× costs 47 % of the sensors. And enrichment is **flat at 1.7–1.95× across the
+entire range** — there is no operating point where this filter is especially
+good. It is a uniform weak tilt, not a discriminator.
+
+Set against §87a, where a substitution-frequency prior recovers 64 % of a
+*held-out* sensor set at a library of 10⁵, a cost-free 1.9× is not a library
+design method. It remains what §79 said it was: a clash detector, useful as a
+final viability screen on an already-narrow set, not as the thing that does the
+narrowing.
+
+**Attribution is underpowered and one hypothesis of mine is refuted.** V81Y is
+the most over-represented substitution among rejected sensors (+0.042 excess at
+90 % retention, +0.055 at 80 %), and V164M and F159V appear only in eliminated
+sensors — but on counts of 2–7, which is a lead and not a finding. I proposed
+that ΔΔG, being a clash detector, should systematically reject sensors that GROW
+side chains into the pocket, which is exactly what expansion needs. **It does
+not: 69 of 70 real sensors net-grow**, so there is no contrast group, and the
+partial correlation controlling n_sub is +0.19.
+
+Whether a specific *residue* would be eliminated needs single-substitution ΔΔG,
+which job 27925009 is computing for Beltran's 20 positions (§87c).
