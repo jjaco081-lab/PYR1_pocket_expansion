@@ -1,0 +1,42 @@
+
+=== HOLO (WT + ABA): 31 windows, 2325000 samples, WHAM converged in 10345 iterations
+  windows with <5 occupied bins (overlap risk): none
+  G(closed, 4.5-9.5 A)  =   -1.70 kcal/mol
+  G(open, 13.0-20.5 A)  =    3.32 kcal/mol
+  G_open - G_closed     =   +5.02 kcal/mol   (CLOSED favoured)
+  half-split drift      : +4.93 -> +5.15  (|d| = 0.22)
+
+=== APO  (WT): 31 windows, 2325000 samples, WHAM converged in 10546 iterations
+  windows with <5 occupied bins (overlap risk): none
+  G(closed, 4.5-9.5 A)  =   -1.26 kcal/mol
+  G(open, 13.0-20.5 A)  =    5.65 kcal/mol
+  G_open - G_closed     =   +6.92 kcal/mol   (CLOSED favoured)
+  half-split drift      : +7.33 -> +6.28  (|d| = 1.05)
+
+=== HYSTERESIS holo: 19 windows with both seedings
+  mean |forward - reverse| after aligning the offset: 3.22 kcal/mol   max 6.57
+  forward  G(16-19.5) - G(10.5-13) =   +4.61 kcal/mol
+  reverse  G(16-19.5) - G(10.5-13) =   -3.29 kcal/mol
+  READ: a converged PMF is seed-independent. If the two disagree by more
+  than the half-split drift (§81a: 0.22 holo, 1.05 apo), the pull
+  direction is setting the answer.
+
+=== HYSTERESIS apo: 19 windows with both seedings
+  mean |forward - reverse| after aligning the offset: 2.74 kcal/mol   max 6.49
+  forward  G(16-19.5) - G(10.5-13) =   +3.14 kcal/mol
+  reverse  G(16-19.5) - G(10.5-13) =   -2.40 kcal/mol
+  READ: a converged PMF is seed-independent. If the two disagree by more
+  than the half-split drift (§81a: 0.22 holo, 1.05 apo), the pull
+  direction is setting the answer.
+
+========================================================================
+CALIBRATION VERDICT (README 59b)
+========================================================================
+  holo  G_open - G_closed = +5.02 kcal/mol
+  apo   G_open - G_closed = +6.92 kcal/mol
+  ddG (holo - apo)        = -1.90 kcal/mol
+
+  PASS requires: holo favours CLOSED (positive), apo favours OPEN
+  (negative), and ddG POSITIVE -- ABA stabilising closed vs open.
+
+  ==> FAIL: the scheme does NOT reproduce the known answer; no designed-pocket number from it should be quoted (check overlap, drift, hysteresis above before blaming the physics)
