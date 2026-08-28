@@ -9408,3 +9408,39 @@ close enough to transplant have no more usable room than PYR1. Effort returns to
 the non-grafting work: the library-enrichment reframing (§47c), the protein-only
 ΔΔG filter (§69), and the tractability benchmark (§84), which is still built and
 unrun.
+
+### 86e. The direct test agrees, and refutes my own F108 claim
+
+`152` ran the test 148's withdrawn filter was standing in for: truncate each
+position and measure the change in **main-chamber** volume (§86c definition), with
+PYR1's own 24 wall positions as a paired control. WT baseline: main chamber
+122 Å³, total enclosed 164, r_max 3.21 Å.
+
+| group | n | median ΔV_main | best | n > +20 Å³ |
+|---|---|---|---|---|
+| PYR1 wall | 24 | 0 | **+44** (Y120) | 3 |
+| **borrowed (146)** | 50 | **0** | **+0** | **0** |
+
+**Not one of the 50 borrowed positions opens any main-chamber volume.** The idea
+is dead on the direct measurement, independently of Jannis's judgement call —
+which it corroborates. The wall positions that do work are Y120 (+44), V163
+(+34) and L117 (+22), all long known.
+
+**And my §87 claim that F108 is the mouth of the lobe is refuted.** Scanning
+F108 → I/L/V/A/G:
+
+| variant | main chamber | ΔV_main | total enclosed |
+|---|---|---|---|
+| WT (F) | 122 | — | 164 |
+| F108I | 125 | +3 | 172 |
+| F108L | 125 | +4 | 173 |
+| F108V | 124 | +3 | **242** |
+| F108A | 124 | +3 | **242** |
+| F108G | 123 | +1 | **248** |
+
+Deleting F108 entirely adds **+84 Å³ of enclosed volume and +1 Å³ of chamber**.
+The volume it releases stays behind a neck narrower than 2.4 Å, so no ligand atom
+reaches it. §23's "F108 gatekeeps the second lobe" survives intact — this is what
+gatekeeping looks like measured properly — but the stronger reading I offered in
+§87, that 3OQU's isoleucine at this position opens a usable chamber, does not.
+This is the same lesson as §58: **the second lobe is narrow, not merely blocked.**
