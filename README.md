@@ -10183,3 +10183,66 @@ co-folding produces the closed state directly, ligand already inside.
 and it is the better test than mandipropamid, with **28 decoded positives against
 mandipropamid's 20**. Benzothiadiazole and benoxacor cannot, and are where
 conformer placement or a crystal structure would be needed.
+
+---
+
+## 94. The three agrochemicals scored against their own poses — and what §91 was really measuring (2026-08-31)
+
+Jannis's design: score all three, not only the one with a confident pose, so that
+pose confidence is an independent variable rather than a filter. Protocol
+identical to `156` throughout — same K59R background, same per-position 6 Å
+shell, same paired same-shell control, same three replicates — so the AUCs are
+directly comparable with mandipropamid's.
+
+| compound | pose | positives | **AUC** | perm p | hits in top 25 |
+|---|---|---|---|---|---|
+| fludioxonil | predicted, **0.71 Å** spread | 28 | 0.550 | 0.196 | **0/28** |
+| benzothiadiazole | predicted, 2.52 Å | 22 | 0.528 | 0.337 | **0/22** |
+| benoxacor | predicted, 3.27 Å | 10 | 0.469 | 0.629 | **0/10** |
+| **mandipropamid** | **CRYSTAL** | 20 | **0.868** | <0.0001 | **11/20** |
+
+**All three predicted-pose compounds are at chance**, and none puts a single true
+positive in its top 25. AUC does order with pose spread (r = −0.88) but with
+n = 3 and every value at chance that ordering is noise, not a trend.
+
+### 94a. The cause is not the pose. It is that these ligands do not clash
+
+| compound | heavy atoms | **strain in the unmutated K59R pocket** | positive − negative median ΔΔG |
+|---|---|---|---|
+| fludioxonil | 18 | **−6.5 REU** | −0.01 |
+| benzothiadiazole | 13 | **+5.7** | 0.00 |
+| benoxacor | 16 | **+36.4** | +0.16 |
+| **mandipropamid** | **30** | **+1501.1** | **−754.64** |
+
+Mandipropamid does not fit wild-type PYR1 — it strains the pocket by 1,501 REU —
+and the entire §91 result is the score finding which mutations relieve that. The
+three agrochemicals are half its size and **already fit**: they strain the pocket
+by −6 to +36 REU, so there is nothing to relieve, no dynamic range where the
+labels live, and the positives and negatives have identical median ΔΔG to two
+decimal places.
+
+**So §91's AUC 0.868 is a clash-relief result, and its scope is exactly that.**
+§79 said this filter reads unrelieved `fa_rep`; here is the boundary that
+statement implies, measured. It answers *which mutation makes room for a ligand
+too big for the pocket*. It is silent on *which mutation makes a pocket bind a
+ligand that already fits* — which is most of the problem, and which the real
+sensors for these three compounds evidently solve by some mechanism the score
+does not model.
+
+This also disposes of a comfortable reading of §92d. A confident predicted pose
+was not sufficient: fludioxonil's pose is as reproducible as Boltz gets at
+0.71 Å and its AUC is 0.550. Whether that pose is also *correct* is untested and
+now largely beside the point, because a correct pose would not create a clash
+signal that the chemistry does not contain.
+
+### 94b. What this rules in and out
+
+- **Ruled out:** extending the §91 protocol to ligands that fit the pocket, with
+  either predicted or crystal poses. The failure is chemical, not computational.
+- **Still open:** whether a *bigger* non-cognate ligand with a predicted pose
+  reproduces the mandipropamid result. That is the test that would separate
+  "predicted poses are unusable" from "small ligands carry no signal", and none
+  of the three compounds available can run it.
+- **Unchanged:** mandipropamid remains the only ligand in this project with both
+  a crystal pose and true negatives, and AUC 0.868 / 0.720-without-F108 stands
+  for it alone.

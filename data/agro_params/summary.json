@@ -1,0 +1,38 @@
+{
+ "benzothiadiazole": {
+  "code": "BZT",
+  "seed": 2,
+  "plddt": 95.447,
+  "core_rmsd": 0.579019986560176,
+  "spread": 2.515972888613956,
+  "n_seeds": 10,
+  "atoms": 13,
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/BZT.params",
+  "pose_pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/BZT_0001.pdb",
+  "d_site": 1.2366019124225651
+ },
+ "benoxacor": {
+  "code": "BNX",
+  "seed": 0,
+  "plddt": 96.066,
+  "core_rmsd": 0.5420746819829543,
+  "spread": 3.2712088676669513,
+  "n_seeds": 10,
+  "atoms": 16,
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/BNX.params",
+  "pose_pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/BNX_0001.pdb",
+  "d_site": 1.2223216802983414
+ },
+ "fludioxonil": {
+  "code": "FLD",
+  "seed": 7,
+  "plddt": 96.215,
+  "core_rmsd": 0.5980163325340234,
+  "spread": 0.7107285971212756,
+  "n_seeds": 10,
+  "atoms": 18,
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/FLD.params",
+  "pose_pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/FLD_0001.pdb",
+  "d_site": 0.6313951418988067
+ }
+}
