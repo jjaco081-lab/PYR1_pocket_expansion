@@ -41,7 +41,13 @@ SRC=$T/yaml_matched/lig$I.yaml
 [[ -s $SRC ]] || { echo "no yaml for lig$I"; exit 0; }
 OUTD=$T/out
 mkdir -p "$OUTD" "$T/yaml_msa"
-if [[ -d $OUTD/boltz_results_lig$I ]]; then echo "lig$I: exists, skip"; exit 0; fi
+# Resume on the ARTEFACT, not the directory. The first (NUL-poisoned) run left
+# 362 output directories containing only processed/manifest.json, and a
+# directory-existence guard then skipped every task of the repaired rerun.
+if compgen -G "$OUTD/boltz_results_lig$I/predictions/*/affinity*.json" > /dev/null; then
+    echo "lig$I: affinity output present, skip"; exit 0
+fi
+rm -rf "$OUTD/boltz_results_lig$I"   # stale/partial: start clean
 # point this ligand's YAML at the shared MSA
 sed "s|^      sequence: \(.*\)$|      sequence: \1\n      msa: $A3M|" "$SRC" > "$T/yaml_msa/lig$I.yaml"
 env -u PYTHONPATH $BOLTZ predict "$T/yaml_msa/lig$I.yaml" \

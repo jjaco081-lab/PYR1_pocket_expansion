@@ -9699,3 +9699,81 @@ act and cross-position ranks are comparable) across three backgrounds: K59R,
 K59R+F108A, and K59R+F108A+F159L. If V81I and F159L rise once the dominant clash
 is relieved, Goal 3 needs a **greedy sequential protocol**, not a better score.
 Job 27977268.
+
+---
+
+## 89. Both closed-space enumerations return, and they disagree usefully (2026-08-28)
+
+### 89a. The WIN DSM library: real but modest narrowing
+
+All **35,863** allowed doubles of Beltran's DSM library (sd04's `DSM-Hao` menu,
+18 mapped positions) scored on 7MWN reverted to wild-type PYL2, repack only,
+fixed crystal WI5 pose. Replicate spread median 0.00, 90th percentile 0.00.
+
+| round-1 WIN hit | rank of 35,863 | percentile |
+|---|---|---|
+| F159G+A160I | **1,547** | top 4.3 % |
+| F159S+A160L | 4,805 | top 13.4 % |
+| F159S+A160V | 6,632 | top 18.5 % |
+| F159G+A160V | 8,276 | top 23.1 % |
+| F159T+A160L | 17,532 | top 48.9 % |
+
+Median rank **6,632 against a null median of 17,935**, permutation **p = 0.047**.
+The best-of-five is not significant on its own (p = 0.20).
+
+**Screen size to a first hit: 1,547 variants ranked, against 7,172 expected at
+random — a 4.6× narrowing.** That is a real number for Goal 1, and the first time
+this project has produced one on a closed, independently-defined library. It is
+also modest: capturing all five still needs 49 % of the library.
+
+**And it finds the right position for the wrong reason.** Position enrichment in
+the top 1 %: V83 3.08×, **A160 2.63×**, S92 2.29×, K59 1.68× — but **F159 1.03×,
+i.e. exactly chance**. The score sees that A160 must change and is blind to F159,
+even though every one of the five hits pairs them. The top 10 doubles are
+A160F/I/W and V83L combinations: it wants to *fill* the pocket at 160, which
+half-matches the real answer (A160V/I/L) while missing F159→small entirely.
+
+### 89b. The conditional mandi test fails: relieving the clash does not rescue V81I
+
+`160`, fixed 64-residue shell, three backgrounds. The shell confirms F108's
+dominance — background dG_bind **+1501.07 (K59R) → +17.16 (K59R+F108A)**.
+
+| target | K59R | +F108A | +F108A+F159L |
+|---|---|---|---|
+| **V81I** | 224/437 | **222/437** | **221/437** |
+| V81M | 400/437 | 21/437 | 22/437 |
+| V163W | 426/437 | 426/437 | 426/437 |
+
+**V81I does not move.** The greedy/sequential hypothesis of §88g is refuted: once
+the dominant clash is relieved, the score still has no information about the real
+substitution. Its top picks in every background are P55Y/P55M, N167G, N167P,
+H115G, V81F, V81Y — and note it ranks V81F and V81Y at 7–8 while the real V81I
+sits at 222, so it prefers large aromatics where the sensor uses a modest
+V→I growth.
+
+### 89c. The measurement that constrains Goal 3
+
+The two runs bracket a genuine protocol tension.
+
+| shell | replicate spread (90th pct) | cross-position ranks | background effects |
+|---|---|---|---|
+| per-position 6 Å (`156`) | **0.21 REU** | not comparable | cancel — K59R moved 22/475 |
+| fixed 64-residue (`160`) | **5.01 REU** | comparable | act correctly |
+
+The signal that must be resolved is ~2.7 REU for three substitutions, so ~1 REU
+each. **The shell that makes variants comparable has a noise tail five times the
+per-substitution signal; the shell that is quiet cannot compare them.** That, not
+the energy function's accuracy, is the immediate obstacle — and unlike accuracy
+it is addressable, by replicate averaging or by restricting the shell to the
+ligand's first contact sphere.
+
+### 89d. Two more silent-state failures in the tractability array
+
+The repaired run skipped all 362 tasks. The NUL-poisoned first attempt had left
+362 output directories containing only `processed/manifest.json`, and `142`
+resumed on **directory existence** rather than on the artefact, so every task
+logged "exists, skip" and exited 0. The guard now tests for
+`predictions/*/affinity*.json` and deletes a stale directory before running.
+
+That is the fourth defect in this project to return a plausible state instead of
+an error, and the second in the same array (§88e). Resubmitted as 27978561.
