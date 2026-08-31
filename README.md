@@ -9981,3 +9981,56 @@ load-bearing one: 0.720 on the 9 remaining positives.
 optimistic ceiling, not a held-out estimate; **AUC is the number to quote**.
 And per Jannis, responsiveness is not affinity: cross-reactivity is a separate
 axis this label set does not resolve.
+
+---
+
+## 92. Poses for the other three compounds, and a non-random data loss (2026-08-31)
+
+### 92a. ⚠ 14 of 362 tractability runs were lost, and not at random
+
+The repaired tractability array completed 348 of 362. All 14 failures share one
+cause: **a backslash in a SMILES string inside a DOUBLE-quoted YAML scalar.**
+YAML processes escapes in double quotes, so `C/C=C\C` either fails to parse
+(`found unknown escape character 'C'`, 13 cases) or is silently corrupted —
+`\N` is YAML's NEL character, which reached RDKit as a control byte and returned
+`None` (`'NoneType' object has no attribute 'GetAtoms'`, 1 case).
+
+**The loss is systematic, not random: every casualty carried cis/trans
+stereochemistry**, which is exactly what a backslash encodes. Dropping the
+stereochemistry-bearing ligands from a benchmark about ligand tractability would
+have biased it in a direction nothing downstream could detect.
+
+`140` now writes SINGLE-quoted scalars, which YAML does not escape-process.
+Verified the way §feedback requires — parsed with the consuming tool's own
+reader at default settings and asserted on counts: **14/14 recovered, 0 of 362
+unparseable**. The 14 are requeued.
+
+This is the fifth defect in this project to return a plausible state instead of
+an error, and the third in this one array (§88e NUL byte, §89d directory-resume,
+now this). Each was silent, each produced "COMPLETED" tasks, and each was found
+only by counting outputs against inputs.
+
+### 92b. Predicted poses for benzothiadiazole, benoxacor and fludioxonil
+
+§91 scored 475 variants against a **crystal** mandipropamid pose. The other three
+compounds that produced responders in Park's screen have no crystal structure in
+PYR1, and Jannis's constraint from §91d applies: *hits may only be compared
+against the right ligand.* Mandipropamid is 30 heavy atoms; benzothiadiazole is
+13, benoxacor 16, fludioxonil 18. Scoring their responders against the
+mandipropamid pose asks about a molecule twice the size of the one they bind.
+
+So each compound needs its own pose, and the question that decides whether this
+generalises is whether a PREDICTED pose is stable enough to anchor the same
+rigid-ligand protocol. `162`: Boltz-2 on PYR1(**K59R**) — the actual library
+background, asserted to differ from wild type at exactly one position —
+**3 compounds × 10 seeds**, MSA reused from §84 so each job is ~71 s median.
+
+**The seeds are the experiment, not overhead.** If the pose is seed-stable, the
+method transfers to ligands with no crystal structure, which is Goal 2/3. If it
+moves, the method needs crystallography and that is the answer. §80 validated
+Boltz-2 poses across 718 sensor structures, which is why it is used here rather
+than ESMFold2, whose iPTM reproduces (ICC 0.735) while its **pose does not**
+(13–18 Å across seeds).
+
+⚠ A pose predicted into the apo K59R pocket need not be the productive one, and
+nothing here resolves cross-reactivity. Both are stated before the numbers.

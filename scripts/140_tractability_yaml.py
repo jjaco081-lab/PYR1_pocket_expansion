@@ -31,7 +31,13 @@ def main():
     os.makedirs(d, exist_ok=True)
     n = 0
     for i, r in enumerate(recs):
-        smi = r["smiles"].replace('"', "'")
+        # SINGLE-quoted YAML: no escape processing. A double-quoted scalar
+        # treats a backslash as an escape, so any SMILES carrying cis/trans
+        # stereochemistry (C/C=C\\C) either fails to parse or is silently
+        # corrupted -- \\N is YAML's NEL character, which reached RDKit as a
+        # control byte and returned None. That lost 14 of 362 runs, and it lost
+        # them NON-RANDOMLY: every casualty had stereochemistry (README 92a).
+        smi = r["smiles"].replace("'", "''")
         block = (f"      msa: {msa}\n" if msa else "")
         with open(os.path.join(d, f"lig{i:04d}.yaml"), "w") as fh:
             fh.write(
@@ -43,7 +49,7 @@ def main():
                 f"{block}"
                 "  - ligand:\n"
                 "      id: B\n"
-                f'      smiles: "{smi}"\n'
+                f"      smiles: '{smi}'\n"
                 "properties:\n"
                 "  - affinity:\n"
                 "      binder: B\n")
