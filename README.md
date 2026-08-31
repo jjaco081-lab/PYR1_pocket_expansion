@@ -10034,3 +10034,36 @@ than ESMFold2, whose iPTM reproduces (ICC 0.735) while its **pose does not**
 
 ⚠ A pose predicted into the apo K59R pocket need not be the productive one, and
 nothing here resolves cross-reactivity. Both are stated before the numbers.
+
+### 92c. The predicted poses have no consensus — the right pocket, no pose
+
+Thirty structures, ten seeds per compound, protein superposed on CA before the
+ligand RMSD is taken.
+
+| compound | ligand atoms | median pairwise RMSD | max | centroid spread | within 8 Å of the ABA site |
+|---|---|---|---|---|---|
+| benoxacor | 16 | **4.02 Å** | 13.31 | 3.62 Å | 9/10 |
+| benzothiadiazole | 13 | **4.73 Å** | 9.13 | 4.45 Å | 9/10 |
+| fludioxonil | 18 | **6.84 Å** | 15.63 | 7.28 Å | 8/10 |
+
+The cut fixed in advance was 1.0 Å for "one pose" and 2.5 Å for "usable with
+per-pose repetition". All three are far outside both.
+
+**But this is not random binding.** 8–9 of 10 seeds put the ligand within 8 Å of
+the ABA site, so Boltz-2 finds the right pocket every time and simply has no
+orientational consensus inside it. PYR1's chamber is 11.6 Å along its long axis
+(§86c), so a 4–7 Å centroid spread means the ligand is sliding around a cavity
+barely larger than the spread.
+
+**Consequence: §91's rigid-ligand protocol cannot be extended to these three.**
+The AUC 0.868 result stands for mandipropamid and does not generalise to a
+ligand without a crystal structure. §46 already established that a wrong pose
+does not fail loudly — it returns a plausible number — so scoring 1,425 variants
+against an arbitrary one of these poses would have produced a table that looked
+exactly like §91's and meant nothing.
+
+⚠ **The spread may be real rather than a model failure.** Mandipropamid is 30
+heavy atoms and fills the chamber; benzothiadiazole is 13. A ligand less than
+half the size of the cavity it binds may genuinely lack one defined pose, in
+which case the seed spread is reporting degeneracy, not error. Nothing here
+distinguishes those two explanations, and a crystal structure is what would.
