@@ -9553,3 +9553,102 @@ partial correlation controlling n_sub is +0.19.
 
 Whether a specific *residue* would be eliminated needs single-substitution ΔΔG,
 which job 27925009 is computing for Beltran's 20 positions (§87c).
+
+---
+
+## 88. The mandipropamid benchmark was wrong, and a PYR1-tuned score works (2026-08-28)
+
+### 88a. K59R was never a prediction target
+
+Jannis read the mandipropamid paper's methods. The library was built **in the
+ABA non-responsive PYR1(K59R) backbone**: K59R was isolated separately in
+error-prone PCR screens against structurally dissimilar agrochemicals, and was
+**forced into every library member**, not selected. Their library is stated
+exactly — 475 variants, site-saturation at **25** pocket-lining residues (P55
+F61 I62 V81 V83 L87 P88 A89 S92 E94 E141 F108 I110 H115 R116 L117 Y120 S122
+M158 F159 A160 T162 V163 V164 N167). 25 × 19 = 475 on the nose, and 59 is not
+among them.
+
+**So §23j, §33, §36 and §47b were scoring a prediction nobody had to make.**
+"K59R is invisible to every method" is true and irrelevant: the recorded verdict
+*stage 1 does not clear* rested on it, and has to be revisited. `156` rebuilds
+the real benchmark — all 475, scored in **both** backgrounds, asking whether
+forcing K59R rescues V81I / F108A / F159L. Job 27977098.
+
+Jannis's second correction: sensors were also screened for **cross-reactivity**,
+so the best-affinity variant need not win. A low rank is evidence against the
+score; a high rank is not proof of selection.
+
+### 88b. The noise floor, measured for the first time
+
+380 single substitutions at Beltran's 20 positions, 3 repacks each: **median
+replicate spread 0.00 REU, 90th percentile 0.21.** The signal that must be
+resolved — V81I + F108A + F159L are worth ~2.7 REU once F108A's clash is
+relieved — is **13× the noise**. Whatever is wrong with this score, it is not
+imprecision. That removes the main reason to doubt Goal 3 is reachable.
+
+### 88c. Per-residue false negatives, and what causes them
+
+If ΔΔG had chosen the library from those 380:
+
+| keep top | sensor substitutions kept | recall | chance |
+|---|---|---|---|
+| 10 % | 9/40 | 22 % | 10 % |
+| 25 % | 17/40 | 42 % | 25 % |
+| 50 % | 21/40 | **52 %** | **50 %** |
+
+Enrichment lives only at the very head and is **gone by the median**. AUC 0.606.
+The worst false negatives name the mechanism: **Y120G at rank 356/380** (used by
+4F-MDMB-BUTINACA, AB-PINACA, CBDA, JWH-007 — the most widely used substitution
+in the set), Y120A 308, A160G 261, **F159G 258** (Beltran's round-1 DSM hit for
+WIN 55,212).
+
+| class | n | median ΔΔG |
+|---|---|---|
+| SHRINK (< −20 Å³) | 179 | **+2.40** |
+| similar | 65 | +0.04 |
+| GROW (> +20 Å³) | 136 | +0.54 |
+
+**ref2015 penalises shrink substitutions specifically** — removing a side chain
+leaves a void it scores as destabilising — and real sensors are shrink-biased
+(median ΔV −16.3 Å³ against −3.7 for the rest). The filter penalises the class
+it should favour. §89b's earlier test of this on 70 combinations was
+uninformative because 69 of the 70 net-grow; at single-substitution resolution
+there is finally contrast.
+
+### 88d. A label-free correction, and it works
+
+Within one volume class the raw score is already better than pooled — AUC 0.652
+shrink-only, 0.683 grow-only, against 0.606 pooled. That is the signature of a
+between-class offset, not a within-class failure. So a quadratic in ΔV is fitted
+to ΔΔG using **only the 340 unlabelled substitutions** and subtracted; no sensor
+label enters the fit.
+
+| score | AUC | top 10 % | top 25 % | top 50 % |
+|---|---|---|---|---|
+| raw ref2015 ΔΔG | 0.606 | 22 % | 42 % | 52 % |
+| **volume-corrected** | **0.666** | 25 % | 45 % | **70 %** |
+| chance | 0.500 | 10 % | 25 % | 50 % |
+
+**F159G moves from rank 258 to 41.** This is the first PYR1-tuned scoring change
+in the project that improves anything, and it supports Jannis's proposition that
+the function has to be tailored rather than generalised.
+
+⚠ It is partial and not yet out-of-sample. The head of the list barely improves
+(22 → 25 %), Y120G stays at 275, and the fit and the evaluation share the same
+380 substitutions and the same structural context. The real test is the
+Park-475 mandipropamid library — different ligand, different backbone,
+different lab.
+
+### 88e. The tractability array produced nothing, and why
+
+All 362 runs failed. Every task logged `Error: '\x00'` and exited 0 with no
+affinity output. Cause: **a single trailing NUL byte, the last byte of the
+468,025-byte shared a3m**, which Boltz's parser rejects. One corrupt byte in the
+one input deliberately shared across all 362 runs (§84b) cost the entire array.
+
+This is the §47b failure mode again — *a setup defect that returns a plausible
+state instead of an error*. Every task "COMPLETED". The MSA is repaired (1,820
+sequences, NUL-free) and `142` now **asserts** the a3m is NUL-free and refuses
+to run otherwise, rather than repairing it silently: a reader that tolerates the
+corruption would hide the next one.

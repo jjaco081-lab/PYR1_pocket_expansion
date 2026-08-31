@@ -1,0 +1,37 @@
+380 singles, 40 used by a real sensor
+
+class                     n   median ddG   median dV
+SHRINK (< -20 A^3)      179        +2.40       -49.8
+similar                  65        +0.04        +3.0
+GROW (> +20 A^3)        136        +0.54       +44.1
+
+real sensor substitutions: median dV -16.3 A^3 (20 shrink, 14 grow)
+unlabelled:                median dV -3.7 A^3
+
+correction fitted on the 340 UNLABELLED only (no label enters the fit):
+   ddG_hat = +1.65 -0.0151*dV +0.000191*dV^2
+
+==================================================================
+DOES IT HELP?
+==================================================================
+score                         AUC   top10%   top25%   top50%
+raw ref2015 ddG             0.606      22%      42%      52%
+volume-corrected            0.666      25%      45%      70%
+chance                      0.500      10%      25%      50%
+
+   substitutions that move most, and the ones that do not:
+        sub       raw   corrected
+      F159G    258/380       41/380
+      Y120A    308/380      201/380
+      Y120G    356/380      275/380
+      A160G    261/380      280/380
+      V164W    376/380      378/380
+      A160V     12/380       20/380
+       V83L      8/380       14/380
+
+   F159G is Beltran's round-1 DSM hit for WIN 55,212 (with A160V).
+   Raw ddG buries it at 258; the correction lifts it to 41. Y120G, the
+   most widely used substitution in the whole set, stays at 275 -- the
+   correction is partial and the head of the list barely improves.
+
+written to /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/library_recall/volume_corrected.json
