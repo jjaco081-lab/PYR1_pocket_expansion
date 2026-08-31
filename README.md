@@ -10144,3 +10144,42 @@ quantity in this project that beats chance at all.
 so Boltz-2 *does* produce a single consistent pose for about a quarter of
 ligands. The refolded agrochemical runs can therefore be judged against a real
 base rate rather than an assumption.
+
+### 92d. The real pose result, once the receptor actually folds
+
+§92c was measured on models with median pLDDT 49. The cause was found by running
+the identical job with the WILD-TYPE sequence: **pLDDT 96.0–96.7**, against
+40–58 for K59R. The a3m's query line is wild-type PYR1, and **a one-residue
+mismatch between the input sequence and the alignment query makes Boltz silently
+abandon the MSA and fold single-sequence.** No warning, exit code 0, well-formed
+output — the seventh failure of this shape in this project, and one I introduced
+by reusing a wild-type alignment with a K59R receptor.
+
+Fixed by building `pyr1_k59r.a3m` (1,820 sequences, query mutated at 59 only,
+asserted to differ at exactly one position). `162` now uses it and **asserts the
+a3m query equals the input sequence before predicting**, in addition to the
+pLDDT ≥ 80 gate.
+
+**All 30 rerun structures pass: mean pLDDT 95.6, zero rejections.** Core backbone
+RMSD to the PYR1 frame is 0.55–0.64 Å.
+
+| compound | atoms | median pairwise RMSD | max | verdict |
+|---|---|---|---|---|
+| **fludioxonil** | 18 | **0.82 Å** | 1.39 | **ONE POSE** |
+| benzothiadiazole | 13 | 2.47 Å | 4.30 | same site, uncertain orientation |
+| benoxacor | 16 | 3.32 Å | 4.82 | no consensus |
+
+Against the base rate established in §93b — 97 of 362 ligands (27 %) give a
+sub-1.0 Å spread — one in three here is an ordinary outcome, not a failure
+specific to these compounds.
+
+**And Boltz builds the CLOSED receptor.** Gate RMSD to the closed frame is
+1.15–1.80 Å against 5.24 Å for the open apo state (3K3K chain A), with the ligand
+centroid 0.70–1.18 Å from the ABA site. Jannis's concern that a pose must be
+placed at the opening because PYR1 closes onto its ligand does not bite here:
+co-folding produces the closed state directly, ligand already inside.
+
+**Consequence:** fludioxonil can be scored by §91's rigid-ligand protocol now —
+and it is the better test than mandipropamid, with **28 decoded positives against
+mandipropamid's 20**. Benzothiadiazole and benoxacor cannot, and are where
+conformer placement or a crystal structure would be needed.

@@ -27,7 +27,11 @@ ROOT=/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion
 cd "$ROOT" || exit 1
 BOLTZ=/bigdata/cutlerlab/jjaco081/conda_envs/boltz2/bin/boltz
 CACHE=/bigdata/cutlerlab/jjaco081/conda_envs/boltz2/.boltz_cache
-A3M=$ROOT/data/tractability/pyr1_wt.a3m
+# The MSA query line MUST equal the input sequence. With the WT a3m against the
+# K59R input, boltz silently abandons the alignment and folds single-sequence:
+# median pLDDT 49 instead of 96, verified by running the identical job with the
+# WT sequence (96.0-96.7). One residue, no error message (README 92d).
+A3M=$ROOT/data/tractability/pyr1_k59r.a3m
 [[ -s $A3M ]] || { echo "no MSA at $A3M"; exit 1; }
 if LC_ALL=C grep -qaP "\x00" "$A3M"; then echo "MSA has NUL bytes -- refusing"; exit 1; fi
 I=${SLURM_ARRAY_TASK_ID:-0}
@@ -39,6 +43,16 @@ if compgen -G "$OUTD/boltz_results_*/predictions/*/*.cif" > /dev/null; then
 fi
 rm -rf "$OUTD"; mkdir -p "$OUTD" "$ROOT/data/poses/yaml_msa"
 Y=$ROOT/data/poses/yaml_msa/${NAME}.yaml
+python3 - "$A3M" "$ROOT/data/poses/yaml/${NAME}.yaml" <<'PY' || exit 1
+import sys, re
+q=open(sys.argv[1]).read().split("\n")[1].strip()
+s=[l.split("sequence: ")[1].strip() for l in open(sys.argv[2]) if "sequence:" in l][0]
+if q!=s:
+    d=[i for i,(a,b) in enumerate(zip(q,s)) if a!=b]
+    print(f"MSA query != input sequence at {d[:5]} (len {len(q)} vs {len(s)}) -- refusing")
+    sys.exit(1)
+print("MSA query matches the input sequence")
+PY
 sed "s|^      sequence: \(.*\)$|      sequence: \1\n      msa: $A3M|" \
     "$ROOT/data/poses/yaml/${NAME}.yaml" > "$Y"
 # NO --use_msa_server: it makes boltz ignore the `msa:` path supplied in the
