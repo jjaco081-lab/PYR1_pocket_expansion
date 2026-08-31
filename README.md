@@ -9921,18 +9921,49 @@ singles are F108 (A,C,E,G,I,L,N,Q,S,T,V), F159 (A,C,I,L,M,T,V), A89W and S122G.
 
 Protein-only repack ΔΔG on all 475, scored against the decoded labels:
 
-| task | n | positives | **AUC** | best balanced acc. | trivial baseline |
-|---|---|---|---|---|---|
-| **mandipropamid** | 475 | 20 | **0.868** | 0.810 | 0.958 acc. / 0.5 bal. |
-| mandipropamid, F108 excluded | 456 | 9 | 0.720 | 0.754 | — |
-| responds to **any** compound | 475 | 54 | **0.655** | 0.639 | — |
+⚠ **MANDIPROPAMID ONLY.** An earlier version of this table also scored a
+"responds to any compound" label. Jannis: *"we should only ever compare hits if
+we use the right ligand."* That row is withdrawn and must not be reinstated. The
+ligand modelled here is mandipropamid at 30 heavy atoms; benzothiadiazole is 13,
+benoxacor 16, fludioxonil 18. A benoxacor responder scored against the
+mandipropamid pose is being asked about a molecule twice the size of the one it
+actually binds, so its rank carries no information. Negatives remain valid — a
+variant tested against mandipropamid at 100 µM that did not respond is a true
+negative for mandipropamid whatever else it binds.
 
-**AUC 0.868 for mandipropamid**, and the drop to 0.655 for "responds to
-anything" is the control that matters: the same score on the same variants,
-re-labelled for a different question, loses most of its signal. So the 0.868 is
-not a generic tolerability signal — it is specific to the ligand whose pose the
-score was given. Excluding F108 the signal survives at 0.720 on 9 positives, so
-it is not carried entirely by the one dominant clash.
+| task | n | positives | **AUC** | best balanced acc. |
+|---|---|---|---|---|
+| mandipropamid, all 475 | 475 | 20 | **0.868** | 0.810 |
+| mandipropamid, F108 excluded | 456 | 9 | **0.720** | 0.754 |
+| trivial-majority baseline | — | — | 0.500 | 0.500 |
+
+### 91e. It picks the substitution, not only the position
+
+The project's standing belief (§63, §71) is that positions are recoverable and
+substitutions are not. Restricted to the right ligand, that is too pessimistic.
+Asking the within-position question — *given F108, which of its 19 substitutions
+respond?* — removes the position signal entirely:
+
+| position | responders | within-position AUC |
+|---|---|---|
+| **F108** | 11 of 19 | **0.784** |
+| **F159** | 7 of 19 | **0.631** |
+
+Ordered by ΔΔG, responders starred:
+
+```
+F108   S* A* C* G* P  T* D  Q* N* E* V* M  R  K  L* I* H  Y  W
+F159   D  E  T* I* V* W  A* N  H  S  M* Q  C* G  P  L* K  R  Y
+```
+
+F108's failures are interpretable: P and D rank 5th and 7th and do not respond —
+proline breaks the strand, aspartate buries a charge — while W, Y, H rank last
+and correctly do not respond. F159 is weaker but still above chance.
+
+The 20 positives sit at only 4 positions (F108 11, F159 7, S122 1, A89 1), so the
+18 residues with no mandipropamid responder contribute negatives only. The
+clearest false positives are the six F108 substitutions that score in the top 20
+and respond to nothing at all: **F108P, D, M, R, K, H**.
 
 **How AUC was computed.** AUC is the probability that a randomly chosen true hit
 scores better than a randomly chosen true negative — 0.5 is chance, 1.0 perfect,
