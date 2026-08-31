@@ -9879,13 +9879,29 @@ threshold is not a tuning choice.
   background, each against **15 agrochemicals at 100 µM** = **7,125 tested
   interactions**, matching the caption exactly.
 - **8 of the 25 residues never conferred responsiveness** and are omitted from
-  the figure: **55, 61, 62, 88, 110, 115, 116, 163** → 152 variants × 15 = 2,280
-  negatives free from the caption.
-- **11 of the 15 compounds produced no responder at all** → a further 5,225
-  negatives.
-- **80 positive (variant, compound) pairs** across 54 distinct variants.
+  the figure: **55, 61, 62, 88, 110, 115, 116, 163** → 152 variants.
+- **11 of the 15 compounds produced no responder at all.**
 
-**7,045 true negatives against 80 positives (1.12 % positive).** This is the
+⚠ **Arithmetic corrected (Jannis).** An earlier version of this section added
+"152 × 15 = 2,280" to "475 × 11 = 5,225" and reported 7,505 free negatives —
+more than the 7,125 interactions that exist, which is the tell. The two sets
+overlap in absent-residue × dead-compound, 152 × 11 = 1,672. The correct
+statement is a partition:
+
+| block | count | status |
+|---|---|---|
+| absent variants × dead compounds | 152 × 11 = 1,672 | all negative |
+| absent variants × productive compounds | 152 × 4 = 608 | all negative |
+| shown variants × dead compounds | 323 × 11 = 3,553 | all negative |
+| **shown variants × productive compounds** | **323 × 4 = 1,292** | **the only block the figure decides** |
+| total | **7,125** | ✓ |
+
+So **5,833 interactions (81.9 %) are known negative without reading the figure
+at all**, and only 1,292 cells had to be decoded. Of those, **80 are positive**
+across 54 distinct variants and 1,212 negative.
+
+**7,045 true negatives against 80 positives (1.12 % positive)** — 5,833 from
+structure plus 1,212 read from the figure. This is the
 first true-negative set in the project, and it is 2,348× larger than the three
 variant-level negatives §90 could find in the entire published corpus.
 
@@ -9917,6 +9933,18 @@ re-labelled for a different question, loses most of its signal. So the 0.868 is
 not a generic tolerability signal — it is specific to the ligand whose pose the
 score was given. Excluding F108 the signal survives at 0.720 on 9 positives, so
 it is not carried entirely by the one dominant clash.
+
+**How AUC was computed.** AUC is the probability that a randomly chosen true hit
+scores better than a randomly chosen true negative — 0.5 is chance, 1.0 perfect,
+and it is threshold-free. For mandipropamid that is 20 × 455 = 9,100 ordered
+pairs, each scored 1 if the hit has the lower ΔΔG, 0.5 if tied, 0 otherwise, and
+averaged. Verified three ways that must agree: direct pairwise count 0.8682,
+Mann-Whitney U/(n₁n₂) 0.8682, rank-sum formula 0.8682.
+
+⚠ **The mandipropamid AUC is carried by the F108 block.** Median ΔΔG is −753.94
+for the 20 hits against +0.70 for the 455 negatives, because 11 of the 20 are
+F108X sitting near −1,400 REU. That is why the F108-excluded row is the
+load-bearing one: 0.720 on the 9 remaining positives.
 
 ⚠ Balanced accuracy is at the best threshold chosen on the same data and is an
 optimistic ceiling, not a held-out estimate; **AUC is the number to quote**.
