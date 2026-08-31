@@ -9652,3 +9652,50 @@ state instead of an error*. Every task "COMPLETED". The MSA is repaired (1,820
 sequences, NUL-free) and `142` now **asserts** the a3m is NUL-free and refuses
 to run otherwise, rather than repairing it silently: a reader that tolerates the
 corruption would hide the next one.
+
+### 88f. ⚠ The volume correction does NOT transfer — 88d is downgraded
+
+§88d reported a volume-corrected ΔΔG lifting AUC 0.606 → 0.666 on Beltran's 380
+singles and moving F159G from rank 258 to 41. Tested out-of-sample on the
+Park-475 mandipropamid library it **fails**, in two different ways.
+
+**The quadratic form breaks on scale.** Beltran's singles span ΔΔG −5 to +22;
+Park's span ±1,400 because the wild-type frame clashes with the mandi pose. Fitted
+there, the quadratic is driven by clash outliers and its top hits become A160W,
+S122W, A89W, P88W, T162W — *the largest residue at every position*, which is
+what an over-fitted volume term does by construction.
+
+**A scale-free version survives only weakly.** Converting ΔΔG to a within-volume-
+class rank (shrink / similar / grow):
+
+| | Beltran AUC | Beltran top 25 % | mandi V81I | mandi F159L |
+|---|---|---|---|---|
+| raw ΔΔG | 0.606 | 42 % | 239/456 | 128/456 |
+| within-volume rank | 0.628 | **35 %** | 185/456 | **162/456** |
+
+The Beltran AUC gain shrinks from +0.060 to +0.022, top-25 % recall gets *worse*,
+and on mandi the two targets move in opposite directions. **The §88d result was
+largely dataset-specific and should not be carried forward as a working
+correction.** The shrink-penalty it was built on (§88c) is still real and
+measured; the fix for it is not.
+
+### 88g. What the Park-475 run actually showed, and the conditional follow-up
+
+Two defects in `156`, both visible in its own output. It repacked a 6 Å shell
+around the mutated position, so each of the 475 was scored in a *different*
+shell and K59R — sitting outside almost every one — was frozen and **cancelled in
+the paired difference**: it changed ΔΔG for 22 of 475 variants, only at
+positions 55, 108, 141, 158, 164, 167. The A/B was mostly vacuous.
+
+And one clash swamps everything. The mandi pose comes from the quadruple-mutant
+crystal, so wild-type F108 clashes with it enormously: **the top 12 of 475 are
+F108S/A/C/G/P/T/D/Q/N/E/V/M at −1358 to −1484 REU**, with F108A at rank 2, while
+V81I ranks 260 and F159L 146. That is not a failure to find them — it is the
+score correctly reporting that nothing else matters until F108 is relieved.
+
+So the question is conditional, and `160` asks it with a **single fixed shell**
+(union of all 25 pocket neighbourhoods, identical for every variant, so K59R can
+act and cross-position ranks are comparable) across three backgrounds: K59R,
+K59R+F108A, and K59R+F108A+F159L. If V81I and F159L rise once the dominant clash
+is relieved, Goal 3 needs a **greedy sequential protocol**, not a better score.
+Job 27977268.
