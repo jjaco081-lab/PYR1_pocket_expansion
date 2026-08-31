@@ -10035,7 +10035,29 @@ than ESMFold2, whose iPTM reproduces (ICC 0.735) while its **pose does not**
 ⚠ A pose predicted into the apo K59R pocket need not be the productive one, and
 nothing here resolves cross-reactivity. Both are stated before the numbers.
 
-### 92c. The predicted poses have no consensus — the right pocket, no pose
+### 92c. ⚠ RETRACTED — the receptors were misfolded, so this measured nothing
+
+**This section reported a pose result. It is withdrawn.** The 30 structures it
+was computed from have a median pLDDT of **49.4** and a **14.0 Å core backbone
+RMSD** to the PYR1 frame over 166 gate- and latch-excluded residues. The protein
+is not folded; the ligand positions in it are meaningless, and the "median
+pairwise RMSD 4–7 Å" below is the spread of a ligand inside a collapsed model.
+
+**Cause:** `162` passed `--use_msa_server` in addition to the `msa:` path in the
+YAML, which makes Boltz ignore the supplied alignment — the runs' `msa/`
+directories are empty. The tractability array (§84), identical but without that
+flag, reaches **median pLDDT 94.4**. One flag, and every downstream number was
+garbage.
+
+**Sixth silent-state failure** (§88e, §89d, §92a, and my own mis-paired
+superposition arrays while diagnosing this one). The jobs completed, wrote
+structures, and the structures parsed. Only checking the fold caught it. `162`
+now drops the flag and **asserts median pLDDT ≥ 80, exiting non-zero otherwise**,
+so a bad fold can never again reach a pose measurement. Rerun is 27981301.
+
+The retracted numbers are kept below only so the failure is legible.
+
+#### (withdrawn) The predicted poses have no consensus — the right pocket, no pose
 
 Thirty structures, ten seeds per compound, protein superposed on CA before the
 ligand RMSD is taken.
