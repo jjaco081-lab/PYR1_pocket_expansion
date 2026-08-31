@@ -21,6 +21,42 @@ COLS = ["Method", "Workstream", "What it computes (how)", "How we used it",
         "Where it ran", "Scripts / jobs"]
 
 ROWS = [
+["Cavity chamber decomposition (bottleneck radius)", "Pocket - structure",
+ "Decomposes an enclosed cavity into chambers by the MAXIMIN of clearance along paths between them - the largest sphere that can be walked from one to the other. Exact on the grid; makes no straight-pocket assumption.",
+ "Re-measured PYR1 and 19 relatives after the total-volume comparison was shown to be counting voids a ligand cannot reach.",
+ "PYR1 3QN1 frame + 10 large-cavity relatives", "Aug 28",
+ "A QUARTER of PYR1's own published cavity volume is satellite, not chamber: 164 total but 119 main. Only 2PCS has a genuinely large single chamber (570/570, r_max 3.80); 2NS9 462/157, 6AWV 305/126 with satellites behind r = 1.43 necks, 3QRZ 212/73. The large totals are mostly fragmentation.",
+ "Only detects constrictions that SEPARATE chambers - a waist within one chamber is invisible to it, which is what Jannis saw in PyMOL for 4DSB. Volume split between chambers is nearest-seed Voronoi, approximate at boundaries; the bottleneck radii themselves are exact.",
+ "Report chamber volume, never total enclosed volume, when comparing pockets across structures. Two earlier metrics of mine were withdrawn on the way here: a circular C-beta envelope, and a poly-Gly column that reported 0-3 A^3 when the component ceased to exist.",
+ "ACTIVE", "-", "CPU local", "143, 145, 150, 151, 152"],
+
+["Library recall on Beltran-45 (held-out benchmark)", "Design - benchmark",
+ "Scores a LIBRARY, not a variant: a menu of positions x allowed residues, size prod(1+n_i); a sensor is captured when all its substitutions lie inside. Recall at fixed size, never precision.",
+ "First genuinely held-out test in the project - 45 cannabinoid sensors nothing here was built on, using 20 design positions of which only 10 overlap Tian's.",
+ "Beltran 45 sensors; Tian sd03 as the frequency prior", "Aug 28",
+ "Tian's substitution frequency TRANSFERS: 64 % recall at a library of 1e5 against a random null of 15 % +- 13 % (p < 0.001), 33 % at 1e3 against 4 %. But it saturates at exactly the vocabulary ceiling - Tian's whole 144-substitution vocabulary captures 30/45 = 67 % - so all remaining headroom is POSITIONAL. CBDA 0/3, THC 0/2 and 4F-MDMB 0/1 are unreachable however the 144 are re-ranked.",
+ "Beltran's sensors came from Beltran's libraries, so a position they never varied is invisible: absence is not evidence against a position.",
+ "The win is new POSITIONS, not re-ranking the known vocabulary. Any new library method must beat the frequency baseline, which is advantaged and hard to beat.",
+ "ACTIVE", "-", "CPU local", "153"],
+
+["Single-substitution ddG at Beltran's 20 positions", "Design - scoring",
+ "All 380 singles by protein-only Cartesian FastRelax ddG with a paired same-shell wild-type control; 3 replicates, minimum taken.",
+ "Asked the per-RESIDUE false-negative question: if ddG chose the library, which real substitutions would be discarded?",
+ "PYR1 3QN1 frame; Beltran's 20 design positions", "Aug 28-31",
+ "Replicate spread measured for the first time: median 0.00, 90th pct 0.21 REU, against a ~2.7 REU signal - the score is PRECISE, so imprecision is not the problem. Recall if ddG chose the library: 22 % at top-10 %, 42 % at top-25 %, and 52 % at top-50 % which is chance. AUC 0.606. ref2015 penalises SHRINK substitutions specifically (median +2.40 vs +0.54 grow) and real sensors are shrink-biased (median dV -16.3 vs -3.7), so it penalises the class it should favour.",
+ "Y120G, the most widely used substitution in the whole set, ranks 356/380. A volume correction fitted label-free lifted AUC to 0.666 on this set but FAILED to transfer to mandipropamid and is withdrawn.",
+ "The filter is a clash detector suitable as a final viability screen on an already-narrow set, not as the thing that does the narrowing.",
+ "ACTIVE", "-", "CPU cutlerlab", "154, 157, 158"],
+
+["Closed-space enumeration (Park-475, DSM doubles)", "Design - benchmark",
+ "Exhaustive scoring of a real published library in its own defined search space: Park's 475 site-saturation singles in the K59R backbone, and all 35,863 allowed doubles of Beltran's DSM library.",
+ "The sharpest available retrospective test - the search space is closed and stated in the papers' methods, so ranks are interpretable.",
+ "4WVO mandi pose in the PYR1 frame; 7MWN reverted to wild-type PYL2 with WI5", "Aug 31",
+ "DSM doubles: the five round-1 WIN hits rank 1547, 4805, 6632, 8276, 17532 of 35,863; median 6632 vs a null median 17,935, permutation p = 0.047. Screen size to a first hit 1547 vs 7172 expected - a 4.6x narrowing, the first such number on a closed independently-defined library. Park-475: F108A ranks 2/475 but the whole top 12 is F108X at -1358 to -1484 REU, V81I 260 and F159L 146.",
+ "It finds A160 (2.63x enriched in the top 1 %) and is BLIND to F159 (1.03x, exactly chance) although all five hits pair them. The conditional test refutes the greedy hypothesis: V81I stays at 224/222/221 across K59R, +F108A and +F108A+F159L backgrounds, and the score prefers V81F and V81Y at ranks 7-8.",
+ "Jannis found the benchmark itself was wrong: the mandi library was built in the FORCED K59R backbone, so every earlier record of 'K59R is invisible to every method' was scoring a prediction nobody had to make.",
+ "ACTIVE", "-", "CPU cutlerlab", "156, 159, 160"],
+
 ["Cavity characterisation (lib_cavity)", "Pocket - structure",
  "Grid-based cavity detection; volume from probe-accessible grid points, with residues assigned by cavity lining + line of sight rather than distance to ligand.",
  "Defined the pocket, measured expansion per variant, found the length limit and the lobe gatekeeper.",
@@ -274,6 +310,13 @@ TIMELINE = [
     ("Aug 19", "Six papers read from their Methods. Leonard's protocol needs a known weak hit before it can place a pose."),
     ("Aug 19", "Coupled moves: better sampling, K59 still retained 0% of the time. Sampling is NOT the limit."),
     ("Aug 19", "MM-GBSA rescoring makes the K59 flip. Changing the solvation model did what no sampler could."),
+    ("Aug 28", "Umbrella sampling FAILS its pre-registered hysteresis test by 15x with a sign flip. The arm is closed."),
+    ("Aug 28", "Graft direction closed: enlargement is neither insertion (<=3 inserted residues in any donor) nor displacement (sheet-helix r = -0.18)."),
+    ("Aug 28", "Beltran-45, the first held-out benchmark: Tian's frequency prior transfers at 64 % recall, then saturates at the 67 % vocabulary ceiling."),
+    ("Aug 31", "Jannis: the mandipropamid library was built in the FORCED K59R backbone. Every 'K59R is invisible' record was scoring a prediction nobody had to make."),
+    ("Aug 31", "ddG replicate noise measured: 0.21 REU against a 2.7 REU signal. The score is precise; the shrink-penalty is what makes it wrong."),
+    ("Aug 31", "DSM doubles enumerated in full (35,863): 4.6x narrowing to a first hit, but A160 found at 2.63x and F159 at exactly chance."),
+    ("Aug 31", "TRUE NEGATIVES INVENTORIED: sd07 has 0, sd09 has 3, sd01 is ligand-level only. Accuracy cannot be measured on the data that exists."),
 ]
 
 GLOSSARY = [

@@ -9556,7 +9556,7 @@ which job 27925009 is computing for Beltran's 20 positions (§87c).
 
 ---
 
-## 88. The mandipropamid benchmark was wrong, and a PYR1-tuned score works (2026-08-28)
+## 88. The mandipropamid benchmark was wrong, and the tuned score does not survive (2026-08-31)
 
 ### 88a. K59R was never a prediction target
 
@@ -9702,7 +9702,7 @@ Job 27977268.
 
 ---
 
-## 89. Both closed-space enumerations return, and they disagree usefully (2026-08-28)
+## 89. Both closed-space enumerations return, and they disagree usefully (2026-08-31)
 
 ### 89a. The WIN DSM library: real but modest narrowing
 
@@ -9777,3 +9777,69 @@ logged "exists, skip" and exited 0. The guard now tests for
 
 That is the fourth defect in this project to return a plausible state instead of
 an error, and the second in the same array (§88e). Resubmitted as 27978561.
+
+---
+
+## 90. What >80 % accuracy would require, and why it is not measurable today (2026-08-31)
+
+Jannis asked whether to step back and work out what is needed to separate
+plausible binders from variants *shown not to work*, at >80 % accuracy. The
+question is the right one and it has a specific, checkable blocker.
+
+**Accuracy needs true negatives, and we have almost none.** Every metric this
+project has reported — recall at fixed library size (§87), hit retention (§89b),
+rank of a known sensor (§89a) — is a RECALL metric, and that was not a
+stylistic choice. §51 established the ground truth is positive-unlabeled: a
+variant absent from a hit list may be a failure, or may simply never have been
+screened. Inventorying every source we hold:
+
+| source | level | positives | **tested negatives** |
+|---|---|---|---|
+| sd07 dose-response | sensor × ligand | 78 respond | **0** — all 78 rows respond somewhere in 0.025–100 µM |
+| sd09 dose-response | sensor × ligand | 242 | **3** (`-` at 100 µM) |
+| sd03 / sd04 clones | variant | 692 | 0 (hit lists only) |
+| Beltran-45 | variant | 45 | 0 |
+| **sd01** | **ligand** | **194** | **3,172** |
+
+**Three variant-level true negatives exist in the entire corpus.** No
+classification accuracy can be computed from that, at any threshold, by any
+method. This is not a scoring problem and no amount of GPU time touches it.
+
+### 90a. What that implies
+
+1. **Accuracy is the wrong headline metric even where negatives exist.** At
+   sd01's 194/3,172 balance a classifier that answers "no" every time scores
+   94 %. Any target must be stated as balanced accuracy, AUC or MCC on a
+   *matched* set — which is exactly why §84 property-matched its negatives and
+   showed TPSA alone reaches AUC 0.298 on a random draw.
+2. **The one measurable version of the question is running.** §84's tractability
+   benchmark is the only true-negative test available: 181 hits against 2,531
+   property-matched non-hits, worst residual descriptor leakage |AUC − 0.5| =
+   0.021. It asks *given a ligand, will PYR1 yield a sensor* — the ligand-level
+   form of Jannis's question. Job 27978561.
+3. **At the variant level the honest answer is that the experiment has not been
+   done.** The one library that was screened EXHAUSTIVELY is Park's 475 —
+   every single mutant at 25 positions in the K59R backbone, assayed against
+   mandipropamid. If that screen's per-variant outcome is recoverable from the
+   supplementary, it converts the 437 variants already scored in §89b into a
+   real classification benchmark with ~470 true negatives. **That table is the
+   single highest-value missing input in the project**, and it is a literature
+   retrieval, not a computation.
+
+### 90b. What a credible >80 % claim would need
+
+Stated in advance so it cannot be moved afterwards:
+
+- a **held-out** set with real tested negatives, not unlabelled non-hits;
+- **balanced accuracy or MCC**, with the trivial-majority baseline quoted beside it;
+- negatives **property-matched** to positives, since §84 showed an unmatched draw
+  is winnable by polarity alone;
+- the **screening depth** stated, because a negative from a shallow screen is a
+  weaker label than one from an exhaustive one;
+- **cross-reactivity** treated as a separate axis (Jannis): a variant that binds
+  the target but also three others is a chemistry failure, not a binding failure,
+  and the two must not be pooled into one label.
+
+Against those criteria nothing in this project currently qualifies, and the §89a
+figure that comes closest — 4.6× narrowing to a first hit, p = 0.047 — is a
+recall result on a positive-only set.
