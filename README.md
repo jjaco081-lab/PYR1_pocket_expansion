@@ -9843,3 +9843,82 @@ Stated in advance so it cannot be moved afterwards:
 Against those criteria nothing in this project currently qualifies, and the §89a
 figure that comes closest — 4.6× narrowing to a first hit, p = 0.047 — is a
 recall result on a positive-only set.
+
+---
+
+## 91. Park's Figure 5 decoded: 7,045 true negatives, and the first accuracy number (2026-08-31)
+
+§90 named the missing input: the per-variant outcome of Park's exhaustively
+screened 475-member pocket library. Jannis supplied the figure. It is an image,
+so it was decoded programmatically, not transcribed.
+
+### 91a. The encoding, and how it was verified
+
+Each substitution cell is a **2 × 2 block of sub-cells, one per compound** —
+Jannis's reading, and it is exactly right. Measured over the whole table, each
+quadrant contains one compound and only that compound, with **zero
+cross-contamination**:
+
+| quadrant | compound | n |
+|---|---|---|
+| top-left | benzothiadiazole | 19 |
+| top-right | mandipropamid | 17 |
+| bottom-left | benoxacor | 9 |
+| bottom-right | fludioxonil | 24 |
+
+That is a strong self-check: a mis-registered grid would smear colours across
+quadrants. Row and column geometry was anchored to the *label glyphs* (20 row
+labels at 41.42 px pitch, columns fitted at 56.94 px) after an even-spacing
+assumption drifted half a row by the bottom of the table. Detection separates
+cleanly — 80 calls at coverage ≥ 0.19 and the next value is 0.06 — so the
+threshold is not a tuning choice.
+
+### 91b. The label set
+
+- **475 variants** (25 residues × 19 substitutions), all in the **K59R**
+  background, each against **15 agrochemicals at 100 µM** = **7,125 tested
+  interactions**, matching the caption exactly.
+- **8 of the 25 residues never conferred responsiveness** and are omitted from
+  the figure: **55, 61, 62, 88, 110, 115, 116, 163** → 152 variants × 15 = 2,280
+  negatives free from the caption.
+- **11 of the 15 compounds produced no responder at all** → a further 5,225
+  negatives.
+- **80 positive (variant, compound) pairs** across 54 distinct variants.
+
+**7,045 true negatives against 80 positives (1.12 % positive).** This is the
+first true-negative set in the project, and it is 2,348× larger than the three
+variant-level negatives §90 could find in the entire published corpus.
+
+### 91c. ⚠ V81I is not a mandipropamid hit
+
+The decoded table says **V81I responds to benzothiadiazole and fludioxonil, not
+mandipropamid**. Yet PYR1^MANDI is K59R+V81I+F108A+F159L. So V81I entered the
+mandipropamid receptor through *combinatorial* mutagenesis of a hit isolated
+against a different compound.
+
+Every earlier scan that treated V81I as a mandipropamid answer was scoring the
+wrong label — including §89b, which recorded V81I at rank 224/437 as a failure.
+It was never a mandipropamid single-mutant positive. The genuine mandipropamid
+singles are F108 (A,C,E,G,I,L,N,Q,S,T,V), F159 (A,C,I,L,M,T,V), A89W and S122G.
+
+### 91d. The first accuracy measurement, against real negatives
+
+Protein-only repack ΔΔG on all 475, scored against the decoded labels:
+
+| task | n | positives | **AUC** | best balanced acc. | trivial baseline |
+|---|---|---|---|---|---|
+| **mandipropamid** | 475 | 20 | **0.868** | 0.810 | 0.958 acc. / 0.5 bal. |
+| mandipropamid, F108 excluded | 456 | 9 | 0.720 | 0.754 | — |
+| responds to **any** compound | 475 | 54 | **0.655** | 0.639 | — |
+
+**AUC 0.868 for mandipropamid**, and the drop to 0.655 for "responds to
+anything" is the control that matters: the same score on the same variants,
+re-labelled for a different question, loses most of its signal. So the 0.868 is
+not a generic tolerability signal — it is specific to the ligand whose pose the
+score was given. Excluding F108 the signal survives at 0.720 on 9 positives, so
+it is not carried entirely by the one dominant clash.
+
+⚠ Balanced accuracy is at the best threshold chosen on the same data and is an
+optimistic ceiling, not a held-out estimate; **AUC is the number to quote**.
+And per Jannis, responsiveness is not affinity: cross-reactivity is a separate
+axis this label set does not resolve.
