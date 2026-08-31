@@ -10089,3 +10089,58 @@ heavy atoms and fills the chamber; benzothiadiazole is 13. A ligand less than
 half the size of the cavity it binds may genuinely lack one defined pose, in
 which case the seed spread is reporting degeneracy, not error. Nothing here
 distinguishes those two explanations, and a crystal structure is what would.
+
+---
+
+## 93. Does a tractable ligand SIT differently in the wild-type pocket? (2026-08-31)
+
+Jannis's idea, and worth testing because it does not go through the affinity
+head that §82 showed cannot rank. 362 co-folded models, 181 hits against 181
+property-matched non-hits, all superposed on the PYR1 core (166 residues, gate
+and latch excluded so ligand-driven gate motion cannot drive the fit).
+
+**Fold asserted first this time.** All 362 pass median pLDDT ≥ 80 and core RMSD
+≤ 3 Å; none rejected. §92c's retraction is why that line is now printed before
+any result.
+
+### 93a. Position carries nothing — Boltz puts everything in the pocket
+
+| feature | hits (median) | non-hits | AUC |
+|---|---|---|---|
+| distance to the ABA site | 1.31 Å | 1.27 Å | 0.488 |
+| **distance to the gate/latch mouth** | **8.07 Å** | **8.00 Å** | **0.508** |
+| fraction of atoms enclosed | 1.00 | 1.00 | 0.500 |
+| fraction of atoms within 8 Å of the site | 1.00 | 1.00 | 0.519 |
+| heavy atoms (matching control) | 20 | 21 | 0.521 |
+
+**Every ligand lands on the ABA site, fully buried** — median centroid
+displacement 1.3 Å for both classes. The specific hypothesis, that tractable
+ligands sit nearer the opening, is not supported: 8.07 Å versus 8.00 Å.
+
+The null is informative rather than empty. Co-folding is not docking: the
+structure module puts whatever it is given into the obvious pocket and reports
+no geometric doubt about it. That is a second, independent route to §82's
+conclusion — the poses are uniformly confident and uniformly placed, so there is
+nothing for a downstream geometric filter to read.
+
+### 93b. Pose SELF-CONSISTENCY is weakly informative, and only weakly
+
+Each ligand has 5 diffusion samples, so the spread among them is free:
+
+| feature | hits | non-hits | AUC | permutation p |
+|---|---|---|---|---|
+| pose spread across samples (lower = hit) | 1.80 Å | 2.06 Å | **0.567** | 0.035 |
+| mean pLDDT (higher = hit) | 96.4 | 96.2 | **0.568** | 0.024 |
+
+Both clear a permutation test at n = 181 per class, and they are nearly
+independent of each other (r = −0.17), so they are not the same signal twice.
+But an AUC of 0.57 is a *hint*, not a filter: at that separation the two
+distributions overlap almost completely, and a 0.2 Å difference in median spread
+is not something to build a decision on. Recorded because it is a real,
+pre-registered, ligand-blind effect — and because it is the first geometric
+quantity in this project that beats chance at all.
+
+**Useful side result for §92:** 97 of 362 ligands have a pose spread under 1.0 Å,
+so Boltz-2 *does* produce a single consistent pose for about a quarter of
+ligands. The refolded agrochemical runs can therefore be judged against a real
+base rate rather than an assumption.
