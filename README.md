@@ -10713,3 +10713,44 @@ method.
 
 The second row moved for the first time. It moved on one ligand, by decomposing
 a score we already had rather than by adding physics.
+
+### 100d. The `fa_sol` control — it passes for fludioxonil, and exposes a baseline nobody tested
+
+Jannis: the desolvation result needs the control the H-bond result lacked. The
+sharpest version is whether `fa_sol` is independent chemistry or the VOLUME axis
+in disguise — §64 already established that the mandipropamid signature is volume,
+not clash.
+
+Side-chain volume change (Zamyatnin lookup, no structure, no energy, no pose) is
+used as the competing explanation, and each term is scored after regressing the
+other out:
+
+| compound | **ΔVolume alone** | total ΔΔG | `fa_sol` | `fa_sol` given volume | volume given `fa_sol` |
+|---|---|---|---|---|---|
+| mandipropamid (20) | **0.781** | 0.868 | 0.721 | 0.614 | **0.766** |
+| **fludioxonil (28)** | 0.549 | 0.550 | **0.682** | **0.679** | 0.523 |
+| benzothiadiazole (22) | 0.511 | 0.528 | 0.492 | 0.541 | 0.498 |
+| benoxacor (10) | 0.349 | 0.469 | 0.510 | 0.559 | 0.338 |
+
+**The control passes for fludioxonil.** Volume alone carries nothing there
+(0.549), `fa_sol` reaches 0.682, and after regressing volume out entirely it is
+still **0.679** — while volume after regressing out `fa_sol` collapses to 0.523.
+The correlation between them is only r = 0.168. So for the one ligand where the
+total score fails, `fa_sol` is measuring something that is not volume.
+
+**And a baseline that should have been in every comparison in this project:**
+for mandipropamid, **side-chain volume change alone gives AUC 0.781** — higher
+than `fa_sol` (0.721) and than `fa_rep` (0.750). A lookup table of twenty numbers,
+with no structure, no pose and no energy function, beats every individual energy
+term on the ligand this project has spent the most compute on. Only the full
+ΔΔG (0.868) does better.
+
+That reframes §91: part of what the ΔΔG achieves for mandipropamid is
+recoverable for free. It also explains why `fa_sol` looked strong there and
+weakens under the control (0.721 → 0.614): for a clashing ligand, desolvation and
+volume are largely the same statement.
+
+**What survives:** the fludioxonil result, which is the one that mattered — it is
+the only case where a term beats a volume baseline on a ligand that already fits.
+It is still one compound of three, and still needs replication on independent
+labels before it is a method.
