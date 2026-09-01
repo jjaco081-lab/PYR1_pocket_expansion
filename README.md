@@ -10534,3 +10534,33 @@ closure outright.
 ⚠ **But this is confounded and n = 6.** Both dead compounds have PREDICTED poses
 and both clash hard, so a pose search may simply have pushed them into the mouth
 as the only place they fit. The pattern is a lead for a filter, not a filter.
+
+### 98d. The depth/gate-contact lead does not survive n=362
+
+§98c's pattern was tested on §84's tractability set: 181 ligands PYR1 yielded a
+sensor for against 181 property-matched ligands it did not, all co-folded with
+the same wild-type receptor, all passing §93's fold assertions.
+
+| quantity | hits | non-hits | AUC | perm p |
+|---|---|---|---|---|
+| gate+latch contacts | 9.00 | 9.00 | 0.471 | 0.33 |
+| contacts per heavy atom | 0.44 | 0.48 | 0.469 | 0.31 |
+| depth to the mouth | 7.28 | 7.16 | 0.496 | 0.88 |
+| gate contacts only | 3.00 | 2.00 | 0.505 | 0.85 |
+| latch contacts only | 6.00 | 6.00 | 0.461 | 0.18 |
+| heavy atoms (control) | 20 | 21 | 0.521 | 0.50 |
+
+**Every quantity is at chance**, including the size-normalised form. §98c's
+separation — median 6 gate+latch contacts for compounds with responders against
+20 for those without — was n=6 with both dead compounds carrying predicted poses
+of hard-clashing ligands. At n=362 with matched controls there is nothing.
+
+The obstruction mechanism is not supported. It joins §93a's centroid-depth null:
+**no geometric property of where a ligand sits in the wild-type pocket
+distinguishes tractable from intractable**, whether measured as position,
+contacts, buriedness or depth.
+
+⚠ One caveat that keeps this from being fully conclusive: these labels are
+ligand-level (some variant bound it) and the receptor is wild type, while §98c
+used variant-level labels in the K59R background. The geometric idea is tested;
+the exact quantity is not identical.
