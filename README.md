@@ -10246,3 +10246,46 @@ signal that the chemistry does not contain.
 - **Unchanged:** mandipropamid remains the only ligand in this project with both
   a crystal pose and true negatives, and AUC 0.868 / 0.720-without-F108 stands
   for it alone.
+
+### 94c. Searching for a large non-cognate ligand — and why mandipropamid is alone
+
+The test §94b names needs a ligand that is (i) large enough to strain the
+wild-type pocket, (ii) carries positives AND tested negatives, and (iii) can be
+given a predicted pose. Every candidate in the corpus was checked.
+
+**WIN 55,212-2 is large and still does not clash.** At 32 heavy atoms it is
+bigger than mandipropamid, yet its median background dG_bind over the 35,863 DSM
+doubles is **+15.7 REU** — the agrochemical regime, not mandipropamid's +1501.
+That retrospectively explains §89a: the DSM enumeration gave only 4.6× narrowing
+at p = 0.047 because there was little clash for the score to read. **Size does
+not predict strain**; fit does.
+
+**Park's 11 dead compounds include four large ones** — azoxystrobin (30 heavy
+atoms), lufenuron (30), fomesafen (28), tefluthrin (27) — each tested against all
+475 variants with **zero responders**. They are pure-negative sets, so no AUC can
+be computed from them, but they are exactly the right material for a
+FALSE-POSITIVE test (below).
+
+**Conclusion: mandipropamid is the only ligand in this corpus that is large,
+clashing, and positively labelled.** There is no second one to find, so the
+comparison §94b asks for cannot be made by adding a ligand.
+
+### 94d. The experiment that isolates the pose variable without a new ligand
+
+Run **mandipropamid itself with a PREDICTED pose**. Same ligand, same 475
+variants, same 20 positives, same protocol — the only thing that changes is
+crystal pose → Boltz pose. That is a clean single-variable comparison against
+AUC 0.868, and it settles the question the three agrochemicals could not:
+
+- if predicted-pose mandipropamid holds near 0.868, **predicted poses are usable**
+  and the agrochemical failures are about the chemistry (no clash), not the pose;
+- if it collapses toward chance, **the pose is the limitation**, and §91's result
+  depends on crystallography.
+
+Cost: 10 Boltz seeds plus 475 rescores — under an hour.
+
+A second, independent test uses the large dead compounds: give azoxystrobin or
+lufenuron a pose and score all 475. Both are mandipropamid-sized, so a clash
+detector should nominate F108-type substitutions enthusiastically — and **all 475
+are true negatives**. It measures the false-positive rate of clash relief on a
+real all-negative set, which is the specificity number §91 never had.
