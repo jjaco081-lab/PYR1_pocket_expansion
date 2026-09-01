@@ -10905,3 +10905,68 @@ recall@20, and Jannis's "biaser not predictor" framing is the right one for it.
 For a genuinely novel chemotype it is worse than using nothing, and it should be
 gated off. That is a narrower use than the MSA analogy promised, but it is a
 measured one.
+
+---
+
+## 104. Per-position pharmacophore similarity: the pocket is too small and 182 ligands too few (2026-09-01)
+
+Jannis's refinement of §103: stop asking "which ligand is this like?" and ask,
+per position, "what does this ligand present HERE, and which ligands presented
+the same thing?" — the fix aimed squarely at §103a's negative stratum, where
+whole-molecule similarity actively hurt.
+
+The data existed: **181 of the 194 ligands with clones already have a Boltz
+co-folded pose**, covering 652 of 691 clones, all superposable into one frame.
+Leave-one-ligand-out is asserted in code, not assumed —
+`scripts/178_local_pharmacophore_prior.py`.
+
+| prior | recall@20 | recall@40 |
+|---|---|---|
+| ligand-blind | 0.343 | 0.513 |
+| whole-molecule ECFP4 | **0.376** | **0.541** |
+| **local pharmacophore, 7.0 Å shell** | 0.330 | 0.503 |
+| local, 5.5 Å | 0.275 | 0.390 |
+| local, 4.5 Å | 0.175 | 0.180 |
+| local, 3.5 Å | **0.023** | 0.023 |
+
+**It fails at every radius, and monotonically worse the more local it gets** —
+the opposite of what the hypothesis predicts. And in §103a's decisive control it
+is negative in every stratum including < 0.2, the one it was designed to rescue.
+
+### 104a. Two failure modes, and no window between them
+
+The diagnostic explains it. Mean pairwise cosine between ligands' per-position
+feature vectors, at the 7 Å shell:
+
+| position | ligands with atoms in shell | mean cos | sd |
+|---|---|---|---|
+| 163 | 182 | **0.965** | 0.063 |
+| 160 | 170 | 0.951 | 0.112 |
+| 117 | 181 | 0.937 | 0.116 |
+| 94 | 126 | 0.721 | 0.316 |
+| **108** | **13** | **0.545** | 0.465 |
+
+At 7 Å the feature is **degenerate**: cosine 0.72–0.97 everywhere, because the
+pocket is only 11.6 Å along its long axis (§86c) and every ligand sits in the
+same place (§93a), so a 7 Å shell captures most of the molecule at every
+position. The "local" vector is the global composition repeated 18 times.
+
+At 3.5 Å it becomes genuinely local and **sparse**: few training ligands have any
+atom near a given position, so each position's prior rests on a handful of
+ligands and the ranking collapses to 0.023.
+
+**There is no window where the feature is both discriminating and well
+populated.** That is a data-density limit — 18 position-specific priors from 182
+ligands — not a flaw in the idea. Position 108 is the one that discriminates
+(cos 0.545), and only 13 of 182 ligands reach it.
+
+### 104b. What would be needed
+
+The concept requires many more ligands with **both** a pose and sensor sequences.
+sd03 supplies 194 and 181 have poses; the constraint is the 194, and no
+reweighting fixes it. §57 already established the effective sample size is
+ligands (~208), not clones (~1,150), for exactly this reason.
+
+**So the standing recommendation is unchanged from §103b:** the whole-molecule
+prior, gated on max Tanimoto ≥ 0.25, is the usable version — +0.056 recall@20
+over 69 % of ligands, and switched off for novel chemotypes where it hurts.
