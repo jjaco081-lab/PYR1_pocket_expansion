@@ -10463,3 +10463,74 @@ a two-part requirement whose other half this project has never modelled.
 This is the specificity number §91 lacked, and it is the strongest available
 argument that the next work should be about what distinguishes a *productive*
 pocket from a merely *accommodating* one.
+
+---
+
+## 98. Two corrections from Jannis, and a refuted hypothesis (2026-08-31)
+
+### 98a. The ladder is RIGID — it never tested the conformer
+
+Jannis: *"it's not just correct placement, but the right ligand rotamer may still
+be used."* Correct, and it is a limitation I wrote into `167`'s header and then
+failed to carry into §96's conclusion. Every ladder cell displaces the crystal
+ligand as a **rigid body**; its torsions are the crystal's throughout. So the
+ladder measures tolerance to *wrong placement of the right conformer*, and says
+nothing about a wrong conformer — which is a distinct and plausible failure mode
+for a predicted pose of a ligand with rotatable bonds.
+
+The mandipropamid-predicted arm (§97a) does sample conformers, since Boltz builds
+the ligand from SMILES, and it reached AUC 0.891. But that arm is the contaminated
+one, so it cannot close this gap on its own.
+
+### 98b. Seed spread understates true pose error by about 3×
+
+Jannis: *"3 Å might be less than the predicted structures of the other
+agrochemicals compared to the unknown reality."* This is the more serious point,
+and it is measurable for the one ligand where truth is known:
+
+| quantity, mandipropamid | value |
+|---|---|
+| seed-to-seed spread (what §93c reports for every compound) | **0.45 Å** |
+| distance of the predicted pose to the **4WVO crystal pose** | **1.31 Å** |
+
+**Seed agreement is optimistic by roughly 3×** — and this is the *easy* case, a
+ligand whose complex is in the training set. For fludioxonil the reported 0.71 Å
+spread is therefore consistent with a true error near 2 Å, and possibly worse
+since nothing anchors it. §96's claim that fludioxonil's pose was "easily good
+enough" was too strong; at 2 Å the ladder gives AUC 0.771, so the margin is real
+but much thinner than stated.
+
+**What survives both corrections:** the no-clash explanation of §94a, which does
+not depend on pose quality at all. Fludioxonil, benzothiadiazole and benoxacor
+strain the unmutated pocket by −6 to +36 REU against mandipropamid's +2066. No
+pose, however accurate, manufactures a clash signal that the chemistry does not
+contain.
+
+### 98c. ⚠ My productive-vs-accommodating hypothesis is REFUTED, sign and all
+
+The pre-registered hypothesis: the assay reads ligand-dependent HAB1 recruitment,
+which needs the gate and latch to close, so **productive** compounds should
+contact 85–89 and 115–117 while merely **accommodating** ones sit in the chamber
+without touching them.
+
+| compound (pose) | responders | gate | latch | **g+l** | depth |
+|---|---|---|---|---|---|
+| mandipropamid (crystal) | 20 | 8 | 5 | 13 | 7.86 |
+| fludioxonil | 28 | 2 | 6 | 8 | 7.53 |
+| benzothiadiazole | 22 | 0 | 3 | 3 | 7.92 |
+| benoxacor | 10 | 1 | 2 | 3 | 8.23 |
+| **azoxystrobin** | **0** | 5 | 11 | **16** | 6.60 |
+| **lufenuron** | **0** | 10 | 15 | **25** | **4.82** |
+
+**The sign is backwards.** Compounds with responders make a median of 6
+gate+latch contacts; the two with none make **20**. Lufenuron makes 25 and sits
+4.82 Å from the mouth against 7.5–8.2 Å for everything that works.
+
+The suggestive reading is the opposite mechanism — these ligands **obstruct** the
+gate rather than failing to trigger it, occupying the mouth instead of the
+chamber. That is mechanistically coherent: a ligand in the gate's path prevents
+closure outright.
+
+⚠ **But this is confounded and n = 6.** Both dead compounds have PREDICTED poses
+and both clash hard, so a pose search may simply have pushed them into the mouth
+as the only place they fit. The pattern is a lead for a filter, not a filter.
