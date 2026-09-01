@@ -2,7 +2,7 @@
 #SBATCH -p preempt_gpu
 #SBATCH -A preempt
 #SBATCH --gres=gpu:1
-#SBATCH --exclude=gpu01,gpu02,gpu03,gpu05,gpu13,gpu14
+#SBATCH --exclude=gpu01,gpu02,gpu03,gpu05,gpu11,gpu13,gpu14
 #SBATCH -c 4
 #SBATCH --mem=24G
 #SBATCH -t 7-00:00:00

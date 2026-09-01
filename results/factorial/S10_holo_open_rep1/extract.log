@@ -4,8 +4,8 @@ CPPTRAJ: Trajectory Analysis. V6.4.4 (AmberTools)
      | \/ | \/ | \/ | 
     _|_/\_|_/\_|_/\_|_
 
-| Date/time: 08/24/26 15:28:42
-| Available memory: 515.445 GB
+| Date/time: 08/31/26 21:30:30
+| Available memory: 502.304 GB
 
 INPUT: Reading input from '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S10_holo_open_rep1/extract.in'
   [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S10_holo_open/system.prmtop]
@@ -94,6 +94,10 @@ Warning: Parm will only have reference coordinates for the first 1409 atoms (dis
 Warning: PDB has 59 records wih alternate atom location IDs.
   [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S10_holo_open/rep1/prod.nc]
 	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S10_holo_open/rep1/prod.nc' as Amber NetCDF
+  [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S10_holo_open/rep1/prod_cont_001.nc]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S10_holo_open/rep1/prod_cont_001.nc' as Amber NetCDF
+  [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S10_holo_open/rep1/prod_cont_002.nc]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S10_holo_open/rep1/prod_cont_002.nc' as Amber NetCDF
   [autoimage]
     AUTOIMAGE: To box center based on center of mass, anchor is first molecule.
   [rms core :1-84,90-114,118-147,157-181@CA,C,N,O first mass out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S10_holo_open_rep1/core_rmsd.dat]
@@ -152,9 +156,11 @@ PARAMETER FILES (3 total):
  1: [pclosed] pyr1_closed_A.pdb, 1409 atoms, 178 res, box: None, 3 mol
  2: [popen] pyr1_open_A.pdb, 1428 atoms, 178 res, box: None, 3 mol
 
-INPUT TRAJECTORIES (1 total):
+INPUT TRAJECTORIES (3 total):
  0: 'prod.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 694 of 694)
-  Coordinate processing will occur on 694 frames.
+ 1: 'prod_cont_001.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 3862 of 3862)
+ 2: 'prod_cont_002.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 25444 of 25444)
+  Coordinate processing will occur on 30000 frames.
 
 REFERENCE FRAMES (2 total):
     0: [closed]:1
@@ -280,93 +286,97 @@ Warning: Setup incomplete for [rms]: Skipping
 		Atom ':192@C14' to ':92@OG'
 		Atom ':192@C15' to ':118@CG2'
 		Atom ':192@C15' to ':118@OG1'
- 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Complete.
+ 0% 
+----- prod_cont_001.nc (1-3862, 1) -----
+10% 
+----- prod_cont_002.nc (1-25444, 1) -----
+20% 30% 40% 50% 60% 70% 80% 90% 100% Complete.
 
-Read 694 frames and processed 694 frames.
-TIME: Avg. throughput= 228.1890 frames / second.
+Read 30000 frames and processed 30000 frames.
+TIME: Avg. throughput= 224.3893 frames / second.
 
 ACTION OUTPUT:
     CONTACTS: Contacts_00012
     CONTACTS: Contacts_00016
 #Res1       #Res2  TotalFrac   Contacts
-192           120    8.10375         19
-192            59    5.12536          7
-192           167     1.5317          2
-192           159    1.47262          5
-192           160    1.37896          2
-192            85    1.13112          3
-192           164   0.818444          1
-192            83   0.762248          2
-192            92   0.606628          1
-192           163   0.520173          1
-192           118   0.275216          2
-192           110  0.0100865          1
+192            59     4.2985          7
+192           120    3.45637         19
+192           159    1.06183          5
+192           167   0.764433          2
+192            92     0.5474          1
+192            83   0.269567          2
+192           160     0.2441          2
+192           163   0.230367          1
+192            85     0.0935          3
+192           164  0.0902333          1
+192           118 0.00943333          2
+192           110 0.00146667          1
 #                     Contact  Nframes    Frac.      Avg    Stdev
-       1       :192@O4_:59@NZ      694        1     2.84    0.162
-       2       :192@C1_:59@NZ      694        1     3.27    0.121
-       3       :192@O3_:59@NZ      692    0.997     2.96    0.243
-       4       :192@O3_:59@CE      690    0.994     3.41    0.185
-       5     :192@C3_:120@CE1      685    0.987     3.43    0.182
-       6     :192@C4_:120@CE1      664    0.957     3.48    0.219
-       7     :192@C2_:120@CE1      657    0.947     3.63    0.174
-       8      :192@C6_:160@CB      625    0.901     3.65    0.177
-       9     :192@C1_:167@ND2      583     0.84     3.72    0.164
-      10     :192@O4_:164@CG2      568    0.818     3.58    0.223
-      11      :192@C4_:120@CZ      531    0.765     3.69    0.184
-      12     :192@O4_:167@ND2      480    0.692     3.28    0.473
-      13      :192@C14_:92@OG      421    0.607     3.67    0.228
-      14       :192@O4_:59@CE      411    0.592     3.77    0.173
-      15      :192@O3_:120@OH      372    0.536     2.71    0.265
-      16     :192@O2_:159@CE1      368     0.53     3.64    0.214
-      17      :192@C1_:120@OH      363    0.523      3.5    0.185
-      18     :192@C2_:163@CG1      361     0.52     3.66    0.224
-      19      :192@O3_:120@CZ      353    0.509     3.45    0.149
-      20      :192@O2_:83@CG1      351    0.506     3.65    0.226
-      21     :192@O3_:120@CE1      332    0.478      3.6    0.186
-      22      :192@C6_:160@CA      332    0.478     3.81    0.133
-      23     :192@O1_:120@CE2      327    0.471     3.52    0.282
-      24     :192@C5_:120@CE1      326     0.47     3.72    0.202
-      25       :192@O2_:85@OG      305    0.439     2.99    0.403
-      26     :192@C4_:120@CD1      277    0.399     3.77    0.154
-      27       :192@O2_:85@CB      275    0.396     3.51    0.244
-      28      :192@O2_:159@CZ      257     0.37     3.64    0.225
-      29    :192@C10_:159@CE1      253    0.365     3.77     0.16
-      30       :192@C1_:59@CE      215     0.31     3.89   0.0899
-      31     :192@O1_:120@CD2      207    0.298     3.46    0.325
-      32      :192@C10_:85@OG      205    0.295     3.73    0.133
-      33     :192@C5_:120@CD1      188    0.271     3.69     0.22
-      34     :192@C10_:83@CG1      178    0.256     3.82    0.148
-      35    :192@C15_:118@OG1      164    0.236     3.69    0.217
-      36       :192@O4_:59@CD      161    0.232     3.75    0.179
-      37     :192@C10_:159@CZ      123    0.177      3.8    0.137
-      38      :192@O1_:120@CG      114    0.164      3.6    0.293
-      39      :192@C5_:120@CG       75    0.108     3.77    0.136
-      40     :192@O1_:120@CE1       69   0.0994     3.83    0.159
-      41     :192@O1_:120@CD1       48   0.0692     3.74    0.238
-      42      :192@O1_:120@CB       30   0.0432     3.76    0.147
-      43    :192@C15_:118@CG2       27   0.0389     3.85    0.103
-      44    :192@C11_:159@CE1       21   0.0303     3.91   0.0715
-      45     :192@O1_:110@CD1        7   0.0101     3.84    0.104
-      46     :192@C7_:120@CD1        6  0.00865     3.92    0.078
-    ATOMICFLUCT: Calculating fluctuations for 694 sets.
+       1       :192@C1_:59@NZ    29996        1     3.26    0.124
+       2       :192@O4_:59@NZ    29991        1     3.02    0.235
+       3       :192@O3_:59@NZ    29990        1     2.84     0.16
+       4       :192@O3_:59@CE    29889    0.996     3.45    0.178
+       5      :192@C4_:120@CZ    23459    0.782     3.62    0.191
+       6     :192@C3_:120@CE1    23440    0.781     3.58    0.206
+       7     :192@C2_:120@CE1    20195    0.673     3.58    0.212
+       8      :192@C14_:92@OG    16422    0.547     3.67    0.198
+       9     :192@C4_:120@CE1    15666    0.522     3.71    0.208
+      10     :192@C1_:167@ND2    14421    0.481     3.67    0.202
+      11      :192@O2_:159@CZ    11935    0.398     3.64    0.218
+      12     :192@O4_:167@ND2     8512    0.284     3.71    0.242
+      13     :192@O2_:159@CE1     7706    0.257     3.68    0.216
+      14     :192@C2_:163@CG1     6911     0.23     3.76    0.163
+      15      :192@O2_:83@CG1     6663    0.222     3.67    0.222
+      16       :192@O4_:59@CE     6056    0.202     3.87    0.107
+      17      :192@O3_:120@OH     5648    0.188     3.67    0.364
+      18     :192@C10_:159@CZ     5581    0.186     3.84    0.121
+      19      :192@C6_:160@CB     5287    0.176     3.76    0.163
+      20      :192@C1_:120@OH     5016    0.167     3.67    0.286
+      21    :192@C11_:159@CE1     3658    0.122      3.8    0.147
+      22     :192@O1_:120@CE2     2990   0.0997     3.68    0.269
+      23    :192@C10_:159@CE1     2975   0.0992     3.79    0.158
+      24       :192@C1_:59@CE     2859   0.0953     3.92   0.0743
+      25     :192@O4_:164@CG2     2707   0.0902     3.69    0.212
+      26     :192@C5_:120@CE1     2072   0.0691      3.8    0.169
+      27      :192@C6_:160@CA     2036   0.0679     3.84    0.121
+      28     :192@C4_:120@CD1     1724   0.0575     3.83    0.144
+      29       :192@O2_:85@OG     1431   0.0477     3.33    0.484
+      30     :192@C10_:83@CG1     1424   0.0475     3.84     0.13
+      31     :192@O1_:120@CE1      954   0.0318     3.78    0.176
+      32       :192@O2_:85@CB      854   0.0285     3.55    0.251
+      33     :192@O3_:120@CE1      755   0.0252     3.74    0.202
+      34      :192@O3_:120@CZ      588   0.0196     3.59    0.238
+      35      :192@C10_:85@OG      520   0.0173     3.75    0.152
+      36     :192@O1_:120@CD2      504   0.0168     3.66    0.293
+      37     :192@C5_:120@CD1      352   0.0117     3.78    0.199
+      38    :192@C15_:118@OG1      252   0.0084     3.73    0.201
+      39       :192@O4_:59@CD      174   0.0058     3.76    0.179
+      40      :192@O1_:120@CG      133  0.00443     3.63    0.289
+      41     :192@O1_:120@CD1       82  0.00273     3.77     0.22
+      42      :192@C5_:120@CG       77  0.00257     3.78    0.135
+      43     :192@O1_:110@CD1       44  0.00147     3.83    0.119
+      44    :192@C15_:118@CG2       31  0.00103     3.86    0.108
+      45      :192@O1_:120@CB       30    0.001     3.76    0.147
+      46     :192@C7_:120@CD1        6   0.0002     3.92    0.078
+    ATOMICFLUCT: Calculating fluctuations for 30000 sets.
 TIME: Analyses took 0.0000 seconds.
 
 DATASETS (14 total):
-	core "core" (double, rms), size is 694 (5.552 kB)
+	core "core" (double, rms), size is 30000 (240.000 kB)
 	fitC "fitC" (double, rms), size is 0
-	g2c "g2c" (double, rms), size is 694 (5.552 kB)
-	l2c "l2c" (double, rms), size is 694 (5.552 kB)
+	g2c "g2c" (double, rms), size is 30000 (240.000 kB)
+	l2c "l2c" (double, rms), size is 30000 (240.000 kB)
 	fitO "fitO" (double, rms), size is 0
-	g2o "g2o" (double, rms), size is 694 (5.552 kB)
-	l2o "l2o" (double, rms), size is 694 (5.552 kB)
-	Contacts_00012[native] "Contacts_00012[native]" (integer), size is 694 (2.776 kB)
-	Contacts_00012[nonnative] "Contacts_00012[nonnative]" (integer), size is 694 (2.776 kB)
-	fitL "fitL" (double, rms), size is 694 (5.552 kB)
-	lig "lig" (double, rms), size is 694 (5.552 kB)
-	Contacts_00016[native] "Contacts_00016[native]" (integer), size is 694 (2.776 kB)
-	Contacts_00016[nonnative] "Contacts_00016[nonnative]" (integer), size is 694 (2.776 kB)
+	g2o "g2o" (double, rms), size is 30000 (240.000 kB)
+	l2o "l2o" (double, rms), size is 30000 (240.000 kB)
+	Contacts_00012[native] "Contacts_00012[native]" (integer), size is 30000 (120.000 kB)
+	Contacts_00012[nonnative] "Contacts_00012[nonnative]" (integer), size is 30000 (120.000 kB)
+	fitL "fitL" (double, rms), size is 30000 (240.000 kB)
+	lig "lig" (double, rms), size is 30000 (240.000 kB)
+	Contacts_00016[native] "Contacts_00016[native]" (integer), size is 30000 (120.000 kB)
+	Contacts_00016[nonnative] "Contacts_00016[nonnative]" (integer), size is 30000 (120.000 kB)
 	Fluct_00018 "AtomicFlx" (X-Y mesh), size is 191 (3.056 kB)
-    Total data set memory usage is at least 53.024 kB
+    Total data set memory usage is at least 2.163 MB
 
 DATAFILES (13 total):
   core_rmsd.dat (Standard Data File):  core
@@ -384,16 +394,16 @@ DATAFILES (13 total):
   STDOUT (Contact Res Pairs)
 
 RUN TIMING:
-TIME:		Init               : 0.0000 s (  0.00%)
-TIME:		Trajectory Process : 3.0413 s ( 99.70%)
+TIME:		Init               : 0.0001 s (  0.00%)
+TIME:		Trajectory Process : 133.6962 s ( 99.87%)
 TIME:		Action Post        : 0.0001 s (  0.00%)
 TIME:		Analysis           : 0.0000 s (  0.00%)
-TIME:		Data File Write    : 0.0084 s (  0.27%)
-TIME:		Other              : 0.0007 s (  0.00%)
-TIME:	Run Total 3.0505 s
+TIME:		Data File Write    : 0.1779 s (  0.13%)
+TIME:		Other              : 0.0006 s (  0.00%)
+TIME:	Run Total 133.8749 s
 ---------- RUN END ---------------------------------------------------
   [quit]
-TIME: Total execution time: 3.6215 seconds.
+TIME: Total execution time: 134.3833 seconds.
 --------------------------------------------------------------------------------
 To cite CPPTRAJ use:
 Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for

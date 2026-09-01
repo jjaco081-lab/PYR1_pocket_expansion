@@ -4,6 +4,8 @@ parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb [pop
 reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_closed_A.pdb parm [pclosed] [closed]
 reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_open_A.pdb parm [popen] [open]
 trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/rep0/prod.nc
+trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/rep0/prod_cont_001.nc
+trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/rep0/prod_cont_002.nc
 autoimage
 rms core :1-84,90-114,118-147,157-181@CA,C,N,O first mass out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep0/core_rmsd.dat
 rms fitC :1-84,90-114,118-147,157-181@CA,C,N,O ref [closed]

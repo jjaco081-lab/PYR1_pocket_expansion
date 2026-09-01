@@ -8402,7 +8402,7 @@ Coumarin's sensors peak at 7, and its library's variant count also peaks at 7
 
 This is the same error as §53, where DSM-Hao was taken as 3.79 × 10²¹ before it
 turned out to be a *double*-substitution library. I reprinted that same absurd
-number in §72's table without flagging it.
+number in §71's table without flagging it (there is no §72 -- the section numbering skips it, and the depth-cap correction is §73).
 
 ### 73b. The corrected comparison, like for like
 
@@ -10140,12 +10140,13 @@ is not something to build a decision on. Recorded because it is a real,
 pre-registered, ligand-blind effect — and because it is the first geometric
 quantity in this project that beats chance at all.
 
-**Useful side result for §92:** 97 of 362 ligands have a pose spread under 1.0 Å,
+**Useful side result for §93c:** 97 of 362 ligands have a pose spread under 1.0 Å,
 so Boltz-2 *does* produce a single consistent pose for about a quarter of
 ligands. The refolded agrochemical runs can therefore be judged against a real
 base rate rather than an assumption.
 
-### 92d. The real pose result, once the receptor actually folds
+
+### 93c. The real pose result, once the receptor actually folds
 
 §92c was measured on models with median pLDDT 49. The cause was found by running
 the identical job with the WILD-TYPE sequence: **pLDDT 96.0–96.7**, against
@@ -10229,7 +10230,7 @@ ligand that already fits* — which is most of the problem, and which the real
 sensors for these three compounds evidently solve by some mechanism the score
 does not model.
 
-This also disposes of a comfortable reading of §92d. A confident predicted pose
+This also disposes of a comfortable reading of §93c. A confident predicted pose
 was not sufficient: fludioxonil's pose is as reproducible as Boltz gets at
 0.71 Å and its AUC is 0.550. Whether that pose is also *correct* is untested and
 now largely beside the point, because a correct pose would not create a clash
@@ -10289,3 +10290,73 @@ lufenuron a pose and score all 475. Both are mandipropamid-sized, so a clash
 detector should nominate F108-type substitutions enthusiastically — and **all 475
 are true negatives**. It measures the false-positive rate of clash relief on a
 real all-negative set, which is the specificity number §91 never had.
+
+---
+
+## 95. External audit: four defects found, and what they cost (2026-08-31)
+
+A separate review session read the README end to end, `METHODS_REVIEW.md` and all
+214 scripts against what is on disk. Four critical findings, all verified here
+independently before acting.
+
+### 95a. ⚠ The factorial extraction read only the first segment — §58b's "n=1" is FALSE
+
+`scripts/110_factorial_extract.sh:52` hardcoded `TRJ=$D/prod.nc` and ignored
+every `prod_cont_*.nc` segment written after a preemption. Verified: **7 of the
+12 replicates have continuation segments, and 11 of 12 carry 16–18 GB of
+trajectory** — only S2_holo_closed/rep2 is genuinely short at 578 MB, killed by
+amber22 on a Blackwell node. All of it was on disk by 2026-08-21, three days
+before §58b was written.
+
+The sister script `58b_loop_dynamics_run.sh:115` globs continuations correctly,
+so this was a **regression against a pattern already solved in this repo**, not
+an oversight. §58b did not measure runs; it measured first segments.
+**~1.6 µs across six finished replicates has never been analysed.**
+
+Fixed: `110` now globs `prod_cont_*.nc` in order and prints the segment count.
+The first-segment results are preserved as `results/factorial_FIRST_SEGMENT_ONLY/`
+rather than deleted, so the error stays legible. Re-extraction is job 27984718.
+
+### 95b. §62a therefore rests on n=1, and does not have to
+
+The project's only positive unbiased-MD result — sd 0.43 vs 0.75, k_eff 3.26 vs
+1.06, ΔF = −0.33 kcal/mol — is **two single-trajectory variance estimates**. S9
+has n=3 available and S2 n=2. §61b dismissed the truncated replicates as "error
+bars on a quantity that carries no information", which was written *before* §62
+established that the information is in the distribution width — precisely the
+quantity that needs replication. To be recomputed when 27984718 lands.
+
+### 95c. The umbrella seeding used 5 of 11 trajectories
+
+`111_us_seed.py` seeds from exactly five: S2 rep0, S10 rep0, S10 rep2, S9 rep0,
+S1 rep1 — and `results/factorial/rc/` held exactly those five `.dat` files.
+So the window-coverage gaps that motivated the §70/§127 pulling repair, which
+§81b blames for the failure that closed the arm in §85, **were measured against
+5 of 11 available trajectories.** This is not evidence the arm would have
+survived, and §85's verdict stands on its own hysteresis test. But the premise
+behind the repair was weaker than recorded, and it is cheap to re-test.
+
+### 95d. METHODS_REVIEW was stale and incomplete
+
+MM-GBSA was listed **ACTIVE with "THE K59 FLIP" as its key result** — a result
+§40 retracts, §42 shows non-convergent and §43 retires. Corrected to RETIRED
+with the retraction stated in the row. The file also claimed to cover every
+method while omitting TI, umbrella sampling, Boltz-2, the forcing rule, the
+decoded label set and the clash-relief scope test, and its timeline skipped
+Aug 20–27 entirely. Six method rows and six timeline entries added; ACTIVE is now
+20 and RETIRED 5.
+
+### 95e. Smaller defects, fixed
+
+- §73 cited a **§72 that does not exist**; the section numbering skips it.
+- §92d was nested inside §93 — renumbered §93c and moved after §93b.
+- **gpu11 was missing from 2 of 17 Amber exclude lines**, and amber22
+  `pmemd.cuda` has no kernels for it. Both corrected.
+- The §92a YAML single-quoting fix regenerated 362 files that were never
+  committed, so a fresh clone reproduced the bug. Committed here.
+- Scripts 167–169 were untracked. Committed here.
+
+### 95f. What the audit did not change
+
+§53's 36,140 and §89a's 35,863 look inconsistent and are not: 35,863 doubles plus
+276 singles plus wild type. The reviewer flagged and then correctly dismissed it.

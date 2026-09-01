@@ -4,8 +4,8 @@ CPPTRAJ: Trajectory Analysis. V6.4.4 (AmberTools)
      | \/ | \/ | \/ | 
     _|_/\_|_/\_|_/\_|_
 
-| Date/time: 08/24/26 15:28:42
-| Available memory: 509.882 GB
+| Date/time: 08/31/26 21:30:30
+| Available memory: 502.304 GB
 
 INPUT: Reading input from '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S9_apo_closed_rep2/extract.in'
   [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/system.prmtop]
@@ -94,6 +94,12 @@ Warning: Parm will only have reference coordinates for the first 1409 atoms (dis
 Warning: PDB has 59 records wih alternate atom location IDs.
   [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/rep2/prod.nc]
 	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/rep2/prod.nc' as Amber NetCDF
+  [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/rep2/prod_cont_001.nc]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/rep2/prod_cont_001.nc' as Amber NetCDF
+  [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/rep2/prod_cont_002.nc]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/rep2/prod_cont_002.nc' as Amber NetCDF
+  [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/rep2/prod_cont_003.nc]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S9_apo_closed/rep2/prod_cont_003.nc' as Amber NetCDF
   [autoimage]
     AUTOIMAGE: To box center based on center of mass, anchor is first molecule.
   [rms core :1-84,90-114,118-147,157-181@CA,C,N,O first mass out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S9_apo_closed_rep2/core_rmsd.dat]
@@ -138,9 +144,12 @@ PARAMETER FILES (3 total):
  1: [pclosed] pyr1_closed_A.pdb, 1409 atoms, 178 res, box: None, 3 mol
  2: [popen] pyr1_open_A.pdb, 1428 atoms, 178 res, box: None, 3 mol
 
-INPUT TRAJECTORIES (1 total):
+INPUT TRAJECTORIES (4 total):
  0: 'prod.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 897 of 897)
-  Coordinate processing will occur on 897 frames.
+ 1: 'prod_cont_001.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 25732 of 25732)
+ 2: 'prod_cont_002.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 90 of 90)
+ 3: 'prod_cont_003.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 3281 of 3281)
+  Coordinate processing will occur on 30000 frames.
 
 REFERENCE FRAMES (2 total):
     0: [closed]:1
@@ -212,44 +221,50 @@ Warning: Setup incomplete for [rms]: Skipping
 		Atom ':89@CA' to ':115@CA'
 		Atom ':89@CA' to ':115@CB'
 		Atom ':89@CB' to ':115@CB'
- 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Complete.
+ 0% 
+----- prod_cont_001.nc (1-25732, 1) -----
+10% 20% 30% 40% 50% 60% 70% 80% 
+----- prod_cont_002.nc (1-90, 1) -----
 
-Read 897 frames and processed 897 frames.
-TIME: Avg. throughput= 518.3467 frames / second.
+----- prod_cont_003.nc (1-3281, 1) -----
+90% 100% Complete.
+
+Read 30000 frames and processed 30000 frames.
+TIME: Avg. throughput= 457.1850 frames / second.
 
 ACTION OUTPUT:
     CONTACTS: Contacts_00012
 #Res1       #Res2  TotalFrac   Contacts
-88            116    2.77703          5
-89            115    2.38573          3
-88            115    2.20401          3
+89            115     1.3769          3
+88            115   0.870433          3
+88            116   0.762567          5
 #                     Contact  Nframes    Frac.      Avg    Stdev
-       1       :89@CB_:115@CB      874    0.974     3.58    0.167
-       2         :88@O_:116@N      849    0.946     3.09    0.239
-       3        :88@O_:115@CA      797    0.889     3.56    0.202
-       4         :88@O_:115@C      736    0.821     3.71    0.148
-       5       :89@CA_:115@CA      726    0.809     3.85   0.0913
-       6        :88@O_:116@CB      615    0.686     3.72     0.18
-       7       :89@CA_:115@CB      540    0.602     3.76    0.142
-       8        :88@O_:116@CG      527    0.588     3.68    0.185
-       9        :88@O_:115@CB      444    0.495      3.7    0.203
-      10        :88@O_:116@CA      425    0.474     3.86    0.102
-      11       :88@CB_:116@CB       75   0.0836     3.87      0.1
-    ATOMICFLUCT: Calculating fluctuations for 897 sets.
+       1       :89@CB_:115@CB    25110    0.837     3.69    0.173
+       2        :88@O_:115@CA    11012    0.367     3.58     0.22
+       3         :88@O_:116@N     9707    0.324     3.17    0.286
+       4       :89@CA_:115@CB     8257    0.275     3.79     0.14
+       5         :88@O_:115@C     8165    0.272     3.71     0.15
+       6       :89@CA_:115@CA     7940    0.265     3.85   0.0945
+       7        :88@O_:115@CB     6936    0.231     3.76    0.176
+       8        :88@O_:116@CB     5708     0.19     3.73    0.184
+       9        :88@O_:116@CA     3563    0.119     3.87   0.0972
+      10        :88@O_:116@CG     3138    0.105     3.75    0.173
+      11       :88@CB_:116@CB      761   0.0254     3.87    0.105
+    ATOMICFLUCT: Calculating fluctuations for 30000 sets.
 TIME: Analyses took 0.0000 seconds.
 
 DATASETS (10 total):
-	core "core" (double, rms), size is 897 (7.176 kB)
+	core "core" (double, rms), size is 30000 (240.000 kB)
 	fitC "fitC" (double, rms), size is 0
-	g2c "g2c" (double, rms), size is 897 (7.176 kB)
-	l2c "l2c" (double, rms), size is 897 (7.176 kB)
+	g2c "g2c" (double, rms), size is 30000 (240.000 kB)
+	l2c "l2c" (double, rms), size is 30000 (240.000 kB)
 	fitO "fitO" (double, rms), size is 0
-	g2o "g2o" (double, rms), size is 897 (7.176 kB)
-	l2o "l2o" (double, rms), size is 897 (7.176 kB)
-	Contacts_00012[native] "Contacts_00012[native]" (integer), size is 897 (3.588 kB)
-	Contacts_00012[nonnative] "Contacts_00012[nonnative]" (integer), size is 897 (3.588 kB)
+	g2o "g2o" (double, rms), size is 30000 (240.000 kB)
+	l2o "l2o" (double, rms), size is 30000 (240.000 kB)
+	Contacts_00012[native] "Contacts_00012[native]" (integer), size is 30000 (120.000 kB)
+	Contacts_00012[nonnative] "Contacts_00012[nonnative]" (integer), size is 30000 (120.000 kB)
 	Fluct_00014 "AtomicFlx" (X-Y mesh), size is 191 (3.056 kB)
-    Total data set memory usage is at least 46.112 kB
+    Total data set memory usage is at least 1.443 MB
 
 DATAFILES (9 total):
   core_rmsd.dat (Standard Data File):  core
@@ -263,16 +278,16 @@ DATAFILES (9 total):
   STDOUT (Contact Res Pairs)
 
 RUN TIMING:
-TIME:		Init               : 0.0000 s (  0.00%)
-TIME:		Trajectory Process : 1.7305 s ( 99.52%)
-TIME:		Action Post        : 0.0001 s (  0.01%)
+TIME:		Init               : 0.0001 s (  0.00%)
+TIME:		Trajectory Process : 65.6190 s ( 99.78%)
+TIME:		Action Post        : 0.0001 s (  0.00%)
 TIME:		Analysis           : 0.0000 s (  0.00%)
-TIME:		Data File Write    : 0.0077 s (  0.45%)
+TIME:		Data File Write    : 0.1469 s (  0.22%)
 TIME:		Other              : 0.0004 s (  0.00%)
-TIME:	Run Total 1.7388 s
+TIME:	Run Total 65.7665 s
 ---------- RUN END ---------------------------------------------------
   [quit]
-TIME: Total execution time: 1.8370 seconds.
+TIME: Total execution time: 66.2907 seconds.
 --------------------------------------------------------------------------------
 To cite CPPTRAJ use:
 Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for

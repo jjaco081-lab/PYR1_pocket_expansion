@@ -4,8 +4,8 @@ CPPTRAJ: Trajectory Analysis. V6.4.4 (AmberTools)
      | \/ | \/ | \/ | 
     _|_/\_|_/\_|_/\_|_
 
-| Date/time: 08/24/26 15:28:34
-| Available memory: 515.468 GB
+| Date/time: 08/31/26 21:30:30
+| Available memory: 502.304 GB
 
 INPUT: Reading input from '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep2/extract.in'
   [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/system.prmtop]
@@ -94,6 +94,8 @@ Warning: Parm will only have reference coordinates for the first 1409 atoms (dis
 Warning: PDB has 59 records wih alternate atom location IDs.
   [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/rep2/prod.nc]
 	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/rep2/prod.nc' as Amber NetCDF
+  [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/rep2/prod_cont_001.nc]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S1_apo_open/rep2/prod_cont_001.nc' as Amber NetCDF
   [autoimage]
     AUTOIMAGE: To box center based on center of mass, anchor is first molecule.
   [rms core :1-84,90-114,118-147,157-181@CA,C,N,O first mass out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S1_apo_open_rep2/core_rmsd.dat]
@@ -138,9 +140,10 @@ PARAMETER FILES (3 total):
  1: [pclosed] pyr1_closed_A.pdb, 1409 atoms, 178 res, box: None, 3 mol
  2: [popen] pyr1_open_A.pdb, 1428 atoms, 178 res, box: None, 3 mol
 
-INPUT TRAJECTORIES (1 total):
+INPUT TRAJECTORIES (2 total):
  0: 'prod.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 4151 of 4151)
-  Coordinate processing will occur on 4151 frames.
+ 1: 'prod_cont_001.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 25849 of 25849)
+  Coordinate processing will occur on 30000 frames.
 
 REFERENCE FRAMES (2 total):
     0: [closed]:1
@@ -201,28 +204,30 @@ Warning: Setup incomplete for [rms]: Skipping
 	Mask [:85-89&!@H*] corresponds to 30 atoms.
 	Mask [:115-117&!@H*] corresponds to 29 atoms.
 	Setup 0 native contacts:
- 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Complete.
+ 0% 10% 
+----- prod_cont_001.nc (1-25849, 1) -----
+20% 30% 40% 50% 60% 70% 80% 90% 100% Complete.
 
-Read 4151 frames and processed 4151 frames.
-TIME: Avg. throughput= 473.0119 frames / second.
+Read 30000 frames and processed 30000 frames.
+TIME: Avg. throughput= 415.0393 frames / second.
 
 ACTION OUTPUT:
     CONTACTS: Contacts_00012
-    ATOMICFLUCT: Calculating fluctuations for 4151 sets.
+    ATOMICFLUCT: Calculating fluctuations for 30000 sets.
 TIME: Analyses took 0.0000 seconds.
 
 DATASETS (10 total):
-	core "core" (double, rms), size is 4151 (33.208 kB)
+	core "core" (double, rms), size is 30000 (240.000 kB)
 	fitC "fitC" (double, rms), size is 0
-	g2c "g2c" (double, rms), size is 4151 (33.208 kB)
-	l2c "l2c" (double, rms), size is 4151 (33.208 kB)
+	g2c "g2c" (double, rms), size is 30000 (240.000 kB)
+	l2c "l2c" (double, rms), size is 30000 (240.000 kB)
 	fitO "fitO" (double, rms), size is 0
-	g2o "g2o" (double, rms), size is 4151 (33.208 kB)
-	l2o "l2o" (double, rms), size is 4151 (33.208 kB)
-	Contacts_00012[native] "Contacts_00012[native]" (integer), size is 4151 (16.604 kB)
-	Contacts_00012[nonnative] "Contacts_00012[nonnative]" (integer), size is 4151 (16.604 kB)
+	g2o "g2o" (double, rms), size is 30000 (240.000 kB)
+	l2o "l2o" (double, rms), size is 30000 (240.000 kB)
+	Contacts_00012[native] "Contacts_00012[native]" (integer), size is 30000 (120.000 kB)
+	Contacts_00012[nonnative] "Contacts_00012[nonnative]" (integer), size is 30000 (120.000 kB)
 	Fluct_00014 "AtomicFlx" (X-Y mesh), size is 191 (3.056 kB)
-    Total data set memory usage is at least 202.304 kB
+    Total data set memory usage is at least 1.443 MB
 
 DATAFILES (9 total):
   core_rmsd.dat (Standard Data File):  core
@@ -237,15 +242,15 @@ DATAFILES (9 total):
 
 RUN TIMING:
 TIME:		Init               : 0.0000 s (  0.00%)
-TIME:		Trajectory Process : 8.7757 s ( 99.73%)
+TIME:		Trajectory Process : 72.2823 s ( 99.80%)
 TIME:		Action Post        : 0.0000 s (  0.00%)
 TIME:		Analysis           : 0.0000 s (  0.00%)
-TIME:		Data File Write    : 0.0234 s (  0.27%)
+TIME:		Data File Write    : 0.1475 s (  0.20%)
 TIME:		Other              : 0.0005 s (  0.00%)
-TIME:	Run Total 8.7996 s
+TIME:	Run Total 72.4304 s
 ---------- RUN END ---------------------------------------------------
   [quit]
-TIME: Total execution time: 8.8942 seconds.
+TIME: Total execution time: 72.7373 seconds.
 --------------------------------------------------------------------------------
 To cite CPPTRAJ use:
 Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for

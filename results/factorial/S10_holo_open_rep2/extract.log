@@ -4,8 +4,8 @@ CPPTRAJ: Trajectory Analysis. V6.4.4 (AmberTools)
      | \/ | \/ | \/ | 
     _|_/\_|_/\_|_/\_|_
 
-| Date/time: 08/24/26 15:28:47
-| Available memory: 515.500 GB
+| Date/time: 08/31/26 21:30:30
+| Available memory: 502.304 GB
 
 INPUT: Reading input from '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/factorial/S10_holo_open_rep2/extract.in'
   [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/md191/S10_holo_open/system.prmtop]
@@ -276,7 +276,7 @@ Warning: Setup incomplete for [rms]: Skipping
  0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Complete.
 
 Read 30000 frames and processed 30000 frames.
-TIME: Avg. throughput= 236.1047 frames / second.
+TIME: Avg. throughput= 221.0147 frames / second.
 
 ACTION OUTPUT:
     CONTACTS: Contacts_00012
@@ -370,15 +370,15 @@ DATAFILES (13 total):
 
 RUN TIMING:
 TIME:		Init               : 0.0001 s (  0.00%)
-TIME:		Trajectory Process : 127.0623 s ( 99.86%)
+TIME:		Trajectory Process : 135.7376 s ( 99.86%)
 TIME:		Action Post        : 0.0001 s (  0.00%)
 TIME:		Analysis           : 0.0000 s (  0.00%)
-TIME:		Data File Write    : 0.1741 s (  0.14%)
+TIME:		Data File Write    : 0.1930 s (  0.14%)
 TIME:		Other              : 0.0007 s (  0.00%)
-TIME:	Run Total 127.2373 s
+TIME:	Run Total 135.9314 s
 ---------- RUN END ---------------------------------------------------
   [quit]
-TIME: Total execution time: 127.3716 seconds.
+TIME: Total execution time: 136.2336 seconds.
 --------------------------------------------------------------------------------
 To cite CPPTRAJ use:
 Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for

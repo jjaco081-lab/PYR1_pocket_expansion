@@ -51,6 +51,14 @@ D=$ROOT/data/md191/$S/$R
 TOP=$ROOT/data/md191/$S/system.prmtop
 TRJ=$D/prod.nc
 [[ -f $TOP && -f $TRJ ]] || { echo "missing $TOP or $TRJ"; exit 1; }
+# ⚠ PREEMPTION CONTINUATIONS. Every run on preempt_gpu that was interrupted
+# resumes into prod_cont_NN.nc. Reading only prod.nc silently analyses the FIRST
+# SEGMENT and calls it the run -- which is what produced README 58b's "the
+# factorial is n=1". 11 of 12 replicates actually finished 300 ns; 7 of them
+# have continuation segments. The sister script 58b_loop_dynamics_run.sh:115
+# already globbed these correctly, so this was a regression, not an oversight.
+CONT=$(ls -1 "$D"/prod_cont_*.nc 2>/dev/null | sort)
+NSEG=$(( 1 + $(echo "$CONT" | grep -c . ) ))
 OUT=$ROOT/results/factorial/${S}_${R}
 mkdir -p "$OUT"
 
@@ -70,7 +78,7 @@ l = [r.name for r in t.residues if r.name in ("A8S",)]
 print(l[0] if l else "")
 PYX
 )
-echo "=== $S/$R   ligand='${LIG:-none}'   $(date -Is)"
+echo "=== $S/$R   ligand='${LIG:-none}'   ${NSEG} trajectory segment(s)   $(date -Is)"
 
 {
   echo "parm $TOP"
@@ -81,6 +89,8 @@ echo "=== $S/$R   ligand='${LIG:-none}'   $(date -Is)"
   echo "reference $CLOSED parm [pclosed] [closed]"
   echo "reference $OPEN parm [popen] [open]"
   echo "trajin $TRJ"
+  # continuation segments, in order -- see the NSEG comment above
+  for f in $CONT; do echo "trajin $f"; done
   echo "autoimage"
   # validity + equilibration, from the CORE only
   echo "rms core $CORE first mass out $OUT/core_rmsd.dat"

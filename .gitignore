@@ -216,3 +216,8 @@ data/umbrella_arms/**/*.template
 # trick in README 80a.
 data/structures/boltz719/
 data/structures/*.zip
+
+# Preserved first-segment factorial extraction (README 95a). Regenerable by
+# scripts/110_factorial_extract.sh; kept on disk so the error stays inspectable,
+# but 86 MB of derived data does not belong in git.
+results/factorial_FIRST_SEGMENT_ONLY/
