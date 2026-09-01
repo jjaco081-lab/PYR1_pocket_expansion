@@ -11055,3 +11055,59 @@ bottleneck (§86c), largest r_max at 3.80, 19/19 machinery coverage.
 
 **3QZT is dropped.** Jannis: it is not a START fold in the PDB entry. It measured
 24 Å³ over 108 residues, which flagged it as wrong before he confirmed it.
+
+---
+
+## 106. Backbone envelope, not cavity volume — and it overturns the donor ranking (2026-09-01)
+
+Jannis: cavity volume is the wrong comparator for a scaffold or graft decision.
+If a donor's larger cavity is just smaller side chains, that change is available
+far more cheaply by mutating PYR1. The question is what the BACKBONE encloses.
+`scripts/182_backbone_envelope.py`, using §145's corrected method — a
+structurally-aligned wall (the same 24 PYR1 positions mapped into each donor,
+never cavity-derived) and free volume bounded by the wall hull so it cannot leak.
+
+| structure | envelope | free | fill | **polyGly** | depth | width | width | **d/w** |
+|---|---|---|---|---|---|---|---|---|
+| **PYR1** | 1873 | 184 | 0.90 | **1184** | 20.8 | 18.0 | 16.7 | 1.25 |
+| **2PCS** (570 Å³ cavity) | 2364 | 498 | 0.79 | **1173** | 26.7 | 18.6 | 14.9 | 1.79 |
+| 2NS9 | 3075 | 419 | 0.86 | 1115 | 23.8 | 18.4 | 17.1 | 1.39 |
+| 2BK0 | 2972 | 463 | 0.84 | **1442** | 27.0 | 21.5 | 16.0 | 1.69 |
+| 6AWV | 3216 | 368 | 0.89 | 1134 | 26.5 | 23.2 | 15.4 | 1.72 |
+| 4DSB | 1804 | 212 | 0.88 | 1079 | 21.6 | 15.3 | 14.5 | 1.49 |
+| 3OQU | 1890 | 248 | 0.87 | 1220 | 19.9 | 17.5 | 17.3 | 1.15 |
+| 1LN1 | 4289 | 581 | 0.86 | 1313 | 27.8 | 24.8 | 15.1 | 1.84 |
+| 1EM2 | 3549 | 400 | 0.89 | 876 | 29.0 | 27.6 | 14.6 | 1.99 |
+| **2E3M** (CERT) | 3159 | 423 | 0.87 | 1198 | **36.8** | 18.8 | 15.6 | **2.36** |
+
+### 106a. ⚠ 2PCS offers essentially NO backbone advantage
+
+**2PCS's polyGly volume is 1173 against PYR1's 1184** — dead even. Its cavity is
+570 Å³ to PYR1's 164, and **that entire difference is side chains, not
+backbone.** The same is true of 2NS9 (1115), 6AWV (1134) and 3OQU (1220).
+
+That is Jannis's argument confirmed and it demotes the donor this project has
+preferred throughout. §105b promoted 2PCS on helix-independence; §106 shows there
+is little to import. A graft that carries PYR1's helix and PYR1's backbone
+envelope reproduces PYR1's pocket — and the side-chain change it would deliver is
+obtainable by mutation in the wild-type background at a fraction of the cost.
+
+Only **2BK0 (+258, +22 %)** and 1LN1 (+129) have meaningfully larger backbone
+envelopes, and 1LN1 was rejected in §105b on the helix-kink argument.
+
+### 106b. The real difference is SHAPE, not volume
+
+PYR1's envelope is nearly isotropic — 20.8 × 18.0 × 16.7 Å, d/w **1.25**. The
+lipid-transfer domains are not:
+
+- **2E3M (CERT): depth 36.8 Å, d/w 2.36** — 77 % deeper than PYR1
+- 1EM2: 29.0 Å, d/w 1.99
+- 1LN1: 27.8 Å, d/w 1.84
+
+These proteins hold acyl chains, and their backbones are built long and narrow
+rather than large. That matters because §8's limit on PYR1 is **length**, not
+volume: the landscape fails at ~40 heavy atoms / 15.3 Å.
+
+**So the importable difference is not a bigger pocket, it is a longer one** — and
+no donor offers both. The scaffold question should be posed as depth, with the
+d/w ratio as the design target, not as cavity volume.
