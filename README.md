@@ -10645,14 +10645,39 @@ Holm-corrected over all 32 tests, 20,000 permutations each.
 `fa_atr` (0.271), `fa_sol` (0.721) — and **fludioxonil `fa_sol` at 0.682,
 Holm p = 0.0154.**
 
-### 100a. H-bond satisfaction is dead, and the reason is diagnostic
+### 100a. ⚠ H-bond satisfaction: my first reading was WRONG
 
-`hbond_sc` is nonzero in **4 of 475 variants**; `hbond_bb_sc` in **0 of 475**.
-The term cannot discriminate because it is almost always exactly zero — the
-ligands are not making scored hydrogen bonds to side chains in these poses at
-all. That is not "H-bonds do not matter for sensors"; it is "this model is not
-forming any", and the two are easy to confuse. Whether that reflects the
-chemistry or the poses is untested.
+I originally wrote that `hbond_sc` is nonzero in only 4 of 475 variants because
+"the ligands are not making scored hydrogen bonds at all". Jannis asked for the
+obvious positive control — does the same code find H-bonds in the mandipropamid
+crystal structure? — and it does not say that.
+
+Run one ligand per process (PyRosetta initialises once, so a three-case loop
+silently scores cases 2 and 3 with case 1's params — that bug is why an earlier
+version of this control reported fludioxonil as having 98 atoms):
+
+| complex | polar H | acceptors | H-bonds to ligand |
+|---|---|---|---|
+| **PYR1 + ABA (crystal)** | 2 | 4 | **1** — LYS59 → A8S, E = −1.180 |
+| PYR1 + mandipropamid (crystal) | 1 | 4 | **0** |
+| PYR1 + fludioxonil | 1 | 3 | **1** — ASN165 → FLD, E = −1.501 |
+
+**The detector works.** It finds the known K59–ABA interaction at the expected
+strength, and an N165–fludioxonil bond.
+
+So the near-zero column in §100 is the **Δ**: `d_hbond_sc` is the difference
+between mutant and paired background, and it is zero because **the mutations do
+not change the ligand's hydrogen bonding**, not because there is none. The
+H-bond partners largely are not the positions being mutated.
+
+That is a different and more interesting statement, and it means the test was
+mis-specified rather than negative. The right version measures the ABSOLUTE
+H-bond count or restricts to mutations at the H-bonding position — neither of
+which this run recorded, since only deltas were saved.
+
+**Mandipropamid genuinely makes no scored H-bond even in its own crystal
+structure**, which is consistent with §11's finding that it ignores the W385
+latch water. For that ligand the term really is empty.
 
 ### 100b. Desolvation reaches a ligand that already fits — the first thing to do so
 
