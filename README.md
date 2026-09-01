@@ -10799,3 +10799,36 @@ wild-type PYL2 by only +15.7 REU.
 **Pre-registered:** the total ΔΔG already fails there (§89a, median rank 6,632 of
 35,863, p = 0.047). `fa_sol` must beat both the total and the volume baseline on
 the five round-1 hits, or the fludioxonil result does not transfer. Job 27991332.
+
+## 102. ⚠ The desolvation result does NOT transfer (2026-09-01)
+
+§101a pre-registered the test: on Beltran's 35,863-double DSM library, `fa_sol`
+must beat both the total ΔΔG and the volume baseline on the five round-1 WIN
+hits, or the fludioxonil result is a single-compound curiosity.
+
+| score | median rank of the 5 (of 35,863) | best | perm p |
+|---|---|---|---|
+| total ΔΔG | **6,637** | 1,556 | 0.047 |
+| VOLUME baseline | 8,231 | 4,460 | 0.081 |
+| `fa_rep` | 9,191 | 7,226 | 0.115 |
+| **`fa_sol`** | **12,757** | 5,067 | **0.244** |
+| `fa_atr` | 22,708 | 18,357 | 0.731 |
+
+**`fa_sol` fails both arms of the pre-registered test.** It is worse than the
+total (12,757 vs 6,637) and worse than the free volume baseline (8,231), and it
+is not significant. It is the weakest structural score on this library apart from
+`fa_atr`.
+
+The rescore is sound: the total ΔΔG reproduces §89a to within four ranks (6,637
+against 6,632), so the failure is the term, not the pipeline.
+
+**So §100b is a single-compound result that failed its first independent test.**
+Fludioxonil's `fa_sol` AUC 0.682 stands as a measurement, but it does not
+generalise to a different ligand class, lab and library — and WIN was chosen
+precisely because it shares fludioxonil's key property of fitting the pocket
+without clashing. The honest reading is that with 28 positives at one position
+cluster, 0.682 was within reach of chance structure in a single dataset.
+
+**What survives across both:** the volume baseline. It reaches 0.781 on
+mandipropamid and median rank 8,231 (p = 0.081) on WIN — competitive with the
+full structural pipeline on both, at zero cost.
