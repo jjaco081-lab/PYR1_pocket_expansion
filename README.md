@@ -10832,3 +10832,76 @@ cluster, 0.682 was within reach of chance structure in a single dataset.
 **What survives across both:** the volume baseline. It reaches 0.781 on
 mandipropamid and median rank 8,231 (p = 0.081) on WIN — competitive with the
 full structural pipeline on both, at zero cost.
+
+---
+
+## 103. The MSA-style ligand prior: real, but it is lookup after all (2026-09-01)
+
+Jannis's proposal: aggregate everything known about every screened ligand into a
+similarity-weighted prior over substitutions, and use it to BIAS the choice among
+sequences other filters allow — not as a predictor. The analogy is an MSA, which
+works by aggregating many weak distant relationships rather than finding one
+close homolog. §52 killed similarity LOOKUP by searching for close neighbours and
+finding none (0.4 % of pairs reach Tanimoto 0.5). Graded aggregation over every
+ligand with no threshold was never tested. `scripts/177_ligand_similarity_bias.py`.
+
+194 ligands, 691 clones, **ligand-level** 50/50 splits (§57: the effective n is
+ligands, not clones), 50 repeats.
+
+| prior | α | recall@20 | recall@40 |
+|---|---|---|---|
+| **ligand-blind frequency** (the bar) | — | **0.345** | **0.515** |
+| ECFP4 | 1 / 2 / 4 | 0.386 / **0.398** / 0.382 | 0.555 / 0.556 / 0.550 |
+| descriptor | 1 / 2 / 4 | 0.351 / 0.364 / 0.384 | 0.531 / 0.541 / 0.548 |
+| ECFP4 × descriptor | 1 / 2 / 4 | **0.397** / 0.397 / 0.382 | **0.558** / 0.555 / 0.542 |
+
+The blind bar reproduces §52 exactly (0.345 vs 0.35, 0.515 vs 0.52). **Every one
+of the nine similarity variants beats it**, by +0.04 to +0.05 — five times §52's
++0.010 — and unlike §68's coverage objective it is **stable across α** (0.382 to
+0.398 for ECFP4 at α = 1, 2, 4) rather than sitting on a knife edge.
+
+Paired across splits: mean Δrecall@20 **+0.053**, t = 17.4, **49 of 50 splits
+positive**, 1,421 win / 755 loss / 2,674 tie at the ligand level.
+
+### 103a. ⚠ But the control says it is lookup, not aggregation
+
+The MSA analogy predicts the gain should survive where no close analog exists.
+Held-out ligands split by their maximum Tanimoto to any training ligand:
+
+| max Tanimoto to training set | n | mean Δrecall@20 |
+|---|---|---|
+| **< 0.2 — no neighbour** | 585 | **−0.036** |
+| 0.2–0.3 | 1,701 | +0.012 |
+| 0.3–0.5 | 1,260 | +0.006 |
+| **≥ 0.5 — close analog** | 1,304 | **+0.191** |
+
+**The entire gain comes from ligands that have a close analog, and for ligands
+with none the prior is WORSE than ligand-blind.** That is §52's conclusion
+reproduced at larger scale with a cleaner decomposition: aggregation does not
+rescue distant ligands, it re-weights toward close ones when they exist. The MSA
+analogy fails, and it fails in the direction that matters — a genuinely novel
+target is exactly the < 0.2 row.
+
+(The 27 % of held-out ligands with a neighbour at T ≥ 0.5 is not in tension with
+§52's "0.4 % of pairs": that is the chance of *any* of ~97 training ligands being
+close, not of a given pair.)
+
+### 103b. Where it is nonetheless useful, and the honest caveat
+
+Gating on similarity — use the prior only when a close analog exists, fall back
+to blind otherwise — keeps the gain and removes the harm:
+
+| gate | mean Δrecall@20 | fraction of ligands it applies to |
+|---|---|---|
+| max T ≥ 0.25 | **+0.056** | 69 % |
+| max T ≥ 0.50 | +0.052 | 27 % |
+
+⚠ **The threshold was chosen after seeing §103a's table**, so this is a lead, not
+a validated rule, and it needs Beltran-45 or another untouched set to confirm.
+
+**The realistic claim:** for a target chemically close to something already
+screened — a new coumarin, another cannabinoid — this is a real and cheap +0.19
+recall@20, and Jannis's "biaser not predictor" framing is the right one for it.
+For a genuinely novel chemotype it is worse than using nothing, and it should be
+gated off. That is a narrower use than the MSA analogy promised, but it is a
+measured one.
