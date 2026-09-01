@@ -10408,3 +10408,58 @@ seeds were drawn from a set far more heterogeneous than recorded.
 300 ns, which does not depend on distribution widths, and which this recompute
 if anything strengthens — replicates of the same cell settle in visibly
 different places and stay there.
+
+---
+
+## 97. Crystal vs predicted, and the specificity of clash relief (2026-08-31)
+
+### 97a. The crystal structure is NOT what makes the difference
+
+| arm | pose | positives | strain | **AUC** | top-25 |
+|---|---|---|---|---|---|
+| mandipropamid | **crystal** | 20 | 2066 | 0.868 | 11/20 |
+| mandipropamid | **predicted, 1.16 Å spread** | 20 | 585 | **0.891** | **11/20** |
+
+Same ligand, same 475 variants, same 20 positives, same protocol — only the pose
+source changes, and the result is unchanged. Together with §96's ladder (AUC
+0.867 → 0.834 → 0.771 at 0, 1.0, 2.0 Å of deliberate displacement), **pose
+provenance is not the operative variable.**
+
+⚠ This arm is contaminated: 4WVO is in Boltz's training set, so success here is
+partly memorisation, as Jannis flagged in advance. It was pre-registered as
+asymmetric — failure conclusive, success not. What makes the conclusion hold is
+the ladder, which uses no predictor at all and reaches the same place.
+
+**So the crystal/predicted split was confounded with ligand identity.** Every
+crystal result was mandipropamid; every predicted result was a different
+compound. Breaking the confound from both sides gives the same answer: the
+difference is the ligand, not the structure.
+
+### 97b. Clash relief has almost no specificity
+
+Azoxystrobin and lufenuron are 30 heavy atoms each, the same size as
+mandipropamid, and both **clash hard**: strain +1841 and +915 REU against
+mandipropamid's +2066. Both were screened against all 475 variants and produced
+**zero responders**, so every one of the 950 (variant, compound) pairs is a
+tested negative.
+
+The score nominates confidently anyway:
+
+```
+azoxystrobin  top 6:  V163A(-20)  V163S(-18)  V163P(-18)  V163C(-18)  V163N(-17)  V163G(-17)
+lufenuron     top 6:  F159A(-395) F159P(-395) F159G(-393) F159S(-393) F159N(-388) F159D(-387)
+```
+
+Lufenuron has **16 variants below −100 REU** — substantial, confident clash
+relief — and not one of them works. Mandipropamid's top 25 contains 11 true
+positives; azoxystrobin's and lufenuron's contain 0 by construction.
+
+**Relieving the clash is necessary and nowhere near sufficient.** A ligand can
+be made to fit the pocket by mutation and still yield no sensor at all, because
+fitting is not binding and binding is not the ligand-dependent HAB1 readout the
+assay scores. §91's AUC 0.868 is real, and it is measuring the necessary half of
+a two-part requirement whose other half this project has never modelled.
+
+This is the specificity number §91 lacked, and it is the strongest available
+argument that the next work should be about what distinguishes a *productive*
+pocket from a merely *accommodating* one.

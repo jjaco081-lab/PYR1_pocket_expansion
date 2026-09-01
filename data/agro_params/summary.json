@@ -34,5 +34,41 @@
   "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/FLD.params",
   "pose_pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/FLD_0001.pdb",
   "d_site": 0.6313951418988067
+ },
+ "mandipropamid": {
+  "code": "MDP",
+  "seed": 6,
+  "plddt": 97.051,
+  "core_rmsd": 0.516107987112034,
+  "spread": 1.162232989518624,
+  "n_seeds": 10,
+  "atoms": 30,
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/MDP.params",
+  "pose_pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/MDP_0001.pdb",
+  "d_site": 0.622153645537119
+ },
+ "azoxystrobin": {
+  "code": "AZO",
+  "seed": 0,
+  "plddt": 96.709,
+  "core_rmsd": 0.5295231793854707,
+  "spread": 3.057609766260322,
+  "n_seeds": 10,
+  "atoms": 30,
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/AZO.params",
+  "pose_pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/AZO_0001.pdb",
+  "d_site": 1.6978852406895324
+ },
+ "lufenuron": {
+  "code": "LUF",
+  "seed": 6,
+  "plddt": 96.661,
+  "core_rmsd": 0.5635433196359645,
+  "spread": 1.5399744865578266,
+  "n_seeds": 10,
+  "atoms": 30,
+  "params": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/LUF.params",
+  "pose_pdb": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/agro_params/LUF_0001.pdb",
+  "d_site": 4.17245953442238
  }
 }
