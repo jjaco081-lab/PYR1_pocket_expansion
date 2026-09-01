@@ -10970,3 +10970,54 @@ ligands (~208), not clones (~1,150), for exactly this reason.
 **So the standing recommendation is unchanged from §103b:** the whole-molecule
 prior, gated on max Tanimoto ≥ 0.25, is the usable version — +0.056 recall@20
 over 69 % of ligands, and switched off for novel chemotypes where it hurts.
+
+---
+
+## 105. The START lipid-transfer domains, surveyed at last (2026-09-01)
+
+§104 found that STARD1, MLN64, CERT, PCTP and relatives — named in §7 as the
+attractive graft donors — were **absent from the 261-domain scan** behind §56.
+Fetched by PDB ID and measured with §86c's chamber criterion, then aligned to
+PYR1. `scripts/181_start_domains.py`.
+
+| PDB | protein | fident | alnTM | total | **main** | **r_max** |
+|---|---|---|---|---|---|---|
+| **1LN1** | PCTP / STARD2 | **0.154** | 0.506 | 598 | 314 | **4.32** |
+| 2E3M | CERT / STARD11 | 0.075 | 0.542 | 443 | 205 | 3.98 |
+| 1EM2 | MLN64 / STARD3 | 0.090 | 0.462 | 429 | 284 | 3.34 |
+| 2E3P | CERT + ceramide | 0.084 | 0.530 | 414 | 176 | 3.70 |
+| 1JSS | STARD4-like | 0.082 | **0.674** | 284 | 151 | 3.46 |
+| 2R55 | STARD5 | 0.080 | 0.581 | 202 | 114 | 3.03 |
+| 3P0L | STARD1 / StAR | 0.103 | 0.553 | 193 | 97 | 2.94 |
+| *PYR1* | | — | — | *164* | *119* | *3.21* |
+| *2PCS* | *CoxG, best prior donor* | *0.098* | *0.712* | *570* | ***570*** | *3.80* |
+
+**1LN1 is a genuinely new candidate** — the highest sequence identity to PYR1 in
+the set and **r_max 4.32 Å, the widest pocket measured anywhere in this project**,
+against PYR1's 3.21 and 2PCS's 3.80. But its usable chamber is 314 Å³ against
+2PCS's 570, and at alnTM 0.506 it is further from PYR1 than 2PCS is.
+
+**The categorical split of §56b survives.** Every large-cavity donor, including
+all seven of these, sits at 8–15 % identity and alnTM 0.46–0.71. Nothing
+transplantable has a bigger pocket, and nothing with a bigger pocket is
+transplantable. Adding the biggest members of the fold does not break the
+tension — it confirms it on seven more structures.
+
+The literature ">1000 Å³" figures do not reproduce here, as expected:
+`lib_cavity` is deliberately conservative and its docstring says not to quote it
+against fpocket/CASTp values. The ranking is what matters, and it is internally
+consistent.
+
+### 105a. ⚠ Three failures before this number was trustworthy
+
+Foldseek returned **zero hits** at e-value 10,000, which would have read as "the
+START domains are too divergent to align" — a wrong and consequential
+conclusion. A control against 2PCS and 3OQU, which are known to align at alnTM
+0.71 and 0.97, **also returned zero**, which is what exposed it as a pipeline
+failure rather than biology.
+
+The cause was `createdb` reporting **`not proteins: 4`**: the PDB files I wrote
+omitted the altLoc column, putting resName in columns 17–19 instead of 18–20.
+**That is the same one-column shift as §23g and §100** — third occurrence in this
+project, second in this session. It is now the single most repeated error here,
+and every occurrence has been in hand-written PDB output.
