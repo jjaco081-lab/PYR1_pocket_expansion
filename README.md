@@ -11021,3 +11021,37 @@ omitted the altLoc column, putting resName in columns 17–19 instead of 18–20
 **That is the same one-column shift as §23g and §100** — third occurrence in this
 project, second in this session. It is now the single most repeated error here,
 and every occurrence has been in hand-written PDB output.
+
+### 105b. Jannis's helix-kink objection, measured — and it promotes 2PCS
+
+Jannis, on inspecting `1LN1.pdb`: *"a lot of 1LN1's expanded space seems to be
+generated from a kink in the alpha helix, something we would keep from PYR1 if we
+were to graft to keep the PYR1 contact."* That is the right structural question,
+because PYR1's C-lobe HAB1 contacts (148–166, including F159/A160/V163/V164/N167)
+sit on that helix — a graft must import PYR1's helix geometry, so any cavity that
+depends on the donor's helix geometry does not transfer.
+
+Measured as the fraction of cavity volume lying within 6 Å of the C-terminal
+helix:
+
+| structure | cavity Å³ | helix-adjacent Å³ | **fraction** |
+|---|---|---|---|
+| PYR1 | 164 | 127 | 77 % |
+| **1LN1** | 597 | 384 | **64 %** |
+| 2BK0 | 346 | 285 | 82 % |
+| 2NS9 | 462 | 310 | 67 % |
+| **2PCS (CoxG)** | 570 | 158 | **28 %** |
+
+**Jannis is right about 1LN1.** Of its 433 Å³ gain over PYR1, **257 Å³ (59 %) is
+helix-adjacent** — volume that exists because of how 1LN1's helix sits, and that a
+graft carrying PYR1's helix would not inherit.
+
+**And the same test promotes 2PCS.** At **28 %** it is the only donor whose cavity
+is largely independent of its C-terminal helix — its 570 Å³ comes from elsewhere
+in the fold, so it is the one large cavity that could survive importing PYR1's
+helix. This is a new and independent reason to prefer it, and it explains
+retrospectively why 2PCS has won every other measure: single chamber with no
+bottleneck (§86c), largest r_max at 3.80, 19/19 machinery coverage.
+
+**3QZT is dropped.** Jannis: it is not a START fold in the PDB entry. It measured
+24 Å³ over 108 residues, which flagged it as wrong before he confirmed it.
