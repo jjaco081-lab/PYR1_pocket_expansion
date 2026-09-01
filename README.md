@@ -10564,3 +10564,62 @@ contacts, buriedness or depth.
 ligand-level (some variant bound it) and the receptor is wild type, while §98c
 used variant-level labels in the K59R background. The geometric idea is tested;
 the exact quantity is not identical.
+
+---
+
+## 99. The tractability benchmark, scored (2026-08-31)
+
+§84 built this and §90 identified it as the only question in the project with
+real negatives. 362 runs complete, 181 hits against 181 property-matched
+non-hits, all wild-type PYR1. Metrics were fixed in `161` before the numbers
+were seen.
+
+| signal | AUC | perm p | notes |
+|---|---|---|---|
+| `affinity_probability_binary` | **0.585** | 0.0053 | Boltz-2's binder classifier |
+| `affinity_pred_value` | 0.483 | — | at chance |
+| pose spread across 5 samples (lower = hit) | 0.567 | 0.035 | §93b |
+| mean pLDDT (higher = hit) | 0.568 | 0.024 | §93b |
+| **rank-average of the three** | **0.623** | **<0.0005** | |
+
+**Nothing reaches the 80 % balanced accuracy §90b set as the bar.** The best
+single signal is AUC 0.585; the best combination 0.623, against a trivial-
+majority baseline of 0.500 on this balanced set.
+
+### 99a. The three signals are nearly independent, and combining helps
+
+Pairwise correlations are −0.11, +0.22 and −0.17, so these are three weak and
+largely separate readings rather than one signal counted three times. The
+rank-average reaches **0.623**, clearly above the best single component — the
+first time in this project that combining scores has improved on their parts.
+
+### 99b. What this is and is not
+
+**Is:** the ligand-level question answered on genuine negatives — *given a
+molecule, is PYR1 a plausible starting scaffold at all?* At AUC 0.62 that is a
+weak prior, useful for triaging a shortlist and not for a go/no-go decision. It
+is worth noting that the two structural signals cost nothing extra: they fall out
+of runs made for another purpose.
+
+**Is not:** any help with design. §82 settled that Boltz-2 cannot rank pocket
+variants for a fixed ligand (within-ligand ρ −0.028), and this does not touch it.
+
+**And the honest comparison:** §84a showed that on an UNMATCHED negative set TPSA
+alone reaches AUC 0.298 — i.e. 0.702 in the informative direction, better than
+anything measured here. The matching removed that shortcut, which is why these
+numbers are small. A benchmark that looked easy was rigged; this one is hard
+because it is fair.
+
+### 99c. Where the project stands after this
+
+Every arm now has a measured verdict. The scoreboard for *design*:
+
+| question | best result | status |
+|---|---|---|
+| which mutation relieves a clash | **AUC 0.868** | works, mandipropamid only (§97) |
+| which mutation makes a fitting ligand bind | 0.47–0.55 | **no method** (§94) |
+| which library to build from hits | 64 % recall at 1e5 | frequency prior, saturates at the vocabulary ceiling (§87) |
+| is this ligand worth a campaign | AUC 0.623 | weak prior (§99) |
+| where does a ligand sit, and does it matter | 0.47–0.51 | **no signal** (§93a, §98d) |
+
+The gap is the second row, and nothing geometric has touched it.
