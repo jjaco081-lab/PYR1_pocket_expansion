@@ -38,8 +38,17 @@ M2P = ("/opt/linux/rocky/8.x/x86_64/pkgs/rosetta/2023.45/scripts/python/public/"
        "molfile_to_params.py")
 SMILES = {"benzothiadiazole": "CSC(=O)c1cccc2nsnc12",
           "benoxacor": "CC1COc2ccccc2N1C(=O)C(Cl)Cl",
-          "fludioxonil": "FC1(F)Oc2cccc(c2O1)-c1c[nH]cc1C#N"}
-CODE = {"benzothiadiazole": "BZT", "benoxacor": "BNX", "fludioxonil": "FLD"}
+          "fludioxonil": "FC1(F)Oc2cccc(c2O1)-c1c[nH]cc1C#N",
+          # mandipropamid with a PREDICTED pose -- the contamination-aware arm
+          # (4WVO is in Boltz's training set, so success is uninformative and
+          # only failure is conclusive; README 94d)
+          "mandipropamid": "CC(=C)COc1ccc(cc1OC)CCNC(=O)C(OCC#C)c1ccc(Cl)cc1",
+          # the two all-negative specificity compounds: mandipropamid-sized,
+          # screened against all 475 with ZERO responders
+          "azoxystrobin": r"CO/C=C(\C(=O)OC)c1ccccc1Oc1cc(Oc2ccccc2C#N)ncn1",
+          "lufenuron": "O=C(Nc1cc(OC(F)(F)C(F)(F)F)cc(Cl)c1Cl)NC(=O)c1c(F)cccc1F"}
+CODE = {"benzothiadiazole": "BZT", "benoxacor": "BNX", "fludioxonil": "FLD",
+        "mandipropamid": "MDP", "azoxystrobin": "AZO", "lufenuron": "LUF"}
 
 
 def medoid_pose(name, fbb, core):

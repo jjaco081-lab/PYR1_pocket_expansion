@@ -10623,3 +10623,68 @@ Every arm now has a measured verdict. The scoreboard for *design*:
 | where does a ligand sit, and does it matter | 0.47–0.51 | **no signal** (§93a, §98d) |
 
 The gap is the second row, and nothing geometric has touched it.
+
+---
+
+## 100. Chemical terms: H-bonds carry nothing, desolvation carries something (2026-09-01)
+
+§99c's gap is that no method predicts which mutation makes a pocket bind a ligand
+that ALREADY FITS. ref2015 is a weighted sum, so testing H-bond satisfaction and
+desolvation needs no new physics — rescore the same 475 variants per TERM instead
+of only the total. `scripts/175_term_decomposition.py`, 8 terms × 4 compounds,
+Holm-corrected over all 32 tests, 20,000 permutations each.
+
+| compound | fa_rep | fa_atr | **fa_sol** | lk_ball | fa_elec | hbond_sc | n_hbond_lig |
+|---|---|---|---|---|---|---|---|
+| mandipropamid (20 pos) | **0.750** | 0.271 | **0.721** | 0.327 | 0.189 | 0.488 | 0.488 |
+| fludioxonil (28) | 0.624 | 0.373 | **0.682** | 0.595 | 0.406 | 0.473 | 0.458 |
+| benzothiadiazole (22) | 0.599 | 0.413 | 0.492 | 0.527 | 0.528 | 0.487 | 0.487 |
+| benoxacor (10) | 0.426 | 0.613 | 0.510 | 0.431 | 0.414 | 0.496 | 0.496 |
+
+**Five of 32 survive Holm:** mandipropamid `fa_rep` (0.750), `fa_elec` (0.189),
+`fa_atr` (0.271), `fa_sol` (0.721) — and **fludioxonil `fa_sol` at 0.682,
+Holm p = 0.0154.**
+
+### 100a. H-bond satisfaction is dead, and the reason is diagnostic
+
+`hbond_sc` is nonzero in **4 of 475 variants**; `hbond_bb_sc` in **0 of 475**.
+The term cannot discriminate because it is almost always exactly zero — the
+ligands are not making scored hydrogen bonds to side chains in these poses at
+all. That is not "H-bonds do not matter for sensors"; it is "this model is not
+forming any", and the two are easy to confuse. Whether that reflects the
+chemistry or the poses is untested.
+
+### 100b. Desolvation reaches a ligand that already fits — the first thing to do so
+
+**Fludioxonil is the result.** Its total ΔΔG gives AUC 0.550 (§94), at chance.
+Its `fa_sol` term alone gives **0.682**, and survives correction for 32 tests.
+So the signal was there and the weighted sum was drowning it: `fa_rep` dominates
+the total, and for a ligand that does not clash there is nothing in `fa_rep` to
+dominate with.
+
+`fa_sol` is only weakly correlated with `fa_rep` (r = 0.23 mandipropamid, 0.30
+fludioxonil), so it is partly orthogonal, and combining them helps both:
+
+| | fa_rep | fa_sol | rank-sum of both |
+|---|---|---|---|
+| mandipropamid | 0.750 | 0.721 | **0.775** |
+| fludioxonil | 0.624 | 0.682 | **0.691** |
+
+⚠ **It is one of three fitting ligands, not a general fix.** Benzothiadiazole
+gives 0.492 and benoxacor 0.510 — nothing. Fludioxonil also has the most
+positives (28 against 22 and 10), so it has the most power, and that alone could
+explain why it is the one that shows. This is a lead worth one more test, not a
+method.
+
+### 100c. Scoreboard update
+
+| question | best result | change |
+|---|---|---|
+| which mutation relieves a clash | AUC 0.868 total, 0.775 rep+sol | — |
+| **which mutation makes a fitting ligand bind** | **0.682** (fludioxonil, fa_sol) | **was: no method** |
+| which library to build from hits | 64 % recall at 1e5 | — |
+| is this ligand worth a campaign | 0.623 | — |
+| where the ligand sits geometrically | 0.47–0.51 | no signal |
+
+The second row moved for the first time. It moved on one ligand, by decomposing
+a score we already had rather than by adding physics.
