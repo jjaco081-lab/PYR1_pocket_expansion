@@ -10754,3 +10754,48 @@ volume are largely the same statement.
 the only case where a term beats a volume baseline on a ligand that already fits.
 It is still one compound of three, and still needs replication on independent
 labels before it is a method.
+
+---
+
+## 101. The volume baseline, applied retroactively (2026-09-01)
+
+§100d found that side-chain volume change — a twenty-number lookup, no structure,
+no pose, no energy function — reaches AUC 0.781 on mandipropamid. That baseline
+was never in any comparison in this project, so every AUC reported against
+"chance" was being scored against the wrong bar. Applied to every arm with
+labels:
+
+| arm | positives | total ΔΔG | **ΔVolume alone** | **gap** |
+|---|---|---|---|---|
+| mandipropamid, crystal pose | 20 | 0.868 | **0.781** | **+0.088** |
+| mandipropamid, predicted pose | 20 | 0.891 | **0.781** | **+0.110** |
+| fludioxonil | 28 | 0.550 | 0.549 | **+0.002** |
+| benzothiadiazole | 22 | 0.528 | 0.511 | +0.018 |
+| benoxacor | 10 | 0.469 | 0.349 | +0.120 |
+
+**The entire structural pipeline — pose, params, 6 Å repack shell, ref2015, three
+replicates, paired controls — buys about 0.09–0.11 AUC over a lookup table on
+mandipropamid, and 0.002 on fludioxonil.**
+
+This does not make §91 wrong; 0.868 against 455 tested negatives is still the
+only real accuracy number in the project, and the full score does beat the
+baseline. But "AUC 0.868, chance is 0.5" was the wrong framing, and the honest
+version is "0.868 against a free baseline of 0.781". §64 already identified
+volume as the mandipropamid signature; what was missing was scoring it as a
+standalone predictor against the methods it was supposed to motivate.
+
+**It also makes the fludioxonil desolvation result the strongest thing here.**
+`fa_sol` reaches 0.682 where volume gives 0.549 — a gap of **+0.133**, larger
+than anything the total ΔΔG achieves on any ligand.
+
+### 101a. Independent test, queued
+
+One compound is not a method. `176_dsm_terms.py` rescores Beltran's entire
+35,863-double DSM library per term. WIN 55,212-2 is the right transfer case: a
+different ligand class, a different lab, a different library design, a **crystal**
+pose rather than a predicted one, and — per §94c — a **fitting** ligand, straining
+wild-type PYL2 by only +15.7 REU.
+
+**Pre-registered:** the total ΔΔG already fails there (§89a, median rank 6,632 of
+35,863, p = 0.047). `fa_sol` must beat both the total and the volume baseline on
+the five round-1 hits, or the fludioxonil result does not transfer. Job 27991332.
