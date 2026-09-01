@@ -11111,3 +11111,96 @@ volume: the landscape fails at ~40 heavy atoms / 15.3 Å.
 **So the importable difference is not a bigger pocket, it is a longer one** — and
 no donor offers both. The scaffold question should be posed as depth, with the
 d/w ratio as the design target, not as cavity volume.
+
+---
+
+## 107. Pose-check MD, and RFdiffusion3 motif scaffolding (2026-09-01, both in flight)
+
+### 107a. Does MD retain the pose it was started from?
+
+Jannis: most of the poses this project trains on were predicted ONCE, and §93a
+showed a co-folding model places a ligand in the pocket whether or not it belongs
+there — every one of 362 ligands landed on the ABA site, hits and non-hits alike.
+Short MD is the standard check; it was used this way in the nitazene sensor work.
+
+`179_posecheck_build.sh` / `180_posecheck_run.sh` — six systems × 3 replicates ×
+20 ns, job 27992285, **8 of 18 complete**.
+
+| system | pose | role |
+|---|---|---|
+| ABA in PYR1 | crystal | positive control |
+| **mandipropamid** | **crystal** | paired |
+| **mandipropamid** | **predicted** | same ligand, same receptor, only the pose source differs |
+| WIN in PYL2 (7MWN) | crystal | positive control, second receptor |
+| **fludioxonil** | predicted, 0.71 Å seed spread | paired |
+| **benoxacor** | predicted, 3.27 Å seed spread | does seed agreement predict survival? |
+
+The second pair tests something measured but never validated: §93c showed seed
+spread **understates true pose error ~3×**, so whether it predicts anything is
+open. All six systems built at 39,507–43,893 atoms, neutral to 0.002 e, and
+**parmchk2 raised no ATTN flags** — no guessed force-field parameters, which
+matters because a guessed torsion is indistinguishable from a bad pose in an
+RMSD trace.
+
+⚠ Six build attempts were needed, each failing silently on a format mismatch:
+explicit hydrogens defeat `AssignBondOrdersFromTemplate`; `removeHs=True` is a
+no-op under `sanitize=False`; an unsanitised molecule will not substructure-match
+an aromatic template; a half-built SDF made antechamber die on the mandipropamid
+alkyne with *"Weird atomic valence (1)"*; and the `.mol` files from 135/165 carry
+MDL aromatic bond type 4, which antechamber rejects. The fix was to stop
+rebuilding and reuse the validated `.mol` files, kekulised.
+
+### 107b. RFdiffusion3 motif scaffolding — the §7 objection revisited
+
+§7 rejected motif scaffolding because *"the gate and latch are not a motif, they
+are a two-state switch; diffusion models sample one state."* That objection is
+**not** about cavity generation, and it no longer discriminates: §85 closed the
+only route to the open/closed ΔG, so "no guarantee it can open" is now equally
+true of grafts, insertions and diffused scaffolds. Everything ends at Y2H.
+
+What *does* survive as a mechanistic argument is different and applies to every
+route: **the gate closes onto the ligand**, so an enlarged cavity gives the gate
+further to travel and less to close onto. Enlargement itself is what risks the
+switch, not the method used to achieve it.
+
+`183_rfd3_motif.sh`, job 27994380, **queued behind the MD** (the pose-check array
+holds the whole short_gpu allowance).
+
+**Residue numbering asserted before submission** — `data/pyr1_A.pdb`, chain A,
+residues 1–181, all 19 interface residues present with expected identities:
+A60-63 `HFIK`, A84-89 `ISGLPA`, A115-117 `HRL`, A148-166 `PEGNSEDDTRMFADTVVKL`.
+Only gaps in 60–166 are 69–70, inside a linker RFdiffusion rebuilds.
+
+**Scored on ENVELOPE, not cavity volume** (§106): a design whose bigger pocket
+comes from smaller side chains is worthless, since that is obtainable in
+wild-type PYR1 far more cheaply. Target is depth and d/w.
+
+### 107c. Batch 2, specified — minimal loop anchors
+
+Jannis: extend the motif into the flanking structured regions so loop dynamics
+are conserved. Taken literally — extend until each segment reaches structured
+residues — that gives 34-68 / 72-101 / 107-132 / 134-181 = **139 of 181 residues
+(77 %)**, which freezes the sheet and the helix and can only produce PYR1 with
+new loops.
+
+His refinement is the workable version: anchor each loop on the *starts* of its
+flanking strands only.
+
+| segment | span | n | sequence | secondary structure |
+|---|---|---|---|---|
+| helix-60s | 58–65 | 8 | `YKHFIKSC` | `CCCCCCCC` |
+| **gate** | **81–92** | 12 | `VIVISGLPANTS` | `EEEEEE·C·EEEEE` |
+| latch | 111–121 | 11 | `IGGEHRLTNYK` | `EE·CCCCCC·EEE` |
+| C-lobe | 146–168 | 23 | `DMPEGNSEDDTRMFADTVVKLNL` | `EEE·C·EE·HHHHHHHHHHHHHHHHH` |
+
+**54 residues (30 %), all 19 interface residues covered.** The gate span captures
+six strand residues in, the turn, and five out.
+
+⚠ P-SEA calls the gate 84–86 / 88–92 **strand**, not coil. If that is right the
+gate moves as a hinge at 87 rather than as a flexible loop, which makes the
+anchoring argument stronger, not weaker. ⚠ The C-lobe span still freezes F159,
+V163 and V164, which are pocket wall (§66) — so depth gain is one-sided in both
+batches. That is inherent to preserving the interface.
+
+Held pending inspection of batch 1, per Jannis's standing rule that generated
+structures are looked at before anything is built on them.
