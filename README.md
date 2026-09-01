@@ -10360,3 +10360,51 @@ Aug 20–27 entirely. Six method rows and six timeline entries added; ACTIVE is 
 
 §53's 36,140 and §89a's 35,863 look inconsistent and are not: 35,863 doubles plus
 276 singles plus wild type. The reviewer flagged and then correctly dismissed it.
+
+---
+
+## 96. §62a is RETRACTED — the distribution-width result was one trajectory per cell (2026-08-31)
+
+§95a restored ~1.6 µs that §58b's extraction bug had hidden. §62a was recomputed
+on it. `scripts/172_62a_recompute.py`.
+
+| cell | rep | frames | mean | sd | k_eff |
+|---|---|---|---|---|---|
+| closed / apo | 0 | 30,000 | 6.12 | **0.51** | **2.28** |
+| | 1 | 30,000 | 8.31 | **2.06** | **0.14** |
+| | 2 | 30,000 | 7.60 | **1.11** | **0.48** |
+| closed / +ABA | 0 | 30,000 | 6.16 | 0.82 | 0.88 |
+| | 1 | 30,000 | 8.95 | 0.93 | 0.68 |
+| | 2 | 1,084 | — | — | excluded, truncated |
+
+**The sign of ΔF is not consistent.** Across all six apo × holo replicate
+pairings: −0.360, −0.284, +0.104, +0.180, +0.471, +0.546 — mean **+0.109**,
+sd 0.375. §62a reported **−0.33 kcal/mol**, which is the apo-rep0 pairing; the
+other four pairings give the **opposite sign**.
+
+**The within-cell spread swamps the between-cell difference.** Apo k_eff ranges
+0.14 to 2.28, a **16-fold** spread across three replicates of the same system,
+against a between-cell difference of 0.97 vs 0.78.
+
+**And the replicates are not sampling the same state.** Apo means are 6.12, 8.31
+and 7.60 Å on a coordinate whose closed value is ~6; holo means are 6.16 and
+8.95. Some replicates have drifted well away from closed. §62a compared two
+distributions as though each described its cell, when the cells are not
+internally consistent.
+
+**So the project's only positive result from unbiased MD is withdrawn.** §61's
+original statement — that the two closed cells are indistinguishable — stands
+after all, and §62a's "correction" of it was the artefact. The chain is: an
+`ls` that missed continuation files (§95a) → a false n=1 diagnosis (§58b) →
+a width comparison built on single trajectories (§62a) → a seed set for the
+umbrella arm drawn from 5 of 11 (§95c).
+
+⚠ **This also weakens §60/§85's premise further.** The umbrella windows were
+seeded from trajectories we now know span RC means of 6.1 to 9.0 Å. §85's
+hysteresis failure stands on its own test and the arm remains closed, but the
+seeds were drawn from a set far more heterogeneous than recorded.
+
+**What survives:** §29's finding that both states are kinetically trapped at
+300 ns, which does not depend on distribution widths, and which this recompute
+if anything strengthens — replicates of the same cell settle in visibly
+different places and stay there.
