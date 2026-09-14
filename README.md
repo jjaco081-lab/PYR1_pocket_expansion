@@ -11773,3 +11773,52 @@ top 20 is what shrinks the build.
 K59 and V163) rests on the small-arm statistics, which this test does not
 validate. It is the better-supported choice on training data and it remains
 unvalidated out of sample.
+
+### 115d. ⚠ §115 IS RETRACTED — the gain is not size-matching
+
+Jannis asked whether sd07 or sd09 could validate the untested small arm. sd09
+cannot: none of its 25 ligand names match an sd03 SMILES, so there are no sizes.
+sd07 can — 7 coumarins at 14–18 heavy atoms with 100 substitution-ligand pairs.
+
+⚠ sd07's clones were drawn from a library built on coumarin round-1 hits, so a
+per-ligand holdout still leaks. The whole **coumarin scaffold class** (36 clones,
+8 ligands, matched by SMARTS) was therefore removed from training.
+
+**The small arm fails, and not marginally:**
+
+| | ligand-blind | size-conditioned | delta | p | win/loss/tie |
+|---|---|---|---|---|---|
+| recall@20 | 0.333 | 0.221 | **−0.112** | 0.060 | 0/5/2 |
+| recall@40 | 0.515 | 0.311 | **−0.203** | 0.016 | **0/7/0** |
+
+Zero wins across seven ligands at recall@40.
+
+**And the decisive control kills the large-arm result too.** If size-matching were
+real, a random subset of the same size should not reproduce it. It does:
+
+| training set | clones | recall@20 on Beltran |
+|---|---|---|
+| all | 691 | 0.429 |
+| **large arm** | **429** | **0.571** |
+| **400 random subsets of 429** | 429 | **mean 0.459, sd 0.088, max 0.617** |
+
+**P(random ≥ 0.571) = 0.21.** The large-arm prior sits comfortably inside the
+distribution of equally-sized random subsets. §115's +0.142 at p = 0.0017 was a
+*paired* test against the full-data prior and is arithmetically correct, but it
+measured **subsetting**, not size-matching — and the sign-flip test cannot see
+that, because every ligand was routed to the same arm.
+
+**So the count stands at four closed ligand-conditioning attempts, not three**
+(§52 lookup, §103 whole-molecule, §104 per-position, §115 size). The ligand-blind
+frequency prior remains unbeaten out of sample.
+
+**Consequence for §121's eugenol design:** the revised menu — drop Y120, promote
+K59 and V163 — was built on small-arm statistics that now measure **worse** than
+ligand-blind on the only small-ligand test available. **Revert to the ligand-blind
+top-10 menu**, which keeps Y120. The position-frequency split in §121c is a real
+description of the training data; it is not a usable design rule.
+
+⚠ One caveat that cuts the other way and is not resolved: removing the coumarin
+class stripped 36 of the ~273 small-ligand training clones, which is where the
+small arm's most relevant data sat. A fairer small-arm test needs held-out small
+ligands that are not coumarins, and no such set exists in this corpus.
