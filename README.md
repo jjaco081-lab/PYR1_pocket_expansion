@@ -11660,3 +11660,56 @@ seed spread to understate true pose error ~3×. So §114a's null is partly a
 statement about pose quality, not only about chemistry. Restricted to
 mandipropamid alone, where the pose is crystallographic, there are 4 cells — too
 few to test either way.
+
+### 114e. The eugenol hit, and a real anti-complementarity signal at n=194
+
+Jannis asked what mutations the initial eugenol hit carries. **One clone in sd03:
+`V164L + N167V`**, DSM library, `min_conc` 100 µM — the weakest response band.
+Both substitutions **GROW** (+26.7 and +25.9 Å³, net +52.6), and N167V **removes**
+a polar residue although eugenol carries a phenol and a methoxy.
+
+**That double is not eugenol-specific.** The identical `V164L+N167V` appears in
+six chemically unrelated ligands — eugenol, flufenamic acid,
+2-hydroxy-9-fluorenone, efavirenz, chloroxylenol and 5-bromo-2-hydroxybenzophenone
+(10–21 heavy atoms). So the eugenol hit carries almost no ligand-specific
+information; it is a generic small-ligand solution.
+
+**The anti-complementarity generalises, and it is significant.** Across all 194
+ligands, correlating ligand polarity against the polarity *change* of the
+substitutions its clones carry:
+
+| test | r | p |
+|---|---|---|
+| H-bond donors + acceptors vs Δpolar | **−0.305** | **0.0001** |
+| TPSA vs Δpolar | −0.234 | 0.0007 |
+| TPSA vs hydrophobicity decrease | −0.175 | 0.013 |
+
+**The more polar the ligand, the LESS polar the substitutions it selects** — the
+opposite of chemical complementarity. Monotonic across tertiles: Δpolar +0.171
+(least polar ligands), +0.156, **+0.056** (most polar).
+
+Two controls, both pre-specified:
+
+- **Not the promiscuous double.** Dropping every `V164L+N167V` clone *strengthens*
+  it: r = −0.316. (The most frequent clones are in fact `F159V+V81Y` ×11 and
+  `F159V+V163W+V164G` ×8, not the 164/167 pair.)
+- **Not library composition.** Holding `mut_lib` fixed as §49a did: TSM alone
+  n = 139, **r = −0.332, p < 0.0001**; DSM alone r = −0.184, p = 0.051; shuffle
+  n = 10, r = −0.617.
+
+**Reading.** This is consistent with desolvation dominating: a polar ligand
+arrives with a satisfied hydration shell, and burying its polar groups against
+new protein polar groups costs more than it returns. The measured pocket supports
+that picture — ABA leaves only **40 Å³** of probe-accessible space holding
+**1.5 ± 0.7 waters**, so there is no room for a water-mediated polar network to
+reorganise around.
+
+It also explains §114a's null from the other side. The chemistry-matching test
+assumed complementarity and found none; the signed version of the same question
+finds the **anti**-correlation, significant at n = 194. So a hit does carry
+chemical information about its ligand — it just runs opposite to intuition, and
+it is a property of the ensemble rather than of any single position, which is why
+it is useless as a per-position orientation restraint.
+
+⚠ This is correlational over screened hits, which are positive-unlabeled (§51):
+it describes what *was found*, not what is optimal.
