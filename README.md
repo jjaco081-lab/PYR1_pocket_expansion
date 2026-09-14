@@ -11306,3 +11306,66 @@ aggregation (§103), per-position pharmacophore (§104) — with the same underl
 cause each time: **194 ligands at median pairwise Tanimoto 0.11 is too sparse a
 chemical space to condition on.** The ligand-blind frequency prior remains the
 thing to beat, and nothing has beaten it out of sample.
+
+---
+
+## 110. The ligand size ceiling — the project's premise, measured at last (2026-09-14)
+
+Pocket expansion has been justified throughout by §8's geometric claim that "the
+landscape fails at 40 heavy atoms / 15.3 Å". That was never checked against the
+screening record. sd01 supplies 194 hits and 3,172 documented failures — the same
+labels §84 used, but **without** the property matching, because size is exactly
+what matching removes. `scripts/186_size_ceiling.py`.
+
+| heavy atoms | hits | tested | **hit rate** |
+|---|---|---|---|
+| 0–15 | 39 | 702 | 5.6 % |
+| 15–20 | 57 | 576 | **9.9 %** |
+| 20–25 | 65 | 702 | 9.3 % |
+| 25–30 | 22 | 552 | 4.0 % |
+| 30–35 | 8 | 420 | 1.9 % |
+| 35–40 | 3 | 192 | 1.6 % |
+| **40–50** | **0** | 135 | **0 %** |
+| **50+** | **0** | 87 | **0 %** |
+
+**The ceiling is real and sharp.** The largest ligand that ever produced a sensor
+is **36 heavy atoms**. Of 358 ligands at ≥ 36 atoms, **one** is a hit; of 222 at
+≥ 40, **none** are. At the overall 5.8 % hit rate, zero hits in 222 draws has
+p = 1.9 × 10⁻⁶.
+
+The decline begins at ~25 atoms and is monotonic from there. Hit rate falls
+**6-fold** from the 15–25 plateau to the 30–40 band.
+
+### 110a. It is not a polarity or flexibility artefact
+
+Big molecules fail for many reasons other than pocket geometry. Fitting all four
+descriptors jointly (standardised logistic regression, n = 3,366):
+
+| term | coef | z |
+|---|---|---|
+| **heavy atoms** | **−1.119** | **−5.22** |
+| cLogP | +1.398 | +6.87 |
+| TPSA | +0.289 | +1.40 |
+| rotatable bonds | −0.579 | −5.18 |
+
+Heavy atoms stays strongly negative with cLogP, TPSA and rotatable bonds in the
+model. cLogP is positive at z = +6.87 — PYR1's hits are greasy, which is exactly
+the leak §84a found when negatives were unmatched.
+
+### 110b. What it does and does not license
+
+**Does:** the premise is sound. There is a hard, quantified size ceiling at
+~36 heavy atoms with a 6-fold decline above 25, and **945 documented failures sit
+in the 28–50 atom band** — a target list for any enlarged pocket, each with a
+built-in negative control, since wild-type PYR1 demonstrably fails on them.
+
+**Does not:** attribute the ceiling to the pocket. The Y2H assay needs the
+compound to reach the yeast nucleus, and large molecules enter cells poorly.
+Nothing here separates pocket-limitation from delivery, and the 0 % bands are
+where that confound is strongest. ⚠ A designed pocket that binds a 45-atom ligand
+in vitro could still score negative in Y2H for reasons that have nothing to do
+with the design.
+
+**The clean test remains the one §58 specified:** take a documented failure in the
+28–50 band, and show an enlarged pocket converts it to a hit where wild type does
+not. Same molecule, same assay, paired. That is a bench experiment.
