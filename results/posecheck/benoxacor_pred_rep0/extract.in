@@ -1,0 +1,10 @@
+parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/benoxacor_pred/system.prmtop
+reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/benoxacor_pred/rep0/eq2.rst7 [start]
+trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/benoxacor_pred/rep0/prod.nc
+autoimage anchor :6-181
+rms core :6-84,90-114,118-181@CA,C,N,O ref [start] out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/benoxacor_pred_rep0/core.dat
+rms lig :BNY&!@H= ref [start] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/benoxacor_pred_rep0/lig_rmsd.dat
+rms gate :85-89@CA,C,N,O ref [start] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/benoxacor_pred_rep0/gate.dat
+distance d :88@CA :116@CA out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/benoxacor_pred_rep0/rc.dat
+go
+quit

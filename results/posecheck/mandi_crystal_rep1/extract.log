@@ -1,0 +1,107 @@
+
+CPPTRAJ: Trajectory Analysis. V6.4.4 (AmberTools)
+    ___  ___  ___  ___
+     | \/ | \/ | \/ | 
+    _|_/\_|_/\_|_/\_|_
+
+| Date/time: 09/14/26 09:57:12
+| Available memory: 507.106 GB
+
+INPUT: Reading input from '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/mandi_crystal_rep1/extract.in'
+  [parm /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/mandi_crystal/system.prmtop]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/mandi_crystal/system.prmtop' as Amber Topology
+	Radius Set: modified Bondi radii (mbondi)
+  [reference /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/mandi_crystal/rep1/eq2.rst7 [start]]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/mandi_crystal/rep1/eq2.rst7' as Amber NC Restart
+	Setting active reference for distance-based masks: 'eq2.rst7'
+  [trajin /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/mandi_crystal/rep1/prod.nc]
+	Reading '/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/mandi_crystal/rep1/prod.nc' as Amber NetCDF
+  [autoimage anchor :6-181]
+    AUTOIMAGE: To box center based on center of mass, anchor mask is [:6-181]
+  [rms core :6-84,90-114,118-181@CA,C,N,O ref [start] out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/mandi_crystal_rep1/core.dat]
+    RMSD: (:6-84,90-114,118-181@CA,C,N,O), reference is "default_name" (:6-84,90-114,118-181@CA,C,N,O).
+	Best-fit RMSD will be calculated, coords will be rotated and translated.
+  [rms lig :MDX&!@H= ref [start] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/mandi_crystal_rep1/lig_rmsd.dat]
+    RMSD: (:MDX&!@H*), reference is "default_name" (:MDX&!@H*).
+	No fitting will be performed.
+  [rms gate :85-89@CA,C,N,O ref [start] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/mandi_crystal_rep1/gate.dat]
+    RMSD: (:85-89@CA,C,N,O), reference is "default_name" (:85-89@CA,C,N,O).
+	No fitting will be performed.
+  [distance d :88@CA :116@CA out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/mandi_crystal_rep1/rc.dat]
+    DISTANCE: :88@CA to :116@CA, center of mass.
+  [go]
+---------- RUN BEGIN -------------------------------------------------
+
+PARAMETER FILES (1 total):
+ 0: system.prmtop, 43893 atoms, 10474 res, box: Truncated octahedron, 10296 mol, 10233 solvent
+
+INPUT TRAJECTORIES (1 total):
+ 0: 'prod.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm system.prmtop (Truncated octahedron box) (reading 2000 of 2000)
+  Coordinate processing will occur on 2000 frames.
+
+REFERENCE FRAMES (1 total):
+    0: [start]:1
+	Active reference frame for distance-based masks is 'default_name'
+
+BEGIN TRAJECTORY PROCESSING:
+.....................................................
+ACTION SETUP FOR PARM 'system.prmtop' (5 actions):
+  0: [autoimage anchor :6-181]
+	Original box is truncated octahedron, turning on 'familiar'.
+	Anchoring on atoms selected by mask ':6-181'
+	Mask [:6-181] corresponds to 2827 atoms.
+	2 molecules are fixed to anchor: 1 2
+	10294 molecules are mobile.
+  1: [rms core :6-84,90-114,118-181@CA,C,N,O ref [start] out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/mandi_crystal_rep1/core.dat]
+	Target mask: [:6-84,90-114,118-181@CA,C,N,O](664)
+	Reference topology: system.prmtop
+	Reference mask: [:6-84,90-114,118-181@CA,C,N,O](664)
+  2: [rms lig :MDX&!@H= ref [start] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/mandi_crystal_rep1/lig_rmsd.dat]
+	Target mask: [:MDX&!@H*](29)
+	Reference topology: system.prmtop
+	Reference mask: [:MDX&!@H*](29)
+  3: [rms gate :85-89@CA,C,N,O ref [start] nofit out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/mandi_crystal_rep1/gate.dat]
+	Target mask: [:85-89@CA,C,N,O](20)
+	Reference topology: system.prmtop
+	Reference mask: [:85-89@CA,C,N,O](20)
+  4: [distance d :88@CA :116@CA out /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/posecheck/mandi_crystal_rep1/rc.dat]
+	:88@CA (1 atoms) to :116@CA (1 atoms), imaged.
+----- prod.nc (1-2000, 1) -----
+ 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Complete.
+
+Read 2000 frames and processed 2000 frames.
+TIME: Avg. throughput= 491.3557 frames / second.
+
+ACTION OUTPUT:
+TIME: Analyses took 0.0000 seconds.
+
+DATASETS (4 total):
+	core "core" (double, rms), size is 2000 (16.000 kB)
+	lig "lig" (double, rms), size is 2000 (16.000 kB)
+	gate "gate" (double, rms), size is 2000 (16.000 kB)
+	d "d" (double, distance), size is 2000 (16.000 kB)
+    Total data set memory usage is at least 64.000 kB
+
+DATAFILES (4 total):
+  core.dat (Standard Data File):  core
+  lig_rmsd.dat (Standard Data File):  lig
+  gate.dat (Standard Data File):  gate
+  rc.dat (Standard Data File):  d
+
+RUN TIMING:
+TIME:		Init               : 0.0000 s (  0.00%)
+TIME:		Trajectory Process : 4.0704 s ( 99.69%)
+TIME:		Action Post        : 0.0000 s (  0.00%)
+TIME:		Analysis           : 0.0000 s (  0.00%)
+TIME:		Data File Write    : 0.0118 s (  0.29%)
+TIME:		Other              : 0.0010 s (  0.00%)
+TIME:	Run Total 4.0832 s
+---------- RUN END ---------------------------------------------------
+  [quit]
+TIME: Total execution time: 4.2446 seconds.
+--------------------------------------------------------------------------------
+To cite CPPTRAJ use:
+Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for
+  Processing and Analysis of Molecular Dynamics Trajectory Data". J. Chem.
+  Theory Comput., 2013, 9 (7), pp 3084-3095.
+

@@ -11204,3 +11204,71 @@ batches. That is inherent to preserving the interface.
 
 Held pending inspection of batch 1, per Jannis's standing rule that generated
 structures are looked at before anything is built on them.
+
+---
+
+## 108. Pose-check MD: nothing sheds its pose, and predicted poses hold as well as crystal ones (2026-09-14)
+
+§107a's test, run to completion. Six systems × 3 replicates × 20 ns = **360 ns**,
+job 27992285; extraction 28367947/28367985. Jannis's suspicion was that many of
+the predicted poses this project trains on are wrong, and that MD would expose
+them — a pose that is forced should shed it.
+
+| system | pose | core RMSD | mean | **final** | max | per-rep final |
+|---|---|---|---|---|---|---|
+| ABA | crystal | 1.26 | 2.06 | **2.80** | 3.52 | 1.8 / 3.2 / 3.4 |
+| mandipropamid | **crystal** | 1.18 | 1.65 | **1.56** | 2.53 | 1.4 / 1.6 / 1.7 |
+| mandipropamid | **predicted, 1.16 Å spread** | 1.11 | 1.36 | **1.40** | 2.33 | 2.0 / 0.8 / 1.4 |
+| WIN 55,212-2 | crystal | 1.49 | 1.26 | **1.39** | 2.43 | 0.9 / 1.9 / 1.3 |
+| fludioxonil | **predicted, 0.71 Å** | 1.03 | 0.94 | **0.96** | 2.11 | 1.0 / 1.1 / 0.8 |
+| benoxacor | **predicted, 3.27 Å** | 1.33 | 2.29 | **2.41** | 3.78 | 3.6 / 1.9 / 1.8 |
+
+**Nothing sheds its pose.** The worst single excursion in 360 ns of sampling is
+**4.52 Å**, and every one of the 18 replicates ends within 0.8–3.6 Å of where it
+started. No ligand leaves the pocket.
+
+### 108a. The paired test is negative — MD does not separate crystal from predicted
+
+**Mandipropamid crystal 1.56 Å vs predicted 1.40 Å** — the predicted pose is
+marginally *more* stable, t = −0.44 on n=3 vs 3, not significant at any
+threshold. Across the set, crystal poses average **1.91 Å** and predicted poses
+**1.59 Å**.
+
+So the suspicion is **not supported**: 20 ns MD does not distinguish these
+predicted poses from crystallographic ones. ⚠ The honest reading is that this is
+a weak test rather than a clean exoneration — a wrong pose in a snug pocket can
+be metastable far longer than 20 ns, and the test can only detect poses that are
+*grossly* wrong. It rules out the failure mode where a co-folding model has
+rammed a ligand somewhere untenable. It does not establish correctness.
+
+### 108b. Seed spread predicts retention — the one positive result
+
+| predicted pose | seed spread | final RMSD |
+|---|---|---|
+| fludioxonil | 0.71 Å | **0.96** |
+| mandipropamid | 1.16 Å | **1.40** |
+| benoxacor | 3.27 Å | **2.41** |
+
+**r = +0.991 on n=3.** The ordering is perfect and monotonic, and it is the same
+ordering §93c produced from seed agreement alone. ⚠ n=3 with r = 0.99 is three
+points on a line and must not be over-read — but §93c showed seed spread
+*understates* true error ~3×, so the fact that it nonetheless ranks MD retention
+correctly makes it a usable cheap proxy. **A ligand whose Boltz seeds agree
+within ~1 Å gives a pose MD holds to ~1 Å.**
+
+Ligand size is a partial confound (RMSD vs heavy atoms r = −0.476): the two
+worst-retained systems are also among the three smallest. ABA, the cognate
+ligand, is the worst-retained crystal pose at 2.80 Å — 19 heavy atoms with room
+to move.
+
+### 108c. ⚠ The first analysis was wrong, and the error was mine
+
+The first extraction omitted `autoimage` and reported crystal ABA "leaving the
+pocket" at 8.8 ns, along with 60–86 Å RMSDs for three systems. Those were
+**periodic images**: ABA jumped **2.1 → 77.4 Å in 10 ps**, which no ligand can
+do. Once the solute diffuses across a box boundary, an unimaged trajectory
+measures the ligand against its wrapped copy.
+
+It was caught by checking for discontinuities before reporting — 60 frame-to-frame
+jumps over 10 Å in a single replicate. `184` now runs `autoimage anchor :6-181`
+before any RMS command, with the reason recorded in the script.
