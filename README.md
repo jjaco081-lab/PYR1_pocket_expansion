@@ -11822,3 +11822,91 @@ description of the training data; it is not a usable design rule.
 class stripped 36 of the ~273 small-ligand training clones, which is where the
 small arm's most relevant data sat. A fairer small-arm test needs held-out small
 ligands that are not coumarins, and no such set exists in this corpus.
+
+---
+
+## 116. The filtering cascade: infrastructure built, Stage 0 in flight (2026-09-14)
+
+⚠ **IN PROGRESS — nothing in this section is a result.** It records what was built
+today, which scripts do what, and what is running, so the state survives a
+context break.
+
+Plan approved by Jannis and stored at
+`~/.claude/plans/alright-lets-come-up-abundant-hejlsberg.md`:
+RFd3 → structural filter → LigandMPNN(ABA) → gated prediction → large-ligand
+redesign → library. Three decisions he fixed: test batches before scaling,
+**wild-type PYR1 must pass every filter as a hard gate**, and 200 designs first to
+measure the real funnel before sizing the full run.
+
+### 116a. Scripts written today
+
+| script | purpose | state |
+|---|---|---|
+| `184_posecheck_extract.sh` | ligand RMSD to the starting pose over 20 ns, `autoimage anchor` first | done, §108 |
+| `185_gated_prior_beltran.py` | §103b's gated rule, frozen, on Beltran-45 | done, §109 |
+| `186_size_ceiling.py` | hit rate vs heavy atoms, logistic-adjusted | done, §110 |
+| `190_envelope_connected.py` | envelope as the **largest connected component** | done, §113 |
+| `191_stage0a.sh` / `191_stage0b.sh` | first Stage 0 attempt | **superseded by 193** |
+| `192_filter_cascade.py` | the filter cascade, `--calibrate` runs the PYR1 gate | gate PASSES |
+| `193_rfd3_gen.py` + `193b_submit.sh` | **the single RFd3 entry point** | running |
+| `194_size_conditioned_prior.py` | size-conditioned prior on Beltran-45 | done, §115 (retracted §115d) |
+
+### 116b. The PYR1 gate rejected my own filter on first use
+
+`192 --calibrate` runs wild-type PYR1 through the cascade and **requires it to
+pass**. F5 ("no pocket-spanning residue"), defined as a Cβ within 4 Å of the
+cavity's long axis, **rejected PYR1**, flagging five ordinary wall residues (61,
+81, 92, 160, 163) — because PYR1's chamber is only 11.6 Å long with r_max 3.21 Å,
+so every lining residue is within 4 Å of its own axis. The filter measured "lines
+the pocket", not "spans it".
+
+**F5 is now a merge test**: a residue splits the cavity if truncating its side
+chain to Cβ *merges* connected components. That measures what Jannis objected to
+and is consistent with the envelope metric. PYR1 now passes all five:
+
+```
+PASS F1 enclosed cavity exists    main 119 A^3
+PASS F2 envelope >= PYR1          1184 vs 1184
+PASS F2b r_max >= PYR1            3.21 vs 3.21
+PASS F5 no spanning residue       0 found
+PASS F6 Rg within 1.5x            Rg 16.1
+```
+
+That is the fifth metric of mine to be wrong this session and the **first caught
+before** it was applied to anything.
+
+### 116c. One generator, reproducibly sampled
+
+Jannis: sampling must give diversity *and* be reportable in a manuscript.
+`193_rfd3_gen.py` replaces five sed-copied per-arm scripts — two of which failed
+on defects that existed only in the copy (`${arm: -1}` wrote `+seed=2026091a`; an
+over-escaped continuation broke the override list).
+
+- one integer `--master-seed`; per-design `seed = master × 10⁵ + i`
+- segment lengths from `numpy.random.default_rng(seed_i)`, ranges versioned in
+  the script's `SEGMENTS`
+- every design's parameters written to `params.jsonl` as it runs
+- motif identities asserted against `data/3QN1_complex_auth.pdb` before submission
+
+Reportable as: *designs generated with master seed S, per-design seeds S×10⁵+i,
+segment lengths drawn uniformly from the ranges in Table X.*
+
+### 116d. Stage 0, running
+
+Jobs **28380382** (arm 0a) and **28380383** (arm 0b), 10 designs each.
+
+- **0a** — anchor `A34-40` (100 % β-strand by P-SEA), leading range cut from an
+  unanchored 50–70 to `10-25`. Targets the tail Jannis saw wrapping HAB1 (46 of
+  the first 60 design residues within 4.5 Å of it) and the pocket-spanning K57/K63
+  that lived in the same free segment.
+- **0b** — 0a plus `select_partially_buried` (RASA **bin 1**), the intermediate
+  case a pocket wall actually occupies. §113 showed bin 0 collapses the pocket
+  (1/10) and bin 2 gives 0/10.
+
+61 fixed residues, all 19 HAB1-interface residues covered.
+
+⚠ **A fourth RFd3 invocation bug preceded this run**: Hydra rejects a bare
+comma-separated override (*"To use it as string, quote the value"*), and
+`subprocess` does not go through a shell, so the quotes must be literal characters
+in the argument. Both arms failed 10/10 with `NO OUTPUT` until fixed. The full
+trap list is in `193_rfd3_gen.py`'s header.
