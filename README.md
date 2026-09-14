@@ -11272,3 +11272,37 @@ measures the ligand against its wrapped copy.
 It was caught by checking for discontinuities before reporting — 60 frame-to-frame
 jumps over 10 Å in a single replicate. `184` now runs `autoimage anchor :6-181`
 before any RMS command, with the reason recorded in the script.
+
+---
+
+## 109. The gated similarity prior does NOT confirm on Beltran-45 (2026-09-14)
+
+§103b's gated rule, frozen exactly as recorded (threshold 0.25, exponent 2,
+training = all 194 sd03 ligands) and run once on Beltran-45, which was never used
+to build or tune anything. `scripts/185_gated_prior_beltran.py`.
+
+| | recall@20 | recall@40 | win/loss/tie @20 | sign-flip p |
+|---|---|---|---|---|
+| ligand-blind (bar) | 0.429 | **0.660** | — | — |
+| similarity prior | **0.460** (+0.031) | 0.639 (**−0.021**) | 6/2/6 | 0.51 |
+
+**§103b predicted +0.056 recall@20; the held-out value is +0.031 and not
+significant** (p = 0.51, n = 14 ligands). At recall@40 the prior is *worse* than
+ligand-blind, losing 2 and tying 12.
+
+**The mechanism check also fails.** §103a's whole account was that the gain comes
+from chemical proximity, so Δrecall should rise with max Tanimoto. On Beltran it
+**falls: r = −0.341.**
+
+**And the gate itself is untested.** All 14 Beltran ligands sit at max Tanimoto
+0.273–0.375 to sd03 — every one clears the 0.25 threshold, so the gate never
+declined and "gated" is identical to "ungated" here. The 69 %-coverage figure
+from §103b was a property of sd03's internal structure, not a general rate.
+
+**Reading:** the sd03 result (+0.05, t = 17.4, 49/50 splits positive) was real
+within sd03 and does not transfer to a new ligand class. That makes three
+ligand-conditioning attempts now closed — lookup (§52), whole-molecule
+aggregation (§103), per-position pharmacophore (§104) — with the same underlying
+cause each time: **194 ligands at median pairwise Tanimoto 0.11 is too sparse a
+chemical space to condition on.** The ligand-blind frequency prior remains the
+thing to beat, and nothing has beaten it out of sample.
