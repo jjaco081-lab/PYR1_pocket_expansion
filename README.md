@@ -11588,3 +11588,75 @@ contact HAB1, which is the tail Jannis saw wrapping it, and it comes from a
 
 **Files:** `results/rfd3/batch03/_0_model_{5,7,4}.cif` are the three largest
 envelopes (1353, 1262, 1281).
+
+---
+
+## 114. Can a known hit tell you where the ligand sits? Not in this data (2026-09-14)
+
+Jannis asked whether an initial hit can be inverted into positional information —
+matching opposite charges, or H-bond distances, to infer the ligand's orientation.
+This is the forward direction of §49, which went the other way (ligand chemistry →
+mutation identity, *without* a pose), and it is untested here. It is also what
+Leonard's "dock to sequence" does implicitly, by mutating wild type to a known
+weak hit before docking (§35).
+
+Tested on the decoded Park labels with each compound's own pose.
+
+### 114a. Chemistry matching — null
+
+For every (compound, position) cell with at least one responsive substitution
+(n = 25 across 4 compounds), the local ligand polar fraction within 6 Å against
+the mean Kyte-Doolittle hydropathy of the substitutions that work:
+
+**r = +0.102, permutation p = 0.629** — and the sign is backwards (positive means
+a polar neighbourhood favours *hydrophobic* substitutions).
+
+### 114b. Why it fails, and it is a property of PYR1's chemistry not of the idea
+
+Three measured reasons, each independently sufficient:
+
+- **The ligands are greasy and neutral.** §110's logistic model puts cLogP at
+  z = +6.87 — PYR1's hits skew hydrophobic. Mandipropamid, fludioxonil,
+  benzothiadiazole and benoxacor all carry **zero formal charge**, so the
+  opposite-charge restraint has no substrate. The one real example in the corpus
+  is ABA's carboxylate against K59, which is a single case with no negatives.
+- **H-bonds are nearly absent.** Mandipropamid makes **zero** scored H-bonds even
+  in its own crystal structure (§100a), consistent with it ignoring the W385
+  latch water (§11). Fludioxonil makes one. There is no distance restraint to
+  match.
+- **The working substitutions encode volume, not chemistry.** At F108, 11 of 19
+  substitutions work and they are the small ones; at F159, all 7 that work are
+  hydrophobic and small. §64 already identified the axis as VOLUME.
+
+### 114c. The volume version is the right form of the idea, and n is too small
+
+Recast as a steric restraint — *a required shrink means ligand bulk is there* —
+the direction is correct but the sample is not:
+
+| position | mean ΔV of working substitutions | ligand atoms within 6 Å |
+|---|---|---|
+| F108 | **−68.8 Å³** | 12 |
+| F159 | **−54.3 Å³** | 11 |
+| S122 | −28.9 Å³ | 5 |
+| A89 | **+139.2 Å³** | 9 |
+
+r = −0.219 on **n = 4**, which is not a measurement. The ordering is right for
+three of four — the two positions demanding the largest shrink are the two with
+the most ligand bulk against them — and A89W is the exception that also broke
+every other rule this project has tested.
+
+Responsive positions do sit nearer ligand bulk (median 10 atoms within 6 Å against
+8 for non-responsive), but that is §94's clash signal restated, not orientation.
+
+### 114d. What would make it testable
+
+The blocker is that only **one** ligand in the corpus has both a crystal pose and
+a charged group (ABA), and only four have decoded per-position labels. A real test
+needs charged or H-bonding ligands with known poses and known responsive
+substitutions — which is the same missing-data problem as §90, one level deeper.
+
+⚠ Three of the four compounds here carry **predicted** poses, and §93c measured
+seed spread to understate true pose error ~3×. So §114a's null is partly a
+statement about pose quality, not only about chemistry. Restricted to
+mandipropamid alone, where the pose is crystallographic, there are 4 cells — too
+few to test either way.
