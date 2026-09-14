@@ -1,0 +1,79 @@
+{
+    "diffused_index_map": {
+        "A60": "A62",
+        "A61": "A63",
+        "A62": "A64",
+        "A63": "A65",
+        "A84": "A91",
+        "A85": "A92",
+        "A86": "A93",
+        "A87": "A94",
+        "A88": "A95",
+        "A89": "A96",
+        "A115": "A125",
+        "A116": "A126",
+        "A117": "A127",
+        "A148": "A166",
+        "A149": "A167",
+        "A150": "A168",
+        "A151": "A169",
+        "A152": "A170",
+        "A153": "A171",
+        "A154": "A172",
+        "A155": "A173",
+        "A156": "A174",
+        "A157": "A175",
+        "A158": "A176",
+        "A159": "A177",
+        "A160": "A178",
+        "A161": "A179",
+        "A162": "A180",
+        "A163": "A181",
+        "A164": "A182",
+        "A165": "A183",
+        "A166": "A184"
+    },
+    "metrics": {
+        "max_ca_deviation": 0.09590291976928711,
+        "n_chainbreaks": 0,
+        "n_clashing.interresidue_clashes_w_sidechain": 1,
+        "n_clashing.interresidue_clashes_w_backbone": 0,
+        "non_loop_fraction": 0.4566473988439307,
+        "loop_fraction": 0.5433526011560693,
+        "helix_fraction": 0.3063583815028902,
+        "sheet_fraction": 0.15028901734104047,
+        "num_ss_elements": 8,
+        "radius_of_gyration": 17.44118888196833,
+        "alanine_content": 0.2682926829268293,
+        "glycine_content": 0.07804878048780488,
+        "num_residues": 205,
+        "diffused_com": [
+            0.5347972512245178,
+            1.3647260665893555,
+            0.8916398286819458
+        ],
+        "fixed_com": [
+            -0.0008791969157755375,
+            0.0002971830836031586,
+            0.00046745178406126797
+        ]
+    },
+    "specification": {
+        "input": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/pyr1_A.pdb",
+        "contig": "50-70,A60-63,15-30,A84-89,20-35,A115-117,25-40,A148-166,10-25",
+        "extra": {
+            "task_name": "",
+            "sampled_contig": "61,A60,A61,A62,A63,25,A84,A85,A86,A87,A88,A89,28,A115,A116,A117,38,A148,A149,A150,A151,A152,A153,A154,A155,A156,A157,A158,A159,A160,A161,A162,A163,A164,A165,A166,21",
+            "num_tokens_in": 205,
+            "num_residues_in": 205,
+            "num_chains": 1,
+            "num_atoms": 1117,
+            "num_residues": 206,
+            "example_id": "_0"
+        },
+        "select_fixed_atoms": true,
+        "select_unfixed_sequence": false
+    },
+    "ckpt_path": "/rhome/jjaco081/.foundry/checkpoints/rfd3_latest.ckpt",
+    "seed": 20260901
+}

@@ -49,21 +49,34 @@ python -c "import torch;print('torch',torch.__version__,'cuda',torch.cuda.is_ava
 
 # Linker ranges are wide so the sampler can vary scaffold length, which is what
 # varies the envelope. Native gaps are 63->84 = 20, 89->115 = 25, 117->148 = 30.
-CONTIG="50-70/A60-63/15-30/A84-89/20-35/A115-117/25-40/A148-166/10-25"
+# ⚠ COMMA-separated, not slash-separated. RFdiffusion v1 used slashes; RFd3
+# dialect 2 splits on commas -- foundry/utils/components.py:53 does
+# contig.split(","), and a slash-joined string fails validation with "Invalid
+# contig format. Expected 'ChainIDStart-Stop' or 'ChainIDIdx'". Variable
+# scaffold ranges ("50-70") and fixed chain segments ("A60-63") are both allowed.
+CONTIG="50-70,A60-63,15-30,A84-89,20-35,A115-117,25-40,A148-166,10-25"
 echo "contig: $CONTIG"
 
+# CORRECT OVERRIDE FORM, read from the installed package rather than guessed.
+# Two earlier attempts failed and both were my errors:
+#   1. +specification={...multi-line JSON...}  -> Hydra cannot parse newlines
+#   2. +specification={"input_specification":{...}}  -> Hydra's grammar rejects
+#      double-quoted keys, AND the structure was wrong anyway.
+# rfd3/engine.py:177 does `dict(specification or {})` and :357 passes it
+# straight through as spec_kwargs, so the fields are TOP-LEVEL -- there is no
+# input_specification wrapper. rfd3/inference/input_parsing.py:100-140 gives the
+# schema: DesignInputSpecification has `input` (path) and `contig`, with
+# `dialect` defaulting to 2. `specification` already exists in
+# configs/inference_engine/rfdiffusion3.yaml as {}, so keys are added with +.
 rfd3 \
-  +inputs.pdb=$R/data/pyr1_A.pdb \
-  +out_dir=$OUT \
-  +n_batches=1 \
-  +diffusion_batch_size=10 \
+  inputs=null \
+  out_dir=$OUT \
+  n_batches=1 \
+  diffusion_batch_size=10 \
   +seed=20260901 \
-  +specification="{
-    \"input_specification\": {
-      \"dialect\": 2,
-      \"contig\": \"$CONTIG\"
-    }
-  }"
+  +specification.input=$R/data/pyr1_A.pdb \
+  +specification.contig=\'$CONTIG\' \
+  +specification.dialect=2
 rc=$?
 echo "rfd3 rc=$rc  designs=$(ls $OUT/*.pdb 2>/dev/null | wc -l)"
 exit $rc

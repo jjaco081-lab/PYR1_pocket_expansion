@@ -11369,3 +11369,80 @@ with the design.
 **The clean test remains the one §58 specified:** take a documented failure in the
 28–50 band, and show an enlarged pocket converts it to a hit where wild type does
 not. Same molecule, same assay, paired. That is a bench experiment.
+
+---
+
+## 111. RFdiffusion3 batch 1: the motif holds, the cavity does not (2026-09-14)
+
+`183_rfd3_motif.sh`, job 28368301, 10 designs at 205 residues. The four HAB1
+interface segments were held as a fixed motif with wide linker ranges so the
+sampler could vary scaffold length.
+
+⚠ **Three invocation bugs preceded this, all mine, all found by reading the
+installed package rather than guessing.** (1) A multi-line JSON override — Hydra
+cannot parse newlines. (2) `+specification={"input_specification":{...}}` — Hydra
+rejects double-quoted keys, *and* the structure was wrong: `rfd3/engine.py:177`
+does `dict(specification or {})` and `:357` passes it straight through, so the
+fields are top-level with no wrapper. (3) A slash-separated contig —
+`foundry/utils/components.py:53` does `contig.split(",")`. RFdiffusion v1 used
+slashes; RFd3 dialect 2 does not.
+
+### 111a. The motif is held essentially exactly
+
+| design | max CA dev | breaks | clashes | loop % | helix % | sheet % | Rg |
+|---|---|---|---|---|---|---|---|
+| d0 | 0.104 | 0 | 2 | 44 | 29 | 27 | 17.3 |
+| d2 | 0.096 | 0 | 1 | 54 | 31 | 15 | 17.4 |
+| d5 | **0.902** | **1** | 1 | 46 | 37 | 17 | 17.9 |
+| d6 | 0.091 | 0 | **0** | 44 | 37 | 19 | 17.4 |
+| d8 | 0.116 | 0 | 0 | 37 | 43 | 20 | 18.3 |
+
+Median motif CA deviation **0.110 Å** over the 32 fixed positions, and **all four
+segments are present in all 10 designs** by sequence match (`HFIK`, `ISGLPA`,
+`HRL`, `PEGNSEDDTRMFADTVVKL`). One chain break in 10 designs (d5, which also
+carries the one bad CA deviation). So **§7's worry that the motif cannot be
+scaffolded is not the problem** — RFd3 reproduces it to within a tenth of an
+angstrom.
+
+### 111b. But the cavity is worse than PYR1's, not better
+
+| design | total Å³ | **main chamber** | r_max |
+|---|---|---|---|
+| **d9** | 302 | 87 | **3.56** |
+| **d8** | 273 | **142** | **3.37** |
+| d2 | 168 | 130 | 2.93 |
+| d6 | 127 | 127 | 2.75 |
+| d5 | 109 | 109 | 2.61 |
+| d1 | 70 | **0** | 0.00 |
+| d4 | 8 | **0** | 0.00 |
+| *PYR1* | *164* | ***119*** | *3.21* |
+
+**Only 2 of 10 beat PYR1's usable chamber, and only marginally** — d8 at 142 Å³
+against 119. Two designs (d1, d4) have no enclosed chamber at all. Median main
+chamber across the batch is **101 Å³, below PYR1's 119.**
+
+The mechanism is visible in the secondary structure: these designs are **35–54 %
+loop and only 15–28 % sheet**, where PYR1 is a sheet-dominated helix-grip fold.
+Rg is 15.8–20.1 Å against PYR1's 15.0. RFd3 satisfied the motif by building a
+*looser, more open* scaffold rather than a curled β-sheet — which inflates radius
+without enclosing anything. d9 has the largest total volume (302) and only 87 Å³
+of it is chamber; the rest is surface groove.
+
+### 111c. Where this leaves the scaffold route
+
+The failure mode is not the one §7 predicted. The motif scaffolds fine; **what
+does not come along is the sheet curvature that makes the pocket.** That is
+consistent with §106, where the importable difference across every natural donor
+turned out to be pocket *shape* rather than size, and with §8's length limit.
+
+Two things worth trying before abandoning it, in order of cost:
+1. **Batch 2's minimal loop anchors** (§107c) — 54 residues instead of 32,
+   anchoring each loop on its flanking strand starts. If the sheet register is
+   what is lost, holding more of it is the direct fix.
+2. **Secondary-structure conditioning**, if RFd3 exposes it — the configs carry
+   `select_buried` / RASA terms, so biasing toward sheet and against loop may be
+   reachable without a new motif.
+
+⚠ Nothing here has a sequence yet, and nothing has been tested for the switch.
+Designs are CIFs in `results/rfd3/batch01/`; **d8 and d9 are the two worth
+inspecting**, and d1/d4 are worth seeing as failures.
