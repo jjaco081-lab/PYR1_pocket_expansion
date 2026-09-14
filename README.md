@@ -11517,3 +11517,74 @@ statement about backbone generation only.
 
 **Files for inspection:** `results/rfd3/batch01/_0_model_{8,9}.cif` (best of
 batch 1) and `results/rfd3/batch02/_0_model_7.cif` (the only batch-2 pocket).
+
+---
+
+## 113. ⚠ §112 REOPENED — the RASA conditioning was suppressing the pocket (2026-09-14)
+
+Jannis, on inspecting batch 2 model 7: *"I am a bit concerned about the RASA
+function... if a pocket is too large it might treat this as solvent exposed again
+and thats why we saw so many of these designs with no pocket since they tried to
+completely bury the residues."*
+
+**The code says exactly that.** `rfd3/transforms/rasa.py:44` bins relative
+accessible surface area with a 1.4 Å (water) probe at edges [0.0, 0.1, 0.2]:
+bin 0 buried, 1 partially buried, 2 exposed. A residue lining a pocket **is**
+water-accessible, so its true RASA is high. Asking `select_buried` (bin 0)
+demands RASA < 0.1 — essentially no water contact — which the model can only
+satisfy by packing protein around those residues and **eliminating the pocket**.
+
+Two arms run to isolate it, everything else identical to batch 2:
+
+| arm | conditioning | designs with a cavity | polyGly envelope |
+|---|---|---|---|
+| batch 2 | `select_buried` | **1/10** | 1227 |
+| **batch 3** | **none** | **7/10** | **1198–1353, median 1250** |
+| batch 4 | `select_exposed` | **0/10** | — |
+| *PYR1* | — | — | *1184* |
+
+**Jannis's hypothesis is confirmed and batch 3 is the best result of the whole
+scaffold arm: 7 of 10 designs have an enclosed cavity and all 7 exceed PYR1's
+backbone envelope**, the best at 1353 Å³ (+14 %), with r_max 3.19–3.52 against
+PYR1's 3.21.
+
+`select_exposed` is worse still (0/10), which makes sense on the same logic: bin 2
+means bulk-solvent exposed, i.e. on the protein's outer surface. A pocket wall is
+neither buried nor exposed — it is the intermediate case, `select_partially_buried`
+(bin 1), which is the arm not yet run.
+
+### 113a. §112's closure was premature and the error was mine
+
+§112 closed this arm on the criterion *"two independent attempts saying the
+method builds open scaffolds around this motif"*. Those two attempts were not
+independent: batch 2 carried a conditioning term that actively suppressed the
+thing being measured, so it was one real attempt plus one self-inflicted
+artefact. **The arm is reopened.**
+
+Two further reasons the conditioning was misapplied, both visible in the package
+and neither checked before use: `discretize_rasa` excludes protein atoms by
+default (`& ~atom_array.is_protein`), and the RASA transform carries
+`requires_ligand` — the feature is built for conditioning **ligand** burial, not
+protein motif residues, and batch 2 had no ligand at all.
+
+### 113b. What batch 3 does and does not establish
+
+**Does:** RFd3 can scaffold this motif *and* enclose a cavity larger than PYR1's
+backbone envelope, with HAB1 present as a steric constraint, at a 70 % rate.
+
+**Does not:** anything about shape, sequence or the switch. Design-chain Rg is
+22.3–26.5 Å against PYR1's 15.0, so these remain far more extended than PYR1 —
+§112b's observation stands, and a bigger envelope in a looser fold is not
+obviously useful. The sequence is still RFd3's low-complexity placeholder (71 %
+A/S/T/G/P/V, 2 aromatics in 156 positions), so every number here is on the
+poly-Gly basis and none of it survives contact with a real designed sequence
+until LigandMPNN is run.
+
+**Next, in order:** (1) `select_partially_buried` as the correctly-binned arm;
+(2) LigandMPNN on batch 3's seven, then re-measure the cavity with real side
+chains; (3) shorten the N-terminal free segment — 46 of the first 60 residues
+contact HAB1, which is the tail Jannis saw wrapping it, and it comes from a
+50–70 residue unanchored range in my contig.
+
+**Files:** `results/rfd3/batch03/_0_model_{5,7,4}.cif` are the three largest
+envelopes (1353, 1262, 1281).
