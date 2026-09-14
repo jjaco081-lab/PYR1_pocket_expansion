@@ -11446,3 +11446,74 @@ Two things worth trying before abandoning it, in order of cost:
 ⚠ Nothing here has a sequence yet, and nothing has been tested for the switch.
 Designs are CIFs in `results/rfd3/batch01/`; **d8 and d9 are the two worth
 inspecting**, and d1/d4 are worth seeing as failures.
+
+---
+
+## 112. RFdiffusion3 batch 2: HAB1 clears the face and destroys the pocket (2026-09-14)
+
+Batch 2 applied three changes, each from an inspection Jannis made on batch 1:
+HAB1 present as a fixed steric constraint (he observed batch 1 built helical
+bundles in front of the gate and latch), his minimal loop anchors (54 residues
+instead of 32, including the 81–92 gate span), and burial conditioning on the 12
+pocket-facing motif residues that are not also HAB1 interface.
+
+⚠ **Four invocation errors preceded a working run, all mine.** (1) `B185-505`
+spans HAB1's 26 missing residues — four blocks are needed. (2) RFd3's CIF parser
+reads **label** numbering and 3QN1's chain A carries an **auth−label offset of
+−2**, so the motif spans would have silently selected the wrong residues; fixed
+by feeding an auth-numbered PDB with all four motif sequences asserted.
+(3) Missing `/0` chain-break tokens meant one ~500-residue chain threading
+through PYR1 *and* HAB1 — motif deviation 33–50 Å, 5–8 breaks per design, Rg
+25–32 Å. That one failed loudly, which is the exception in this project.
+
+### 112a. The helices are gone — Jannis's prediction was right
+
+| | batch 1 (PYR1 alone) | **batch 2 (HAB1 fixed)** |
+|---|---|---|
+| helix fraction | 28–43 % | **0–32 %, median 7 %** |
+| sheet fraction | 15–28 % | **8–40 %**, d8 at 40 % |
+| motif CA deviation | 0.09–0.90 Å | 0.81–4.12 Å |
+| chain breaks (total) | 1 | 20 |
+
+Fixing HAB1 as 295 real residues removed the helical bundles from the gate/latch
+face, exactly as predicted. Sheet content rose and helix content collapsed.
+
+### 112b. But the pocket disappeared
+
+| design | design residues | Rg (design chain) | **polyGly envelope** | r_max |
+|---|---|---|---|---|
+| **d7** | 210 | 24.0 | **1227** | **3.40** |
+| all nine others | 210 | 21.2–25.4 | **0** | **0.00** |
+| *PYR1* | *181* | ***15.0*** | *1184* | *3.21* |
+| *batch 1* | *205* | *15.8–20.1* | *median ~1007* | — |
+
+**Nine of ten have no enclosed cavity whatsoever**, against 8 of 10 in batch 1.
+The one that does, d7, reaches 1227 Å³ — marginally above PYR1's 1184 — and is
+the only usable design from 20 attempts.
+
+The cause is visible in Rg: **21.2–25.4 Å against PYR1's 15.0** and batch 1's
+15.8–20.1. With one face occupied by HAB1, the scaffold spread *away* from it
+rather than curling around a pocket. Removing the helices did not convert them
+into an enclosing sheet; it made the designs flatter and more open.
+
+### 112c. Arm closed
+
+Two independent attempts, 20 designs, one pocket. The criterion was fixed before
+batch 2 ran: *if batch 2 again comes back loop-heavy with a sub-PYR1 envelope,
+that is two independent attempts saying the method builds open scaffolds around
+this motif, and I stop rather than keep turning knobs.* Batch 2 is loop-heavy
+(55–82 %) with 9 of 10 envelopes at zero. **Stopping.**
+
+What the two batches jointly establish is narrower than §7's objection and
+sharper: **the motif scaffolds easily — 0.1 Å in batch 1 — and the pocket does
+not follow.** RFd3 has no secondary-structure conditioning to request a curled
+β-sheet (checked: `input_parsing.py` offers RASA burial and PPI hotspots only),
+and burial conditioning on 12 residues did not substitute for it. This is the
+same conclusion §106 reached from natural donors: what would need importing is
+pocket *shape*, and nothing on offer supplies it.
+
+⚠ Nothing here was sequence-designed or tested for the switch, so this is a
+statement about backbone generation only.
+
+**Files for inspection:** `results/rfd3/batch01/_0_model_{8,9}.cif` (best of
+batch 1) and `results/rfd3/batch02/_0_model_7.cif` (the only batch-2 pocket).
