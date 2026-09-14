@@ -11713,3 +11713,63 @@ it is useless as a per-position orientation restraint.
 
 ⚠ This is correlational over screened hits, which are positive-unlabeled (§51):
 it describes what *was found*, not what is optimal.
+
+---
+
+## 115. A size-conditioned prior beats the ligand-blind bar on Beltran-45 (2026-09-14)
+
+§121c found PYR1's productive positions depend on ligand size: splitting the 194
+sd03 ligands at ABA's 19 heavy atoms, **Y120 falls from rank 2 (32.6 % of
+large-ligand clones) to rank 10 (9.2 %)**, K59 rises from 6 to 2, V163 from 15 to
+8, and the direction of substitution flips — small ligands FILL the pocket (mean
++1.7 Å³, 51 % grow) while large ligands OPEN it (−11.3 Å³, 44 % grow). F159 is
+rank 1 in both.
+
+Tested against the bar §103/§109 failed to beat, on the same untouched
+Beltran-45 set, nothing fitted, split point taken from §121c and not tuned.
+`scripts/194_size_conditioned_prior.py`.
+
+| | ligand-blind (bar) | **size-conditioned** | delta | p | win/loss/tie |
+|---|---|---|---|---|---|
+| **recall@20** | 0.429 | **0.571** | **+0.142** | **0.0017** | **10/0/4** |
+| recall@40 | 0.660 | 0.636 | −0.024 | 0.50 | 0/2/12 |
+
+**Ten wins, zero losses at recall@20.** This is the first ligand-conditioning
+method here to survive a held-out test — similarity lookup (§52), whole-molecule
+aggregation (§103) and per-position pharmacophore (§104) all failed, and the
+gated prior gave +0.031 at p = 0.51 (§109).
+
+### 115a. Why this works where similarity failed
+
+The three closed attempts failed for one reason: 194 ligands at median pairwise
+Tanimoto 0.11 is too sparse a chemical space to condition on. **Heavy-atom count
+is dense** — a reliably-measured scalar with 79 ligands below ABA and 115 at or
+above, and every ligand has a well-defined value. There is no neighbour-sparsity
+failure mode to hit.
+
+### 115b. ⚠ Only ONE arm is actually tested
+
+**All 14 Beltran ligands are ≥ 19 heavy atoms** (range 20–36), so every one routes
+to the large arm. This is therefore not a test of *routing* — it is a test of
+whether training on 429 size-matched clones beats training on all 691. The
+**small-ligand arm is completely untested**, and that is exactly the arm the
+eugenol case (12 atoms) would use.
+
+The split-point sweep makes the limitation concrete: at splits of 14, 16 and 19,
+**zero** Beltran ligands fall in the small arm; at 22 only two do; at 25 seven do
+and the gain goes negative (−0.024). So the sweep is not evidence for 19 being
+optimal — it is evidence that Beltran cannot probe the small arm at all.
+
+### 115c. What the recall@40 null means
+
+The gain is at recall@20 and vanishes by 40. Size-conditioning **re-ranks the top
+of the menu**, it does not add coverage — consistent with §87b's finding that
+Tian's whole vocabulary caps at 30/45 = 67 % of Beltran's sensors however it is
+ordered. For library design that is still the useful half: a 20-substitution menu
+is a ~10³–10⁴ library and a 40-substitution menu is ~10⁵–10⁶, so improving the
+top 20 is what shrinks the build.
+
+**Consequence for §121's eugenol design:** the revised menu (drop Y120, promote
+K59 and V163) rests on the small-arm statistics, which this test does not
+validate. It is the better-supported choice on training data and it remains
+unvalidated out of sample.
