@@ -106,10 +106,14 @@ def main():
         os.makedirs(d, exist_ok=True)
         cmd = [RFD3, "inputs=null", f"out_dir={d}", "n_batches=1",
                "diffusion_batch_size=1", f"+seed={seed}",
-               f"+specification.input={INPUT}", f"+specification.contig={cg}",
+               f"+specification.input={INPUT}",
+               # Hydra treats a bare comma-separated value as ambiguous
+               # ("To use it as string, quote the value"). subprocess does not go
+               # through a shell, so the quotes must be literal characters here.
+               f"+specification.contig='{cg}'",
                "+specification.dialect=2"]
         if ARMS[a.arm]:
-            cmd.insert(-1, f"+specification.select_{ARMS[a.arm]}={POCKET}")
+            cmd.insert(-1, f"+specification.select_{ARMS[a.arm]}='{POCKET}'")
         rec.write(json.dumps(dict(design=i, seed=seed, arm=a.arm,
                                   conditioning=ARMS[a.arm], contig=cg,
                                   segment_lengths=lens)) + "\n")
