@@ -11910,3 +11910,320 @@ comma-separated override (*"To use it as string, quote the value"*), and
 `subprocess` does not go through a shell, so the quotes must be literal characters
 in the argument. Both arms failed 10/10 with `NO OUTPUT` until fixed. The full
 trap list is in `193_rfd3_gen.py`'s header.
+
+---
+
+## 117. Stage 0 measured, and two bugs in my own cascade (2026-09-15)
+
+`scripts/195_arm_compare.py`, `196_break_contact_audit.py`, `198_cascade2.py`,
+`199_cascade_report.py`, jobs 28382475 / 28387027, cutlerlab CPU.
+
+Stage 0's two arms finished (10 designs each, `arm0a_s2026` no RASA, `arm0b_s2027`
+`select_partially_buried`). Motif scaffolding is excellent and reproducible —
+**0.11 Å** max CA deviation, and identical segment lengths at identical seeds
+across the failed and successful submissions, so `seed_i = master_seed × 100000 + i`
+is manuscript-reportable.
+
+### 117a. ⚠ Chain selection by size was wrong on 6 of 20 designs
+
+`195` first took the design chain to be the chain with the most residues. **HAB1's
+block `B283-461` is 179 residues**, so any design shorter than that lost, and six
+rows silently measured HAB1's cavity and HAB1's Rg. The motif-identity assertion
+is what caught it — the bad rows are exactly the ones reporting 179 residues with
+a scrambled motif sequence. A residue-*number* check would have passed.
+
+The design chain now comes from RFd3's own `diffused_index_map` for the PYR1
+motif keys and is asserted not to reproduce an HAB1 context block verbatim.
+
+⚠ I predicted this bug had also inflated batch 3's 7/10 cavity baseline. **It had
+not** — batch 3's designs are all 188 residues, above HAB1's 179, so the
+heuristic happened to pick correctly there. The arms span 164–207, which is why
+only they were affected.
+
+### 117b. Three more defects, all found by Jannis's eye beating my filters
+
+He inspected `arm0b` d000/d002/d009 and produced the **opposite ranking** to the
+cascade. Each disagreement was a real defect:
+
+| defect | what v1 did | what it missed |
+|---|---|---|
+| break COUNT ≠ connectivity | d000 failed on "3 breaks" | those were a **16-residue orphan floating 59 Å away**; its 169-residue main body is intact |
+| same | d009 passed with "2 breaks" | those **split the protein into 112 + 77 residue halves 21 Å apart**, motif on both sides |
+| cavity measured across pieces | d009 scored 61 Å³ / 1354 Å³ envelope | **80 % of that cavity is in the gap between the halves**; main piece alone gives **1 Å³** |
+| Rg inflated by orphans | d000 read Rg 22.3 | **15.8** on the main piece — PYR1 is 15.0 |
+| F4 used the leading 25 residues only | reported 0 for d002 and d009 | d009 has an **18-residue appendage** wrapping HAB1 on an inter-motif linker |
+
+`198_cascade2.py` makes **connectivity filter zero**, measures cavity/envelope on
+the **largest connected piece only**, and gates F4 on the **longest contiguous run
+of designed residues touching HAB1** across the whole chain. Verdicts now match
+Jannis: d000 PASS, d002 fail (appendage 5), d009 REJECT. Wild-type PYR1 passes
+the gate (1 piece, 119 Å³, 1184 Å³, Rg 16.1).
+
+⚠ The appendage threshold (≤4) is calibrated on **n = 3** — his reads of those
+three designs. Raw counts are written to the CSV so it can be re-cut without
+recomputation.
+
+---
+
+## 118. Lead length is causal; the anchor is irrelevant; truncation rescues (2026-09-15)
+
+Stage 1, n = 120 per arm. `arm2noanch_s3002` and `arm3b3rasa_s3003` differ **only**
+in leading-segment length (both lack the A34-40 anchor), which makes this a clean
+one-variable contrast:
+
+| | long lead 50-70 | short lead 10-25 | Fisher p |
+|---|---|---|---|
+| one intact chain | **90 %** | 60 % | **9.1 × 10⁻⁸** |
+| cavity on main piece | **50 %** | 10 % | **8.7 × 10⁻¹²** |
+
+And the anchor, which §116 blamed for the fragmentation, does nothing: 60 % vs
+40 % intact (p = 0.14), 10 % vs 15 % cavity (p = 0.45).
+
+**Shortening the lead — my Stage-0 "fix" — destroyed both connectivity and the
+pocket.** The pre-registered RASA comparison is also null: `partially_buried` on
+batch 3's contig changes nothing (90 % vs 90 % intact, 50 % vs 60 % cavity, all
+p > 0.7), so Stage 0's apparent 4/10-vs-0/10 RASA effect was n = 10 noise, exactly
+as its p = 0.087 implied.
+
+### 118a. The HAB1-wrapping lead is truncatable, and truncation fixes Rg too
+
+An audit of all 40 `F4` failures in the long-lead arm puts the appendage in the
+**lead in 40 of 40 cases** — none internal, none trailing. `203_truncation_rescue.py`
+(job 28398063) deletes every non-motif residue before the first motif residue and
+re-measures:
+
+- **RESCUED 35/40 (88 %, 95 % CI 74–95)**
+- cavity survives truncation in **40/40**
+- median envelope **1253 → 1238 Å³** — essentially unchanged
+
+So the lead is **not** load-bearing pocket wall, and the long-lead arm's real pass
+rate is **36/120 (30 %)**, not 1/120. Jannis called this on batch2 model 7 before
+any of it was measured: *"a really long terminal disordered section that wraps
+around HAB1. This can probably just be truncated."*
+
+⚠ Truncation also drops Rg (21.8 → 15.5, 25.9 → 16.6, 26.6 → 19.9), so the
+"designs are loose, Rg 22–27 vs PYR1's 15" reported since §111 was **the
+disordered lead, not the fold**. My rescue test checked cavity, envelope and
+connectivity but **not** Rg, so 35/40 understates rather than overstates it.
+
+### 118b. Why the dangling arms exist at all
+
+Jannis: *"I am confused why we are still getting random arms. Is this just because
+we are entering a set number of residues that must exist either side of the
+motif."* **Yes.** The contig mandates residue counts; with 54–61 fixed motif
+residues out of ~190, two thirds of the chain is free scaffold RFd3 must place
+somewhere, and where the fold does not need it, it dangles. The model cannot
+build fewer. This does not arise in RFd1 binder design because there the whole
+chain is the binder and every residue has a job.
+
+---
+
+## 119. The library arm: options A, B and C (2026-09-15)
+
+`scripts/200_fill_matching.py`, `201_specificity_ceiling.py`,
+`202_water_positions.py`.
+
+### 119a. A — volume-deficit fill matching is CLOSED
+
+Eugenol (12 heavy atoms, **162 Å³** vdW) under-fills ABA (**249 Å³**) by 87 Å³, and
+its hit `V164L+N167V` grows by +52.6 Å³ — half the deficit.
+
+| | result |
+|---|---|
+| P1 positive control: Spearman(deficit, mean ΔVolume) | **+0.296, p = 5.1 × 10⁻⁵** HOLDS |
+| P2 hard sign-partition re-ranking, recall@20 | 0.365 → 0.300, **38 W / 80 L, p = 3 × 10⁻⁴** |
+| P2 parameter-free tie-break version | **0 W / 6 L** |
+| P3 permutation control | observed beats permuted deficits, p = 0.010 |
+
+The mechanism is real and the deficit carries information, but **no re-ranking
+converts it into recall**. No stratum of |deficit| rescues it — Q4, where eugenol
+sits at the 77th percentile, is 7 W / 19 L. Eugenol itself goes blind@20
+0.00 → 1.00, which is the anecdote that motivated the idea and is not a method.
+**Fifth closed ligand-conditioning attempt.**
+
+⚠ Distinguished from the dead cavity-match test (§69) and the retracted
+size-conditioned prior (§115d) in the script header: cavity match was scored
+*inside* a directionally-correct menu, and §115 **subset** the training clones
+whereas this only re-orders them.
+
+### 119b. C — the ligand-conditioning ceiling is REAL
+
+| | within-ligand Jaccard | between-ligand | p |
+|---|---|---|---|
+| all clones | **0.0972** | 0.0201 | < 0.0005 |
+| dsm only | 0.1132 | 0.0221 | < 0.001 |
+| tsm only | 0.0918 | 0.0221 | < 0.001 |
+
+**4.8× enrichment**, surviving the `mut_lib` control in all three libraries.
+Identical re-isolates are only **0.6 %** of pairs and deduping leaves **4.57×**.
+
+So ligand identity genuinely structures which substitutions are selected: the
+five failures are failures of **method**, not proof of impossibility. The six
+`V164L+N167V` ligands sit at 0.068 — above random (0.023), below same-ligand
+(0.097): a generic solution with real per-ligand structure on top.
+
+### 119c. B — crystallographic pocket waters are a NULL
+
+Chain and numbering resolved **by identity assertion** (3QN1 and 3K3K both 18/18
+on chain A auth; 4WVO 14/18 and 8EY0 12/18 are their engineered mutations).
+Water-proximity position ranking is **worse than blind frequency at every k**
+(−0.10 to −0.30) and indistinguishable from permuted water counts (p = 0.646).
+Driest positions carry more clones (117 vs 73) — the anti-complementarity
+direction — but r = −0.170, p = 0.499 at n = 18. No power, not a result.
+
+---
+
+## 120. For SMALL ligands the signal is the LATCH, not the lining (2026-09-15)
+
+Jannis proposed testing the Whitehead/nitazene gate-latch-lock positioning idea on
+smaller ligands with more responsive first hits. Measured on sd03's 641 clones
+with `min_conc` as the readout, responsive = ≤ 10 µM:
+
+| | small (≤16 HA) | large (≥17 HA) |
+|---|---|---|
+| **latch L117** ΔVolume | **−45.6 vs +14.6 Å³, p = 0.0085** | −57.0 vs −22.9, p = 0.078 |
+| **pocket lining** ΔVolume | +3.5 vs −1.1, **p = 0.64** | −15.8 vs −6.7, p = 0.0099 |
+
+L117 mutation is carried by **24 % of responsive small-ligand clones vs 5 % of
+weak** (p = 0.00022). Holds within `tsm` (35 % vs 12 %, p = 0.014) and at matched
+depth n = 3 (p = 0.023). **Five distinct ligands** contribute (carbimazole,
+chloroxylenol, cycloate, DEET, sodium dehydroacetate), so it is not
+pseudo-replication. Ligand-level ordinal test p = 0.038. **The gate itself
+(L87/A89) shows nothing, p = 0.69.**
+
+Responsive clones **shrink and polarise** the latch — L117→N ×4, D ×3, G ×2, A —
+while weak ones keep it bulky (H, W, M).
+
+⚠ **Pooling hides it completely**: 22 % vs 22 %, p = 0.92 across all ligands.
+
+**Geometry supports the direction.** In 3QN1 the L117 side chain points *toward*
+the ligand and contacts ABA at **3.80 Å**, while the L117 backbone sits at
+**5.72 Å**. Leu's bulk therefore sets a floor on how close the latch backbone can
+come. ABA fills that space; a smaller ligand does not, so the latch must advance
+further to staple — and Leu blocks it.
+
+**Why this matters: every physical method this project built — clash relief,
+cavity match, fill matching, `fa_sol` desolvation — scores the pocket LINING, and
+for small ligands the lining carries no signal at all.** That is a candidate
+single explanation for the whole run of small-ligand failures.
+
+### 120a. The `min_conc` permeability confound, which runs the OTHER way
+
+`min_conc` is an *in vivo* yeast readout and conflates affinity with cell entry
+and PDR efflux. It does track lipophilicity: Spearman(log₁₀ min_conc, cLogP) =
+**−0.374, p = 2.1 × 10⁻⁷**.
+
+But L117-carrying ligands are **less** lipophilic (cLogP 1.1 vs 2.4, p = 0.020),
+so permeability predicts they should be *less* responsive — they are *more*. The
+confound runs **against** the finding. Stratified by cLogP tertile the
+Mantel-Haenszel **pooled OR is 6.37** versus 5.9 unadjusted, concentrated in the
+high-cLogP tertile (40 % vs 8 %, p = 0.0039) where entry is least limiting. The
+Lipinski window shows nothing (p = 0.38).
+
+⚠ Any future use of `min_conc` as potency should be cLogP-adjusted. Part of the
+small-ligand hit-rate deficit (§120b) may be entry rather than binding, and
+separating those needs a `pdr5Δ` background — not computable.
+
+### 120b. The size dependence is TWO-sided
+
+| heavy atoms | tested | hits | rate |
+|---|---|---|---|
+| ≤12 | 506 | 20 | **4.0 %** |
+| 13–20 | 903 | 90 | **10.0 %** |
+| 21–27 | 912 | 65 | 7.1 % |
+| 28–50 | 964 | 19 | **2.0 %** |
+
+≤12 vs 13–20: p = 3 × 10⁻⁵. 28–50 vs 13–20: p = 6 × 10⁻¹⁴. §110 measured the
+ceiling; this adds the floor. **Eugenol at 12 heavy atoms is the 6th percentile of
+all 194 hits.**
+
+### 120c. ⚠ No out-of-library test exists, and the structural calculation FAILED
+
+Beltran-45 has **zero L117** substitutions and all 14 ligands are large (20–36
+HA), so the latch claim cannot be tested there. The large-ligand *lining*
+analogue **fails to replicate** on Beltran (p = 0.175, direction reversed).
+
+`204_latch_advance.py` (job 28400142) was written to test the geometry by rigidly
+translating the latch toward the ligand with and without Leu117. **It is void, and
+the bugs are mine:**
+
+1. The latch (115–117) is covalently bonded to residues 114 and 118 at **1.33 Å
+   and 1.31 Å**. The clash test is a vdW criterion (~2.9 Å for C–C), so the bonded
+   neighbours register as a permanent clash and the translation aborts on the
+   first 0.1 Å step — for every ligand, both conditions. `advWT` and `advGLY` each
+   take exactly one distinct value: `0.0`.
+2. Only **70 of 182** ligands placed at all; a principal-axis alignment × a
+   12-orientation grid is far too coarse, and the rest dropped out silently.
+3. **The P1 control passed spuriously.** It required |gain| < 0.6 for ABA, which
+   the all-zero failure mode satisfies trivially. A control must be able to fail
+   in the direction the bug produces.
+
+The model is also wrong independent of the code: rigidly translating a three-residue
+loop embedded in a continuous chain is a motion the protein cannot make. The
+static reformulation — free volume between ligand and latch backbone, with and
+without the Leu117 side chain — avoids it. **Not yet run.**
+
+⚠ None of this touches §120's correlation, which is a data analysis.
+
+---
+
+## 121. Stage 2: scaling to 500 passing designs (2026-09-15)
+
+Measured pass rate on the winning recipe is **36/120 = 30 %**, so 500 passing
+needs ~1,670 designs ≈ 21 GPU-hours. Submitted 2,500 across five jobs:
+
+| arm | motif | segments | n | recipe |
+|---|---|---|---|---|
+| `5long` | A58-65 … A146-168 | batch 3 mandated | 800 + 400 | the proven 30 % recipe |
+| `6helix` | **A146-172** (+4) | batch 3 mandated | 600 + 300 | Jannis: extend the grip helix |
+| `7free` | A58-65 … A146-168 | **0-N + total length** | 400 | permissive distribution |
+
+**`6helix`** — Jannis asked to extend the scaffolded helix that contacts HAB1 by
+3–4 residues. Measured in 3QN1: **A146-168 is the grip helix** (74 % helical by
+P-SEA, 8/23 residues within 4.5 Å of HAB1, closest 2.57 Å), and the helix **runs
+on to residue 177** (coil from 178), so +4 to A146-172 (`…KLNL` → `…KLNLQKLA`)
+stays entirely helical. It also pins 4 more residues, shrinking the free-scaffold
+fraction that produces the dangling arms.
+
+### 121a. `specification.length` — total length instead of mandated flanks
+
+Jannis asked whether total length can be given instead of per-segment lengths.
+Read from the installed parser (`foundry/utils/components.py:85`):
+
+- `specification.length` is a real field, *"Length range as 'min-max' or int"*.
+- It counts **every** residue including HAB1 context — fixed = 54 motif + 295
+  HAB1 = 349, so a ~190-residue design chain is `length≈485`, **not 190**.
+  Passing 300 raises *"No valid selections possible"*.
+- A `0` minimum **is** legal, so a flank can be omitted — but only **26/300**
+  draws contain a zero segment and **1/300** drops the lead, because the
+  allocator takes `randint` per segment in order and early segments win. This
+  **loosens** the constraint, it does not remove it.
+
+⚠ `193_rfd3_gen.py` PRE-SAMPLES segment lengths and emits a concrete contig, which
+leaves the allocator nothing to allocate and would have made `length` silently
+inert. `contig(..., ranges=True)` now emits the ranges for length-constrained
+arms, and `--dry-run` echoes the full command so the flag can be verified rather
+than assumed.
+
+⚠ **Reproducibility is open for `7free` only.** Every other arm's lengths are
+chosen by us and recorded in `params.jsonl`, reproducible from `master_seed`. For
+`7free` RFd3's allocator uses Python's `random.randint` and it is not yet known
+whether that is seeded from `+seed`. Realised lengths will be recovered from each
+design's `diffused_index_map` and checked for seed-determinism; if it fails, the
+arm is still valid but its lengths must be reported per design.
+
+### 121b. Designs released for inspection
+
+Five written to `results/rfd3/review/`, lead truncated, HAB1 retained, motif
+marked occupancy 1.00:
+
+| file | envelope | cavity | r_max | Rg |
+|---|---|---|---|---|
+| `arm3b3rasa_d102_trunc.pdb` | **1358** | 83 | 3.40 | 15.5 |
+| `arm3b3rasa_d052_trunc.pdb` | 1287 | **192** | 3.22 | 16.6 |
+| `arm3b3rasa_d074_trunc.pdb` | 1323 | 144 | 3.34 | 19.9 |
+| `arm2noanch_d034_trunc.pdb` | 1306 | 112 | 3.32 | 16.3 |
+| `arm0b_d000_trunc.pdb` | 1190 | **211** | 3.46 | 15.8 |
+
+PYR1: envelope 1184 Å³, chamber 119 Å³, r_max 3.21, Rg 15.0. Motif deviation
+0.08–0.11 Å throughout. **Cavities reach 1.6–1.8× PYR1's chamber.**

@@ -50,12 +50,79 @@ HAB1 = ["B185-221", "B232-270", "B283-461", "B466-505"]
 SEGMENTS = [(10, 25), (10, 20), (15, 30), (20, 35), (25, 40), (5, 15)]
 #: the 12 pocket-facing motif residues that are NOT also HAB1 interface
 POCKET = "A59,A62,A81,A83,A91,A92,A115,A120,A160,A163,A164,A167"
-ARMS = {"0a": None, "0b": "partially_buried", "0c": "buried"}
+
+#: --- Stage 1 arms -------------------------------------------------------
+#: Stage 0 measured two defects that trade against each other:
+#:
+#:   * batch 3 (no A34-40 anchor, 50-70 unanchored lead) -> 9/10 ONE intact
+#:     chain, 7/10 cavities, but ALL TEN wrap HAB1 (9-21 leading contacts) and
+#:     Rg 22-26 A.
+#:   * arms 0a/0b (anchor + 10-25 lead) -> HAB1 wrapping fixed decisively
+#:     (median 17 -> 2 contacts, p = 0.011) but only 4/10 stay one piece.
+#:
+#: The breaks localise to lead, link3 and link4 -- and link3/link4 carry the
+#: SAME (20,35)/(25,40) ranges as batch 3, which breaks there zero times. So the
+#: extra fixed segment (61 motif residues instead of 54) is being paid for by
+#: breaking downstream linkers. Two things are therefore untested and both are
+#: on the critical path: whether SLACK in link3/link4 buys connectivity back,
+#: and whether the ANCHOR or merely the SHORT LEAD causes the fragmentation.
+MOTIF_ANCHORED = MOTIF                     # 5 segments, includes A34-40
+MOTIF_BARE = MOTIF[1:]                     # 4 segments, batch 3's motif
+SEG_BASE = SEGMENTS                                              # arms 0a/0b
+SEG_SLACK = [(10, 25), (10, 20), (15, 30), (30, 45), (35, 50), (5, 15)]
+SEG_SHORTLEAD = [(10, 25), (15, 30), (20, 35), (25, 40), (5, 15)]
+SEG_BATCH3 = [(50, 70), (15, 30), (20, 35), (25, 40), (10, 25)]
+
+#: Jannis: extend the scaffolded grip helix that contacts HAB1 "a little
+#: further along the length of the helix", 3-4 extra residues. Measured in 3QN1
+#: chain A: A146-168 is the grip helix (74 % helical by P-SEA, 8 of 23 residues
+#: within 4.5 A of HAB1, closest 2.57 A) and the helix RUNS ON to residue 177
+#: (coil from 178), so a +4 extension to A146-172 stays entirely helical.
+#: It also shrinks the free-scaffold fraction, which is what produces the
+#: dangling arms -- 65 fixed residues instead of 61.
+MOTIF_HELIXEXT = MOTIF[1:-1] + [("A146-172", "DMPEGNSEDDTRMFADTVVKLNLQKLA")]
+
+#: PERMISSIVE distribution. `specification.length` constrains the TOTAL and the
+#: per-segment ranges become 0-N, so the model decides WHERE the residues go
+#: instead of being told. Verified against the installed parser
+#: (foundry/utils/components.py:85 get_design_pattern_with_constraints):
+#:   * `length` counts EVERY residue, HAB1 context included -- fixed = 54 PYR1
+#:     motif + 295 HAB1 = 349, so a ~190-residue design chain is length ~485,
+#:     not 190. Passing 300 raises "No valid selections possible".
+#:   * a 0 minimum IS legal, so a flank can be omitted entirely -- but only
+#:     26/300 draws contain a zero segment and 1/300 drops the lead, because the
+#:     allocator takes randint per segment in order and early segments win. This
+#:     LOOSENS the constraint, it does not remove it.
+SEG_PERMISSIVE = [(0, 90), (0, 45), (0, 50), (0, 55), (0, 40)]
+#: arm -> specification.length. None means unconstrained (every other arm).
+LENGTHS = {"7free": "465-505"}
+
+#: (motif, segment ranges, RASA conditioning). len(segs) == len(motif) + 1.
+RECIPES = {
+    "0a":      (MOTIF_ANCHORED, SEG_BASE,      None),
+    "0b":      (MOTIF_ANCHORED, SEG_BASE,      "partially_buried"),
+    "0c":      (MOTIF_ANCHORED, SEG_BASE,      "buried"),
+    # Stage 1: s1 vs s4 is the slack test; s2 vs s4 isolates the anchor from
+    # the short lead; s3 puts RASA on batch 3's good-connectivity contig.
+    "1slack":  (MOTIF_ANCHORED, SEG_SLACK,     "partially_buried"),
+    "2noanch": (MOTIF_BARE,     SEG_SHORTLEAD, "partially_buried"),
+    "3b3rasa": (MOTIF_BARE,     SEG_BATCH3,    "partially_buried"),
+    "4rep":    (MOTIF_ANCHORED, SEG_BASE,      "partially_buried"),
+    # Stage 2: the winning long-lead recipe, and the helix-extension variant.
+    "5long":   (MOTIF_BARE,      SEG_BATCH3,    "partially_buried"),
+    "6helix":  (MOTIF_HELIXEXT,  SEG_BATCH3,    "partially_buried"),
+    # one-variable test against 5long: same motif, same total length envelope,
+    # permissive distribution instead of mandated flanks.
+    "7free":   (MOTIF_BARE,      SEG_PERMISSIVE, "partially_buried"),
+}
+ARMS = {k: v[2] for k, v in RECIPES.items()}
+for _k, (_m, _s, _c) in RECIPES.items():
+    assert len(_s) == len(_m) + 1, f"{_k}: {len(_s)} segments for {len(_m)} motifs"
 RFD3 = "/bigdata/cutlerlab/jjaco081/conda_envs/foundry/bin/rfd3"
 INPUT = os.path.join(ROOT, "data", "3QN1_complex_auth.pdb")
 
 
-def assert_motif():
+def assert_motif(motif=None):
     T = {"HIS": "H", "PHE": "F", "ILE": "I", "LYS": "K", "SER": "S", "GLY": "G",
          "LEU": "L", "PRO": "P", "ALA": "A", "ASN": "N", "THR": "T", "ARG": "R",
          "ASP": "D", "MET": "M", "GLU": "E", "VAL": "V", "TYR": "Y", "CYS": "C",
@@ -64,18 +131,30 @@ def assert_motif():
     for l in open(INPUT):
         if l.startswith("ATOM") and l[12:16].strip() == "CA" and l[21] == "A":
             seq[int(l[22:26])] = T.get(l[17:20].strip(), "X")
-    for span, expect in MOTIF:
+    for span, expect in (motif or MOTIF):
         a, b = (int(x) for x in span[1:].split("-"))
         got = "".join(seq.get(i, "-") for i in range(a, b + 1))
         assert got == expect, f"{span}: frame reads {got}, expected {expect}"
     return len(seq)
 
 
-def contig(rng):
-    """one sampled contig; SEGMENTS are the scaffold, MOTIF the fixed parts"""
-    lens = [int(rng.integers(lo, hi + 1)) for lo, hi in SEGMENTS]
+def contig(rng, motif=None, segs=None, ranges=False):
+    """one sampled contig; segs are the scaffold, motif the fixed parts.
+
+    ⚠ Normally this PRE-SAMPLES each segment length here, so the contig handed
+    to RFd3 carries concrete numbers and the sampling is ours (reproducible from
+    master_seed). That is incompatible with `specification.length`, which asks
+    RFd3's own allocator to distribute a total across the segments -- concrete
+    numbers leave it nothing to allocate. With ranges=True the contig carries
+    the RANGES instead and RFd3 does the distribution.
+    """
+    motif, segs = motif or MOTIF, segs or SEGMENTS
+    if ranges:
+        lens = [f"{lo}-{hi}" for lo, hi in segs]
+    else:
+        lens = [int(rng.integers(lo, hi + 1)) for lo, hi in segs]
     parts = [str(lens[0])]
-    for i, (span, _) in enumerate(MOTIF):
+    for i, (span, _) in enumerate(motif):
         parts.append(span)
         parts.append(str(lens[i + 1]))
     return ",".join(parts) + ",/0," + ",/0,".join(HAB1), lens
@@ -89,21 +168,26 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
-    n_res = assert_motif()
+    motif, segs, cond = RECIPES[a.arm]
+    n_res = assert_motif(motif)
     out = os.path.join(ROOT, "results", "rfd3", f"arm{a.arm}_s{a.master_seed}")
     os.makedirs(out, exist_ok=True)
     rec = open(os.path.join(out, "params.jsonl"), "a")
     print(f"motif asserted against {os.path.basename(INPUT)} ({n_res} chain-A residues)")
-    print(f"arm {a.arm}  conditioning={ARMS[a.arm]}  n={a.n}  master_seed={a.master_seed}")
+    print(f"arm {a.arm}  conditioning={cond}  n={a.n}  "
+          f"master_seed={a.master_seed}")
+    print(f"  motif   {[m[0] for m in motif]}")
+    print(f"  segments {segs}")
 
     for i in range(a.n):
         seed = a.master_seed * 100000 + i
         rng = np.random.default_rng(seed)
-        cg, lens = contig(rng)
+        cg, lens = contig(rng, motif, segs, ranges=bool(LENGTHS.get(a.arm)))
         d = os.path.join(out, f"d{i:03d}")
         if os.path.exists(os.path.join(d, "done")):
             continue
         os.makedirs(d, exist_ok=True)
+        length = LENGTHS.get(a.arm)
         cmd = [RFD3, "inputs=null", f"out_dir={d}", "n_batches=1",
                "diffusion_batch_size=1", f"+seed={seed}",
                f"+specification.input={INPUT}",
@@ -112,14 +196,20 @@ def main():
                # through a shell, so the quotes must be literal characters here.
                f"+specification.contig='{cg}'",
                "+specification.dialect=2"]
-        if ARMS[a.arm]:
-            cmd.insert(-1, f"+specification.select_{ARMS[a.arm]}='{POCKET}'")
+        if length:
+            cmd.insert(-1, f"+specification.length='{length}'")
+        if cond:
+            cmd.insert(-1, f"+specification.select_{cond}='{POCKET}'")
         rec.write(json.dumps(dict(design=i, seed=seed, arm=a.arm,
-                                  conditioning=ARMS[a.arm], contig=cg,
-                                  segment_lengths=lens)) + "\n")
+                                  conditioning=cond, contig=cg,
+                                  motif=[m[0] for m in motif],
+                                  segment_ranges=[list(x) for x in segs],
+                                  segment_lengths=lens,
+                                  total_length=LENGTHS.get(a.arm))) + "\n")
         rec.flush()
         if a.dry_run:
             print(f"  d{i:03d} seed={seed} lens={lens}")
+            print("       " + " ".join(cmd[1:]))
             continue
         r = subprocess.run(cmd, capture_output=True, text=True)
         ok = bool(__import__("glob").glob(os.path.join(d, "**", "*.cif*"),

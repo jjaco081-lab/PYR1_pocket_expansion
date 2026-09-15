@@ -39,6 +39,51 @@ ROWS = [
  "Volume must be the LARGEST CONNECTED COMPONENT (Jannis); 145's free_volume summed every disconnected void. Measured inflation 1.00x on batches 1-3 so it changed nothing, but it is the correct definition.",
  "ACTIVE", "-", "CPU local", "190, 192"],
 
+["Latch vs lining, size-stratified", "Design - library",
+ "min_conc from sd03's 641 clones regressed on WHERE a substitution sits -- latch (L117), gate (L87/A89) or pocket lining -- stratified by ligand heavy-atom count, with cLogP adjustment.",
+ "Jannis proposed testing the Whitehead/nitazene gate-latch-lock positioning idea on smaller ligands with more responsive first hits.",
+ "sd03, 641 clones with min_conc; Beltran-45 attempted as hold-out", "Sep 15",
+ "For SMALL ligands (<=16 HA) responsiveness tracks SHRINKING the latch: L117 dVolume -45.6 vs +14.6 A^3 (p = 0.0085), and L117 mutation is carried by 24% of responsive vs 5% of weak clones (p = 0.00022). The pocket LINING is null for small ligands (p = 0.64) but significant for large ones (p = 0.0099). The gate itself does nothing (p = 0.69). Responsive clones shrink AND polarise: L117->N x4, D x3, G x2, A, versus H/W/M in the weak set.",
+ "POOLING HIDES IT COMPLETELY -- 22% vs 22%, p = 0.92 over all ligands. Every physical method this project built scores the LINING, which for small ligands carries no signal; that is a candidate single explanation for the whole run of small-ligand failures.",
+ "No out-of-library test exists: Beltran-45 has zero L117 substitutions and all 14 ligands are large, and the large-ligand lining analogue FAILS to replicate there (p = 0.175, direction reversed). min_conc conflates affinity with cell entry -- Spearman(min_conc, cLogP) = -0.374 -- but the confound runs AGAINST the finding (MH OR 6.37 adjusted vs 5.9 raw).",
+ "ACTIVE", "-", "CPU local", "README 120"],
+
+["Latch advance geometry", "Design - structural",
+ "Rigid-body translation of the latch (115-117) toward a placed ligand until clash, with and without the Leu117 side chain, to test whether Leu117 sets the floor on latch closure.",
+ "To turn 120's correlation into a physical predictor.",
+ "3QN1 chain A, 182 sd03 ligands", "Sep 15",
+ "VOID. Every advance is 0.00 A for every ligand in both conditions.",
+ "Three defects, all mine: (1) the latch is covalently bonded to residues 114/118 at 1.33 and 1.31 A, and the clash test is a vdW criterion (~2.9 A C-C), so the bonded neighbours are a permanent clash and translation aborts on step 1; (2) only 70/182 ligands placed at all -- a principal-axis alignment x 12-orientation grid is far too coarse; (3) THE CONTROL PASSED SPURIOUSLY -- it required |gain| < 0.6 for ABA, which the all-zero failure mode satisfies trivially.",
+ "A control must be able to FAIL in the direction the bug produces. And the model is wrong independent of the code: rigidly translating a loop embedded in a continuous chain is a motion the protein cannot make. Static reformulation (free volume between ligand and latch backbone, +/- the Leu117 side chain) not yet run.",
+ "RETIRED", "-", "CPU cutlerlab", "204; job 28400142"],
+
+["Volume-deficit fill matching", "Design - library",
+ "Rank substitutions by whether their side-chain volume change matches the deficit a ligand leaves against ABA's 249 A^3 footprint, evaluated leave-one-LIGAND-out on sd03.",
+ "Eugenol under-fills ABA by 87 A^3 and its hit grows by +52.6 A^3; the fifth attempt at ligand conditioning.",
+ "sd03, 181 ligands with computed vdW volumes", "Sep 15",
+ "CLOSED. The mechanism is real -- Spearman(deficit, mean dVolume) = +0.296, p = 5.1e-5 -- but no re-ranking converts it into recall. Hard sign-partition: recall@20 0.365 -> 0.300, 38 wins/80 losses, p = 3e-4. Parameter-free tie-break: 0 wins/6 losses. No stratum of |deficit| rescues it.",
+ "Eugenol itself goes blind@20 0.00 -> 1.00, which is the anecdote that motivated the idea and is not a method.",
+ "Distinguished in the script header from dead cavity-match (69, scored INSIDE a menu) and the retracted size prior (115d, which SUBSET the training clones where this only re-orders them). Permutation control passes at p = 0.010, so the deficit carries information we cannot spend.",
+ "RETIRED", "-", "CPU local", "200"],
+
+["Ligand-conditioning ceiling", "Design - benchmark",
+ "Jaccard similarity of substitution sets within vs between ligands, with ligand-label permutation and a mut_lib control.",
+ "After five failed conditioning attempts, measure whether ANY ligand-conditioned method can work rather than trying a sixth.",
+ "sd03, 691 clones, 125 ligands with >=2 clones", "Sep 15",
+ "THE CEILING IS REAL: within-ligand Jaccard 0.0972 vs between-ligand 0.0201, a 4.8x enrichment, p < 0.0005 over 2000 permutations. Holds in every library separately (dsm 0.1132, tsm 0.0918, shuffle 0.4400).",
+ "Identical re-isolates are only 0.6% of pairs and deduping leaves 4.57x, so it is not pseudo-replication. The six V164L+N167V ligands sit at 0.068 -- above random (0.023), below same-ligand (0.097): a generic solution with real per-ligand structure on top.",
+ "The five failures are failures of METHOD, not proof of impossibility. We have been conditioning on the wrong variable.",
+ "ACTIVE", "-", "CPU local", "201"],
+
+["Crystallographic pocket-water position prior", "Design - library",
+ "Rank the 18 mutable positions by contact with ordered pocket waters in 3QN1/3K3K, scored against blind position frequency on Beltran-45.",
+ "fa_sol gave the largest non-volume AUC gap in the project (+0.133 on fludioxonil) and 114e's anti-complementarity points at desolvation.",
+ "3QN1, 3K3K, 4WVO, 8EY0", "Sep 15",
+ "NULL. Worse than blind frequency at every k (-0.10 to -0.30) and indistinguishable from permuted water counts (p = 0.646).",
+ "Driest positions carry more clones (117 vs 73), the anti-complementarity direction, but r = -0.170, p = 0.499 at n = 18 -- no power.",
+ "Chain and numbering resolved BY IDENTITY ASSERTION, not assumed: 3QN1 and 3K3K both 18/18 on chain A auth; 4WVO 14/18 and 8EY0 12/18 are their engineered mutations.",
+ "RETIRED", "-", "CPU local", "202"],
+
 ["Ligand-conditioned priors (four attempts)", "Design - library",
  "Priors over substitutions conditioned on the query ligand: similarity lookup, whole-molecule aggregation, per-pocket-position pharmacophore, and ligand SIZE.",
  "Asked whether knowing the ligand beats the ligand-blind frequency prior on a held-out set.",
@@ -450,6 +495,14 @@ TIMELINE = [
     ("Sep 1", "Ligand-similarity priors beat the blind bar but the control shows it is lookup; the per-position version fails on data density."),
     ("Sep 14", "Pose-check MD completes: nothing sheds its pose in 360 ns, and seed spread predicts retention (r = +0.99, n=3)."),
     ("Sep 14", "The ligand SIZE CEILING is measured at last -- 36 heavy atoms, 0 hits in 222 tested at >= 40. The project premise holds."),
+    ("Sep 15", "Chain selection by SIZE was wrong on 6/20 designs -- HAB1's 179-residue block outranked short designs. Caught by the motif-IDENTITY assertion, invisible to a residue-number check."),
+    ("Sep 15", "Jannis's eye check inverts the cascade ranking; three real defects follow -- break count is not connectivity, cavities form BETWEEN disconnected pieces (d009: 61 -> 1 A^3), and orphans inflate Rg (22.3 -> 15.8)."),
+    ("Sep 15", "Lead LENGTH is causal and the anchor is irrelevant: long vs short lead gives 90% vs 60% intact and 50% vs 10% cavity (p = 9e-8, 9e-12). RASA is null at n=120."),
+    ("Sep 15", "Truncating the HAB1-wrapping lead rescues 35/40 designs; cavity survives 40/40. The long-lead pass rate is 30%, not 1%. Jannis called this on batch2 model 7."),
+    ("Sep 15", "Fifth ligand-conditioning attempt closed (fill matching), but the CEILING test shows ligand identity really does structure substitution choice at 4.57x -- the failures are methodological."),
+    ("Sep 15", "For SMALL ligands responsiveness tracks shrinking the LATCH (L117), not the lining; pooling hides it entirely. Every physics we built scores the lining."),
+    ("Sep 15", "The latch-advance calculation is VOID -- bonded neighbours read as permanent clash, and its control passed spuriously on the all-zero failure mode."),
+    ("Sep 15", "specification.length read from the installed parser: it counts HAB1 context too, 0-minimum flanks are legal but rare, and our generator pre-sampled lengths so the flag would have been silently inert."),
     ("Sep 14", "RFd3 batch 3 gives 7/10 cavities all above PYR1's backbone envelope, after Jannis diagnoses that RASA conditioning was suppressing the pocket."),
     ("Sep 14", "Four ligand-conditioning attempts now closed; the size arm is retracted when a random subset of equal size reproduces its gain."),
     ("Sep 14", "The benchmark vocabulary trap is found: every Tian downstream library was drawn from sd03, so no clean small-ligand test exists."),
@@ -658,7 +711,13 @@ def write_md(path):
 
 
 if __name__ == "__main__":
-    x = write_xlsx(os.path.join(ROOT, "data", "methods_review.xlsx"))
+    # openpyxl is no longer installed in any project env, and because the xlsx
+    # was written FIRST its ImportError silently prevented METHODS_REVIEW.md
+    # from regenerating at all. The markdown is the artefact that matters.
+    try:
+        x = write_xlsx(os.path.join(ROOT, "data", "methods_review.xlsx"))
+    except ImportError as e:
+        x = f"(xlsx skipped: {e})"
     m = write_md(os.path.join(ROOT, "METHODS_REVIEW.md"))
     from collections import Counter
     c = Counter(r[COLS.index("Status")] for r in ROWS)

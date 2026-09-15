@@ -221,3 +221,10 @@ data/structures/*.zip
 # scripts/110_factorial_extract.sh; kept on disk so the error stays inspectable,
 # but 86 MB of derived data does not belong in git.
 results/factorial_FIRST_SEGMENT_ONLY/
+
+# RFdiffusion3 design ensembles (~1 GB and growing) -- regenerate with
+# 193_rfd3_gen.py + 197b_submit_stage1.sh; every seed is in params.jsonl.
+# The per-design params.jsonl IS tracked so the runs stay reproducible.
+results/rfd3/arm*/d*/
+results/rfd3/batch0*/*.cif
+results/rfd3/batch0*/*.cif.gz
