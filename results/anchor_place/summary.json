@@ -1,0 +1,110 @@
+[
+ {
+  "ligand": "anthrone",
+  "arm": "ketone",
+  "uM": 1.0,
+  "n_conf": 1,
+  "n_tried": 36,
+  "n_polygly_ok": 6,
+  "best_fa_clashes": 3
+ },
+ {
+  "ligand": "anthrone",
+  "arm": "carboxylate",
+  "uM": 1.0,
+  "n_conf": 1,
+  "n_tried": 36,
+  "n_polygly_ok": 14,
+  "best_fa_clashes": 9
+ },
+ {
+  "ligand": "anthrone",
+  "arm": "unanchored",
+  "uM": 1.0,
+  "n_conf": 1,
+  "n_tried": 288,
+  "n_polygly_ok": 55,
+  "best_fa_clashes": 2
+ },
+ {
+  "ligand": "3-phenylphenol",
+  "arm": "ketone",
+  "uM": 10.0,
+  "n_conf": 2,
+  "n_tried": 72,
+  "n_polygly_ok": 15,
+  "best_fa_clashes": 0
+ },
+ {
+  "ligand": "3-phenylphenol",
+  "arm": "carboxylate",
+  "uM": 10.0,
+  "n_conf": 2,
+  "n_tried": 72,
+  "n_polygly_ok": 8,
+  "best_fa_clashes": 16
+ },
+ {
+  "ligand": "3-phenylphenol",
+  "arm": "unanchored",
+  "uM": 10.0,
+  "n_conf": 2,
+  "n_tried": 576,
+  "n_polygly_ok": 29,
+  "best_fa_clashes": 1
+ },
+ {
+  "ligand": "chloroxylenol",
+  "arm": "ketone",
+  "uM": 10.0,
+  "n_conf": 1,
+  "n_tried": 36,
+  "n_polygly_ok": 10,
+  "best_fa_clashes": 0
+ },
+ {
+  "ligand": "chloroxylenol",
+  "arm": "carboxylate",
+  "uM": 10.0,
+  "n_conf": 1,
+  "n_tried": 36,
+  "n_polygly_ok": 34,
+  "best_fa_clashes": 6
+ },
+ {
+  "ligand": "chloroxylenol",
+  "arm": "unanchored",
+  "uM": 10.0,
+  "n_conf": 1,
+  "n_tried": 288,
+  "n_polygly_ok": 36,
+  "best_fa_clashes": 9
+ },
+ {
+  "ligand": "eugenol",
+  "arm": "ketone",
+  "uM": 100.0,
+  "n_conf": 5,
+  "n_tried": 180,
+  "n_polygly_ok": 117,
+  "best_fa_clashes": 0
+ },
+ {
+  "ligand": "eugenol",
+  "arm": "carboxylate",
+  "uM": 100.0,
+  "n_conf": 5,
+  "n_tried": 180,
+  "n_polygly_ok": 32,
+  "best_fa_clashes": 9
+ },
+ {
+  "ligand": "eugenol",
+  "arm": "unanchored",
+  "uM": 100.0,
+  "n_conf": 5,
+  "n_tried": 1440,
+  "n_polygly_ok": 245,
+  "best_fa_clashes": 1
+ }
+]

@@ -94,6 +94,18 @@ MOTIF_HELIXEXT = MOTIF[1:-1] + [("A146-172", "DMPEGNSEDDTRMFADTVVKLNLQKLA")]
 #:     allocator takes randint per segment in order and early segments win. This
 #:     LOOSENS the constraint, it does not remove it.
 SEG_PERMISSIVE = [(0, 90), (0, 45), (0, 50), (0, 55), (0, 40)]
+#: THE UNTESTED CELL. Every anchored arm so far used the SHORT lead and every
+#: long-lead arm was unanchored, because the A34-40 anchor and the lead
+#: shortening were introduced as ONE change in Stage 0 -- so they could not be
+#: told apart. With proper n both help INDEPENDENTLY:
+#:   long vs short lead, both unanchored : cavity 50% vs 10%  (p = 8.7e-12)
+#:   anchor vs none, both short lead     : cavity 25% vs 10%  (p = 0.0015)
+#: and their combination has never been run. SEG_BATCH3 carries 5 entries for a
+#: 4-segment motif; the anchored motif has 5 segments and needs 6, so batch 3's
+#: long lead (50-70) and trailing (10-25) are kept and SEG_BASE's A34-40 ->
+#: A58-65 linker (10-20) is inserted after the lead.
+SEG_ANCHLONG = [(50, 70), (10, 20), (15, 30), (20, 35), (25, 40), (10, 25)]
+
 #: arm -> specification.length. None means unconstrained (every other arm).
 LENGTHS = {"7free": "465-505"}
 
@@ -114,6 +126,10 @@ RECIPES = {
     # one-variable test against 5long: same motif, same total length envelope,
     # permissive distribution instead of mandated flanks.
     "7free":   (MOTIF_BARE,      SEG_PERMISSIVE, "partially_buried"),
+    # anchor for the sheet nucleus + long lead for the pocket; the tail it
+    # reintroduces is handled post hoc by truncation (35/40 rescued, cavity
+    # survived 40/40), which is how batch 3 reaches 30% PASS.
+    "8best":   (MOTIF_ANCHORED,  SEG_ANCHLONG,   "partially_buried"),
 }
 ARMS = {k: v[2] for k, v in RECIPES.items()}
 for _k, (_m, _s, _c) in RECIPES.items():

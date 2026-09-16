@@ -12227,3 +12227,203 @@ marked occupancy 1.00:
 
 PYR1: envelope 1184 Å³, chamber 119 Å³, r_max 3.21, Rg 15.0. Motif deviation
 0.08–0.11 Å throughout. **Cavities reach 1.6–1.8× PYR1's chamber.**
+
+---
+
+## 122. The homolog cavity survey is wrong in four ways (2026-09-16)
+
+All four found by following Jannis's question about why 3QRZ's chains disagreed.
+
+### 122a. `cavity_A3` is TOTAL volume, not the usable chamber
+
+The survey column sums every void separated by necks a ligand cannot pass.
+
+| donor | survey (total) | **usable main chamber** | vs PYR1's 119 |
+|---|---|---|---|
+| Api g 1 (2BK0) | 344 Å³ | **172** | 1.4× |
+| Ara h 8 (6AWV) | 319 Å³ | **126** | **1.06× — none** |
+| CoxG (2PCS) | 570 Å³ | **570** | **4.8×, all real** |
+| PYL9 (3OQU) | 204 Å³ | 146 | 1.2× |
+
+**This is the same error Jannis caught in the RFd3 cascade** ("only count the
+largest pocket"); fixed in §145/`190`/`198` and never propagated back here.
+Only CoxG's volume is genuinely one chamber.
+
+### 122b. One arbitrary chain was measured, and copies disagree up to 8×
+
+4JDL's three chains give main chambers of **128, 16 and 13 Å³**, with chains A
+and B equally complete (14 vs 13 missing residues). Jannis confirmed in PyMOL
+that their β-sheets genuinely differ, so this is **conformational, not a
+measurement artefact**. Whichever chain CATH picked became the published number.
+
+⚠ **A single-structure cavity volume has no error bar, and the within-crystal
+spread exceeds most between-protein differences we were interpreting.** An
+apparent pocket increase must be tested against that spread.
+
+### 122c. An OBSOLETE entry is in the set
+
+**3QRZ was superseded by 4JDL on 2013-03-13** (Jannis, from the PDB entry). Both
+are in the survey, giving three different answers for PYL5: 210, 104 and 29 Å³.
+Nothing in the pipeline ever checked obsolescence.
+
+### 122d. ⚠ Excluding HETATM deletes part of the CHAIN
+
+`MSE` (selenomethionine, 1,554 atoms) and `CME` are HETATM but are **part of the
+polypeptide**. Dropping all HETATM punches a methionine-shaped hole that the
+cavity code reads as pocket. Present in **23 of 66** experimental structures —
+and in **zero** AlphaFold models, which have no HETATM at all, so it would have
+**inflated experimental cavities relative to predicted ones**, exactly the axis
+the comparison rests on. `A8S` (ABA) is also present in the homolog set, so
+structures must be stripped to apo or the measurement is leftover volume.
+
+Fixed in `216_cavity_recompute.py` with a **whitelist** of amino-acid names
+rather than a ligand blacklist: an unrecognised residue is then excluded and
+shows up as an anomalously LARGE cavity, which is visible, instead of a ligand
+being counted as protein, which is not.
+
+### 122e. PYR1's own reference is the apo MONOMER — HAB1 SEALS the pocket
+
+| | total | main chamber |
+|---|---|---|
+| PYR1 chain A alone (the reference used everywhere) | 164.4 | **119.0** |
+| PYR1 chain A **+ HAB1** | 182.3 | **182.3** |
+
+With HAB1 present the pocket is **182 Å³ as a SINGLE chamber** — the 19 and 27 Å³
+"satellite lobes" are artefacts of measuring the monomer. HAB1 has zero pocket
+residues but it **seals** the openings, which is not the same thing. The
+functional closed-state pocket is 182 Å³ and every homolog has been compared
+against 119.
+
+---
+
+## 123. Grafting was closed on the wrong test (2026-09-16)
+
+Jannis: *"when we graft that means taking part of PYR1's sequence and part of the
+new protein's sequence... it would not matter what the gate RMSD is as long as
+there are good places to anchor all of the infrastructure."*
+
+He is right. §86 measured whether a donor's EXISTING backbone already sits in
+PYR1's conformation (3.5–4 Å core RMSD, gates 5–9 Å out of register) and closed
+"grafting". **In a chimera the donor's gate is REPLACED, not superimposed**, so
+its conformation is irrelevant; what matters is whether the chains can be JOINED.
+
+### 123a. Splice points exist in every large donor
+
+Junction sites <1.5 Å, outside the segments we keep, bracketing gate, latch and
+HAB1 interface: **2PCS 8, 2BK0 7, 6AWV 6, 3OQU 98**.
+
+### 123b. SCHEMA, and what it does and does not separate
+
+`213`/`214`. E = contacts (heavy atoms <4.5 Å, |i−j|≥5) whose residues come from
+different parents; junction cost = total CA deviation at the optimal splice.
+
+⚠ **The pilot's control FAILED**: PYL9, a real ABA receptor at 1.38 Å, scored the
+WORST raw E, because E mostly counts how many PYR1 positions are kept. Normalised
+against a per-donor count-matched null it becomes uninformative (all donors
+0.60–0.71). **Junction cost is what separates them**, and E cannot see it.
+
+With the **real foldseek alignment** (`qaln`/`taln`) and every crossover position
+scanned: PYL3 **1.1 Å / 8-8 clean**, PYL9 2.0, PYL5 2.9, **Api g 1 6.1 / 7-8**,
+Ara h 8 9.2, CoxG 16.6 / 3-8. **Spearman(cavity, junction cost) = −0.131,
+p = 0.41 — bigger pockets are NOT harder to splice.**
+
+⚠ Two bugs found en route: an ICP correspondence gave Api g 1 4/8 clean at
+10.9 Å where the real alignment gives 7/8 at 6.1; and **CATH domain files contain
+the whole asymmetric unit** — `3qrzB00` has chains A, B AND C — so reading all of
+them scrambled the residue index and produced 17 Å RMSD at 50 % identity. The
+domain name's 5th character is the chain.
+
+---
+
+## 124. RFdiffusion3: three specification errors (2026-09-16)
+
+### 124a. ⚠ EVERY DESIGN SO FAR WAS SCAFFOLDED AROUND AN EMPTY POCKET
+
+`data/3QN1_complex_auth.pdb` contains **3,674 ATOM records and ZERO HETATM** —
+ABA was stripped when it was generated and nobody noticed. The model had no
+physical reason to leave a cavity anywhere, which plausibly explains why the
+cavity rate swung 0–60 % between arms. RFd3 exposes `specification.ligand`
+("Ligand name or index to include in design"), and `extract_ligand_array` sets
+the named residue as a **fully fixed motif**. Input rebuilt with ABA by
+`218_build_input_with_aba.py` (19 heavy atoms, motif re-asserted).
+
+### 124b. The linkers are over-specified, and it is targeted
+
+PYR1's own linkers are **17, 15, 18, 24** residues, spanning CA–CA gaps of only
+**15.1, 4.4, 7.9, 9.9 Å**. Every arm mandates a MINIMUM above native for gaps 3
+and 4 (we ask 20–35 and 25–40; `SEG_SLACK` asks 30–45 and 35–50).
+
+Internal appendages ≥5 residues, 90 designs across 5 arms:
+
+| gap | count | median run | our range | native |
+|---|---|---|---|---|
+| gap1 | 10 | 6 | 10–20 | 17 ✓ |
+| gap2 | 14 | 8 | 15–30 | 15 |
+| **gap3** | **26** | **12** | 20–35 | **18** ✗ |
+| **gap4** | **17** | **16** | 25–40 | **24** ✗ |
+
+**Gaps 3 and 4 carry 43 of 73 appendages and the longest runs.** `6helix` and
+`5long` have appendages ONLY in gap3. The more a linker is over-specified, the
+longer the junk it produces.
+
+### 124c. Jannis's own RFd1 contig had a TOTAL LENGTH CAP
+
+`contigmap.contigs=[20-100/B378-395/20-100/0 A1-193]` with
+**`contigmap.length=50-150`** — permissive flanks plus a binding ceiling. Ours
+are the opposite: narrow per-segment ranges summing to a FORCED ≥146 residues
+with no cap at all. This is a specification difference we introduced, not an
+RFd1→RFd3 regression.
+
+⚠ **Jannis is hesitant to tighten the linkers** because he still wants
+significant pocket-size increases, and a larger pocket may legitimately need more
+material. NOT YET TESTED: whether linker length correlates with cavity size, or
+whether the excess only ever goes outward as appendages.
+
+---
+
+## 125. Truncation: the core-growth rule (2026-09-16)
+
+Two earlier rules, both wrong, both diagnosed by Jannis in PyMOL:
+
+- **HAB1-contact rule** — fails when an appendage does not reach HAB1
+- **local-packing rule** — fails when the appendage packs against ITSELF
+  ("two alpha helices that pack against each other on the other side of HAB1")
+
+**Core growth**: flood-fill from the motif; a residue joins if it contacts ≥**4**
+core residues within **6.0 Å**. Self-packing helices are never reached; HAB1 is
+not in the criterion at all. Calibrated against Jannis's own call that
+`6helix d000` should run **52–208** → gives **51–209**. He judged all five
+designs **within 3 residues, most within 1**.
+
+⚠ **Internal appendages need a ≥4-residue run** to count — single marginal
+residues made all five designs look afflicted.
+⚠ **RE-TUNE AFTER SEQUENCE DESIGN**: packing is measured on placeholder
+sequence, so real side chains can only ADD contacts; the rule is currently biased
+toward cutting slightly too much.
+⚠ HAB1 must be written as its FOUR chains — flattening them collided the residue
+numbering (1 1 2 2 3 3) and PyMOL drew disconnected lines.
+
+---
+
+## 126. Library arm: three more closed, one new signal (2026-09-16)
+
+- **Co-occurrence prior CLOSED** (6th conditioning attempt): recall@20 0.349 →
+  0.256, 18 W / 59 L, p = 0.0001, and **no better than a random neighbourhood of
+  equal size**. Across attempts 5 and 6 the pattern is identical — **any method
+  that restricts the training set loses more from the smaller sample than it
+  gains in specificity.** The ceiling (§119b, 4.57×) is real but unreachable by
+  subsetting.
+- **Position-pair depletion CLOSED**: 59 % → 37.7 % → **0 %**. The first figure
+  was the F159 crowding confound (a position in 46 % of clones mechanically
+  suppresses co-occurrence at fixed depth); the second re-tested only
+  pre-selected pairs. Proper crowding-corrected null across all 136 pairs with
+  BH-FDR leaves **1 pair**, removing 0 % of the library.
+- **Conformational entropy NULL**: ρ = −0.018, p = 0.808 at n = 181 after
+  partialling out size and cLogP; sign backwards even raw. The 4-ligand ladder
+  (anthrone S = 0.000 at 1 µM → eugenol 0.00184 at 100 µM) was a **coincidence**.
+- **Pocket depth**: Spearman(depth, small/large mutation ratio) = **+0.498,
+  p = 0.036**. Small ligands mutate MOUTH positions (L87 2.45×), large ones the
+  DEEP end (Y120 0.33×). Independently corroborates the L117 latch result.
+- **Eugenol is pose-underdetermined**: 117 of 180 anchored poses clash-free vs
+  anthrone's 6 of 36. Whitehead's **ketone anchor transfers** (clash-free poses
+  for 3 of 4 ligands); the mouth-ward carboxylate anchor never does.

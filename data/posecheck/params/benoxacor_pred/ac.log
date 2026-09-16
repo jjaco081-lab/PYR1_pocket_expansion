@@ -1,0 +1,27 @@
+
+Welcome to antechamber 22.0: molecular input file processor.
+
+Info: acdoctor mode is on: check and diagnose problems in the input file.
+Info: The atom type is set to gaff; the options available to the -at flag are
+      gaff, gaff2, amber, bcc, and sybyl.
+
+-- Check Format for mdl File --
+   Status: pass
+-- Check Unusual Elements --
+   Status: pass
+-- Check Open Valences --
+   Status: pass
+-- Check Geometry --
+      for those bonded   
+      for those not bonded   
+   Status: pass
+-- Check Weird Bonds --
+   Status: pass
+-- Check Number of Units --
+   Status: pass
+acdoctor mode has completed checking the input file.
+
+Info: Total number of electrons: 134; net charge: 0
+
+Running: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/sqm -O -i sqm.in -o sqm.out
+

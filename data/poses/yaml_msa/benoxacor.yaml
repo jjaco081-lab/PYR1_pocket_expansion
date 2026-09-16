@@ -1,0 +1,12 @@
+version: 1
+sequences:
+  - protein:
+      id: A
+      sequence: MPSELTPEERSELKNSIAEFHTYQLDPGSCSSLHAQRIHAPPELVWSIVRRFDKPQTYRHFIKSCSVEQNFEMRVGCTRDVIVISGLPANTSTERLDILDDERRVTGFSIIGGEHRLTNYKSVTTVHRFEKENRIWTVVLESYVVDMPEGNSEDDTRMFADTVVKLNLQKLATVAEAMARNSGDGSGSQVT
+      msa: /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/tractability/pyr1_k59r.a3m
+  - ligand:
+      id: B
+      smiles: "CC1COc2ccccc2N1C(=O)C(Cl)Cl"
+properties:
+  - affinity:
+      binder: B

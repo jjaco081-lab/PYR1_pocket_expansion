@@ -1,0 +1,182 @@
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/prep to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm to search path.
+-I: Adding /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd to search path.
+-f: Source tleap.in.
+
+Welcome to LEaP!
+(no leaprc in search path)
+Sourcing: ./tleap.in
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.protein.ff19SB done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/parm19.dat
+Reading title:
+PARM99 + frcmod.ff99SB + frcmod.parmbsc0 + OL3 for RNA + ff19SB
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ff19SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff19SB AA-specific backbone CMAPs for protein 07/25/2019
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/amino19.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminoct12.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/aminont12.lib
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.water.opc done
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/atomic_ions.lib
+Loading library: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/lib/solvents.lib
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.opc
+Reading force field modification type file (frcmod)
+Reading title:
+Parameters for OPC water (JPCL, 2014, 5 (21), pp 3863-3871)
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/frcmod.ionslm_126_opc
+Reading force field modification type file (frcmod)
+Reading title:
+Li/Merz ion parameters of atomic ions for the OPC water model (12-6 set)
+----- Source: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2
+----- Source of /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/cmd/leaprc.gaff2 done
+Log file: ./leap.log
+Loading parameters: /opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/dat/leap/parm/gaff2.dat
+Reading title:
+AMBER General Force Field for organic molecules (Version 2.11, May 2016)
+Loading parameters: /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/params/win_crystal/WNX.frcmod
+Reading force field modification type file (frcmod)
+Reading title:
+Remark line goes here
+Loading Mol2 file: /bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/posecheck/params/win_crystal/WNX.mol2
+Reading MOLECULE named WNX
+Loading PDB file: ./protein.pdb
+  Added missing heavy atom: .R<CMET 180>.A<OXT 18>
+  total atoms in file: 1418
+  Leap added 1416 missing atoms according to residue templates:
+       1 Heavy
+       1415 H / lone pairs
+Scaling up box by a factor of 1.287100 to meet diagonal cut criterion
+  Solute vdw bounding box:              56.579 45.725 34.773
+  Total bounding box for atom centers:  87.469 87.469 87.469
+      (box expansion for 'iso' is  52.1%)
+  Solvent unit box:                     18.865 18.478 19.006
+  Volume: 346215.533 A^3 (oct)
+  Total mass 186223.512 amu,  Density 0.893 g/cc
+  Added 9194 residues.
+5 K+ ions required to neutralize.
+Adding 5 counter ions to "sys" using 1A grid
+Grid extends from solute vdw + 1.70  to  7.68
+Resolution:      1.00 Angstrom.
+Solvent present: replacing closest with ion
+	 when steric overlaps occur
+Calculating grid charges
+(Replacing solvent molecule)
+Placed K+ in sys at (-6.53, 5.11, 16.29).
+(No solvent overlap)
+Placed K+ in sys at (-7.59, -7.55, 17.49).
+(Replacing solvent molecule)
+Placed K+ in sys at (-9.67, -14.06, -7.73).
+(Replacing solvent molecule)
+Placed K+ in sys at (18.22, -12.43, -7.56).
+(Replacing solvent molecule)
+Placed K+ in sys at (0.68, 16.17, 21.06).
+
+Done adding ions.
+ 0.000999 0 1 0
+0 Cl- ion required to neutralize.
+Adding 0 counter ions to "sys" using 1A grid
+Adding 50 counter ions to "sys". 9140 solvent molecules will remain.
+0: Placed K+ in sys at (16.50, 27.56, 16.10).
+Placed Cl- in sys at (-3.62, 22.38, -17.38).
+0: Placed K+ in sys at (21.04, 12.34, 23.25).
+Placed Cl- in sys at (-25.76, 9.69, 14.49).
+0: Placed K+ in sys at (19.74, 16.34, -19.26).
+Placed Cl- in sys at (20.26, -0.97, -37.87).
+0: Placed K+ in sys at (3.54, -34.94, 0.86).
+Placed Cl- in sys at (31.98, 1.29, 1.07).
+0: Placed K+ in sys at (-29.50, 16.37, -10.08).
+Placed Cl- in sys at (11.91, -27.77, -24.68).
+0: Placed K+ in sys at (-29.12, -27.56, 9.17).
+Placed Cl- in sys at (-12.35, 6.04, -39.32).
+0: Placed K+ in sys at (-19.15, 8.71, -27.85).
+Placed Cl- in sys at (23.29, 3.68, -4.92).
+0: Placed K+ in sys at (22.10, 11.77, 8.25).
+Placed Cl- in sys at (-10.21, 24.62, 5.05).
+0: Placed K+ in sys at (-33.06, -11.45, 24.87).
+Placed Cl- in sys at (5.14, 16.93, 31.47).
+0: Placed K+ in sys at (6.01, 39.00, -12.16).
+Placed Cl- in sys at (-9.79, 18.93, 31.85).
+0: Placed K+ in sys at (-35.76, -5.96, 23.53).
+Placed Cl- in sys at (-4.68, -13.69, -20.84).
+0: Placed K+ in sys at (10.15, 20.05, 9.91).
+Placed Cl- in sys at (-10.51, -11.72, 21.32).
+0: Placed K+ in sys at (9.80, -4.69, 44.64).
+Placed Cl- in sys at (33.92, -9.84, -2.78).
+0: Placed K+ in sys at (-10.62, -27.04, -20.69).
+Placed Cl- in sys at (-29.16, 9.50, -20.26).
+0: Placed K+ in sys at (-35.36, -9.58, 10.30).
+Placed Cl- in sys at (-19.19, 21.47, -27.66).
+0: Placed K+ in sys at (24.55, -18.62, 17.35).
+Placed Cl- in sys at (-23.98, -30.28, 6.66).
+0: Placed K+ in sys at (36.96, 23.64, -10.39).
+Placed Cl- in sys at (20.71, -1.29, 14.94).
+0: Placed K+ in sys at (-13.04, 14.09, 21.41).
+Placed Cl- in sys at (3.03, 16.64, -9.80).
+0: Placed K+ in sys at (2.82, -10.12, 31.48).
+Placed Cl- in sys at (-31.26, -2.03, -26.64).
+0: Placed K+ in sys at (-16.21, -19.05, 10.32).
+Placed Cl- in sys at (9.64, 31.58, -19.89).
+0: Placed K+ in sys at (-6.91, -6.98, 23.00).
+Placed Cl- in sys at (-8.11, -22.37, 25.23).
+0: Placed K+ in sys at (19.60, 8.73, -6.41).
+Placed Cl- in sys at (1.24, -0.89, -41.94).
+0: Placed K+ in sys at (32.97, 23.29, 17.78).
+Placed Cl- in sys at (-34.08, 10.09, -27.63).
+0: Placed K+ in sys at (-7.95, -8.82, 28.72).
+Placed Cl- in sys at (-20.02, 18.08, 1.17).
+0: Placed K+ in sys at (-28.66, 14.46, 28.97).
+Placed Cl- in sys at (22.02, 1.09, -5.08).
+Total unperturbed charge:   0.000999
+Total perturbed charge:     0.000999
+Checking 'sys'....
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+Close contact of 1.246 angstroms between nonbonded atoms HG and H
+-------  .R<SER 75>.A<HG 9> and .R<GLY 71>.A<H 2>
+Checking parameters for unit 'sys'.
+Checking for bond parameters.
+Checking for angle parameters.
+check:  Warnings: 27421
+Unit is OK.
+Checking Unit.
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Note.
+Ignoring the warnings from Unit Checking.
+
+Building topology.
+Building atom parameters.
+Building bond parameters.
+Building angle parameters.
+Building proper torsion parameters.
+Building improper torsion parameters.
+ total 568 improper torsions applied
+Building H-Bond parameters.
+Incorporating Non-Bonded adjustments.
+Not Marking per-residue atom chain types.
+Marking per-residue atom chain types.
+  (Residues lacking connect0/connect1 - 
+   these don't have chain types marked:
+
+	res	total affected
+
+	CMET	1
+	NVAL	1
+	WNX	1
+  )
+ (no restraints)
+Writing pdb file: system_solvated.pdb
+   printing CRYST1 record to PDB file with box info
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NVAL -> VAL
+
+/opt/linux/rocky/8.x/x86_64/pkgs/amber/amber22/bin/teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CMET -> MET
+	Quit
+
+Exiting LEaP: Errors = 0; Warnings = 3; Notes = 1.
