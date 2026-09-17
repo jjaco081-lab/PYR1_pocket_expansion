@@ -106,6 +106,70 @@ SEG_PERMISSIVE = [(0, 90), (0, 45), (0, 50), (0, 55), (0, 40)]
 #: A58-65 linker (10-20) is inserted after the lead.
 SEG_ANCHLONG = [(50, 70), (10, 20), (15, 30), (20, 35), (25, 40), (10, 25)]
 
+#: ---------------------------------------------------------------------------
+#: STAGE 3: ABA IN THE POCKET, AND THE POCKET RESIDUES IN THE MOTIF.
+#:
+#: ⚠ EVERY DESIGN BEFORE THIS WAS SCAFFOLDED AROUND AN EMPTY POCKET. The input
+#: `3QN1_complex_auth.pdb` has no ligand -- ABA was stripped and nobody noticed
+#: (README §124). `3QN1_complex_auth_aba.pdb` (built by 218) restores it as 19
+#: heavy atoms, CCD A8S, chain L residue 1, with all five motif segments
+#: re-asserted by identity.
+#:
+#: Jannis: "One with also scaffolding ABA, another with adding additional
+#: residues to scaffold that define the ABA pocket that are near the opening and
+#: are directly next to other sections that we scaffold or can be added through
+#: 1-2 extra amino acids so that we do not need to once again define the sizes
+#: of more intermediary regions." -- i.e. GROW the existing segments outward
+#: rather than add new ones, so no new linker range has to be invented.
+#:
+#: He also asked to keep R79/E94 in ("these can still be changed later but for
+#: now I want to test with ABA") and to RANGE the amount added. Identities were
+#: asserted against the input before these were written: 79 IS R, 94 IS E,
+#: 108 IS F.
+#:
+#: ⚠ LINKER RANGES FOLLOW §127, NOT SEG_ANCHLONG. Linker length buys APPENDAGES,
+#: not pocket volume (excess vs appendage rho = +0.689; gap4 vs cavity -0.251,
+#: q = 0.002), and the mandated minimum exceeded PYR1's native length in exactly
+#: gaps 3 and 4. So every gap here is bracketed at (native-4, native+7) rather
+#: than the old (20,35)/(25,40).
+MOTIF_EXT1 = [("A34-40", "HAQRIHA"), ("A58-65", "YKHFIKSC"),
+              ("A80-93", "DVIVISGLPANTST"), ("A110-122", "IIGGEHRLTNYKS"),
+              ("A144-168", "VVDMPEGNSEDDTRMFADTVVKLNL")]
+MOTIF_EXT2 = [("A34-40", "HAQRIHA"), ("A58-65", "YKHFIKSC"),
+              ("A79-94", "RDVIVISGLPANTSTE"), ("A109-122", "SIIGGEHRLTNYKS"),
+              ("A142-168", "SYVVDMPEGNSEDDTRMFADTVVKLNL")]
+MOTIF_EXT3 = [("A34-40", "HAQRIHA"), ("A58-65", "YKHFIKSC"),
+              ("A79-94", "RDVIVISGLPANTSTE"), ("A108-122", "FSIIGGEHRLTNYKS"),
+              ("A141-168", "ESYVVDMPEGNSEDDTRMFADTVVKLNL")]
+
+
+def _seg_for(motif, lead=(50, 70), tail=(10, 25)):
+    """Linker ranges bracketing each gap's NATIVE length, per §127.
+
+    Returns lead + one range per inter-segment gap + tail. The native gap is
+    read from the motif's own residue numbers, so it cannot drift out of sync
+    with the segments the way a hand-written table can.
+    """
+    out = [lead]
+    for a, b in zip(motif, motif[1:]):
+        hi_a = int(a[0].split("-")[1])
+        lo_b = int(b[0][1:].split("-")[0])
+        nat = lo_b - hi_a - 1
+        out.append((max(4, nat - 4), nat + 7))
+    out.append(tail)
+    return out
+
+
+SEG_EXT1, SEG_EXT2, SEG_EXT3 = (_seg_for(m) for m in
+                                (MOTIF_EXT1, MOTIF_EXT2, MOTIF_EXT3))
+#: the ABA-only arm: 8best's motif and ranges, but §127 linkers and a ligand.
+SEG_ABA = _seg_for(MOTIF)
+
+#: arms whose input carries ABA and that pass specification.ligand.
+LIGAND_ARMS = {"9aba", "10ext1", "10ext2", "10ext3"}
+LIGAND_CCD = "A8S"
+INPUT_ABA = os.path.join(ROOT, "data", "3QN1_complex_auth_aba.pdb")
+
 #: arm -> specification.length. None means unconstrained (every other arm).
 LENGTHS = {"7free": "465-505"}
 
@@ -130,6 +194,12 @@ RECIPES = {
     # reintroduces is handled post hoc by truncation (35/40 rescued, cavity
     # survived 40/40), which is how batch 3 reaches 30% PASS.
     "8best":   (MOTIF_ANCHORED,  SEG_ANCHLONG,   "partially_buried"),
+    # Stage 3: ABA in the pocket (9aba), then the pocket residues progressively
+    # folded into the motif (10ext1/2/3). ext3 includes R79, E94 and F108.
+    "9aba":    (MOTIF_ANCHORED,  SEG_ABA,        "partially_buried"),
+    "10ext1":  (MOTIF_EXT1,      SEG_EXT1,       "partially_buried"),
+    "10ext2":  (MOTIF_EXT2,      SEG_EXT2,       "partially_buried"),
+    "10ext3":  (MOTIF_EXT3,      SEG_EXT3,       "partially_buried"),
 }
 ARMS = {k: v[2] for k, v in RECIPES.items()}
 for _k, (_m, _s, _c) in RECIPES.items():
@@ -206,7 +276,7 @@ def main():
         length = LENGTHS.get(a.arm)
         cmd = [RFD3, "inputs=null", f"out_dir={d}", "n_batches=1",
                "diffusion_batch_size=1", f"+seed={seed}",
-               f"+specification.input={INPUT}",
+               f"+specification.input={INPUT_ABA if a.arm in LIGAND_ARMS else INPUT}",
                # Hydra treats a bare comma-separated value as ambiguous
                # ("To use it as string, quote the value"). subprocess does not go
                # through a shell, so the quotes must be literal characters here.
@@ -214,6 +284,8 @@ def main():
                "+specification.dialect=2"]
         if length:
             cmd.insert(-1, f"+specification.length='{length}'")
+        if a.arm in LIGAND_ARMS:
+            cmd.insert(-1, f"+specification.ligand='{LIGAND_CCD}'")
         if cond:
             cmd.insert(-1, f"+specification.select_{cond}='{POCKET}'")
         rec.write(json.dumps(dict(design=i, seed=seed, arm=a.arm,

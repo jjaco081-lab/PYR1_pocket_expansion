@@ -12427,3 +12427,185 @@ numbering (1 1 2 2 3 3) and PyMOL drew disconnected lines.
 - **Eugenol is pose-underdetermined**: 117 of 180 anchored poses clash-free vs
   anthrone's 6 of 36. Whitehead's **ketone anchor transfers** (clash-free poses
   for 3 of 4 ligands); the mouth-ward carboxylate anchor never does.
+
+### §127 Linker length does not buy pocket volume — it buys appendages
+
+Jannis was hesitant to shorten the over-specified linkers: *"I want to have
+significant size increases in the pocket still if possible so I am hesitant to
+do so."* That is a testable claim and `222_linker_cavity.py` tests it against
+the rival model, with the predictions fixed before the run:
+
+* **Model A (the concern):** extra linker residues wall in a larger chamber, so
+  shortening them shrinks the pocket. Predicts rho(gap length, cavity) > 0.
+* **Model B:** the pocket is defined by the MOTIF, which is identical in every
+  arm, so excess linker leaves as surface appendage. Predicts rho ~ 0 against
+  cavity and rho > 0 against appendage length.
+
+224 of 2,780 designs are intact enough for a gap length to mean anything
+(n_pieces = 1 and motif unsplit); the other 2,556 are discarded because a gap
+measured across a chain break is the distance between two pieces, not a linker.
+Cavity is the main-chamber value on the largest connected piece. n_main is
+partialled out so the result is not just "bigger designs have bigger everything".
+
+```
+gap  native  median   range   rho(cavity | n_main)  p_perm   q_BH   rho(appendage)
+1      17      15     10-20         +0.082          0.2284  0.228       +0.072
+2      15      23     15-30         +0.127          0.0572  0.114       -0.059
+3      18      32     20-45         -0.098          0.1385  0.185       +0.545
+4      24      35     25-50         -0.251          0.0005  0.002       +0.781
+```
+
+**MODEL B WINS, and gap4 goes further than Model B predicted — the correlation
+with cavity is significantly NEGATIVE.** Total excess over native linker length
+correlates +0.689 with appendage length and −0.149 with cavity.
+
+Restricting to the 49 designs that HAVE a cavity strengthens it (gap3 −0.410,
+gap4 −0.360), and it is not a between-arm confound: within `arm4rep_s3004`
+alone (n = 135, 42 with a cavity) gap4 gives −0.328 against cavity and +0.627
+against appendage.
+
+The top ten cavities all sit at the SHORT end of the mandated ranges — gap3
+20–33 where the range runs to 45, gap4 25–32 where it runs to 50.
+
+⚠ **What is and is not established.** gap4 is solid: within-arm, cavity-subset
+and pooled all agree. gap3 drives APPENDAGES robustly (+0.545 pooled) but its
+cavity link does not survive within-arm (−0.046), so it rests on the pooled and
+cavity>0 analyses only. Cavity is zero for 175 of 224 designs, so the primary
+column is a mostly-zero variable and the appendage column is the stronger
+evidence in both gaps.
+
+**Consequence for the contigs:** shortening gaps 3 and 4 toward PYR1's native 18
+and 24 is not a trade against pocket size. There is no evidence it costs volume
+and direct evidence it stops producing appendages.
+
+### §128 Cavity survey, errors 5 and 6 — and why v3 was wrong too
+
+§122 fixed the chain axis (measure every chain) and the residue-NAME axis
+(whitelist, so MSE/CME survive). Reading the completed whitelist run exposed two
+more, both in the arm that carries the "a large donor exists" claim.
+
+**Error 5 — the AlphaFold models were never trimmed to their CATH domain.**
+`af_A0A1D6QKW9_84_319` declares domain 84–319; the file holds residues 1–575.
+**125 of 195 AlphaFold entries (64 %) contain more than their named domain**, by
+a median of 2.44×. The reported cavity is therefore the largest chamber
+*anywhere* in a multi-domain protein. Not cosmetic: **21 of the 25 AlphaFold
+structures reading ≥ 200 Å³ are affected, including all of the top seven.**
+This is the same error as the CATH multi-chain bug Jannis surfaced with
+`3qrzB00` — fixed on the chain axis, never checked on the residue axis, and the
+residue axis is the one that bites the predicted arm.
+
+**Error 6 — NMR ensembles are read as one chain.** 2LF2 gives 28,600 atoms in
+"chain A" because all ~20 deposited models are stacked. Overlaid models fill the
+pocket, producing **nine false 0.0 Å³ zeros** in the experimental arm.
+
+**v3 (221) trimmed to the domain, and its own pre-registered check failed it.**
+40 structures got BIGGER after atoms were removed, which "removing atoms can
+only remove volume" says is impossible. The check was right and the premise was
+wrong — two mechanisms operate at once:
+
+```
+af_Q08058_43_193   v2 whole file   main  82.1   total 266.8
+                   v3 domain only  main 297.2   total 327.0
+```
+
+In v2 the neighbouring domain's atoms **subdivide** the cavity network, so the
+largest single chamber reads 82 while the total reads 267. In v3 those atoms are
+gone, the fragments **merge**, and `main` jumps to 297. But deleting a domain
+that packs against the fold leaves a **domain-shaped hole**, and if the remainder
+caps it that hole is indistinguishable from a ligand pocket. v3 trades one
+artefact for another; neither number is defensible.
+
+**v4 (`224_cavity_domain_lined.py`) does not choose between them.** Keep the full
+structure, so no artificial interface void is ever created, then ask of each
+chamber: *is it lined by the CATH domain?* Report the largest chamber whose
+lining is ≥ 2/3 domain residues. That answers "how big is the SRPBCC pocket in
+this protein" rather than "how big is the largest hole in this file". The NMR
+first-model fix is kept. Running as job 28549261.
+
+⚠ **PYR1 IS NOT IN THE SURVEY.** `results/homolog_cavities/raw` has no 3QN1
+entry, so v3's control could not run at all. The reference "PYR1 = 119 Å³" that
+every homolog has been compared against was produced by a *different script on a
+different input*. v4 measures PYR1 through the identical code path as
+`3QN1_A` and `3QN1_AB`, so the comparison is finally like-for-like — and those
+two numbers (119 apo monomer, 182 with HAB1) are the run's pass/fail control.
+
+**Nothing downstream of the cavity table should be shown until v4 lands** — that
+includes the cavity-vs-identity scatter and the SCHEMA donor ranking.
+
+### §129 Stage 3 — ABA in the pocket, and the pocket residues in the motif
+
+Every design to date was scaffolded around an **empty** pocket (§124). Four new
+arms in `193_rfd3_gen.py`, all using `3QN1_complex_auth_aba.pdb` (ABA as 19 heavy
+atoms, CCD A8S, chain L) and passing `specification.ligand='A8S'`:
+
+```
+arm      motif segments                                    fixed  native gaps     linker ranges
+9aba     A34-40 A58-65 A81-92  A111-121 A146-168            61    17 15 18 24    (13,24)(11,22)(14,25)(20,31)
+10ext1   A34-40 A58-65 A80-93  A110-122 A144-168            67    17 14 16 21    (13,24)(10,21)(12,23)(17,28)
+10ext2   A34-40 A58-65 A79-94  A109-122 A142-168            72    17 13 14 19    (13,24)( 9,20)(10,21)(15,26)
+10ext3   A34-40 A58-65 A79-94  A108-122 A141-168            74    17 13 13 18    (13,24)( 9,20)( 9,20)(14,25)
+```
+
+Per Jannis, the existing segments are **grown outward** rather than new ones
+added, so no new intermediary linker range has to be invented. **R79 and E94 are
+included** ("these can still be changed later but for now I want to test with
+ABA"), and the amount added is **ranged** across three levels. `10ext3` also
+brings in F108. Identities were asserted against the input before the segments
+were written: residue 79 IS R, 94 IS E, 108 IS F.
+
+Linker ranges follow **§127**, not `SEG_ANCHLONG`: each gap is bracketed at
+(native − 4, native + 7), computed from the motif's own residue numbers so it
+cannot drift out of sync with the segments.
+
+### §130 The eugenol panel is built and MM-GBSA is running
+
+Phase 1 had only ever been run with `--dry-run`, so it produced counts and no
+poses. Re-run for real, then `223_panel_systems.py` rebuilt each ligand from the
+SMILES that generated its conformer and replaced only the coordinates — the
+route 179's header records as the one that survives, since
+`AssignBondOrdersFromTemplate` fails on explicit hydrogens and antechamber
+rejects MDL aromatic bond type 4. Atom order is asserted element-by-element
+against 209's pose rather than assumed.
+
+⚠ Two traps hit and fixed: 209 returns **heavy atoms only**, and antechamber
+reads the missing hydrogens as an open valence (`Weird atomic valence (1) for
+atom C1`) — hydrogens are now added back at the pose. And
+`write_prod_input` takes **steps, not nanoseconds**.
+
+8 systems (4 ligands × {WT, known hit}), ~45,600 atoms each, built through
+`lib_solvate.sh` so the protocol cannot drift. Hit substitutions were threaded
+with identity assertions and a TaskFactory-restricted repack. Job 28550396,
+64 runs at n = 8.
+
+**The Phase 1 result already matters, and it is bad news for eugenol:**
+
+```
+ligand           arm        tried   polyGly OK   best clashes
+anthrone         ketone        36            6              3
+eugenol          ketone       180          117              0
+```
+
+Anthrone accepts 6 of 36 anchored placements; **eugenol accepts 117 of 180** and
+reaches zero clashes in every arm. Eugenol is **pose-underdetermined** — the
+pharmacophore anchor, which is the Whitehead method's key move, does not
+constrain it. A score on any one of those 117 poses is a draw from a
+distribution, so the n = 8 replicate error bar does **not** see the dominant
+uncertainty. Same class as §93c, where seed spread understated true error ~3×.
+
+### §131 Two API defects, one of them silent for a whole array
+
+`211_position_scan.py` unpacked `lib_rosetta.restrict_packing` as a single value,
+but it returns `(tf, packable)` — all 24 array tasks died at 50 s. All 26 call
+sites were audited; only 211 was wrong. A second failure then killed 2 of 24:
+`AA19` deliberately excludes proline, so a position whose ground truth IS proline
+is **unrankable, not rank 20** — it now records `truth_rankable: false` and keeps
+the position instead of crashing the chunk. 24/24 now complete.
+
+### §132 Memory reorganised
+
+`MEMORY.md` had exceeded its size limit and was being **silently truncated** —
+entries were being dropped from the always-loaded index. 83 % of it was
+project-specific. Findings moved to a per-repo `CLAUDE.md`, which loads only when
+working in that repo: 65 for PYR1, 25 for the binder work, leaving 12
+cross-project working rules plus two pointers. 25,913 → 3,147 bytes. The memory
+files themselves are untouched, so description-based recall still reaches them.

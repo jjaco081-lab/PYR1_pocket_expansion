@@ -1,0 +1,74 @@
+[
+ {
+  "ligand": "anthrone",
+  "resname": "ANT",
+  "mol": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/anthrone/ANT.mol",
+  "n_atom": 25,
+  "n_H": 10,
+  "aromatic_left": 0,
+  "roundtrip_dev": 4.66248924335666e-05,
+  "fa_clashes": 3,
+  "worst_overlap": 0.97,
+  "n_pose_alternatives": 6,
+  "hit": [
+   "F108M",
+   "F159M"
+  ],
+  "uM": 1.0,
+  "holdout": false
+ },
+ {
+  "ligand": "3-phenylphenol",
+  "resname": "PPH",
+  "mol": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/3phenylphenol/PPH.mol",
+  "n_atom": 23,
+  "n_H": 10,
+  "aromatic_left": 0,
+  "roundtrip_dev": 4.9201070659421475e-05,
+  "fa_clashes": 0,
+  "worst_overlap": 0.37,
+  "n_pose_alternatives": 15,
+  "hit": [
+   "A89M"
+  ],
+  "uM": 10.0,
+  "holdout": false
+ },
+ {
+  "ligand": "chloroxylenol",
+  "resname": "CXL",
+  "mol": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/chloroxylenol/CXL.mol",
+  "n_atom": 19,
+  "n_H": 9,
+  "aromatic_left": 0,
+  "roundtrip_dev": 4.2602674303893195e-05,
+  "fa_clashes": 0,
+  "worst_overlap": 0.43,
+  "n_pose_alternatives": 10,
+  "hit": [
+   "V83I",
+   "L87M",
+   "N167Q"
+  ],
+  "uM": 10.0,
+  "holdout": false
+ },
+ {
+  "ligand": "eugenol",
+  "resname": "EUG",
+  "mol": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/eugenol/EUG.mol",
+  "n_atom": 24,
+  "n_H": 12,
+  "aromatic_left": 0,
+  "roundtrip_dev": 4.943568163184864e-05,
+  "fa_clashes": 0,
+  "worst_overlap": 0.19,
+  "n_pose_alternatives": 20,
+  "hit": [
+   "V164L",
+   "N167V"
+  ],
+  "uM": 100.0,
+  "holdout": true
+ }
+]

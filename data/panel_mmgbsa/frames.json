@@ -1,0 +1,54 @@
+[
+ {
+  "ligand": "anthrone",
+  "resname": "ANT",
+  "mol": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/anthrone/ANT.mol",
+  "wt": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/anthrone/receptor_WT.pdb",
+  "hit": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/anthrone/receptor_HIT.pdb",
+  "subs": [
+   "F108M",
+   "F159M"
+  ],
+  "uM": 1.0,
+  "holdout": false
+ },
+ {
+  "ligand": "3-phenylphenol",
+  "resname": "PPH",
+  "mol": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/3phenylphenol/PPH.mol",
+  "wt": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/3phenylphenol/receptor_WT.pdb",
+  "hit": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/3phenylphenol/receptor_HIT.pdb",
+  "subs": [
+   "A89M"
+  ],
+  "uM": 10.0,
+  "holdout": false
+ },
+ {
+  "ligand": "chloroxylenol",
+  "resname": "CXL",
+  "mol": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/chloroxylenol/CXL.mol",
+  "wt": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/chloroxylenol/receptor_WT.pdb",
+  "hit": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/chloroxylenol/receptor_HIT.pdb",
+  "subs": [
+   "V83I",
+   "L87M",
+   "N167Q"
+  ],
+  "uM": 10.0,
+  "holdout": false
+ },
+ {
+  "ligand": "eugenol",
+  "resname": "EUG",
+  "mol": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/eugenol/EUG.mol",
+  "wt": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/eugenol/receptor_WT.pdb",
+  "hit": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/data/panel_mmgbsa/eugenol/receptor_HIT.pdb",
+  "subs": [
+   "V164L",
+   "N167V"
+  ],
+  "uM": 100.0,
+  "holdout": true
+ }
+]

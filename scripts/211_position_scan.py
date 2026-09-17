@@ -115,23 +115,36 @@ def main():
         for aa in AA19:
             p = base.clone()
             MutateResidue(rm[n], THREE[aa]).apply(p)
-            tf = LR.restrict_packing(p, allowed)
+            tf, _ = LR.restrict_packing(p, allowed)
             pk = PackRotamersMover(sf)
             pk.task_factory(tf)
             pk.apply(p)
             scores[aa] = float(sf(p))
         order = sorted(scores, key=lambda x: scores[x])
         t = truth[n]
+        # AA19 excludes PROLINE deliberately -- a point mutation to Pro without
+        # rebuilding the backbone is not a meaningful Rosetta move. When the
+        # ground truth AT a position IS proline it is therefore UNRANKABLE, not
+        # rank 20: record it as such and keep the position in the output rather
+        # than crashing the chunk (this killed win/chunk1 in both arms).
+        rankable = t in scores
         rows.append(dict(pos=n, truth=t, wt=WT_PYR1.get(n),
-                         rank_true=order.index(t) + 1,
+                         truth_rankable=rankable,
+                         rank_true=(order.index(t) + 1) if rankable else None,
                          rank_wt=order.index(WT_PYR1[n]) + 1 if WT_PYR1.get(n) in order else None,
                          best=order[0], order="".join(order),
-                         d_true_best=round(scores[t] - scores[order[0]], 2)))
+                         d_true_best=round(scores[t] - scores[order[0]], 2)
+                         if rankable else None))
         r = rows[-1]
         mark = "  <-- TRUE != WT" if r["wt"] and r["truth"] != r["wt"] else ""
-        print(f"   {n:>4} truth {t}  rank {r['rank_true']:>2}/19  "
-              f"(wt {r['wt']} rank {r['rank_wt']})  best {r['best']}  "
-              f"dE {r['d_true_best']:+.2f}{mark}", flush=True)
+        if rankable:
+            print(f"   {n:>4} truth {t}  rank {r['rank_true']:>2}/19  "
+                  f"(wt {r['wt']} rank {r['rank_wt']})  best {r['best']}  "
+                  f"dE {r['d_true_best']:+.2f}{mark}", flush=True)
+        else:
+            print(f"   {n:>4} truth {t}  UNRANKABLE (proline not in AA19)  "
+                  f"(wt {r['wt']} rank {r['rank_wt']})  best {r['best']}",
+                  flush=True)
     out = os.path.join(OUT, f"{a.system}_{a.arm}_{a.chunk}.json")
     json.dump(rows, open(out, "w"), indent=1)
     print(f"   wrote {out}")
