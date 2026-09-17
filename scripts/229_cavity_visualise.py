@@ -10,8 +10,13 @@ have me do so."
 Every number in README §134 comes from a voxel grid that nobody has ever looked
 at. This dumps that grid. For each structure it writes:
 
-  <name>_protein.pdb   exactly the atoms that were measured (after the whitelist,
-                       after the NMR first-model cut) -- not the raw file
+  <name>_source.pdb    THE ORIGINAL FILE, copied verbatim -- real residue and
+                       atom names, so PyMOL can draw a cartoon and so the LIGAND
+                       is visible. ⚠ The first version rewrote the measured atoms
+                       as UNK with element-only atom names; PyMOL could not build
+                       a cartoon from it and the render showed cavity spheres
+                       floating in empty space, which is useless for an eye check.
+                       The measured-atom SELECTION is applied in the .pml instead.
   <name>_cavity.pdb    one HETATM per cavity voxel, as element He so PyMOL draws
                        spheres. CHAIN = chamber rank (A = largest, B = 2nd ...),
                        B-factor = that chamber's volume in A^3, occupancy = the
@@ -126,14 +131,10 @@ def main():
         cs = chambers_with_voxels(xyz, el, dom)
         base = os.path.join(OUT, name.replace(".", "_"))
 
-        # protein: EXACTLY what was measured
-        with open(base + "_protein.pdb", "w") as fh:
-            for i, (e, x, r) in enumerate(at, 1):
-                ind = "A" if dom[i - 1] else "B"      # B = outside the CATH domain
-                fh.write(f"ATOM  {i%99999:5d}  {e:<3s}{'UNK':>4s} {ind}{r%9999:4d}    "
-                         f"{x[0]:8.3f}{x[1]:8.3f}{x[2]:8.3f}  1.00  0.00"
-                         f"          {e:>2s}\n")
-            fh.write("END\n")
+        # the ORIGINAL structure, verbatim, so cartoon and ligand render
+        import shutil
+        src = base + "_source" + os.path.splitext(path)[1]
+        shutil.copyfile(path, src)
         # cavity voxels
         nkept = 0
         with open(base + "_cavity.pdb", "w") as fh:
@@ -146,27 +147,38 @@ def main():
                              f"{c['frac']:6.2f}{min(c['vol'],999.99):6.2f}"
                              f"          HE\n")
             fh.write("END\n")
+        dsel = (f"resi {rng[0]}-{rng[1]}" if rng else "all")
         with open(base + ".pml", "w") as fh:
             fh.write(f"# {name}: {why}\n")
-            fh.write(f"load {os.path.basename(base)}_protein.pdb, prot\n")
+            fh.write(f"load {os.path.basename(src)}, prot\n")
             fh.write(f"load {os.path.basename(base)}_cavity.pdb, cav\n")
             fh.write("hide everything\n")
-            fh.write("show cartoon, prot and chain A\n")
-            fh.write("color grey80, prot and chain A\n")
-            fh.write("show lines, prot and chain B\n")
-            fh.write("color palecyan, prot and chain B\n")
-            fh.write("show spheres, cav\nset sphere_scale, 0.22, cav\n")
+            fh.write(f"select domain, prot and polymer and ({dsel})\n")
+            fh.write("select other, prot and polymer and not domain\n")
+            fh.write("select ligand, prot and not polymer and not resn HOH\n")
+            fh.write("show cartoon, domain\ncolor grey80, domain\n")
+            fh.write("show lines, other\ncolor palecyan, other\n")
+            fh.write("show sticks, ligand\ncolor yellow, ligand\n")
+            fh.write("set stick_radius, 0.28, ligand\n")
+            fh.write("util.cnc ligand\n")
+            fh.write("show spheres, cav\nset sphere_scale, 0.20, cav\n")
+            # translucent, or the blob hides the very ligand it should overlay
+            fh.write("set sphere_transparency, 0.55, cav\n")
             fh.write("color firebrick, cav and chain A\n")
             for c_ in CH[1:]:
                 fh.write(f"color grey50, cav and chain {c_}\n")
-            fh.write("set transparency, 0.6\nbg_color white\n")
-            fh.write("zoom cav and chain A, 6\n")
+            fh.write("set cartoon_transparency, 0.55\nbg_color white\n")
+            fh.write("deselect\n")
+            fh.write("orient cav and chain A\nzoom cav and chain A, 7\n")
             fh.write(f'print "CHAMBERS (chain = rank, red = largest):"\n')
             for ci, c in enumerate(cs[:len(CH)]):
                 fh.write(f'print "  {CH[ci]}  {c["vol"]:7.1f} A^3   '
                          f'domain-lined fraction {c["frac"]:.2f}"\n')
-            fh.write('print "prot chain A = CATH domain (cartoon); '
-                     'chain B = rest of the file (lines)"\n')
+            fh.write('print "grey cartoon = CATH domain; pale lines = rest of '
+                     'the file; YELLOW STICKS = ligand; red spheres = reported '
+                     'chamber"\n')
+            fh.write('print "the check: does the RED blob sit on the yellow '
+                     'ligand, inside the grey cartoon?"\n')
         print(f"{name}")
         print(f"   {why}")
         for ci, c in enumerate(cs[:6]):

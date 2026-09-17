@@ -12899,3 +12899,58 @@ sensors between the small guaiacol ligands, which is no power at all.
 **Conclusion: the phenol+ether motif adds nothing once size is controlled**, and
 the mouth-half fraction (0.42 vs a 0.49 size-matched null, p = 0.96) gives no
 support for the premise that eugenol-like chemistry is read at the mouth.
+
+### §141 "WT ranks first" is the EXPECTED answer, not a demonstrated failure
+
+Jannis, correcting §137: *"I think the WT could still be the right answer for
+certain cases because it is the crystal structure. So when we are asking what
+amino acids best work regarding both the backbone positioning and the ligand
+positioning from the backbone structure, it might make sense that WT beats out
+the hypersensitive mutants. Each test has its own case of what is the expected
+answer versus what are acceptable answers versus what might be the best answers.
+And even the best answers may still be untested combinations."*
+
+He is right, and the protocol supports him. `211_position_scan.py` applies
+`MutateResidue` then `PackRotamersMover` and **nothing else** — no `MinMover`, no
+`FastRelax`, no `MoveMap`. The backbone is the 3QN1 crystal backbone and the
+ligand sits in its WT-determined pose; only side chains repack. Under those
+constraints the WT side chain is the geometry the structure was solved with, so
+it is the **self-consistent optimum by construction**.
+
+And the effects it would have to resolve are small:
+
+```
+A160V  8.80x = 1.29 kcal/mol        V81I  3.57x = 0.75
+A160C  5.17x = 0.97                 F61L  1.41x = 0.20
+E141L  3.63x = 0.76
+```
+
+A fixed-backbone repack under ref2015 cannot resolve 0.2–1.3 kcal/mol, and the
+hypersensitive substitutions almost certainly act by small backbone and ligand
+repositioning that this protocol forbids outright.
+
+**SO §137's T3 IS WITHDRAWN.** "Positions where the scorer puts WT first" is not
+a failure count. What survives is narrower and still useful:
+
+* the scan is a **geometric-compatibility filter**, not an affinity predictor —
+  it answers "which residues are compatible with the WT backbone and pose";
+* using it to rank affinity, or reading "WT is best" as validation of a design
+  rule, is the error — that was §137's real point and it stands;
+* to test whether *any* method recovers the hypersensitive set, the protocol must
+  relax backbone and ligand. Nothing we have done so far does.
+
+**THE THREE-TIER RULE, to be applied to every benchmark from here on.** Each test
+has its own:
+
+1. **EXPECTED answer** — what a correct implementation must produce given the
+   test's own constraints. For a fixed-backbone scan on a WT crystal, that is WT.
+2. **ACCEPTABLE answers** — substitutions consistent with those constraints
+   (no clash, packing preserved), which is the set a library may draw from.
+3. **BEST answers** — which may be none of the above, may require constraints the
+   test does not model, and **may be untested combinations**. §138's A160×F61
+   synergy and its sign-epistatic F61M are exactly that: the best answer was
+   invisible to every single-substitution view of the problem.
+
+⚠ Conflating (1) with (3) is what produced §137's overstatement, and it is the
+same class of error as treating hits as optima (`feedback_hits_are_not_optima`):
+the benchmark's own answer key is not the biology's.
