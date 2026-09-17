@@ -1,0 +1,151 @@
+{
+ "source": {
+  "citation": "Elzinga D, Sternburg E, Sabbadin D, Bartsch M, Park S-Y, Vaidya A, Mosquna A, Kaundal A, Wendeborn S, Lachia M, Karginov FV, Cutler SR. Defining and Exploiting Hypersensitivity Hotspots to Facilitate Abscisic Acid Agonist Optimization. ACS Chem Biol. 2019 Mar 15;14(3):332-336.",
+  "doi": "10.1021/acschembio.8b00955",
+  "pdf": "data/papers/Defining and Exploiting Hypersensitivity Hotspots to Facilitate/cb8b00955.pdf",
+  "figure": "S1",
+  "assay": "Y2H staining, limit of detection for ABA response",
+  "wt_lod_uM": 1.0,
+  "concentrations_tested_uM": [
+   0,
+   0.25,
+   0.5,
+   1,
+   5
+  ],
+  "caveat": "0.25 uM is the LOWEST concentration tested, so every 0.25 entry is a FLOOR, not a measurement. Jannis: F61, V81 and A160 look strongest and would likely score below 0.25 if lower concentrations had been used.",
+  "itc": {
+   "variant": "A160V",
+   "Kd_uM": 4.7,
+   "wt_Kd_uM": ">50",
+   "note": "the only direct affinity measurement; >10x tighter than WT"
+  },
+  "si_table_s2": {
+   "what": "Calculated ABA EC50 (uM) for single and combined PYR1 mutants, receptor-PP2C assay. Page 15 of cb8b00955_si_001.pdf.",
+   "wt_EC50_uM": 0.864,
+   "singles_EC50_uM": {
+    "A160C": 0.167,
+    "A160V": 0.0982,
+    "F61L": 0.613,
+    "F61M": 2.98,
+    "I110C": 0.873,
+    "I110S": 1.15,
+    "V81I": 0.242,
+    "E141L": 0.238
+   },
+   "combinations_EC50_uM": {
+    "A160C+F61L": 0.0406,
+    "A160V+F61M": 0.114,
+    "A160V+F61L+I110C+V81I": 0.124
+   },
+   "other": {
+    "PYL1": 36.5,
+    "PYL1+ABI1_D143A": 37.8,
+    "PYR1_WT+ABI1_D143A": 1.17,
+    "A160C+F61L+ABI1_D143A": 0.135,
+    "A160V+F61M+ABI1_D143A": 0.255
+   }
+  }
+ },
+ "wild_type": {
+  "61": "F",
+  "81": "V",
+  "110": "I",
+  "141": "E",
+  "160": "A"
+ },
+ "hypersensitive_lod_uM": {
+  "61": {
+   "L": 0.25,
+   "M": 0.25
+  },
+  "81": {
+   "I": 0.25,
+   "Y": 0.25
+  },
+  "110": {
+   "C": 0.5,
+   "S": 0.25
+  },
+  "141": {
+   "C": 0.5,
+   "I": 0.25,
+   "L": 0.25,
+   "M": 0.25,
+   "N": 0.5,
+   "T": 0.5,
+   "V": 0.5,
+   "W": 0.5,
+   "Y": 0.25
+  },
+  "160": {
+   "C": 0.25,
+   "I": 0.25,
+   "V": 0.25
+  }
+ },
+ "interpretation": {
+  "positive_only": "These are hypersensitive mutations FOUND. A substitution absent from this table is UNTESTED, not worse. Use for RECALL only, never precision.",
+  "wt_is_not_optimal": "WT PYR1 is a functional compromise, not an ABA affinity optimum. Any scorer, filter or library rule must ALLOW the WT identity, never assert it is the best one.",
+  "all_five_verified": "Identities asserted against data/3QN1_complex_auth_aba.pdb chain A: 61 IS F, 81 IS V, 110 IS I, 141 IS E, 160 IS A. All five lie within 5.4 A of ABA (3.51, 5.39, 3.51, 3.99, 4.57).",
+  "all_five_in_lining_set": "All five are already in the 23-position LINING list used by 211_position_scan.py.",
+  "all_five_in_stage3_motif": "All five fall inside the 10ext3 extended motif (A58-65, A79-94, A108-122, A141-168) -- the Stage 3 scaffold is being built around exactly the residues that tune ABA affinity."
+ },
+ "non_additivity": {
+  "super_additive": {
+   "A160C+F61L": {
+    "observed_fold": 21.28,
+    "product_of_singles": 7.29,
+    "ratio": 2.92
+   },
+   "A160V+F61M": {
+    "observed_fold": 7.58,
+    "product_of_singles": 2.55,
+    "ratio": 2.97
+   },
+   "note": "BOTH are A160 x F61 and BOTH land at ~2.9x above the product, so the A160-F61 coupling is worth ~3x and is robust to which substitution is used."
+  },
+  "sign_epistasis": {
+   "F61M": "alone 0.29x (EC50 2.98 vs WT 0.864, i.e. 3.4x WORSE), but A160V+F61M is 7.6x BETTER than WT. An individually deleterious substitution is beneficial in the right background -- an additive objective cannot represent this."
+  },
+  "sub_additive": {
+   "A160V+F61L+I110C+V81I": {
+    "observed_fold": 6.97,
+    "product_of_singles": 43.82,
+    "ratio": 0.16,
+    "note": "1.26x WORSE than A160V alone (0.124 vs 0.0982). Stacking hypersensitive mutations DEGRADES; it does not saturate."
+   }
+  }
+ },
+ "assay_disagreement": {
+  "what": "3 of 8 Y2H-hypersensitive mutants do NOT improve EC50.",
+  "F61M": {
+   "y2h_lod_uM": 0.25,
+   "EC50_fold": 0.29
+  },
+  "I110S": {
+   "y2h_lod_uM": 0.25,
+   "EC50_fold": 0.75
+  },
+  "I110C": {
+   "y2h_lod_uM": 0.5,
+   "EC50_fold": 0.99
+  },
+  "consequence": "Use EC50 as the PRIMARY benchmark (quantitative, PP2C) and Y2H LOD as secondary. The EC50-CONFIRMED hypersensitive set is A160V 8.80x, A160C 5.17x, E141L 3.63x, V81I 3.57x, F61L 1.41x -- 5 substitutions at 4 positions."
+ },
+ "ec50_confirmed": {
+  "A160": {
+   "V": 8.8,
+   "C": 5.17
+  },
+  "E141": {
+   "L": 3.63
+  },
+  "V81": {
+   "I": 3.57
+  },
+  "F61": {
+   "L": 1.41
+  }
+ }
+}

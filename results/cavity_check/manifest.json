@@ -1,0 +1,152 @@
+[
+ {
+  "target": "3QN1_A",
+  "why": "PYR1 apo monomer: 119.0 A^3, largest chamber should sit on ABA",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/3QN1_A.pml",
+  "chambers": [
+   {
+    "vol": 119.0,
+    "frac": 1.0
+   },
+   {
+    "vol": 26.8,
+    "frac": 1.0
+   },
+   {
+    "vol": 18.6,
+    "frac": 1.0
+   }
+  ]
+ },
+ {
+  "target": "3QN1_AB",
+  "why": "PYR1+HAB1: 182.3 A^3 as ONE chamber -- HAB1 seals it",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/3QN1_AB.pml",
+  "chambers": [
+   {
+    "vol": 182.3,
+    "frac": 1.0
+   }
+  ]
+ },
+ {
+  "target": "2pcsA00",
+  "why": "CoxG donor 570.5 A^3 -- is it really one chamber?",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/2pcsA00.pml",
+  "chambers": [
+   {
+    "vol": 570.5,
+    "frac": 1.0
+   }
+  ]
+ },
+ {
+  "target": "af_A0A0R0IEX8_94_244_3.30.530.20",
+  "why": "v2 318.6 -> v4 0.0; a 277.6 A^3 chamber exists but should NOT be in the domain",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/af_A0A0R0IEX8_94_244_3_30_530_20.pml",
+  "chambers": [
+   {
+    "vol": 277.6,
+    "frac": 0.0
+   },
+   {
+    "vol": 57.2,
+    "frac": 0.0
+   },
+   {
+    "vol": 32.8,
+    "frac": 0.0
+   },
+   {
+    "vol": 30.7,
+    "frac": 0.0
+   },
+   {
+    "vol": 16.6,
+    "frac": 0.0
+   },
+   {
+    "vol": 12.7,
+    "frac": 0.0
+   }
+  ]
+ },
+ {
+  "target": "af_Q6Z9J1_229_401_3.30.530.20",
+  "why": "v2 216.6 -> v4 9.3, domain fraction 0.76",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/af_Q6Z9J1_229_401_3_30_530_20.pml",
+  "chambers": [
+   {
+    "vol": 213.6,
+    "frac": 0.529
+   },
+   {
+    "vol": 186.2,
+    "frac": 0.307
+   },
+   {
+    "vol": 77.3,
+    "frac": 0.0
+   },
+   {
+    "vol": 56.8,
+    "frac": 0.0
+   },
+   {
+    "vol": 9.3,
+    "frac": 0.76
+   },
+   {
+    "vol": 9.3,
+    "frac": 0.708
+   },
+   {
+    "vol": 5.6,
+    "frac": 0.765
+   },
+   {
+    "vol": 3.7,
+    "frac": 1.0
+   }
+  ]
+ },
+ {
+  "target": "2lf2A00",
+  "why": "NMR ensemble: read 0.0 before the first-model fix",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/2lf2A00.pml",
+  "chambers": [
+   {
+    "vol": 90.5,
+    "frac": 1.0
+   },
+   {
+    "vol": 53.8,
+    "frac": 1.0
+   },
+   {
+    "vol": 45.4,
+    "frac": 1.0
+   },
+   {
+    "vol": 29.8,
+    "frac": 1.0
+   },
+   {
+    "vol": 23.3,
+    "frac": 1.0
+   },
+   {
+    "vol": 15.8,
+    "frac": 1.0
+   },
+   {
+    "vol": 14.3,
+    "frac": 1.0
+   },
+   {
+    "vol": 11.4,
+    "frac": 1.0
+   }
+  ]
+ }
+]

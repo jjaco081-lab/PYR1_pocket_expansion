@@ -12720,3 +12720,168 @@ Median lead trimmed 47 residues, tail 4. By arm: `8best` 52.5 %, `6helix`
 38.8 %/38.2 %, `3b3rasa` 25.8 %, `5long` 24.8 %, `4rep` 15.7 %, `1slack` 0 %.
 Truncation is doing more for yield than any contig change tested so far, and it
 costs almost no cavities.
+
+### §137 WT PYR1 is not the ABA optimum — and our scorers say it is
+
+Jannis brought the hypersensitivity hotspots from Elzinga et al., *ACS Chem.
+Biol.* 2019, 14(3), 332–336, Figure S1 (Y2H staining; WT PYR1 first responds at
+1 µM). 18 substitutions across 5 positions drop the LOD 2–4×:
+
+```
+F61   L 0.25  M 0.25
+V81   I 0.25  Y 0.25
+I110  C 0.50  S 0.25
+A160  C 0.25  I 0.25  V 0.25
+E141  C 0.50  I 0.25  L 0.25  M 0.25  N 0.50  T 0.50  V 0.50  W 0.50  Y 0.25
+```
+
+and **A160V is confirmed by ITC at Kd 4.7 µM against WT's >50 µM**. Only
+0/0.25/0.5/1/5 µM were tested, so every 0.25 is a FLOOR; Jannis notes F61, V81
+and A160 would likely score lower still.
+
+Identities asserted against `3QN1_complex_auth_aba.pdb`: 61 IS F, 81 IS V, 110 IS
+I, 141 IS E, 160 IS A, all within 5.4 Å of ABA (3.51 / 5.39 / 3.51 / 3.99 /
+4.57). All five are already in the 23-position lining set, **and all five fall
+inside the `10ext3` Stage 3 motif** — the scaffold arm is being built around
+exactly the residues that tune ABA affinity.
+
+**THE CORRECTION.** Every method here that reported "WT ranks best" was treating
+that as validation. It is not. WT PYR1 is a functional compromise — a receptor
+tuned for a switch, not for affinity — so a scorer, filter or library rule must
+**ALLOW** the WT identity, never assert it is the best one.
+
+`53_favornative_pick.py` states the falsified premise outright: *"The ABA arm is
+WT protein with its native ligand, so its correct answer is zero mutations at all
+15 designable positions."* The favor-native weight was then chosen by requiring
+≥70 % WT retention. That criterion cannot discover A160V — it is tuned to
+suppress exactly the substitutions we now know exist. ⚠ The bias is contained to
+the Stage 1 Rosetta scripts (50/52/53/54); it does **not** touch the position
+scan, the ensemble marginals or MM-GBSA.
+
+**PROSPECTIVE TEST (`228_hypersensitivity_test.py`).** The position scan ranks
+all 19 amino acids at each lining position and was run before this data existed,
+so it is a genuine held-out test. Recall-only and one-sided, because these are
+hypersensitive mutations FOUND — absence means untested, not worse.
+
+```
+arm                 T1 above WT   T2 mean rank vs null 9.99   T3 WT ranked FIRST
+aba_ref2015             3/18          9.94    p = 0.49            3 of 5
+aba_hbnet_terms         6/18          8.44    p = 0.083           2 of 5
+mandi_ref2015           2/18         10.17    p = 0.57            2 of 5
+mandi_hbnet_terms       1/18          9.78    p = 0.43            2 of 5
+```
+
+**The scan fails.** `aba_ref2015` puts WT first at F61, V81 and I110 — three
+positions where WT is demonstrably not optimal — and shows no rank discrimination
+at all (9.94 vs a 9.99 null). `V81Y` ranks **19/19** and `F61L` **18/19**, both
+hypersensitive at 0.25 µM, so the scorer is anti-correlated on some of the
+strongest hits. T1 has no statistical power precisely *because* the scorer pins
+WT at the top, which is itself the result.
+
+⚠ This is ref2015's own behaviour, not our favor-native tuning — 211 uses a plain
+`ref2015` score function. The preference for native identity is in the energy
+function, which is why it survived every sampler fix (cf. the K59R diagnosis).
+
+The one hint of signal is `aba_hbnet_terms` at p = 0.083 — the only arm below the
+null, and the only one carrying HBNet terms. Under-powered, but it is the arm to
+extend if any.
+
+⚠ My first version of T1 used an INVERTED null, `(19 − rank_wt)/18` instead of
+`(rank_wt − 1)/18`, which made a scorer that ranks WT first look like it was
+failing a test it cannot possibly pass. Corrected before reporting.
+
+### §138 SI Table S2: synergy, sign epistasis, and a quadruple that goes backwards
+
+Jannis asked whether the paper's combination data shows non-additivity. Page 15
+of `cb8b00955_si_001.pdf` gives quantitative ABA EC50 (receptor–PP2C) for singles
+AND combinations, and it shows **both** directions plus a third thing neither of
+us asked for.
+
+```
+single    EC50 uM    fold vs WT (0.864 uM)
+A160V      0.0982      8.80x
+A160C      0.1670      5.17x
+E141L      0.2380      3.63x
+V81I       0.2420      3.57x
+F61L       0.6130      1.41x
+I110C      0.8730      0.99x   <-- no better than WT
+I110S      1.1500      0.75x   <-- WORSE than WT
+F61M       2.9800      0.29x   <-- 3.4x WORSE than WT
+```
+
+**SUPER-ADDITIVE, twice, at the same position pair:**
+
+```
+combination     observed   product of singles   ratio
+A160C + F61L      21.28x          7.29x         2.92
+A160V + F61M       7.58x          2.55x         2.97
+```
+
+Both are A160 × F61 and both land at ~2.9× above the product, so **the A160–F61
+coupling is worth about 3× and is robust to which substitution fills it**.
+
+**SIGN EPISTASIS — the sharpest result.** F61M alone is **3.4× worse than WT**,
+yet A160V+F61M is **7.6× better than WT**. An individually deleterious
+substitution is beneficial in the right background. No additive objective can
+represent this, which is precisely the trap recorded in §33 and
+`project_pairwise_enumeration`: a summed score cannot show synergy, and here it
+would have discarded F61M outright.
+
+**SUB-ADDITIVE, severely:**
+
+```
+A160V + F61L + I110C + V81I    observed 6.97x    product predicts 43.82x   ratio 0.16
+```
+
+and the quadruple is **1.26× worse than A160V alone** (0.124 vs 0.0982 µM).
+Stacking hypersensitive mutations does not saturate — it **degrades**. Two of its
+four components (I110C 0.99×, F61L 1.41×) contribute nothing or little on their
+own, and together they cost more than they add.
+
+⚠ **THIS CORRECTS §137.** Three of the eight Y2H-hypersensitive mutants do NOT
+improve EC50: F61M 0.29×, I110S 0.75×, I110C 0.99×. **The Y2H LOD overstates**,
+so EC50 is now the primary benchmark and Y2H secondary. The EC50-confirmed set is
+**5 substitutions at 4 positions**: A160V 8.80×, A160C 5.17×, E141L 3.63×,
+V81I 3.57×, F61L 1.41×.
+
+Re-running the scan test on that clean subset (n = 5, so under-powered and
+reported as a direction only): `aba_hbnet_terms` mean rank **7.20 vs a 10.01
+null** (p = 0.14), `aba_ref2015` still puts WT first at F61 and V81. The
+conclusion of §137 stands and the HBNet arm remains the only one below the null.
+
+**WHY THIS MATTERS FOR THE LIBRARY.** Phase 4 of the Whitehead plan measures
+departure from additivity rather than assuming it, and until now there was no
+same-ligand, quantitative, combination-level data to calibrate it against. There
+is now: one coupling worth ~3× that appears twice, one sign-epistatic pair, and
+one 4-way that goes backwards. **A160 × F61 is a pre-registered target for the
+interaction term**, and the quadruple is a pre-registered negative control — a
+method that predicts monotonic improvement with depth is refuted by it.
+
+### §139 The phenol+ether idea gives an honest negative
+
+Jannis asked whether ligands sharing eugenol's phenol+ether geometry converge on
+particular positions. `230_guaiacol_positions.py` classifies all 692 sd03 sensors
+by substructure and compares each class against **random subsets of equal size**
+(the control that closed the six previous conditioning attempts), with depth
+computed from the structure rather than quoted.
+
+8 ligands carry the ortho phenol+ether (guaiacol) motif, giving 59 sensors:
+Eugenol, Capsaicin, Dihydrocapsaicin, Nonivamide, Zucapsaicin, Scopoletin,
+Vanillyl Butyl Ether, Combretastatin A4. The class looks strongly enriched at
+Y120 (47 %, p = 0.0002) and S122 (22 %, p = 0.0096), both DEEP (10.1 and 12.2 Å).
+
+**It does not survive the size control:**
+
+```
+capsaicinoids (4 ligands, 21-22 heavy atoms, 49 of 59 sensors)   Y120 57%   S122 26%
+other guaiacol (4 ligands, 12-15 heavy atoms, 10 sensors)        Y120  0%   S122  0%
+```
+
+The signal is entirely the capsaicinoids, and they are large — so this is the
+size effect already known from the depth analysis, not the guaiacol motif.
+Eugenol itself contributes 1 sensor, Scopoletin 1, Vanillyl Butyl Ether 2: four
+sensors between the small guaiacol ligands, which is no power at all.
+
+**Conclusion: the phenol+ether motif adds nothing once size is controlled**, and
+the mouth-half fraction (0.42 vs a 0.49 size-matched null, p = 0.96) gives no
+support for the premise that eugenol-like chemistry is read at the mouth.
