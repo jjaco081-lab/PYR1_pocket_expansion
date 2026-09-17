@@ -12838,14 +12838,28 @@ Stacking hypersensitive mutations does not saturate — it **degrades**. Two of 
 four components (I110C 0.99×, F61L 1.41×) contribute nothing or little on their
 own, and together they cost more than they add.
 
-⚠ **THIS CORRECTS §137.** Three of the eight Y2H-hypersensitive mutants do NOT
-improve EC50: F61M 0.29×, I110S 0.75×, I110C 0.99×. **The Y2H LOD overstates**,
-so EC50 is now the primary benchmark and Y2H secondary. The EC50-confirmed set is
-**5 substitutions at 4 positions**: A160V 8.80×, A160C 5.17×, E141L 3.63×,
-V81I 3.57×, F61L 1.41×.
+⚠ **TWO ASSAYS, NOT ONE CORRECTING THE OTHER.** Three of the eight
+Y2H-hypersensitive mutants show no in vitro EC50 improvement: F61M 0.29×,
+I110S 0.75×, I110C 0.99×. My first reading of this was that "the Y2H LOD
+overstates". **That was wrong and Jannis corrected it.** The Y2H reports
+*cellular* ternary-complex formation — compound entry into yeast, expression and
+PYR1–HAB1 association — while Table S2 reports *in vitro* receptor–PP2C EC50 on
+purified protein. A mutant can genuinely be better in one and not the other.
 
-Re-running the scan test on that clean subset (n = 5, so under-powered and
-reported as a direction only): `aba_hbnet_terms` mean rank **7.20 vs a 10.01
+The Y2H is also **censored**: only 0/0.25/0.5/1/5 µM were tested, so every 0.25
+entry is a FLOOR and the true LOD may be far lower — a censored floor cannot
+overstate. And the hypersensitivity call was staining intensity at 1 µM judged
+against a WT control (Figure S1 caption), which is an ordinal call that does not
+convert to an affinity.
+
+So: **use EC50 as the primary benchmark for AFFINITY** because it is quantitative
+and continuous — A160V 8.80×, A160C 5.17×, E141L 3.63×, V81I 3.57×, F61L 1.41×,
+five substitutions at four positions — and **use Y2H for cellular
+responsiveness**. Do not drop F61M, I110C or I110S from the hypersensitive set;
+they are hypersensitive in the assay that measured them.
+
+Re-running the scan test on the EC50 subset (n = 5, so under-powered and
+reported as a direction only; this is a cleaner AFFINITY set, not a corrected one): `aba_hbnet_terms` mean rank **7.20 vs a 10.01
 null** (p = 0.14), `aba_ref2015` still puts WT first at F61 and V81. The
 conclusion of §137 stands and the HBNet arm remains the only one below the null.
 

@@ -118,20 +118,15 @@
   }
  },
  "assay_disagreement": {
-  "what": "3 of 8 Y2H-hypersensitive mutants do NOT improve EC50.",
-  "F61M": {
-   "y2h_lod_uM": 0.25,
-   "EC50_fold": 0.29
-  },
-  "I110S": {
-   "y2h_lod_uM": 0.25,
-   "EC50_fold": 0.75
-  },
-  "I110C": {
-   "y2h_lod_uM": 0.5,
-   "EC50_fold": 0.99
-  },
-  "consequence": "Use EC50 as the PRIMARY benchmark (quantitative, PP2C) and Y2H LOD as secondary. The EC50-CONFIRMED hypersensitive set is A160V 8.80x, A160C 5.17x, E141L 3.63x, V81I 3.57x, F61L 1.41x -- 5 substitutions at 4 positions."
+  "what": "3 of 8 Y2H-hypersensitive mutants do not show improved in vitro EC50: F61M 0.29x, I110S 0.75x, I110C 0.99x.",
+  "DO_NOT_CONCLUDE": "That Y2H 'overstates' or is wrong. THE TWO ASSAYS MEASURE DIFFERENT QUANTITIES and neither is ground truth for the other.",
+  "why": [
+   "Y2H reports CELLULAR ternary-complex formation: compound entry into yeast, expression, and PYR1-HAB1 association. SI Table S2 reports IN VITRO receptor-PP2C EC50 on purified protein. A mutant can genuinely be better in one and not the other.",
+   "The Y2H is CENSORED. Only 0/0.25/0.5/1/5 uM were tested, so every 0.25 entry is a FLOOR, not a measurement -- the true LOD may be far lower. A censored floor cannot 'overstate'.",
+   "The hypersensitivity call was staining intensity at 1 uM judged against a WT control in 2 experiments (Figure S1 caption). That is an ordinal call, not an affinity, and it does not convert to one.",
+   "Jannis: 'The yeast two hybrid works on a different calculation and was not measured to its limits for all substitutions.'"
+  ],
+  "how_to_use": "Use EC50 as the primary benchmark for AFFINITY because it is quantitative and continuous. Use Y2H for CELLULAR responsiveness. Do NOT treat a Y2H-only entry as refuted by the absence of an EC50 improvement, and do NOT drop F61M/I110C/I110S from the hypersensitive set -- they are hypersensitive in the assay that measured them."
  },
  "ec50_confirmed": {
   "A160": {
@@ -146,6 +141,7 @@
   },
   "F61": {
    "L": 1.41
-  }
+  },
+  "_note": "These 5 are the substitutions with a quantitative in vitro EC50 improvement. They are a CLEANER AFFINITY subset, not a corrected version of the Y2H set."
  }
 }
