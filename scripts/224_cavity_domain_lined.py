@@ -200,6 +200,13 @@ def main():
     ok = [r for r in recs if "error" not in r]
     print(f"{len(ok)} measured, {len(recs)-len(ok)} failed")
 
+    # ⚠ PERSIST BEFORE REPORTING. v4's first run measured all 261 structures in
+    # 66 minutes and then died in the summary printer on `sorted()` comparing two
+    # dicts after a tie -- and because the dump came last, every measurement was
+    # lost. Nothing expensive may sit upstream of a print statement again.
+    json.dump(dict(controls=ctrl, structures=recs), open(OUT, "w"), indent=1)
+    print(f"wrote {OUT}\n")
+
     v2 = {r["target"]: r for r in json.load(
         open(os.path.join(ROOT, "results", "homolog_cavities", "cavity_v2.json")))}
     import statistics as st
@@ -210,8 +217,8 @@ def main():
         o = v2.get(r["target"], {}).get("main_median")
         if o is None:
             continue
-        dl.append((o - r["main_median"], r))
-    for d, r in sorted(dl, reverse=True)[:12]:
+        dl.append((o - r["main_median"], r["target"], r))
+    for d, _t, r in sorted(dl, key=lambda x: (-x[0], x[1]))[:12]:
         c = list(r["chains"].values())[0]
         print(f"   {r['target'][:43]:<43}{v2[r['target']]['main_median']:>8.1f}"
               f"{r['main_median']:>8.1f}{str(c['main_frac']):>9}"
@@ -227,8 +234,6 @@ def main():
               f"n>=200: {sum(1 for x in a if x>=200)} -> "
               f"{sum(1 for x in b if x>=200)}   "
               f"NO domain-lined chamber: {nd}")
-    json.dump(dict(controls=ctrl, structures=recs), open(OUT, "w"), indent=1)
-    print(f"\nwrote {OUT}")
     return 0
 
 

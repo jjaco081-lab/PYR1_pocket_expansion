@@ -89,40 +89,93 @@ if [[ ! -s prod.rst7 ]]; then
 fi
 
 # ---- MM-GBSA on the production trajectory -------------------------------
-# strip water/ions once, then MMPBSA.py with igb=8 (GBneck2).
-if [[ ! -s mmgbsa.dat ]]; then
-    STRIP=$S/stripped.prmtop
-    if [[ ! -s $STRIP ]]; then
-        cpptraj -p "$TOP" <<CPP > strip.log 2>&1
-parmstrip :WAT,K+,Cl-
-parmwrite out $STRIP
+# FOUR chained defects had to be cleared here; all four are load-bearing.
+#
+# 1. ante-MMPBSA.py shells out to amber/22's ParmEd 3.4.1, broken against numpy
+#    2.x: `np.array(box, copy=False)` raises the moment it reads a topology that
+#    HAS A BOX. Conda ParmEd 4.3 loads fine but SLICING with it writes an LJ
+#    table 3.4.1 rejects ("LENNARD_JONES_ACOEF has 378 elements; expected 276"),
+#    so swapping interpreters does not fix it. The same ParmEd/numpy trap is
+#    already recorded for the TI pipeline; it cost all 30 completed replicates of
+#    the first submission.  -> strip with cpptraj (pure C++) + `parmbox nobox`.
+# 2. -sp is the documented way to point MMPBSA at a solvated trajectory, but it
+#    hands over the BOXED topology and re-triggers (1).
+#    -> strip the TRAJECTORY too, so nothing boxed ever reaches MMPBSA.
+# 3. igb=8 (GBneck2) REQUIRES mbondi3; tleap gives plain mbondi and
+#    mmpbsa_py_energy dies with no useful message. ante-MMPBSA.py had been doing
+#    this silently via --radii=mbondi3.  -> ParmEd 4.3 changeRadii, which is safe
+#    precisely because it does NOT slice.
+# 4. /tmp AND /scratch ARE NODE-LOCAL. Building these on the login node left the
+#    compute node unable to see them. Everything here writes to /bigdata.
+RES=$(/bigdata/cutlerlab/jjaco081/conda_envs/mutpred/bin/python -c "
+import json
+f=[x for x in json.load(open('$PM/frames.json'))
+   if '$TAG'.startswith(x['ligand'].replace('-',''))]
+print(f[0]['resname'] if f else '')")
+[[ -n "$RES" ]] || { echo "!! cannot resolve ligand resname for $TAG"; exit 3; }
+
+for spec in "complex:!(:WAT,K+,Cl-)" "receptor:!(:WAT,K+,Cl-,$RES)" "ligand::$RES"; do
+    NM=${spec%%:*}; SEL=${spec#*:}
+    [[ -s $S/$NM.prmtop ]] && continue
+    cpptraj > $S/$NM.cpptraj.log 2>&1 <<CPP
+parm $TOP
+parmstrip !($SEL)
+parmbox nobox
+parmwrite out $S/$NM.prmtop
 go
 CPP
-    fi
-    LIG=$(grep -oE '^(ANT|PPH|CXL|EUG)' <<< "$(basename $S)" || true)
-    RES=$(/bigdata/cutlerlab/jjaco081/conda_envs/mutpred/bin/python -c "
-import json,sys
-f=[x for x in json.load(open('$PM/frames.json')) if '$TAG'.startswith(x['ligand'].replace('-',''))]
-print(f[0]['resname'] if f else '')")
-    [[ -n "$RES" ]] || { echo "!! cannot resolve ligand resname for $TAG"; exit 3; }
+    [[ -s $S/$NM.prmtop ]] || { echo "!! cpptraj failed on $NM"; exit 3; }
+done
+for f in complex receptor ligand; do
+  [[ -s $S/${f}_r3.prmtop ]] && continue
+  env -u PYTHONPATH /bigdata/cutlerlab/jjaco081/conda_envs/docking_env/bin/python - <<RADII
+import parmed as pmd
+from parmed.tools import changeRadii
+q = pmd.load_file("$S/$f.prmtop")
+changeRadii(q, "mbondi3").execute()
+q.save("$S/${f}_r3.prmtop", overwrite=True)
+RADII
+done
+/opt/linux/rocky/8.x/x86_64/pkgs/miniconda3/py39_4.12.0/bin/python -c "
+from parmed.amber.readparm import LoadParm
+n={}
+for f in ('complex','receptor','ligand'):
+    q=LoadParm('$S/%s_r3.prmtop'%f); n[f]=len(q.atoms)
+    assert 'mbondi3' in q.parm_data['RADIUS_SET'][0], (f, q.parm_data['RADIUS_SET'])
+assert n['receptor']+n['ligand']==n['complex'], n
+print('topologies OK:', n)
+" || { echo "!! topology check FAILED for $TAG"; exit 3; }
+
+if [[ ! -s prod_dry.nc ]]; then
+cpptraj > strip_traj.log 2>&1 <<CPP
+parm $TOP
+trajin prod.nc
+strip :WAT,K+,Cl-
+box nobox
+trajout prod_dry.nc netcdf
+go
+CPP
+fi
+[[ -s prod_dry.nc ]] || { echo "!! no prod_dry.nc for $TAG $REP"; exit 3; }
+
+if [[ ! -s mmgbsa.dat ]]; then
     cat > mmpbsa.in <<MM
 MM-GBSA on $TAG $REP
 &general
-   startframe=1, endframe=999999, interval=10, verbose=2,
-   keep_files=0,
+   startframe=1, endframe=999999, interval=10, verbose=2, keep_files=0,
 /
 &gb
    igb=8, saltcon=0.150,
 /
 MM
-    ante-MMPBSA.py -p "$TOP" -c complex.prmtop -r receptor.prmtop -l ligand.prmtop \
-        -s ':WAT,K+,Cl-' -n ":$RES" --radii=mbondi3 > ante.log 2>&1
-    MMPBSA.py -O -i mmpbsa.in -o mmgbsa.dat -sp "$TOP" \
-        -cp complex.prmtop -rp receptor.prmtop -lp ligand.prmtop \
-        -y prod.nc > mmpbsa.log 2>&1 || { echo "!! MMPBSA failed"; tail -20 mmpbsa.log; exit 4; }
+    MMPBSA.py -O -i mmpbsa.in -o mmgbsa.dat \
+        -cp $S/complex_r3.prmtop -rp $S/receptor_r3.prmtop -lp $S/ligand_r3.prmtop \
+        -y prod_dry.nc > mmpbsa.log 2>&1 || { echo "!! MMPBSA failed";
+            tail -25 mmpbsa.log; exit 4; }
 fi
 
-# assert on the RESULT, not the exit code
-G=$(grep -A3 "DELTA TOTAL" mmgbsa.dat 2>/dev/null | head -2 | tail -1 | awk '{print $2}')
+# assert on the RESULT, not the exit code. The value sits on the SAME line as
+# the label: "DELTA TOTAL  -23.3875  2.4524  0.7755" -> field 3.
+G=$(awk '/^DELTA TOTAL/{print $3; exit}' mmgbsa.dat 2>/dev/null)
 if [[ -z "$G" ]]; then echo "!! no DELTA TOTAL in mmgbsa.dat"; exit 5; fi
 echo "RESULT $TAG $REP  dG_bind = $G kcal/mol"

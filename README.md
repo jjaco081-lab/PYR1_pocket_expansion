@@ -12619,3 +12619,104 @@ design — it does not crash, so nothing looks wrong from the queue. This ate th
 first submission of all four Stage 3 arms. `193_rfd3_gen.py` now refuses an
 overflowing master seed at argument-parse time; every existing arm uses a
 4-digit seed (max 42949). Resubmitted as 9001 / 10011 / 10021 / 10031.
+
+### §134 Cavity v4 — the large-donor claim survives, but a quarter of the survey was measuring the wrong hole
+
+`224_cavity_domain_lined.py`, 261 structures, 0 failed. Measured in FULL context
+(so no artificial interface void is created) and attributed by lining: the
+reported chamber is the largest one whose lining is ≥ 2/3 CATH-domain residues.
+
+**The control passed exactly.** PYR1 through the identical code path gives
+`3QN1_A = 119.0` and `3QN1_AB = 182.3` — the two numbers §122 established, now
+produced by the same script as every homolog rather than a different one.
+
+```
+                       v2      v4
+experimental median   31.5    47.1     (NMR false zeros removed)
+AlphaFold median      72.1    65.4
+AlphaFold >= 200       25      19
+max                  570.5   570.5
+```
+
+**69 of 261 (26 %) have NO domain-lined chamber at all** — their entire reported
+cavity sat elsewhere in the protein. `af_A0A0R0IEX8` reads 318.6 → 0.0: it does
+contain a 277.6 Å³ chamber, just not one the SRPBCC domain lines.
+
+**But the tail is intact.** The top donors are unchanged at domain fractions of
+0.95–1.00, so their pockets genuinely belong to the fold:
+
+```
+2pcsA00 (CoxG)         570.5   frac 1.00
+af_O17883_28_255       403.7   frac 1.00
+af_A0A1D6QKW9_84_319   376.9   frac 1.00
+af_Q54CP2_17_177       327.2   frac 0.96
+```
+
+25 structures exceed PYR1's closed-state 182 Å³. **"Large SRPBCC pockets exist"
+was a real signal, not an artefact of the four measurement errors**, so the
+graft/SCHEMA arm survives and the cavity-vs-identity figure can be rebuilt on
+`cavity_v4.json`.
+
+⚠ **NEW AND UNEXPLAINED: only 1 of 66 experimental structures clears 200 Å³
+(2PCS), against 19 of 195 AlphaFold models.** That asymmetry sits on exactly the
+axis the donor argument depends on. It may be real — experimental structures are
+mostly ligand-bound and collapsed, AlphaFold models are apo — or AlphaFold may be
+predicting cavities that do not exist. Nothing in this survey separates those.
+The crystal-vs-predicted marker shapes make it visible; it should not be argued
+away in the figure caption.
+
+⚠ Also note the experimental median ROSE (31.5 → 47.1) purely from removing the
+NMR false zeros, which is a reminder that error 6 was biasing the comparison in
+the same direction as error 4.
+
+### §135 MM-GBSA: five chained defects, four of them mine
+
+The first 64-run submission failed every task at exit 4 after ~30 min of MD each.
+Root cause was the **ParmEd/numpy trap already recorded for the TI pipeline** —
+a lesson that was written down and not applied. Clearing it took five fixes:
+
+1. `ante-MMPBSA.py` shells out to amber/22's **ParmEd 3.4.1, broken against numpy
+   2.x**: `np.array(box, copy=False)` raises on any topology that HAS A BOX.
+   Conda ParmEd 4.3 loads fine but SLICING with it writes an LJ table 3.4.1
+   rejects (`LENNARD_JONES_ACOEF has 378 elements; expected 276`) — the
+   incompatibility runs both ways, so swapping interpreters does not fix it.
+   **Fix:** strip with `cpptraj` (pure C++, no numpy) plus `parmbox nobox`.
+2. `-sp` is the documented way to point MMPBSA at a solvated trajectory, but it
+   hands over the BOXED topology and re-triggers (1). **Fix:** strip the
+   TRAJECTORY too (273 MB → 17 MB), so nothing boxed ever reaches MMPBSA.
+3. **`igb=8` (GBneck2) requires mbondi3**; tleap gives plain mbondi and
+   `mmpbsa_py_energy` dies with no useful message. `ante-MMPBSA.py` had been
+   doing this silently via `--radii=mbondi3`. **Fix:** ParmEd 4.3 `changeRadii`,
+   safe precisely because it does not slice.
+4. I built those topologies in **`/tmp`, which is node-local** — the compute node
+   could not see them. This rule was already in the HPC notes.
+5. The result assertion grepped `-A3` and took field 2, but the value is on the
+   SAME line as the label (`DELTA TOTAL  -23.3875  2.4524  0.7755`, field 3).
+   All 64 runs would have completed and then exited 5. **Asserting on the result
+   only helps if the assertion itself is right.**
+
+Validated on one replicate before resubmitting:
+```
+VDWAALS  -24.6180   EGB   +26.6692     DELTA G gas  -45.8408
+EEL      -21.2228   ESURF  -4.2158     DELTA G solv +22.4533
+DELTA TOTAL  -23.3875  +/- 2.4524  (SEM 0.7755)
+```
+Atom counts consistent (2879 = 2856 + 23), all three topologies at mbondi3.
+**The 31 completed trajectories were never affected** — every defect was in the
+analysis step, not the MD.
+
+### §136 Truncation applied to the full set
+
+`220_core_truncate.py` over 2,820 designs, 12 arms:
+
+```
+PASS before truncation :    45 (1.6 %)
+PASS after  truncation :   655 (23.2 %)     610 rescued
+Rg median              :   23.5 -> 15.0     (PYR1 = 15.0)
+cavity lost to the cut :   19 of 1,131
+```
+
+Median lead trimmed 47 residues, tail 4. By arm: `8best` 52.5 %, `6helix`
+38.8 %/38.2 %, `3b3rasa` 25.8 %, `5long` 24.8 %, `4rep` 15.7 %, `1slack` 0 %.
+Truncation is doing more for yield than any contig change tested so far, and it
+costs almost no cavities.
