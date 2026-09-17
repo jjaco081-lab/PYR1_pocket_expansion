@@ -1,0 +1,39 @@
+HEADER
+HEADER This is a pdb format file writen by the programm fpocket.                 
+HEADER It represents the atoms contacted by the voronoi vertices of the pocket.  
+HEADER                                                                           
+HEADER Information about the pocket    20:
+HEADER 0  - Pocket Score                      : 0.0042
+HEADER 1  - Drug Score                        : 0.0001
+HEADER 2  - Number of alpha spheres           :    16
+HEADER 3  - Mean alpha-sphere radius          : 3.8604
+HEADER 4  - Mean alpha-sphere Solvent Acc.    : 0.6283
+HEADER 5  - Mean B-factor of pocket residues  : 0.0000
+HEADER 6  - Hydrophobicity Score              : -16.3750
+HEADER 7  - Polarity Score                    :     6
+HEADER 8  - Amino Acid based volume Score     : 3.6250
+HEADER 9  - Pocket volume (Monte Carlo)       : 281.1435
+HEADER 10 - Pocket volume (convex hull)       : 16.7751
+HEADER 11 - Charge Score                      :    -1
+HEADER 12 - Local hydrophobic density Score   : 1.0000
+HEADER 13 - Number of apolar alpha sphere     :     2
+HEADER 14 - Proportion of apolar alpha sphere : 0.1250
+ATOM   3559    N LYS B 491      -0.764  23.111   9.674  0.00  0.00           N 0
+ATOM   3554   CA SER B 490      -1.860  22.495   7.641  0.00  0.00           C 0
+ATOM   3184  CG1 VAL B 437      -5.519  21.142   6.889  0.00  0.00           C 0
+ATOM   3552    O GLY B 489      -2.828  25.020   8.230  0.55  8.57           O 0
+ATOM   3561    C LYS B 491       1.145  22.538  11.129  0.00  0.00           C 0
+ATOM   3568    N ASP B 492       0.984  21.297  10.665  0.00  0.00           N 0
+ATOM   3572   CB ASP B 492       0.490  19.076  11.529  0.00  0.00           C 0
+ATOM   3563   CB LYS B 491      -0.112  24.693  11.353  0.00  0.00           C 0
+ATOM   3564   CG LYS B 491      -0.731  25.865  10.578  0.00  0.00           C 0
+ATOM   1529  NH2 ARG B 199       0.502  19.744  15.511  0.00  0.00           N 0
+ATOM   3178  OD2 ASP B 436      -4.709  17.455  12.091  0.00  0.00           O 0
+ATOM   3575  OD2 ASP B 492       0.040  17.056  12.667  0.56  2.14           O 0
+ATOM   3144  OD2 ASP B 432      -2.975  14.413  13.932  0.30  5.36           O 0
+ATOM   3562    O LYS B 491       1.910  22.840  12.042  0.71  1.07           O 0
+ATOM   1526   NE ARG B 199       2.235  21.089  15.002  0.53  4.37           N 0
+ATOM   3558   OG SER B 490      -1.008  20.219   8.025  0.71  4.29           O 0
+ATOM   3175   CB ASP B 436      -5.779  17.942  10.049  0.00  0.00           C 0
+TER
+END

@@ -13118,3 +13118,67 @@ the domain-lining attribution (fpocket has no notion of a CATH domain) and the
 ABA-containment check. Cost: §134/§142/§144's tables are replaced, and fpocket's
 alpha-sphere volumes are not comparable to voxel volumes (842.7 vs 164.4 for the
 same pocket), so it is a restart of that table rather than a patch.
+
+### §145 Graft or RFd3? The figure, and the answer is RFd3
+
+Jannis asked for one graph deciding whether to keep pursuing a pocket graft from
+another helix-grip protein onto PYR1's mechanism and HAB1 interface, or to just
+use RFd3. `236_graft_vs_rfd3.py`, `results/figures/graft_vs_rfd3.png`.
+
+Both sides are measured with the SAME calibrated enclosed volume (probe 1.4 Å,
+validated against ABA, PYR1 = 164.4). fpocket is deliberately NOT used — its
+alpha-sphere volumes include open surface and are 2.18× larger on the same PYR1
+pocket, so they cannot share an axis with a design's cavity.
+
+```
+donors (261 homologs)                RFd3 (655 PASS designs with a cavity)
+above PYR1's 164.4:  99              median 109.7   p90 159.8   max 294.8
+their identity:  median 10.8 %
+```
+
+**The decision cell:**
+
+```
+identity >= 20%    15 donors    4 bigger than PYR1    0 bigger than the best RFd3 design
+identity >= 25%     9 donors    3 bigger than PYR1    0 bigger than the best RFd3 design
+```
+
+The best graftable donors are `3oquB00` 195.2 Å³ at 45.7 % identity, `4dsbB00`
+185.8 at 51.1 %, `af_I1MKK6` 172.2 at 50.7 % — i.e. **1.19× PYR1 at best**, while
+RFd3 already reaches **294.8 Å³ = 1.79× PYR1** and does so 56 times.
+
+**GRAFTING IS DOMINATED.** Every donor that would beat RFd3's best sits below
+~20 % identity, and at 10 % identity a "graft" is not a graft — it is building a
+different protein and hoping PYR1's gate, latch and HAB1 interface still work on
+it. The quadrant that would justify the arm — big pocket AND graftable — is
+empty, and this is now measured rather than asserted. It quantifies against the
+RFd3 alternative what §86/§123 only described categorically.
+
+⚠ What would overturn this: a donor found at >25 % identity with >300 Å³, or RFd3
+failing at the sequence-design stage (Stage 3 LigandMPNN is still the untested
+gate). The arm is parked, not refuted.
+
+### §146 The measurement is settled; stop adding methods
+
+Jannis checked all six disagreement structures in PyMOL: *"All of the red atoms in
+the new 6 structures looked pretty good and pretty close to the surface defined by
+pymol. I would say we can move on."* Our calibrated enclosed volume agrees with
+PyMOL's own cavity detection by eye across cases spanning 3.9–644.5 Å³.
+
+He asked whether to add a poly-Gly/poly-Ala or envelope measurement. **No, for
+this decision** — both sides of §145 use the same measure, so a different one
+shifts both and cannot close a 195-vs-295 gap. It is also ground already burned:
+§ pocket-envelope records that the envelope calculation was circular and the
+poly-Gly build was broken.
+
+⚠ It IS the right question for a different purpose. Poly-Gly measures the pocket
+a donor could reach AFTER side-chain redesign, which is what you actually get from
+a donor you are going to redesign anyway. If the graft arm is ever revived, that
+is the measurement to fix first — but it must then be applied to the RFd3 designs
+too, whose placeholder sequence is already near-poly-Gly, which is exactly why it
+would flatter the donors if applied to one side only.
+
+**The descriptor set Jannis named** — area, number of side chains lining, depth,
+volume, connectivity of chambers — is the right definition of "large" and is
+cheap to add to the existing chamber code. It is not needed for §145 and should
+be added when it drives a decision, not before.

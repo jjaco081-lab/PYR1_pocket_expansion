@@ -1,0 +1,36 @@
+HEADER
+HEADER This is a pdb format file writen by the programm fpocket.                 
+HEADER It represents the atoms contacted by the voronoi vertices of the pocket.  
+HEADER                                                                           
+HEADER Information about the pocket    28:
+HEADER 0  - Pocket Score                      : -0.0530
+HEADER 1  - Drug Score                        : 0.0010
+HEADER 2  - Number of alpha spheres           :    15
+HEADER 3  - Mean alpha-sphere radius          : 3.8817
+HEADER 4  - Mean alpha-sphere Solvent Acc.    : 0.5482
+HEADER 5  - Mean B-factor of pocket residues  : 0.0000
+HEADER 6  - Hydrophobicity Score              : 2.0000
+HEADER 7  - Polarity Score                    :     4
+HEADER 8  - Amino Acid based volume Score     : 4.8000
+HEADER 9  - Pocket volume (Monte Carlo)       : 226.4915
+HEADER 10 - Pocket volume (convex hull)       : 3.5278
+HEADER 11 - Charge Score                      :     0
+HEADER 12 - Local hydrophobic density Score   : 6.0000
+HEADER 13 - Number of apolar alpha sphere     :     7
+HEADER 14 - Proportion of apolar alpha sphere : 0.4667
+ATOM   1073  CZ2 TRP A 136       9.323   7.848  57.908  0.00  0.00           C 0
+ATOM     42  OG1 THR A   6       3.459   7.293  58.216  0.75  7.50           O 0
+ATOM     43  CG2 THR A   6       3.324   5.504  56.557  0.00  0.00           C 0
+ATOM   1028   NZ LYS A 131       7.409   3.788  62.719  0.00  0.00           N 0
+ATOM     57   CD GLU A   8       5.116   6.131  63.414  0.00  0.00           C 0
+ATOM     56   CG GLU A   8       3.987   7.155  63.306  0.00  0.00           C 0
+ATOM     50   CD PRO A   7      -0.393   5.613  59.357  0.00  0.00           C 0
+ATOM     59  OE2 GLU A   8       4.935   5.127  64.166  0.00  0.00           O 0
+ATOM     58  OE1 GLU A   8       6.188   6.327  62.795  0.70  8.57           O 0
+ATOM     41   CB THR A   6       2.590   6.282  57.691  0.00  0.00           C 0
+ATOM     51    N GLU A   8       1.766   8.143  61.242  0.81  2.19           N 0
+ATOM     48   CB PRO A   7      -1.254   6.788  61.255  0.00  0.00           C 0
+ATOM     49   CG PRO A   7      -1.611   5.668  60.280  0.00  0.00           C 0
+ATOM   1075  CH2 TRP A 136      10.220   7.270  58.785  0.00  0.00           C 0
+TER
+END

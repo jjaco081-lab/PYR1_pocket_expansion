@@ -1,66 +1,66 @@
 [
  {
-  "target": "3QN1_A",
-  "why": "PYR1 apo monomer: 164.4 A^3 as ONE chamber; ABA enclosed except O10 (ketone, 1.07 A out)",
-  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/3QN1_A.pml",
+  "target": "1t17A00",
+  "why": "EXPERIMENTAL, overlap 1.00: ours 361.4 vs fpocket 86.6. Same site, no AlphaFold confound. Is our chamber a real void or an over-merge?",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/1t17A00.pml",
   "chambers": [
    {
-    "vol": 164.4,
+    "vol": 361.4,
     "frac": 1.0
    }
   ]
  },
  {
-  "target": "3QN1_AB",
-  "why": "PYR1+HAB1: 182.3 A^3 as ONE chamber -- HAB1 seals it",
-  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/3QN1_AB.pml",
+  "target": "af_Q4DRH3_677_890_3.30.530.20",
+  "why": "overlap 1.00, pLDDT 86.1: ours 425.1 vs fpocket 84.8. Largest ours-vs-fpocket gap at perfect pairing.",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/af_Q4DRH3_677_890_3_30_530_20.pml",
   "chambers": [
    {
-    "vol": 182.3,
+    "vol": 425.1,
     "frac": 1.0
    }
   ]
  },
  {
-  "target": "2pcsA00",
-  "why": "CoxG donor 570.5 A^3 -- is it really one chamber?",
-  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/2pcsA00.pml",
+  "target": "af_Q9U9P7_2_263_3.30.530.20",
+  "why": "overlap 1.00, pLDDT 94.5: ours 501.6 vs fpocket 246.5. High confidence, still 2x apart.",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/af_Q9U9P7_2_263_3_30_530_20.pml",
   "chambers": [
    {
-    "vol": 570.5,
+    "vol": 501.6,
     "frac": 1.0
    }
   ]
  },
  {
-  "target": "af_A0A0R0IEX8_94_244_3.30.530.20",
-  "why": "v2 318.6 -> v4 0.0; a 277.6 A^3 chamber exists but should NOT be in the domain",
-  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/af_A0A0R0IEX8_94_244_3_30_530_20.pml",
+  "target": "af_Q93168_208_339_3.30.530.20",
+  "why": "overlap 0.20, pLDDT 91.4: fpocket 2597.0 vs ours 23.8. Huge open cleft, almost no enclosed volume.",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/af_Q93168_208_339_3_30_530_20.pml",
   "chambers": [
    {
-    "vol": 427.7,
-    "frac": 0.0
+    "vol": 23.8,
+    "frac": 1.0
    }
   ]
  },
  {
-  "target": "af_Q6Z9J1_229_401_3.30.530.20",
-  "why": "chamber STRADDLES the domain boundary at frac 0.53 -- the 2/3 cut is questionable here",
-  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/af_Q6Z9J1_229_401_3_30_530_20.pml",
+  "target": "2m47A00",
+  "why": "overlap 0.18, EXPERIMENTAL NMR: fpocket 1025.3 vs ours 3.9. Most extreme case in the survey.",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/2m47A00.pml",
   "chambers": [
    {
-    "vol": 561.8,
-    "frac": 0.343
+    "vol": 3.9,
+    "frac": 1.0
    }
   ]
  },
  {
-  "target": "2lf2A00",
-  "why": "NMR ensemble: read 0.0 before the first-model fix",
-  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/2lf2A00.pml",
+  "target": "3oquB00",
+  "why": "overlap 0.85, EXPERIMENTAL: fpocket 1489.0 vs ours 644.5, ratio 2.31 -- BEST AGREEMENT, closest to PYR1's 2.18. Positive control.",
+  "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/3oquB00.pml",
   "chambers": [
    {
-    "vol": 284.3,
+    "vol": 644.5,
     "frac": 1.0
    }
   ]

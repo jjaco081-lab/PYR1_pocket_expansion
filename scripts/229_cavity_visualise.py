@@ -122,7 +122,14 @@ def chambers_with_voxels(xyz, elem, dom):
 def main():
     os.makedirs(OUT, exist_ok=True)
     manifest = []
-    for name, _u, keep, why in TARGETS:
+    #: --targets <json>  where the json is [[name, why], ...]. Lets the
+    #: disagreement cases from 233 be visualised without editing this file.
+    tg = list(TARGETS)
+    if "--targets" in sys.argv:
+        extra = json.load(open(sys.argv[sys.argv.index("--targets") + 1]))
+        tg = [(n, None, None, w) for n, w in extra]
+        print(f"{len(tg)} targets from --targets\n")
+    for name, _u, keep, why in tg:
         path = find(name)
         if not path:
             print(f"!! {name}: not found"); continue
