@@ -251,11 +251,21 @@ def main():
     ap.add_argument("--arm", required=True, choices=sorted(ARMS))
     ap.add_argument("--n", type=int, default=10)
     ap.add_argument("--master-seed", type=int, required=True)
+    #: ⚠ seed_i = master_seed * 100000 + i must fit a uint32 or numpy rejects
+    #: EVERY design with "is not in bounds, numpy accepts from 0 to 4294967295"
+    #: and the job burns its whole walltime emitting "NO OUTPUT". That is what a
+    #: 10-digit master seed did to arms 9aba/10ext1/10ext2/10ext3 on 2026-09-16.
+    #: Existing arms all use 4-digit master seeds (6002, 5001, 3004, 8001).
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
     motif, segs, cond = RECIPES[a.arm]
     n_res = assert_motif(motif)
+    MAX_U32 = 4294967295
+    if a.master_seed * 100000 + a.n - 1 > MAX_U32:
+        ap.error(f"--master-seed {a.master_seed} overflows uint32: "
+                 f"seed_max = {a.master_seed*100000 + a.n - 1} > {MAX_U32}. "
+                 f"Use a 4-digit master seed (max {MAX_U32//100000}).")
     out = os.path.join(ROOT, "results", "rfd3", f"arm{a.arm}_s{a.master_seed}")
     os.makedirs(out, exist_ok=True)
     rec = open(os.path.join(out, "params.jsonl"), "a")

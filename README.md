@@ -12609,3 +12609,13 @@ project-specific. Findings moved to a per-repo `CLAUDE.md`, which loads only whe
 working in that repo: 65 for PYR1, 25 for the binder work, leaving 12
 cross-project working rules plus two pointers. 25,913 → 3,147 bytes. The memory
 files themselves are untouched, so description-based recall still reaches them.
+
+### §133 A 10-digit master seed silently burns a whole GPU job
+
+`seed_i = master_seed * 100000 + i` must fit a uint32. A 10-digit master seed
+makes numpy reject **every** design with `is not in bounds, numpy accepts from 0
+to 4294967295`, and the job runs its full walltime emitting `rc=1 NO OUTPUT` per
+design — it does not crash, so nothing looks wrong from the queue. This ate the
+first submission of all four Stage 3 arms. `193_rfd3_gen.py` now refuses an
+overflowing master seed at argument-parse time; every existing arm uses a
+4-digit seed (max 42949). Resubmitted as 9001 / 10011 / 10021 / 10031.

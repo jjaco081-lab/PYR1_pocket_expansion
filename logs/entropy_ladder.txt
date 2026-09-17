@@ -1,0 +1,32 @@
+181 ligands with a best min_conc
+  40/181
+  80/181
+  120/181
+  160/181
+
+181 ligands with a conformer ensemble
+
+P1  raw correlations with log10(min_conc)  (+ = more of it, WORSE sensor)
+   conformational entropy S   rho -0.099  p=0.186
+   effective n conformers     rho -0.099  p=0.186
+   rotatable bonds            rho -0.067  p=0.372
+   heavy atoms                rho -0.183  p=0.0137  <-- 
+   cLogP                      rho -0.374  p=2.14e-07  <-- 
+
+P2  partial, removing heavy atoms AND cLogP
+   conformational entropy S   rho -0.018  p=0.808  dies
+   effective n conformers     rho -0.018  p=0.808  dies
+   rotatable bonds            rho +0.002  p=0.982  dies
+
+P3  small-ligand stratum only (<=16 heavy atoms)
+   n = 53
+   conformational entropy S   raw rho -0.074 p=0.6 | partial rho -0.019 p=0.893
+   rotatable bonds            raw rho +0.039 p=0.782 | partial rho +0.153 p=0.273
+
+  the 4-ligand ladder, for reference:
+    Anthrone             1 uM   S -0.00000  n_eff 1.00  rotB 0  HA 15
+    Chloroxylenol       10 uM   S -0.00000  n_eff 1.00  rotB 0  HA 10
+    3-Phenylphenol      10 uM   S 0.00136  n_eff 1.99  rotB 1  HA 13
+    Eugenol            100 uM   S 0.00184  n_eff 2.52  rotB 3  HA 12
+
+wrote results/entropy_ladder/rows.json
