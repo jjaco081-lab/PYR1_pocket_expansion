@@ -12954,3 +12954,167 @@ has its own:
 ⚠ Conflating (1) with (3) is what produced §137's overstatement, and it is the
 same class of error as treating hits as optima (`feedback_hits_are_not_optima`):
 the benchmark's own answer key is not the biology's.
+
+### §142 The chamber probe was never calibrated — ABA does not fit in its own pocket
+
+Jannis opened the v4 cavity files in PyMOL and reported three things, all correct:
+PyMOL's own detection (`surface_cavity_mode 2`, `surface_cavity_radius -3`,
+`surface_cavity_cutoff -5`) finds **one** pocket where v4 reports three; an ABA
+oxygen **pokes outside** the measured surface; and *"if the two lobes are
+connected it should show as such"*.
+
+**Checked against the ligand, which is the test this code never had:**
+
+```
+ABA heavy atoms outside v4's main chamber:  6 of 19
+   C8 -> chamber C    C9, C10, O10, C11 -> chamber B    C13 -> chamber C
+chambers A / B / C = 119.0 / 26.8 / 18.6 = 164.4 A^3 = exactly the `total` v4 discarded
+```
+
+**ABA occupies all three.** The necks between them are narrower than the 2.4 A
+sphere, but ABA threads through them, so they were never separations — which is
+why PyMOL sees one pocket, and the grey dots Jannis noticed in the render were
+precisely the wrongly-split pieces.
+
+⚠ **THE 2.4 A PROBE WAS MY OWN INVENTION AND NOTHING EVER CHECKED IT.** Sweeping
+it against the known answer:
+
+```
+probe R   n chambers   main A^3   ABA spans
+   2.4        3          119.0        3
+   2.2        3          116.0        3
+   2.0        5          122.0        5
+   1.8        2          134.8        2
+   1.4        1          164.4        1   <-- ABA in ONE chamber
+   1.2        1          164.4        1
+```
+
+**1.4 A — the water probe — is the smallest radius at which the cognate ligand
+lies in a single chamber**, and it is what PyMOL, CASTp and fpocket use. At
+1.4 A, **18 of 19 ABA atoms sit inside the enclosed volume**. The exception is
+**O10, the ketone oxygen, 1.07 A out** — the most solvent-exposed atom in the
+ligand, the one coordinating the W385 gate water, and it is excluded by the
+BURIAL cutoff rather than the chamber criterion. (Jannis read it as the
+carboxylate; O11/O12 are 0.32 and 0.48 A, comfortably inside.)
+
+**THIS PARTLY REVERSES §122.** Switching `total` -> `main` was right in principle
+— a pocket must not sum voids a ligand cannot reach — but the threshold was
+wrong, and wrong in the direction that **discards real pocket**. v5
+(`231_cavity_v5.py`) sets `CHAMBER_PROBE = 1.4` and its pre-registered control
+passes exactly:
+
+```
+3QN1_A    main 164.4   total 164.4   chambers 1      <-- was 119.0 in 3 pieces
+3QN1_AB   main 182.3   total 182.3   chambers 1
+```
+
+⚠ What this does NOT license: 1.4 A still separates genuinely disconnected voids,
+so `total` was not right all along. And the domain-LINING attribution from v4 is
+unchanged — it is still what rejects chambers belonging to a different domain.
+
+**PYR1's reference numbers are therefore 164.4 A^3 (apo monomer, one chamber) and
+182.3 A^3 (with HAB1)** — not 119.0. Every comparison in §134 must be re-read
+against v5.
+
+**METHOD NOTE.** Jannis: *"I believe it is a little difficult to get the pocket
+accurate and each calculation will be a little different."* Right, and the
+defensible position is not "this number is correct" but "the probe is calibrated
+so the known ligand fits". The viewer files now load PyMOL's own cavity surface
+(transparent) on top of the measured chambers (near-opaque spheres) so the two
+methods can be compared directly rather than trusted separately.
+
+### §143 pLDDT: Jannis's read of af_Q6Z9J1 is right, the general concern is not
+
+Jannis, on opening `af_Q6Z9J1`: *"looks poorly predicted and messy with no
+potential for grafting. We should not use alphafold predictions with low
+confidence."* 195 of the survey's 261 structures are AlphaFold models and nothing
+had ever filtered them by confidence. Two things made it urgent: at the looser v5
+probe every AlphaFold model in the top 8 inflated 2–3.5× while the one crystal
+structure (2pcsA00) did not move at all, and v5's AlphaFold median is 141.7 with
+67 models above 200 Å³ against a crystal median of 95.2 with 13.
+
+AlphaFold stores per-atom pLDDT in the B-factor column, so this is checkable.
+
+**THAT SPECIFIC MODEL IS EXACTLY AS BAD AS HE SAYS — but not in the domain:**
+
+```
+af_Q6Z9J1_229_401   whole file        6015 atoms   mean pLDDT 74.3
+                    CATH domain       1431 atoms   mean pLDDT 85.8
+                    OUTSIDE domain    4584 atoms   mean pLDDT 70.7, 30 % below 50
+```
+
+The domain is well predicted; the mess is everything around it. And the 561.8 Å³
+chamber is only **34 % domain-lined**, so most of its lining sits in that mess —
+which means **the domain-lining fraction had already rejected it** (reported 0.0).
+Two independent criteria agree on that structure.
+
+**THE GENERAL HYPOTHESIS IS REFUTED for the large donors:**
+
+```
+Spearman(cavity volume, mean domain pLDDT)        = +0.213   (POSITIVE)
+Spearman(cavity volume, frac of domain < pLDDT 70)= -0.228
+   pLDDT >= 90   n=114   median 149.2   >=200: 43
+   pLDDT 80-90   n= 70   median 111.5   >=200: 22
+   pLDDT 70-80   n= 10   median   0.0   >=200:  2
+   pLDDT < 70    n=  1   median   0.0   >=200:  0
+```
+
+Confidence correlates **positively** with cavity size, 8 of the top 10 donors sit
+at domain pLDDT ≥ 90, and only **1 of 195** domains falls below 70. The large
+AlphaFold cavities are in high-confidence models, so they are not confidence
+artefacts and the large-donor claim survives.
+
+**ADOPT THE FILTER ANYWAY**, because it is right in principle and it does catch
+real cases: **9 of 195 structures have >10 % of the CATH domain below pLDDT 50**,
+including `af_A0A1D6QKW9` at 511.1 Å³ (13 % below 50), currently the #6 donor.
+Those should be dropped or flagged, not scored.
+
+⚠ And the general lesson: the whole-model pLDDT is the wrong statistic. The
+domain's pLDDT is right for a domain pocket, and the LINING's pLDDT would be
+better still — a protein can be well predicted overall and disordered exactly
+where the pocket is, which is the inverse of af_Q6Z9J1's situation.
+
+### §144 v5 survey numbers, and why they should not be trusted yet
+
+```
+                    v4 (2.4 A probe)          v5 (1.4 A water probe)
+experimental   median  47.1  max 570.5    median  95.2  max 570.5   >=200: 1 -> 13
+AlphaFold      median  65.4  max 403.7    median 141.7  max 632.9   >=200: 19 -> 67
+no domain-lined chamber            69/261                    40/261
+at or above PYR1's own reference   62 (>=119)                99 (>=164.4)
+```
+
+The controls pass (`3QN1_A` 164.4 as one chamber, `3QN1_AB` 182.3) and the
+dump-before-report fix from §134 paid for itself immediately: v5 crashed in its
+summary printer on v4's JSON schema AFTER writing all 261 measurements, so
+nothing was lost.
+
+⚠ **But the probe change fixed one end and broke the other.** `af_Q6Z9J1` merged
+from 213.6 @ 0.53 + 186.2 @ 0.31 into one 561.8 Å³ blob at 0.34; `2lf2A00` went
+90.5 → 284.3 purely by merging. The looser probe over-merges in multi-domain
+proteins and drags domain-lining fractions down.
+
+**fpocket 4.0 is now installed** (`conda_envs/fpocket_env`) and Jannis's proposed
+check was run: does an established tool pick a single pocket overlapping ABA?
+
+```
+apo PYR1 chain A   fpocket -> TWO pockets on ABA:  #1 (10 atoms)  #2 (9 atoms)
+PYR1 + HAB1        fpocket -> TWO pockets on ABA:  #10 (10 atoms) #1 (9 atoms)
+```
+
+**fpocket splits ABA's pocket too**, in both states, at the same constriction the
+2.4 Å probe found. So that constriction is a real geometric feature detected by
+two independent methods — plausibly the two-lobe division — and PyMOL's surface
+mode merges it. Four methods, four answers: PyMOL 1, ours@1.4 Å 1, fpocket 2,
+ours@2.4 Å 3. Jannis: *"it is a little difficult to get the pocket accurate and
+each calculation will be a little different."* Confirmed.
+
+**PROPOSED (needs Jannis's decision before re-running): make fpocket the primary
+measurement, merging the pockets the reference ligand spans.** Validated, widely
+cited, literature-comparable, gives druggability and lining residues, and the
+LIGAND decides which pockets to merge — which removes the arbitrary threshold
+this project has now got wrong twice. Our own code keeps two jobs it does well:
+the domain-lining attribution (fpocket has no notion of a CATH domain) and the
+ABA-containment check. Cost: §134/§142/§144's tables are replaced, and fpocket's
+alpha-sphere volumes are not comparable to voxel volumes (842.7 vs 164.4 for the
+same pocket), so it is a restart of that table rather than a patch.

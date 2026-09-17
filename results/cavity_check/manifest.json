@@ -1,19 +1,11 @@
 [
  {
   "target": "3QN1_A",
-  "why": "PYR1 apo monomer: 119.0 A^3, largest chamber should sit on ABA",
+  "why": "PYR1 apo monomer: 164.4 A^3 as ONE chamber; ABA enclosed except O10 (ketone, 1.07 A out)",
   "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/3QN1_A.pml",
   "chambers": [
    {
-    "vol": 119.0,
-    "frac": 1.0
-   },
-   {
-    "vol": 26.8,
-    "frac": 1.0
-   },
-   {
-    "vol": 18.6,
+    "vol": 164.4,
     "frac": 1.0
    }
   ]
@@ -46,67 +38,19 @@
   "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/af_A0A0R0IEX8_94_244_3_30_530_20.pml",
   "chambers": [
    {
-    "vol": 277.6,
-    "frac": 0.0
-   },
-   {
-    "vol": 57.2,
-    "frac": 0.0
-   },
-   {
-    "vol": 32.8,
-    "frac": 0.0
-   },
-   {
-    "vol": 30.7,
-    "frac": 0.0
-   },
-   {
-    "vol": 16.6,
-    "frac": 0.0
-   },
-   {
-    "vol": 12.7,
+    "vol": 427.7,
     "frac": 0.0
    }
   ]
  },
  {
   "target": "af_Q6Z9J1_229_401_3.30.530.20",
-  "why": "v2 216.6 -> v4 9.3, domain fraction 0.76",
+  "why": "chamber STRADDLES the domain boundary at frac 0.53 -- the 2/3 cut is questionable here",
   "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/af_Q6Z9J1_229_401_3_30_530_20.pml",
   "chambers": [
    {
-    "vol": 213.6,
-    "frac": 0.529
-   },
-   {
-    "vol": 186.2,
-    "frac": 0.307
-   },
-   {
-    "vol": 77.3,
-    "frac": 0.0
-   },
-   {
-    "vol": 56.8,
-    "frac": 0.0
-   },
-   {
-    "vol": 9.3,
-    "frac": 0.76
-   },
-   {
-    "vol": 9.3,
-    "frac": 0.708
-   },
-   {
-    "vol": 5.6,
-    "frac": 0.765
-   },
-   {
-    "vol": 3.7,
-    "frac": 1.0
+    "vol": 561.8,
+    "frac": 0.343
    }
   ]
  },
@@ -116,35 +60,7 @@
   "pml": "/bigdata/cutlerlab/jjaco081/PYR1_pocket_expansion/results/cavity_check/2lf2A00.pml",
   "chambers": [
    {
-    "vol": 90.5,
-    "frac": 1.0
-   },
-   {
-    "vol": 53.8,
-    "frac": 1.0
-   },
-   {
-    "vol": 45.4,
-    "frac": 1.0
-   },
-   {
-    "vol": 29.8,
-    "frac": 1.0
-   },
-   {
-    "vol": 23.3,
-    "frac": 1.0
-   },
-   {
-    "vol": 15.8,
-    "frac": 1.0
-   },
-   {
-    "vol": 14.3,
-    "frac": 1.0
-   },
-   {
-    "vol": 11.4,
+    "vol": 284.3,
     "frac": 1.0
    }
   ]

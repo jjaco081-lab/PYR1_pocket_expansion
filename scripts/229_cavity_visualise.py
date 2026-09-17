@@ -56,15 +56,21 @@ SPACING = m151.SPACING
 RAW = os.path.join(ROOT, "results", "homolog_cavities", "raw")
 OUT = os.path.join(ROOT, "results", "cavity_check")
 CH = "ABCDEFGH"
+#: MUST MATCH 231_cavity_v5.py. 2.4 A was my own invention and split PYR1's
+#: pocket into 3 pieces that ABA threads through -- 6 of 19 ABA heavy atoms fell
+#: OUTSIDE the "main" chamber, and A+B+C = 164.4 = the `total` it discarded.
+#: 1.4 A (the water probe) is the calibrated value at which ABA lies in ONE
+#: chamber, and is what PyMOL, CASTp and fpocket use.
+CHAMBER_PROBE = 1.4
 
 TARGETS = [
-    ("3QN1_A",  None, {"A"}, "PYR1 apo monomer: 119.0 A^3, largest chamber should sit on ABA"),
+    ("3QN1_A",  None, {"A"}, "PYR1 apo monomer: 164.4 A^3 as ONE chamber; ABA enclosed except O10 (ketone, 1.07 A out)"),
     ("3QN1_AB", None, None,  "PYR1+HAB1: 182.3 A^3 as ONE chamber -- HAB1 seals it"),
     ("2pcsA00", None, None,  "CoxG donor 570.5 A^3 -- is it really one chamber?"),
     ("af_A0A0R0IEX8_94_244_3.30.530.20", None, None,
      "v2 318.6 -> v4 0.0; a 277.6 A^3 chamber exists but should NOT be in the domain"),
     ("af_Q6Z9J1_229_401_3.30.530.20", None, None,
-     "v2 216.6 -> v4 9.3, domain fraction 0.76"),
+     "chamber STRADDLES the domain boundary at frac 0.53 -- the 2/3 cut is questionable here"),
     ("2lf2A00", None, None, "NMR ensemble: read 0.0 before the first-model fix"),
 ]
 
@@ -84,7 +90,7 @@ def chambers_with_voxels(xyz, elem, dom):
     mask = m151.enclosed(clear, lo, shape)
     if mask.sum() == 0:
         return []
-    core = mask & (clear > 2.4)
+    core = mask & (clear > CHAMBER_PROBE)
     lab, n = ndimage.label(core)
     if n == 0:
         return []
@@ -149,27 +155,74 @@ def main():
             fh.write("END\n")
         dsel = (f"resi {rng[0]}-{rng[1]}" if rng else "all")
         with open(base + ".pml", "w") as fh:
-            fh.write(f"# {name}: {why}\n")
+            fh.write(f"# {name}\n# {why}\n#\n")
+            fh.write("# TWO cavity representations, loaded on top of each other so they\n")
+            fh.write("# can be compared directly:\n")
+            fh.write("#   BLUE TRANSPARENT SURFACE = PyMOL's own cavity detection\n")
+            fh.write("#        (surface_cavity_mode 2, radius -3, cutoff -5)\n")
+            fh.write("#   SOLID SPHERES = the chamber THIS PROJECT measures\n")
+            fh.write("# Where they disagree is the interesting part.\n")
+            fh.write("# F1 toggles the surface, F2 toggles the spheres.\n")
             fh.write(f"load {os.path.basename(src)}, prot\n")
             fh.write(f"load {os.path.basename(base)}_cavity.pdb, cav\n")
             fh.write("hide everything\n")
             fh.write(f"select domain, prot and polymer and ({dsel})\n")
             fh.write("select other, prot and polymer and not domain\n")
             fh.write("select ligand, prot and not polymer and not resn HOH\n")
-            fh.write("show cartoon, domain\ncolor grey80, domain\n")
+            fh.write("show cartoon, domain\ncolor grey70, domain\n")
             fh.write("show lines, other\ncolor palecyan, other\n")
             fh.write("show sticks, ligand\ncolor yellow, ligand\n")
-            fh.write("set stick_radius, 0.28, ligand\n")
-            fh.write("util.cnc ligand\n")
-            fh.write("show spheres, cav\nset sphere_scale, 0.20, cav\n")
-            # translucent, or the blob hides the very ligand it should overlay
-            fh.write("set sphere_transparency, 0.55, cav\n")
-            fh.write("color firebrick, cav and chain A\n")
-            for c_ in CH[1:]:
-                fh.write(f"color grey50, cav and chain {c_}\n")
-            fh.write("set cartoon_transparency, 0.55\nbg_color white\n")
-            fh.write("deselect\n")
+            fh.write("util.cnc ligand\nset stick_radius, 0.28, ligand\n")
+            fh.write("\n# --- PyMOL's own cavity detection, Jannis's settings ---\n")
+            fh.write("set surface_cavity_mode, 2\n")
+            fh.write("set surface_cavity_radius, -3\n")
+            fh.write("set surface_cavity_cutoff, -5\n")
+            fh.write("set surface_quality, 1\n")
+            fh.write("create pmolcav, prot and polymer\n")
+            fh.write("hide everything, pmolcav\n")
+            # ⚠ A TRANSPARENT SURFACE OCCLUDES WHATEVER IS INSIDE IT. PyMOL sorts
+            # transparency per-object, so spheres sitting inside a transparent
+            # surface are hidden no matter how opaque the spheres are -- Jannis:
+            # "I happen to be unable to see the atoms through the transparent
+            # cavity surface". MESH is the fix: it is wireframe, so the interior
+            # is always visible. The solid surface is kept on F1 for when the
+            # outer shape is what matters, with transparency_mode 3
+            # (order-independent) so it occludes as little as possible.
+            fh.write("show mesh, pmolcav\n")
+            fh.write("color skyblue, pmolcav\n")
+            fh.write("set mesh_width, 0.4, pmolcav\n")
+            fh.write("set transparency_mode, 3\n")
+            fh.write("set transparency, 0.65, pmolcav\n")
+            fh.write("\n# --- the chambers measured here: FULLY OPAQUE ---\n")
+            fh.write("show spheres, cav\nset sphere_scale, 0.16, cav\n")
+            fh.write("set sphere_transparency, 0.0, cav\n")
+            colours = ["firebrick", "orange", "yellow", "green",
+                       "purple", "magenta", "salmon", "wheat"]
+            for ci, c_ in enumerate(CH):
+                fh.write(f"color {colours[ci]}, cav and chain {c_}\n")
+            fh.write("set cartoon_transparency, 0.7\nbg_color white\ndeselect\n")
             fh.write("orient cav and chain A\nzoom cav and chain A, 7\n")
+            fh.write("\n# --- views -------------------------------------------\n")
+            fh.write("python\n")
+            fh.write("from pymol import cmd\n")
+            fh.write("def v_mesh():\n")
+            fh.write("    cmd.hide('surface','pmolcav'); cmd.show('mesh','pmolcav')\n")
+            fh.write("def v_surf():\n")
+            fh.write("    cmd.hide('mesh','pmolcav'); cmd.show('surface','pmolcav')\n")
+            fh.write("def v_onlypmol():\n")
+            fh.write("    cmd.disable('cav'); cmd.enable('pmolcav')\n")
+            fh.write("def v_onlyours():\n")
+            fh.write("    cmd.enable('cav'); cmd.disable('pmolcav')\n")
+            fh.write("def v_both():\n")
+            fh.write("    cmd.enable('cav'); cmd.enable('pmolcav')\n")
+            fh.write("cmd.extend('v_mesh',v_mesh); cmd.extend('v_surf',v_surf)\n")
+            fh.write("cmd.extend('v_onlypmol',v_onlypmol)\n")
+            fh.write("cmd.extend('v_onlyours',v_onlyours)\n")
+            fh.write("cmd.extend('v_both',v_both)\n")
+            fh.write("python end\n")
+            fh.write("set_key F1, v_mesh\nset_key F2, v_surf\n")
+            fh.write("set_key F3, v_onlyours\nset_key F4, v_onlypmol\n")
+            fh.write("set_key F5, v_both\n")
             fh.write(f'print "CHAMBERS (chain = rank, red = largest):"\n')
             for ci, c in enumerate(cs[:len(CH)]):
                 fh.write(f'print "  {CH[ci]}  {c["vol"]:7.1f} A^3   '
