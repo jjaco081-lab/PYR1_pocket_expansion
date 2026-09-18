@@ -13182,3 +13182,69 @@ would flatter the donors if applied to one side only.
 volume, connectivity of chambers — is the right definition of "large" and is
 cheap to add to the existing chamber code. It is not needed for §145 and should
 be added when it drives a decision, not before.
+
+### §147 The triple does NOT collapse — Arm 1 re-measured with the calibrated probe
+
+Jannis asked what test should come next to show the F108/R79/E94 triple really
+opens the second lobe, and whether anything should be run to show the pocket is
+not predicted to collapse. **The test already existed and I had forgotten it.**
+He was right that it was done early.
+
+`06_rosetta_cavity_scan.py` (Arm 1) IS the collapse experiment: MutateResidue →
+FastRelax (`ref2015_cst`, 3 repeats) with Cα constraints to the closed backbone
+so it isolates side-chain infilling, **side chains unconstrained and free to fall
+into the cavity — the collapse is the signal** — relaxed **APO** so nothing props
+the pocket open, with WT through the identical protocol as the reference.
+
+⚠ **What was actually missing** was only the measurement: Arm 1's cavity came
+from a seeded volume at the ABA centroid, the same older criterion that credited
+F108G with +84 Å³ that proved to be **+1 Å³ of usable chamber**. Re-measured with
+the probe calibrated against ABA (`251_relaxed_chamber.py`):
+
+```
+variant                relaxed    SD   n  chmb   vs WT     rigid   vs WT
+WT                       178.7   1.8   3   1.0    +0.0     164.4    +0.0
+R79A                     175.5   1.2   3   1.0    -3.2     161.2    -3.2
+E94A                     188.3   0.2   3   1.0    +9.6     180.4   +16.0
+R79A/E94A                264.2   2.4   3   1.0   +85.5     251.0   +86.6
+F108A                    250.3   1.6   3   1.0   +71.6     241.7   +77.3
+F108A/R79A               276.8   0.8   3   1.0   +98.1     267.2  +102.8
+F108A/R79A/E94A          327.5   2.0   3   1.0  +148.8     311.0  +146.6
+K59A/F108A/R79A/E94A     408.7   2.2   3   1.0  +230.0     385.1  +220.8
+```
+
+**101 % of the rigid gain survives repacking.** Four features make this a result
+rather than a suggestion:
+
+* **every variant is ONE chamber** — `all enclosed` equals `main chamber` exactly
+  in the rigid series too, so none of the gain is satellite space. The specific
+  risk carried over from F108G does not materialise;
+* **replicate SD is 0.2–4.1 Å³** at n = 3 — reproducible, not one lucky relax;
+* relaxation slightly **enlarges** every variant including WT (164.4 → 178.7), so
+  the delta against WT is the fair comparison, and it is preserved: +146.6 → +148.8;
+* **R79A alone agrees across three independent measurements** — −2.8 (§9b),
+  −3.2 (rigid, calibrated), −3.2 (relaxed, calibrated). It slightly CLOSES the
+  pocket on its own, which is what makes the pair's +85.5 real synergy.
+
+With HAB1 bound (the functional closed state, rigid) the triple reaches
+**337.0 Å³ = 1.85× PYR1's 182.3**, and the quad **423.4 = 2.32×**, both as a
+single chamber.
+
+**And the synergy reproduces under the new probe.** §9b measured epistasis
++76.0 Å³ against an additive expectation of +5.0, with `K59A/F108A` at **−3.6**
+(additive within noise) as the discriminating control. The calibrated probe gives
+R79A −3.2, E94A +16.0, additive +12.7, pair **+86.6 → 6.8× super-additive**.
+
+⚠ **Two corrections to my own claims this session.** I said R79A alone had never
+been measured — it had, in §9b. And I advised against relax-based collapse
+testing on the grounds that FastRelax breaks the R79–E94 salt bridge; that
+objection comes from §76, where relax fails as a SCORER of sensor function, and
+does not transfer to using it as a packing engine with the salt bridge deleted
+on purpose.
+
+**What is still open is not pocket size:** whether the new lobe is LOADABLE (the
+quadruple TI failed because a docked ligand collapsed into deleted F108's
+volume), and whether the receptor still SWITCHES (§7/§85 — not computable, Y2H
+regardless). The bridge to the library arm is §2's observation that truncating
+the buttress recruits **I48, V49, R50, V81, I62, S122** as new lining residues —
+**none of which are in Tian's sd03 vocabulary.**
